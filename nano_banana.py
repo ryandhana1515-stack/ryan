@@ -16,6 +16,8 @@ def generate_image(prompt: str, aspect_ratio: str = "1:1", output_path: str = "o
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://localhost",
+        "X-Title": "Nano Banana 2 Client",
     }
 
     payload = {
