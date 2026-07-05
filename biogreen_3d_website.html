@@ -3,1830 +3,831 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIO N:OV | Bio Green Elixirs — Clearing The Way To Optimum Health</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<title>BIO N:OV | Bio Green Elixirs — 3rd Generation Nitric Oxide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap');
-
-  :root {
-    --bg: #0a0e1a;
-    --cyan: #00DCFF;
-    --teal: #00a896;
-    --white: #ffffff;
-    --text: #e0e6f0;
-    --gold: #d4af37;
-    --card-bg: rgba(255,255,255,0.04);
-    --border: rgba(0,220,255,0.15);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
-  }
-
-  /* ── CANVAS ── */
-  #hero-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 4rem;
-    background: rgba(10,14,26,0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
-    font-size: 1.1rem;
-    letter-spacing: 0.15em;
-    color: var(--white);
-  }
-
-  .nav-logo span { color: var(--cyan); }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--text);
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--cyan); }
-
-  .nav-cta {
-    background: var(--cyan);
-    color: #0a0e1a !important;
-    padding: 0.6rem 1.5rem;
-    border-radius: 50px;
-    font-weight: 700 !important;
-    transition: all 0.3s !important;
-  }
-
-  .nav-cta:hover {
-    background: var(--white) !important;
-    color: var(--bg) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(0,220,255,0.4);
-  }
-
-  /* ── SECTIONS ── */
-  section {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ── HERO ── */
-  #hero {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-    overflow: hidden;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 900px;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(0,220,255,0.1);
-    border: 1px solid var(--cyan);
-    border-radius: 50px;
-    padding: 0.5rem 1.2rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--cyan);
-    margin-bottom: 2rem;
-    opacity: 0;
-  }
-
-  .hero-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--cyan);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.5); }
-  }
-
-  .hero-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-  }
-
-  .hero-title .highlight {
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    color: rgba(224,230,240,0.7);
-    margin-bottom: 3rem;
-    line-height: 1.7;
-    opacity: 0;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    opacity: 0;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    color: #0a0e1a;
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 1rem;
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    transition: all 0.3s;
-    box-shadow: 0 0 40px rgba(0,220,255,0.3);
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 60px rgba(0,220,255,0.5);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 1rem 2.5rem;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.2);
-    transition: all 0.3s;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--cyan);
-    color: var(--cyan);
-    transform: translateY(-3px);
-  }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    opacity: 0;
-    animation: fadeInUp 1s 2s forwards;
-  }
-
-  .scroll-indicator span {
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(224,230,240,0.4);
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(to bottom, var(--cyan), transparent);
-    animation: scrollLine 2s infinite;
-  }
-
-  @keyframes scrollLine {
-    0% { transform: scaleY(0); transform-origin: top; }
-    50% { transform: scaleY(1); transform-origin: top; }
-    51% { transform: scaleY(1); transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-
-  /* ── STATS BAR ── */
-  #stats {
-    background: rgba(0,220,255,0.05);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 4rem 4rem;
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .stat-item {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  .stat-number {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-    display: block;
-  }
-
-  .stat-label {
-    font-size: 0.85rem;
-    color: rgba(224,230,240,0.6);
-    margin-top: 0.5rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .stat-divider {
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(to right, var(--cyan), transparent);
-    margin: 0.8rem auto;
-  }
-
-  /* ── PROBLEM ── */
-  #problem {
-    padding: 10rem 4rem;
-    background: linear-gradient(180deg, var(--bg) 0%, #060810 50%, var(--bg) 100%);
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .section-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--cyan);
-    margin-bottom: 1rem;
-    opacity: 0;
-  }
-
-  .section-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 900;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-  }
-
-  .section-body {
-    font-size: 1.1rem;
-    color: rgba(224,230,240,0.65);
-    line-height: 1.8;
-    max-width: 700px;
-    margin: 0 auto 4rem;
-    opacity: 0;
-  }
-
-  .no-decline-chart {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    align-items: flex-end;
-    height: 200px;
-    margin: 4rem auto;
-    max-width: 500px;
-    opacity: 0;
-  }
-
-  .bar-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    flex: 1;
-  }
-
-  .bar {
-    width: 100%;
-    border-radius: 6px 6px 0 0;
-    transition: height 1s ease;
-    position: relative;
-  }
-
-  .bar-label {
-    font-size: 0.7rem;
-    color: rgba(224,230,240,0.5);
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-
-  .bar-val {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    font-size: 0.8rem;
-    color: var(--cyan);
-    margin-bottom: 0.3rem;
-  }
-
-  .problem-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
-  .problem-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    text-align: left;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.3s;
-  }
-
-  .problem-card:hover {
-    border-color: rgba(0,220,255,0.4);
-    background: rgba(0,220,255,0.06);
-    transform: translateY(-4px);
-  }
-
-  .problem-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .problem-card h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.03em;
-  }
-
-  .problem-card p {
-    font-size: 0.9rem;
-    color: rgba(224,230,240,0.6);
-    line-height: 1.7;
-  }
-
-  /* ── PRODUCT 3D ── */
-  #product {
-    padding: 10rem 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-  }
-
-  .product-3d-container {
-    width: 380px;
-    height: 380px;
-    flex-shrink: 0;
-    opacity: 0;
-  }
-
-  #product-canvas {
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-  }
-
-  .product-info {
-    max-width: 500px;
-    opacity: 0;
-  }
-
-  .product-badge {
-    display: inline-block;
-    background: rgba(0,220,255,0.1);
-    border: 1px solid var(--cyan);
-    color: var(--cyan);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 0.4rem 1rem;
-    border-radius: 50px;
-    margin-bottom: 1.5rem;
-  }
-
-  .product-name {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 900;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 1rem;
-  }
-
-  .product-tagline {
-    font-size: 1rem;
-    color: rgba(224,230,240,0.6);
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-  }
-
-  .product-specs {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .spec-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    transition: all 0.3s;
-  }
-
-  .spec-row:hover {
-    border-color: rgba(0,220,255,0.4);
-    background: rgba(0,220,255,0.06);
-  }
-
-  .spec-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-
-  .spec-text strong {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--white);
-    font-weight: 600;
-  }
-
-  .spec-text span {
-    font-size: 0.8rem;
-    color: rgba(224,230,240,0.5);
-  }
-
-  /* ── BENEFITS ── */
-  #benefits {
-    padding: 10rem 4rem;
-    background: linear-gradient(180deg, var(--bg) 0%, #060810 50%, var(--bg) 100%);
-    text-align: center;
-  }
-
-  .benefits-header { margin-bottom: 5rem; }
-
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .benefit-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    opacity: 0;
-    transform: translateY(60px) scale(0.9);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .benefit-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0,220,255,0.08), rgba(0,168,150,0.08));
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .benefit-card:hover::before { opacity: 1; }
-
-  .benefit-card:hover {
-    border-color: var(--cyan);
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 20px 60px rgba(0,220,255,0.15);
-  }
-
-  .benefit-icon-wrap {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, rgba(0,220,255,0.15), rgba(0,168,150,0.15));
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 1.5rem;
-    border: 1px solid rgba(0,220,255,0.2);
-    transition: all 0.3s;
-  }
-
-  .benefit-card:hover .benefit-icon-wrap {
-    background: linear-gradient(135deg, rgba(0,220,255,0.25), rgba(0,168,150,0.25));
-    transform: rotateY(180deg);
-  }
-
-  .benefit-card h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 0.8rem;
-    line-height: 1.3;
-  }
-
-  .benefit-card p {
-    font-size: 0.8rem;
-    color: rgba(224,230,240,0.55);
-    line-height: 1.6;
-  }
-
-  /* ── SCIENCE / GENERATIONS ── */
-  #science {
-    padding: 10rem 4rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .science-header {
-    text-align: center;
-    margin-bottom: 6rem;
-  }
-
-  .generations {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    position: relative;
-  }
-
-  .generations::before {
-    content: '';
-    position: absolute;
-    top: 60px;
-    left: 16.5%;
-    right: 16.5%;
-    height: 2px;
-    background: linear-gradient(to right, rgba(0,220,255,0.2), var(--cyan), rgba(0,220,255,0.2));
-    z-index: 0;
-  }
-
-  .gen-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    position: relative;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.4s;
-  }
-
-  .gen-card.featured {
-    border-color: var(--cyan);
-    background: rgba(0,220,255,0.06);
-    box-shadow: 0 0 60px rgba(0,220,255,0.1), inset 0 0 60px rgba(0,220,255,0.03);
-  }
-
-  .gen-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0,220,255,0.1);
-  }
-
-  .gen-number {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(224,230,240,0.4);
-    margin-bottom: 1rem;
-  }
-
-  .gen-card.featured .gen-number { color: var(--cyan); }
-
-  .gen-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-  }
-
-  .gen-subtitle {
-    font-size: 0.8rem;
-    color: var(--cyan);
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-  }
-
-  .gen-problems {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .gen-problems li {
-    font-size: 0.85rem;
-    color: rgba(224,230,240,0.6);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .gen-problems li::before {
-    content: '✗';
-    color: #ff4444;
-    font-weight: 700;
-    font-size: 0.8rem;
-  }
-
-  .gen-card.featured .gen-problems li::before {
-    content: '✓';
-    color: var(--cyan);
-  }
-
-  .featured-badge {
-    position: absolute;
-    top: -1px;
-    right: 2rem;
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    color: #0a0e1a;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0.3rem 1rem;
-    border-radius: 0 0 10px 10px;
-  }
-
-  /* ── INGREDIENTS ── */
-  #ingredients {
-    padding: 10rem 4rem;
-    background: linear-gradient(180deg, var(--bg) 0%, #060810 50%, var(--bg) 100%);
-    text-align: center;
-  }
-
-  .ingredients-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 5rem auto 0;
-  }
-
-  .ingredient-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem 1.5rem;
-    opacity: 0;
-    transform: scale(0.8) rotateY(30deg);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .ingredient-card:hover {
-    border-color: rgba(0,220,255,0.4);
-    transform: scale(1.05) rotateY(0deg);
-    box-shadow: 0 20px 60px rgba(0,220,255,0.1);
-  }
-
-  .ingredient-emoji {
-    font-size: 3rem;
-    margin-bottom: 1.2rem;
-    display: block;
-    filter: drop-shadow(0 0 10px rgba(0,220,255,0.3));
-  }
-
-  .ingredient-card h3 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 0.6rem;
-  }
-
-  .ingredient-card p {
-    font-size: 0.8rem;
-    color: rgba(224,230,240,0.55);
-    line-height: 1.6;
-  }
-
-  /* ── TESTIMONIALS ── */
-  #testimonials {
-    padding: 10rem 4rem;
-    text-align: center;
-    overflow: hidden;
-  }
-
-  .testimonials-track {
-    display: flex;
-    gap: 2rem;
-    margin-top: 4rem;
-    animation: scrollTrack 30s linear infinite;
-    width: max-content;
-  }
-
-  .testimonials-track:hover { animation-play-state: paused; }
-
-  @keyframes scrollTrack {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  .testimonial-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2rem;
-    width: 320px;
-    text-align: left;
-    flex-shrink: 0;
-    transition: all 0.3s;
-  }
-
-  .testimonial-card:hover {
-    border-color: rgba(0,220,255,0.4);
-    background: rgba(0,220,255,0.06);
-  }
-
-  .testimonial-stars {
-    color: var(--gold);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    letter-spacing: 2px;
-  }
-
-  .testimonial-text {
-    font-size: 0.9rem;
-    color: rgba(224,230,240,0.75);
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    font-style: italic;
-  }
-
-  .testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #0a0e1a;
-    flex-shrink: 0;
-  }
-
-  .author-info strong {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--white);
-    font-weight: 600;
-  }
-
-  .author-info span {
-    font-size: 0.75rem;
-    color: rgba(224,230,240,0.45);
-  }
-
-  /* ── CTA ── */
-  #cta {
-    padding: 12rem 4rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #cta-canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
-  .cta-content {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    margin: 0 auto;
-    opacity: 0;
-  }
-
-  .cta-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 900;
-    color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-  }
-
-  .cta-sub {
-    font-size: 1.1rem;
-    color: rgba(224,230,240,0.6);
-    line-height: 1.7;
-    margin-bottom: 3rem;
-  }
-
-  .cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 3rem;
-  }
-
-  .btn-glow {
-    background: linear-gradient(135deg, var(--cyan), var(--teal));
-    color: #0a0e1a;
-    padding: 1.2rem 3rem;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 1.1rem;
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    transition: all 0.3s;
-    box-shadow: 0 0 60px rgba(0,220,255,0.4);
-    display: inline-block;
-  }
-
-  .btn-glow:hover {
-    transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 0 100px rgba(0,220,255,0.6);
-  }
-
-  .trust-badges {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .trust-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    color: rgba(224,230,240,0.5);
-  }
-
-  .trust-badge span:first-child { color: var(--cyan); }
-
-  /* ── FOOTER ── */
-  footer {
-    background: #060810;
-    border-top: 1px solid var(--border);
-    padding: 3rem 4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-logo {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
-    font-size: 1rem;
-    letter-spacing: 0.15em;
-    color: var(--white);
-  }
-
-  .footer-logo span { color: var(--cyan); }
-
-  footer p {
-    font-size: 0.75rem;
-    color: rgba(224,230,240,0.3);
-    line-height: 1.6;
-    max-width: 500px;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-size: 0.8rem;
-    color: rgba(224,230,240,0.4);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  .footer-links a:hover { color: var(--cyan); }
-
-  /* ── GLOW LINE ── */
-  .glow-line {
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(to right, var(--cyan), var(--teal));
-    border-radius: 2px;
-    margin: 1.2rem auto;
-    opacity: 0;
-  }
+:root{
+  --bg:#050810;
+  --cyan:#00DCFF;
+  --teal:#00b4a0;
+  --purple:#6c3fff;
+  --white:#fff;
+  --text:#c8d8f0;
+  --gold:#f0c040;
+  --card:#ffffff08;
+  --border:rgba(0,220,255,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1rem 5rem;
+  background:rgba(5,8,16,.6);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.18em;color:#fff}
+.nav-logo em{color:var(--cyan);font-style:normal}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:rgba(200,216,240,.65);text-decoration:none;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-btn{
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  color:#050810;padding:.55rem 1.4rem;border-radius:50px;
+  font-weight:800;font-size:.8rem;letter-spacing:.06em;
+  text-decoration:none;transition:all .3s;
+  box-shadow:0 0 20px rgba(0,220,255,.35);
+}
+.nav-btn:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(0,220,255,.55)}
+
+/* ── HERO ── */
+#hero{
+  position:relative;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;
+}
+/* animated orb background */
+.orb{
+  position:absolute;border-radius:50%;filter:blur(80px);
+  animation:float 8s ease-in-out infinite;pointer-events:none;
+}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(0,220,255,.18),transparent 70%);top:-100px;left:-100px;animation-delay:0s}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(108,63,255,.15),transparent 70%);bottom:-100px;right:-100px;animation-delay:-3s}
+.orb3{width:400px;height:400px;background:radial-gradient(circle,rgba(0,180,160,.12),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-6s}
+@keyframes float{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-40px) scale(1.05)}
+  66%{transform:translate(-20px,30px) scale(.95)}
+}
+.orb3{animation:float3 10s ease-in-out infinite}
+@keyframes float3{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  50%{transform:translate(-50%,-55%) scale(1.1)}
+}
+/* grid overlay */
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,220,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,220,255,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
+}
+canvas#hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.hero-content{position:relative;z-index:2;max-width:960px;padding:0 2rem}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid var(--cyan);border-radius:50px;
+  padding:.45rem 1.2rem;font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--cyan);
+  background:rgba(0,220,255,.06);margin-bottom:2.2rem;
+  animation:fadeUp .8s .1s both;
+}
+.hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse2 2s infinite}
+@keyframes pulse2{0%,100%{box-shadow:0 0 0 0 rgba(0,220,255,.6)}70%{box-shadow:0 0 0 8px transparent}}
+.hero-title{
+  font-family:'Montserrat',sans-serif;
+  font-size:clamp(3.5rem,9vw,8rem);
+  font-weight:900;line-height:.95;letter-spacing:-.03em;
+  color:#fff;margin-bottom:1.8rem;
+  animation:fadeUp .9s .2s both;
+}
+.hero-title .g1{
+  background:linear-gradient(135deg,#fff 0%,var(--cyan) 50%,var(--teal) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 40px rgba(0,220,255,.4));
+}
+.hero-sub{
+  font-size:clamp(.95rem,1.8vw,1.2rem);color:rgba(200,216,240,.65);
+  line-height:1.75;max-width:640px;margin:0 auto 3rem;
+  animation:fadeUp .8s .35s both;
+}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .5s both}
+.btn-glow{
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  color:#050810;padding:1rem 2.8rem;border-radius:50px;
+  font-weight:800;font-size:.95rem;letter-spacing:.04em;
+  text-decoration:none;transition:all .3s;
+  box-shadow:0 0 50px rgba(0,220,255,.4);
+}
+.btn-glow:hover{transform:translateY(-4px);box-shadow:0 0 80px rgba(0,220,255,.65)}
+.btn-ghost{
+  border:1px solid rgba(200,216,240,.2);color:#fff;
+  padding:1rem 2.8rem;border-radius:50px;font-weight:600;
+  font-size:.95rem;text-decoration:none;transition:all .3s;
+  background:rgba(255,255,255,.04);backdrop-filter:blur(8px);
+}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-4px)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.scroll-cue{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+  animation:fadeUp 1s 1.2s both;
+}
+.scroll-cue span{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(200,216,240,.3)}
+.scroll-line{width:1px;height:50px;background:linear-gradient(var(--cyan),transparent);animation:cueAnim 2s infinite}
+@keyframes cueAnim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ── STATS ── */
+#stats{
+  background:rgba(0,220,255,.04);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:5rem;
+}
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  max-width:1100px;margin:0 auto;text-align:center;gap:2rem;
+}
+.stat-block{
+  opacity:0;transform:translateY(25px);
+  transition:all .7s ease;
+}
+.stat-block.visible{opacity:1;transform:none}
+.stat-num{
+  font-family:'Montserrat',sans-serif;
+  font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:1;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(0,220,255,.35));
+}
+.stat-divider{width:32px;height:2px;background:linear-gradient(var(--cyan),var(--teal));margin:.8rem auto;border-radius:2px}
+.stat-lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(200,216,240,.5)}
+
+/* ── SECTION COMMON ── */
+.section{position:relative;z-index:1}
+.s-label{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan);margin-bottom:.8rem}
+.s-title{
+  font-family:'Montserrat',sans-serif;font-size:clamp(2rem,5vw,4rem);
+  font-weight:900;color:#fff;line-height:1.05;margin-bottom:1.2rem;
+}
+.s-sub{font-size:1rem;color:rgba(200,216,240,.55);line-height:1.8;max-width:680px;margin:0 auto}
+.gline{
+  width:60px;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--teal));
+  border-radius:2px;margin:.8rem auto 2.5rem;
+}
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── PROBLEM ── */
+#problem{
+  padding:10rem 5rem;text-align:center;
+  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
+}
+.bp-chart{
+  display:flex;justify-content:center;align-items:flex-end;
+  gap:.6rem;height:220px;max-width:480px;margin:4rem auto;
+}
+.bp-col{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex:1}
+.bp-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.8rem;color:var(--cyan)}
+.bp-bar{width:100%;border-radius:8px 8px 0 0;position:relative;overflow:hidden}
+.bp-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.1),transparent)}
+.bp-lbl{font-size:.65rem;color:rgba(200,216,240,.4);letter-spacing:.05em}
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:960px;margin:0 auto}
+.prob-card{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:2.5rem 2rem;text-align:left;
+  transition:all .4s;cursor:default;
+  position:relative;overflow:hidden;
+}
+.prob-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,220,255,.06),transparent 60%);
+  opacity:0;transition:opacity .4s;
+}
+.prob-card:hover::before{opacity:1}
+.prob-card:hover{border-color:rgba(0,220,255,.45);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,220,255,.1)}
+.prob-icon{font-size:2.8rem;margin-bottom:1.2rem;display:block;filter:drop-shadow(0 0 12px rgba(0,220,255,.25))}
+.prob-card h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+.prob-card p{font-size:.85rem;color:rgba(200,216,240,.55);line-height:1.7}
+
+/* ── PRODUCT 3D ── */
+#product{padding:10rem 5rem}
+.product-wrap{
+  display:flex;align-items:center;justify-content:center;
+  gap:5rem;max-width:1200px;margin:0 auto;flex-wrap:wrap;
+}
+.product-3d{
+  position:relative;width:400px;height:480px;flex-shrink:0;
+}
+.product-glow{
+  position:absolute;inset:-40px;
+  background:radial-gradient(ellipse,rgba(0,220,255,.15) 0%,transparent 70%);
+  animation:glowPulse 3s ease-in-out infinite;pointer-events:none;
+}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.ring{
+  position:absolute;top:50%;left:50%;border-radius:50%;
+  border:1px solid rgba(0,220,255,.2);
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+.ring1{width:340px;height:340px;animation:spin 20s linear infinite}
+.ring2{width:440px;height:440px;border-color:rgba(0,180,160,.12);animation:spin 30s linear infinite reverse}
+.ring3{width:520px;height:520px;border-color:rgba(108,63,255,.1);animation:spin 40s linear infinite}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.ring1::before,.ring2::before,.ring3::before{
+  content:'';position:absolute;width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);top:-3px;left:50%;margin-left:-3px;
+  box-shadow:0 0 12px var(--cyan);
+}
+canvas#product-canvas{
+  position:relative;z-index:2;
+  width:100%;height:100%;border-radius:24px;
+}
+.product-info{max-width:500px}
+.p-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid var(--cyan);border-radius:50px;
+  color:var(--cyan);font-size:.65rem;letter-spacing:.18em;
+  text-transform:uppercase;padding:.4rem 1rem;
+  background:rgba(0,220,255,.06);margin-bottom:1.5rem;
+}
+.p-name{font-family:'Montserrat',sans-serif;font-size:4.5rem;font-weight:900;color:#fff;line-height:.9;margin-bottom:.6rem;
+  text-shadow:0 0 60px rgba(0,220,255,.2)}
+.p-korean{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--cyan);letter-spacing:.12em;margin-bottom:1.2rem;font-size:.95rem}
+.p-desc{font-size:.95rem;color:rgba(200,216,240,.55);line-height:1.75;margin-bottom:2.5rem}
+.specs{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2.5rem}
+.spec{
+  display:flex;align-items:center;gap:1rem;
+  padding:.9rem 1.2rem;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;transition:all .3s;
+}
+.spec:hover{border-color:rgba(0,220,255,.4);background:rgba(0,220,255,.05)}
+.spec-ico{
+  width:38px;height:38px;flex-shrink:0;border-radius:10px;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.spec strong{display:block;font-size:.82rem;color:#fff;font-weight:600}
+.spec span{font-size:.75rem;color:rgba(200,216,240,.45)}
+
+/* ── BENEFITS ── */
+#benefits{
+  padding:10rem 5rem;text-align:center;
+  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
+}
+.ben-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;max-width:1200px;margin:0 auto}
+.ben-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:22px;padding:2.5rem 1.2rem;text-align:center;
+  cursor:pointer;transition:all .45s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+}
+.ben-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,220,255,.08),rgba(0,180,160,.06));
+  opacity:0;transition:opacity .3s;
+}
+.ben-card:hover::after{opacity:1}
+.ben-card:hover{
+  border-color:var(--cyan);transform:translateY(-12px) scale(1.02);
+  box-shadow:0 24px 60px rgba(0,220,255,.18);
+}
+.ben-ico{
+  width:68px;height:68px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(0,220,255,.15),rgba(0,180,160,.12));
+  border:1px solid rgba(0,220,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;margin:0 auto 1.5rem;transition:all .4s;
+  box-shadow:0 0 20px rgba(0,220,255,.08);
+}
+.ben-card:hover .ben-ico{transform:scale(1.1) rotateY(15deg);box-shadow:0 0 30px rgba(0,220,255,.25)}
+.ben-card h3{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.6rem;line-height:1.3}
+.ben-card p{font-size:.75rem;color:rgba(200,216,240,.5);line-height:1.65}
+
+/* ── SCIENCE ── */
+#science{padding:10rem 5rem}
+.sci-header{text-align:center;margin-bottom:6rem}
+.gen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1100px;margin:0 auto}
+.gen-card{
+  border:1px solid rgba(200,216,240,.08);border-radius:22px;
+  padding:2.5rem;position:relative;
+  background:var(--card);transition:all .4s;
+}
+.gen-card:hover{transform:translateY(-8px)}
+.gen-card.best{
+  border-color:var(--cyan);
+  background:rgba(0,220,255,.05);
+  box-shadow:0 0 80px rgba(0,220,255,.08),inset 0 0 80px rgba(0,220,255,.03);
+}
+.gen-tag{
+  position:absolute;top:-1px;right:2rem;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  color:#050810;font-size:.6rem;font-weight:800;letter-spacing:.18em;
+  text-transform:uppercase;padding:.3rem 1rem;border-radius:0 0 10px 10px;
+}
+.gen-gen{font-family:'Montserrat',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,216,240,.35);margin-bottom:.8rem}
+.gen-card.best .gen-gen{color:var(--cyan)}
+.gen-name{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:.3rem}
+.gen-sub{font-size:.75rem;color:var(--cyan);font-weight:500;margin-bottom:1.5rem}
+.gen-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.gen-list li{font-size:.82rem;color:rgba(200,216,240,.55);display:flex;align-items:center;gap:.6rem}
+.gen-list li::before{content:'✗';color:#ff4466;font-weight:700;font-size:.75rem;flex-shrink:0}
+.gen-card.best .gen-list li::before{content:'✓';color:var(--cyan)}
+
+/* ── INGREDIENTS ── */
+#ingredients{
+  padding:10rem 5rem;text-align:center;
+  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
+}
+.ing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;max-width:1000px;margin:5rem auto 0}
+.ing-card{
+  background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:2.5rem 1.5rem;transition:all .45s cubic-bezier(.34,1.56,.64,1);
+}
+.ing-card:hover{
+  border-color:rgba(0,220,255,.5);
+  transform:translateY(-10px) scale(1.03);
+  box-shadow:0 20px 60px rgba(0,220,255,.12);
+}
+.ing-em{font-size:3.2rem;display:block;margin-bottom:1.2rem;filter:drop-shadow(0 0 14px rgba(0,220,255,.3))}
+.ing-card h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.6rem}
+.ing-card p{font-size:.78rem;color:rgba(200,216,240,.5);line-height:1.65}
+
+/* ── TESTIMONIALS ── */
+#testimonials{padding:10rem 5rem;text-align:center;overflow:hidden}
+.ttest-header{margin-bottom:4rem}
+.ttrack-wrap{overflow:hidden;margin:0 -5rem}
+.ttrack{display:flex;gap:1.5rem;width:max-content;animation:scrollL 35s linear infinite}
+.ttrack:hover{animation-play-state:paused}
+@keyframes scrollL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tcard{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:2rem;width:300px;text-align:left;flex-shrink:0;transition:all .3s;
+}
+.tcard:hover{border-color:rgba(0,220,255,.4);background:rgba(0,220,255,.05)}
+.tstars{color:var(--gold);font-size:.9rem;letter-spacing:2px;margin-bottom:1rem}
+.ttext{font-size:.85rem;color:rgba(200,216,240,.7);line-height:1.7;margin-bottom:1.5rem;font-style:italic}
+.tauthor{display:flex;align-items:center;gap:.8rem}
+.tavatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;color:#050810;flex-shrink:0;
+}
+.tname{font-size:.82rem;color:#fff;font-weight:600;display:block}
+.tloc{font-size:.72rem;color:rgba(200,216,240,.4)}
+
+/* ── CTA ── */
+#cta{
+  padding:12rem 5rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-orb1{position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,220,255,.12),transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+  animation:glowPulse 4s ease-in-out infinite}
+.cta-orb2{position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(108,63,255,.1),transparent 70%);
+  bottom:-100px;right:-100px;pointer-events:none}
+.cta-inner{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.cta-title{font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;color:#fff;line-height:1;margin-bottom:1.5rem}
+.cta-title em{font-style:normal;background:linear-gradient(135deg,var(--cyan),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(0,220,255,.4))}
+.cta-sub{font-size:1rem;color:rgba(200,216,240,.55);line-height:1.8;margin-bottom:3rem}
+.trust-row{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:3rem}
+.trust-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:rgba(200,216,240,.4)}
+.trust-item em{font-style:normal;color:var(--cyan)}
+.disclaimer{font-size:.65rem;color:rgba(200,216,240,.2);margin-top:2.5rem;line-height:1.7;max-width:500px;margin-left:auto;margin-right:auto}
+
+/* ── FOOTER ── */
+footer{
+  background:#020408;border-top:1px solid var(--border);
+  padding:3rem 5rem;display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:1.5rem;
+}
+.f-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.95rem;letter-spacing:.18em;color:#fff}
+.f-logo em{color:var(--cyan);font-style:normal}
+footer p{font-size:.72rem;color:rgba(200,216,240,.25);line-height:1.6;margin-top:.3rem}
+.f-links{display:flex;gap:2rem;list-style:none}
+.f-links a{font-size:.75rem;color:rgba(200,216,240,.35);text-decoration:none;transition:color .3s}
+.f-links a:hover{color:var(--cyan)}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-logo">BIO<span>N:OV</span> | BIO GREEN ELIXIRS</div>
+  <div class="nav-logo">BIO<em>N:OV</em> · BIO GREEN ELIXIRS</div>
   <ul class="nav-links">
     <li><a href="#product">Product</a></li>
     <li><a href="#benefits">Benefits</a></li>
     <li><a href="#science">Science</a></li>
     <li><a href="#testimonials">Reviews</a></li>
-    <li><a href="#cta" class="nav-cta">Order Now</a></li>
   </ul>
+  <a href="#cta" class="nav-btn">Order Now</a>
 </nav>
-
-<!-- THREE.JS PARTICLE CANVAS -->
-<canvas id="hero-canvas"></canvas>
 
 <!-- HERO -->
 <section id="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <canvas id="hero-canvas"></canvas>
   <div class="hero-content">
-    <div class="hero-badge">🇰🇷 3rd Generation Korean Technology</div>
-    <h1 class="hero-title">
-      Clearing The Way<br>To <span class="highlight">Optimum Health</span>
-    </h1>
-    <p class="hero-subtitle">
-      BIO N:OV uses patented microbial fermentation technology developed by<br>
-      8 Korean university professors to naturally support healthy blood pressure.
-    </p>
-    <div class="hero-buttons">
-      <a href="#cta" class="btn-primary">Order BIO N:OV Now</a>
-      <a href="#science" class="btn-secondary">See The Science</a>
+    <div class="hero-pill"><span class="dot"></span>🇰🇷 3rd Generation Korean Technology · Patented</div>
+    <h1 class="hero-title"><span class="g1">Clearing The Way</span><br>To Optimum Health</h1>
+    <p class="hero-sub">BIO N:OV uses patented microbial fermentation developed by 8 Korean professors to support healthy blood pressure — naturally, in 30 minutes.</p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-glow">Order BIO N:OV Now</a>
+      <a href="#science" class="btn-ghost">See The Science</a>
     </div>
   </div>
-  <div class="scroll-indicator">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
 <!-- STATS -->
 <section id="stats">
-  <div class="stats-grid">
-    <div class="stat-item">
-      <span class="stat-number" data-target="25" data-suffix="%">0%</span>
-      <div class="stat-divider"></div>
-      <span class="stat-label">Blood Pressure Drop</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number" data-target="30" data-suffix=" min">0 min</span>
-      <div class="stat-divider"></div>
-      <span class="stat-label">Time To Work</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number" data-target="400" data-suffix="%">0%</span>
-      <div class="stat-divider"></div>
-      <span class="stat-label">More Effective</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number" data-target="8" data-suffix="">0</span>
-      <div class="stat-divider"></div>
-      <span class="stat-label">Korean Professors</span>
-    </div>
+  <div class="stats-row">
+    <div class="stat-block" data-target="25" data-suffix="%"><div class="stat-num">0%</div><div class="stat-divider"></div><div class="stat-lbl">Blood Pressure Drop</div></div>
+    <div class="stat-block" data-target="30" data-suffix=" min"><div class="stat-num">0 min</div><div class="stat-divider"></div><div class="stat-lbl">Time To Work</div></div>
+    <div class="stat-block" data-target="400" data-suffix="%"><div class="stat-num">0%</div><div class="stat-divider"></div><div class="stat-lbl">More Effective</div></div>
+    <div class="stat-block" data-target="8" data-suffix=" Profs"><div class="stat-num">0</div><div class="stat-divider"></div><div class="stat-lbl">Korean University Professors</div></div>
   </div>
 </section>
 
 <!-- PROBLEM -->
-<section id="problem">
-  <div class="section-label">The Problem</div>
-  <h2 class="section-title">Your Body Loses<br><span style="color:var(--cyan)">Nitric Oxide</span> With Age</h2>
-  <div class="glow-line"></div>
-  <p class="section-body">
-    After 40, your body produces 20% less Nitric Oxide every decade.
-    Low NO means stiff blood vessels, rising pressure, low energy, and faster aging.
-    99.9% of human diseases are NO-related.
-  </p>
-
-  <div class="no-decline-chart">
-    <div class="bar-group">
-      <div class="bar-val">100%</div>
-      <div class="bar" style="height:180px; background:linear-gradient(to top, #00DCFF, #00a896);"></div>
-      <div class="bar-label">Age 20</div>
-    </div>
-    <div class="bar-group">
-      <div class="bar-val">80%</div>
-      <div class="bar" style="height:144px; background:linear-gradient(to top, #00DCFF99, #00a89699);"></div>
-      <div class="bar-label">Age 30</div>
-    </div>
-    <div class="bar-group">
-      <div class="bar-val">50%</div>
-      <div class="bar" style="height:90px; background:linear-gradient(to top, #00DCFF66, #00a89666);"></div>
-      <div class="bar-label">Age 40</div>
-    </div>
-    <div class="bar-group">
-      <div class="bar-val">35%</div>
-      <div class="bar" style="height:63px; background:linear-gradient(to top, #00DCFF44, #00a89644);"></div>
-      <div class="bar-label">Age 50</div>
-    </div>
-    <div class="bar-group">
-      <div class="bar-val">15%</div>
-      <div class="bar" style="height:27px; background:linear-gradient(to top, #ff444488, #ff666644);"></div>
-      <div class="bar-label">Age 60+</div>
-    </div>
+<section id="problem" class="section">
+  <div class="s-label reveal">The Problem</div>
+  <h2 class="s-title reveal">Your Body Loses<br><span style="color:var(--cyan)">Nitric Oxide</span> With Age</h2>
+  <div class="gline reveal"></div>
+  <p class="s-sub reveal">After 40, your body produces 20% less NO every decade. Low NO = stiff vessels, rising pressure, low energy, faster aging. 99.9% of human diseases are NO-related.</p>
+  <div class="bp-chart reveal">
+    <div class="bp-col"><div class="bp-val">100%</div><div class="bp-bar" style="height:180px;background:linear-gradient(to top,#00DCFF,#00b4a0)"></div><div class="bp-lbl">Age 20</div></div>
+    <div class="bp-col"><div class="bp-val">80%</div><div class="bp-bar" style="height:144px;background:linear-gradient(to top,#00DCFF99,#00b4a099)"></div><div class="bp-lbl">Age 30</div></div>
+    <div class="bp-col"><div class="bp-val">50%</div><div class="bp-bar" style="height:90px;background:linear-gradient(to top,#00DCFF60,#00b4a060)"></div><div class="bp-lbl">Age 40</div></div>
+    <div class="bp-col"><div class="bp-val">35%</div><div class="bp-bar" style="height:63px;background:linear-gradient(to top,#00DCFF40,#00b4a040)"></div><div class="bp-lbl">Age 50</div></div>
+    <div class="bp-col"><div class="bp-val">15%</div><div class="bp-bar" style="height:27px;background:linear-gradient(to top,#ff4466,#ff2244)"></div><div class="bp-lbl">Age 60+</div></div>
   </div>
-
-  <div class="problem-cards">
-    <div class="problem-card">
-      <div class="problem-icon">🫀</div>
-      <h3>1.28 Billion People</h3>
-      <p>Worldwide have hypertension. 80% fail to control their blood pressure.</p>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">🩸</div>
-      <h3>537 Million Diabetics</h3>
-      <p>1 in 10 adults live with diabetes. 1 person dies every 5 seconds from it.</p>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">🧠</div>
-      <h3>15 Million Strokes/Year</h3>
-      <p>87% caused by blocked blood flow. All linked to Nitric Oxide deficiency.</p>
-    </div>
+  <div class="prob-grid">
+    <div class="prob-card reveal"><span class="prob-icon">🫀</span><h3>1.28 Billion People</h3><p>Worldwide have hypertension. 80% fail to control their blood pressure with existing solutions.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.1s"><span class="prob-icon">🩸</span><h3>537 Million Diabetics</h3><p>1 in 10 adults live with diabetes. 1 person dies every 5 seconds — all linked to NO deficiency.</p></div>
+    <div class="prob-card reveal" style="transition-delay:.2s"><span class="prob-icon">🧠</span><h3>15 Million Strokes / Year</h3><p>87% caused by blocked blood flow — directly tied to declining Nitric Oxide production.</p></div>
   </div>
 </section>
 
 <!-- PRODUCT 3D -->
-<section style="padding: 0;">
-  <div id="product">
-    <div class="product-3d-container">
-      <canvas id="product-canvas"></canvas>
+<section id="product" class="section">
+  <div class="product-wrap">
+    <div class="product-3d reveal">
+      <div class="product-glow"></div>
+      <div class="ring ring1"></div>
+      <div class="ring ring2"></div>
+      <div class="ring ring3"></div>
+      <canvas id="product-canvas" width="400" height="480"></canvas>
     </div>
-    <div class="product-info">
-      <div class="product-badge">GMP Certified · US Patent · KACC91554P</div>
-      <h2 class="product-name">BIO N:OV</h2>
-      <p style="color:var(--cyan); font-family:'Montserrat',sans-serif; font-weight:700; margin-bottom:1rem; letter-spacing:0.1em;">바이오엔:오브이</p>
-      <p class="product-tagline">
-        The world's first 3rd Generation Nitric Oxide supplement using
-        exclusive microbial fermentation. No enzyme needed. Zero side effects.
-        Works for everyone — including heart disease patients.
-      </p>
-      <div class="product-specs">
-        <div class="spec-row">
-          <div class="spec-icon">⚡</div>
-          <div class="spec-text">
-            <strong>Superfast Response</strong>
-            <span>Blood pressure support within 30 minutes</span>
-          </div>
-        </div>
-        <div class="spec-row">
-          <div class="spec-icon">🧬</div>
-          <div class="spec-text">
-            <strong>Patented Fermentation (KACC91554P)</strong>
-            <span>Exclusive microbial strain — 40-400% more effective</span>
-          </div>
-        </div>
-        <div class="spec-row">
-          <div class="spec-icon">🌿</div>
-          <div class="spec-text">
-            <strong>100% Natural Ingredients</strong>
-            <span>Garlic · Lettuce · Soybean · Soybean Sprouts</span>
-          </div>
-        </div>
-        <div class="spec-row">
-          <div class="spec-icon">💊</div>
-          <div class="spec-text">
-            <strong>500mg × 60 Tablets</strong>
-            <span>1 tablet, 3 times daily</span>
-          </div>
-        </div>
+    <div class="product-info reveal" style="transition-delay:.15s">
+      <div class="p-badge">GMP Certified · US Patent · KACC91554P</div>
+      <h2 class="p-name">BIO N:OV</h2>
+      <p class="p-korean">바이오엔:오브이</p>
+      <p class="p-desc">The world's first 3rd Generation Nitric Oxide supplement. Exclusive microbial fermentation — no enzyme needed, zero side effects. Works for everyone including heart patients.</p>
+      <div class="specs">
+        <div class="spec"><div class="spec-ico">⚡</div><div><strong>Superfast — 30 Minutes</strong><span>Blood pressure support within 30 min of taking it</span></div></div>
+        <div class="spec"><div class="spec-ico">🧬</div><div><strong>Patent KACC91554P</strong><span>Exclusive strain — 40–400% more effective than competition</span></div></div>
+        <div class="spec"><div class="spec-ico">🌿</div><div><strong>100% Natural Ingredients</strong><span>Fermented garlic · lettuce · soybean · soybean sprouts</span></div></div>
+        <div class="spec"><div class="spec-ico">💊</div><div><strong>500mg × 60 Tablets</strong><span>1 tablet, 3 times daily — a full month supply</span></div></div>
       </div>
-      <a href="#cta" class="btn-primary" style="display:inline-block; text-decoration:none;">Order Now — biogreenelixirs.com</a>
+      <a href="#cta" class="btn-glow" style="display:inline-block;text-decoration:none">Order Now — biogreenelixirs.com</a>
     </div>
   </div>
 </section>
 
 <!-- BENEFITS -->
-<section id="benefits">
-  <div class="benefits-header">
-    <div class="section-label">5 Key Benefits</div>
-    <h2 class="section-title">What BIO N:OV<br><span style="color:var(--cyan)">Does For You</span></h2>
-    <div class="glow-line"></div>
-  </div>
-  <div class="benefits-grid">
-    <div class="benefit-card">
-      <div class="benefit-icon-wrap">❤️</div>
-      <h3>Blood Pressure & Sugar</h3>
-      <p>Supports healthy BP levels. -25% in 30 mins. Blood sugar -8% in 1 hour.</p>
-    </div>
-    <div class="benefit-card">
-      <div class="benefit-icon-wrap">⚡</div>
-      <h3>Boosts Vigor & Energy</h3>
-      <p>Restores NO to skeletal muscle. More oxygen. More energy. All day long.</p>
-    </div>
-    <div class="benefit-card">
-      <div class="benefit-icon-wrap">🛡️</div>
-      <h3>Reduces Inflammation</h3>
-      <p>Anti-inflammatory compounds from fermented garlic and soybean extracts.</p>
-    </div>
-    <div class="benefit-card">
-      <div class="benefit-icon-wrap">🦠</div>
-      <h3>Enhances Immunity</h3>
-      <p>Strengthens immune response. Antioxidants restore insulin efficiency.</p>
-    </div>
-    <div class="benefit-card">
-      <div class="benefit-icon-wrap">✨</div>
-      <h3>Skin & Cognition</h3>
-      <p>84% saw wrinkle reduction. 78% felt brighter skin. Slows aging at cellular level.</p>
-    </div>
+<section id="benefits" class="section">
+  <div class="s-label reveal">5 Key Benefits</div>
+  <h2 class="s-title reveal">What BIO N:OV<br><span style="color:var(--cyan)">Does For You</span></h2>
+  <div class="gline reveal"></div>
+  <div class="ben-grid" style="margin-top:4rem">
+    <div class="ben-card reveal"><div class="ben-ico">❤️</div><h3>Blood Pressure & Sugar</h3><p>Supports healthy BP. -25% in 30 mins. Blood sugar -8% in 1 hour.</p></div>
+    <div class="ben-card reveal" style="transition-delay:.08s"><div class="ben-ico">⚡</div><h3>Boosts Energy & Vigor</h3><p>Restores NO to skeletal muscle. More oxygen delivery. All-day energy.</p></div>
+    <div class="ben-card reveal" style="transition-delay:.16s"><div class="ben-ico">🛡️</div><h3>Reduces Inflammation</h3><p>Anti-inflammatory from fermented garlic & soybean. Reduces chronic pain.</p></div>
+    <div class="ben-card reveal" style="transition-delay:.24s"><div class="ben-ico">🦠</div><h3>Enhances Immunity</h3><p>Antioxidants restore insulin efficiency. Strengthens immune system.</p></div>
+    <div class="ben-card reveal" style="transition-delay:.32s"><div class="ben-ico">✨</div><h3>Skin & Anti-Aging</h3><p>84% saw wrinkle reduction. 78% brighter skin. Cellular-level aging prevention.</p></div>
   </div>
 </section>
 
 <!-- SCIENCE -->
-<section id="science">
-  <div class="science-header">
-    <div class="section-label">The Science</div>
-    <h2 class="section-title">3 Generations of<br><span style="color:var(--cyan)">NO Technology</span></h2>
-    <div class="glow-line"></div>
-    <p class="section-body" style="opacity:1;">Developed by 8 Korean university professors. BIO N:OV is the evolution that fixes everything the first two generations got wrong.</p>
+<section id="science" class="section">
+  <div class="sci-header">
+    <div class="s-label reveal">The Science</div>
+    <h2 class="s-title reveal">3 Generations of<br><span style="color:var(--cyan)">NO Technology</span></h2>
+    <div class="gline reveal"></div>
+    <p class="s-sub reveal">Developed by 8 Korean university professors. BIO N:OV is the evolution that fixes everything the first two generations got wrong.</p>
   </div>
-  <div class="generations">
-    <div class="gen-card">
-      <div class="gen-number">1st Generation</div>
-      <div class="gen-title">Arginine</div>
-      <div class="gen-subtitle">Early NO Supplement</div>
-      <ul class="gen-problems">
-        <li>Requires enzyme to work</li>
-        <li>Unstable in the body</li>
-        <li>Banned for heart patients</li>
-        <li>Low absorption rate</li>
-      </ul>
+  <div class="gen-grid">
+    <div class="gen-card reveal">
+      <div class="gen-gen">1st Generation</div>
+      <div class="gen-name">Arginine</div>
+      <div class="gen-sub">Early NO Supplement</div>
+      <ul class="gen-list"><li>Requires enzyme to work</li><li>Unstable in the body</li><li>Banned for heart patients</li><li>Low absorption rate</li></ul>
     </div>
-    <div class="gen-card">
-      <div class="gen-number">2nd Generation</div>
-      <div class="gen-title">Veg & Fruit Extracts</div>
-      <div class="gen-subtitle">Plant-Based NO</div>
-      <ul class="gen-problems">
-        <li>Side effects: nausea, diarrhea</li>
-        <li>Headaches reported</li>
-        <li>Not suitable for 40+ age</li>
-        <li>Inconsistent results</li>
-      </ul>
+    <div class="gen-card reveal" style="transition-delay:.12s">
+      <div class="gen-gen">2nd Generation</div>
+      <div class="gen-name">Veg & Fruit</div>
+      <div class="gen-sub">Plant-Based NO</div>
+      <ul class="gen-list"><li>Side effects: nausea, diarrhea</li><li>Headaches reported</li><li>Not suitable for 40+ age</li><li>Inconsistent results</li></ul>
     </div>
-    <div class="gen-card featured">
-      <div class="featured-badge">✦ BIO N:OV</div>
-      <div class="gen-number">3rd Generation</div>
-      <div class="gen-title">Microbial Fermentation</div>
-      <div class="gen-subtitle">Patent KACC91554P</div>
-      <ul class="gen-problems">
-        <li>No enzyme needed</li>
-        <li>Zero side effects</li>
-        <li>Works on EVERYONE</li>
-        <li>40-400% more effective</li>
-      </ul>
+    <div class="gen-card best reveal" style="transition-delay:.24s">
+      <div class="gen-tag">✦ BIO N:OV</div>
+      <div class="gen-gen">3rd Generation</div>
+      <div class="gen-name">Microbial<br>Fermentation</div>
+      <div class="gen-sub">Patent KACC91554P</div>
+      <ul class="gen-list"><li>No enzyme needed</li><li>Zero side effects</li><li>Works on EVERYONE</li><li>40–400% more effective</li></ul>
     </div>
   </div>
 </section>
 
 <!-- INGREDIENTS -->
-<section id="ingredients">
-  <div class="section-label">Pure Ingredients</div>
-  <h2 class="section-title">100% Natural.<br><span style="color:var(--cyan)">100% Fermented.</span></h2>
-  <div class="glow-line"></div>
-  <p class="section-body" style="opacity:1;">Four superfoods, naturally fermented using Korea's patented microbial strain for maximum bioavailability and zero synthetic additives.</p>
-  <div class="ingredients-grid">
-    <div class="ingredient-card">
-      <span class="ingredient-emoji">🧄</span>
-      <h3>Fermented Garlic</h3>
-      <p>Promotes anticancer substances, boosts metabolism, removes free radicals to improve immunity.</p>
-    </div>
-    <div class="ingredient-card">
-      <span class="ingredient-emoji">🥬</span>
-      <h3>Fermented Lettuce</h3>
-      <p>β-Carotene + Vitamin C. Controls glucose absorption. Prevents skin aging.</p>
-    </div>
-    <div class="ingredient-card">
-      <span class="ingredient-emoji">🫘</span>
-      <h3>Soybean</h3>
-      <p>Prevents arteriosclerosis, reduces cholesterol. Rich in Vitamin A, B, amino acids.</p>
-    </div>
-    <div class="ingredient-card">
-      <span class="ingredient-emoji">🌱</span>
-      <h3>Soybean Sprouts</h3>
-      <p>Stabilizes insulin, GABA content, polyphenols for blood sugar control and anti-oxidation.</p>
-    </div>
+<section id="ingredients" class="section">
+  <div class="s-label reveal">Pure Ingredients</div>
+  <h2 class="s-title reveal">100% Natural.<br><span style="color:var(--cyan)">100% Fermented.</span></h2>
+  <div class="gline reveal"></div>
+  <div class="ing-grid">
+    <div class="ing-card reveal"><span class="ing-em">🧄</span><h3>Fermented Garlic</h3><p>Anticancer compounds, boosts metabolism, removes free radicals to improve immunity.</p></div>
+    <div class="ing-card reveal" style="transition-delay:.1s"><span class="ing-em">🥬</span><h3>Fermented Lettuce</h3><p>β-Carotene + Vitamin C. Controls glucose absorption. Prevents skin aging.</p></div>
+    <div class="ing-card reveal" style="transition-delay:.2s"><span class="ing-em">🫘</span><h3>Soybean</h3><p>Prevents arteriosclerosis, reduces cholesterol. Rich in Vitamins A, B, and amino acids.</p></div>
+    <div class="ing-card reveal" style="transition-delay:.3s"><span class="ing-em">🌱</span><h3>Soybean Sprouts</h3><p>Stabilizes insulin, GABA content, polyphenols for blood sugar control and antioxidation.</p></div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="testimonials">
-  <div class="section-label">Real Results</div>
-  <h2 class="section-title">What Our Customers<br><span style="color:var(--cyan)">Are Saying</span></h2>
-  <div class="glow-line" style="opacity:1;"></div>
-  <div style="overflow:hidden; margin: 0 -4rem;">
-    <div class="testimonials-track" id="testimonialsTrack"></div>
+<section id="testimonials" class="section">
+  <div class="ttest-header">
+    <div class="s-label reveal">Real Results</div>
+    <h2 class="s-title reveal">What Our Customers<br><span style="color:var(--cyan)">Are Saying</span></h2>
+    <div class="gline reveal"></div>
+  </div>
+  <div class="ttrack-wrap">
+    <div class="ttrack" id="ttrack"></div>
   </div>
 </section>
 
 <!-- CTA -->
-<section id="cta">
-  <canvas id="cta-canvas"></canvas>
-  <div class="cta-content">
-    <div class="section-label" style="opacity:1;">Limited Stock — Singapore</div>
-    <h2 class="cta-title">Start Feeling Better<br>In <span style="color:var(--cyan)">30 Minutes</span></h2>
-    <p class="cta-sub">
-      Join thousands who've already made the switch to 3rd Generation NO technology.
-      GMP Certified. US Patented. Developed by 8 Korean professors.
-    </p>
-    <div class="cta-buttons">
-      <a href="https://biogreenelixirs.com" class="btn-glow">Order Now — biogreenelixirs.com</a>
+<section id="cta" class="section">
+  <div class="cta-orb1"></div>
+  <div class="cta-orb2"></div>
+  <div class="cta-inner reveal">
+    <div class="s-label" style="opacity:1">Limited Stock — Singapore</div>
+    <h2 class="cta-title">Start Feeling Better<br>In <em>30 Minutes</em></h2>
+    <p class="cta-sub">Join thousands who've switched to 3rd Generation NO technology. GMP Certified. US Patented. Developed by 8 Korean professors. Zero side effects.</p>
+    <a href="https://biogreenelixirs.com" class="btn-glow" style="font-size:1.1rem;padding:1.2rem 3.5rem">Order Now — biogreenelixirs.com</a>
+    <div class="trust-row">
+      <div class="trust-item"><em>✓</em>GMP Certified Korea</div>
+      <div class="trust-item"><em>✓</em>US Patent</div>
+      <div class="trust-item"><em>✓</em>Zero Side Effects</div>
+      <div class="trust-item"><em>✓</em>Free Shipping SG</div>
+      <div class="trust-item"><em>✓</em>30-Day Guarantee</div>
     </div>
-    <div class="trust-badges">
-      <div class="trust-badge"><span>✓</span><span>GMP Certified Korea</span></div>
-      <div class="trust-badge"><span>✓</span><span>US Patent</span></div>
-      <div class="trust-badge"><span>✓</span><span>Zero Side Effects</span></div>
-      <div class="trust-badge"><span>✓</span><span>Free Shipping SG</span></div>
-      <div class="trust-badge"><span>✓</span><span>30-Day Guarantee</span></div>
-    </div>
-    <p style="font-size:0.7rem; color:rgba(224,230,240,0.25); margin-top:2rem; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7;">
-      *These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare provider before use. Results may vary.
-    </p>
+    <p class="disclaimer">*These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare provider before use. Results may vary.</p>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div>
-    <div class="footer-logo">BIO<span>N:OV</span> | BIO GREEN ELIXIRS</div>
-    <p style="margin-top:0.5rem;">© 2026 Bio Green Elixirs. Singapore. ACRA Registered.<br>info@biogreenelixirs.com</p>
-  </div>
-  <ul class="footer-links">
-    <li><a href="#">Product</a></li>
-    <li><a href="#">Science</a></li>
-    <li><a href="#">Affiliates</a></li>
-    <li><a href="#">Contact</a></li>
-    <li><a href="#">Privacy</a></li>
-  </ul>
+  <div><div class="f-logo">BIO<em>N:OV</em> | BIO GREEN ELIXIRS</div><p>© 2026 Bio Green Elixirs. Singapore. ACRA Registered. info@biogreenelixirs.com</p></div>
+  <ul class="f-links"><li><a href="#">Product</a></li><li><a href="#">Science</a></li><li><a href="#">Affiliates</a></li><li><a href="#">Contact</a></li></ul>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-gsap.registerPlugin(ScrollTrigger);
-
-/* ══════════════════════════════════════
-   HERO PARTICLE FIELD — Three.js
-══════════════════════════════════════ */
-(function() {
+/* ══ HERO PARTICLE FIELD ══ */
+(function(){
   const canvas = document.getElementById('hero-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
+  const W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(W, H);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.z = 5;
+  const camera = new THREE.PerspectiveCamera(65, W/H, 0.1, 1000);
+  camera.position.z = 4;
 
-  // Particles
-  const count = 2000;
+  /* big bright visible particles */
+  const N = 1200;
   const geo = new THREE.BufferGeometry();
-  const positions = new Float32Array(count * 3);
-  const colors = new Float32Array(count * 3);
-
-  for (let i = 0; i < count; i++) {
-    positions[i * 3]     = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+  const pos = new Float32Array(N*3);
+  const col = new Float32Array(N*3);
+  const sizes = new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const r = 2 + Math.random()*6;
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos(2*Math.random()-1);
+    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
+    pos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+    pos[i*3+2] = r*Math.cos(phi)-2;
+    sizes[i] = 0.04 + Math.random()*0.08;
     const t = Math.random();
-    colors[i * 3]     = t * 0.0 + (1-t) * 0.0;
-    colors[i * 3 + 1] = t * 0.86 + (1-t) * 0.66;
-    colors[i * 3 + 2] = t * 1.0 + (1-t) * 0.59;
+    col[i*3]   = t*0 + (1-t)*0.42;
+    col[i*3+1] = t*0.86 + (1-t)*0.7;
+    col[i*3+2] = 1;
   }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col,3));
+  geo.setAttribute('size', new THREE.BufferAttribute(sizes,1));
 
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const mat = new THREE.PointsMaterial({size:0.06,vertexColors:true,transparent:true,opacity:0.85,sizeAttenuation:true});
+  scene.add(new THREE.Points(geo, mat));
 
-  const mat = new THREE.PointsMaterial({
-    size: 0.025,
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.7,
-    sizeAttenuation: true,
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=(e.clientX/W-.5)*.4;my=(e.clientY/H-.5)*.4;});
+  window.addEventListener('resize',()=>{
+    renderer.setSize(innerWidth,innerHeight);
+    camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   });
-
-  const particles = new THREE.Points(geo, mat);
-  scene.add(particles);
-
-  // Mouse parallax
-  let mouseX = 0, mouseY = 0;
-  document.addEventListener('mousemove', e => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
-  });
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-
-  const clock = new THREE.Clock();
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-    particles.rotation.y = t * 0.04 + mouseX;
-    particles.rotation.x = t * 0.02 - mouseY;
-    renderer.render(scene, camera);
-  }
-  animate();
+  const clk = new THREE.Clock();
+  const pts = scene.children[0];
+  (function loop(){
+    requestAnimationFrame(loop);
+    const t = clk.getElapsedTime();
+    pts.rotation.y = t*0.06 + mx;
+    pts.rotation.x = t*0.03 - my;
+    renderer.render(scene,camera);
+  })();
 })();
 
-/* ══════════════════════════════════════
-   PRODUCT 3D BOX — Three.js
-══════════════════════════════════════ */
-(function() {
+/* ══ PRODUCT 3D BOX ══ */
+(function(){
   const canvas = document.getElementById('product-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(380, 380);
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(400,480);
+  renderer.shadowMap.enabled = true;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-  camera.position.set(0, 0, 5);
+  const camera = new THREE.PerspectiveCamera(38, 400/480, 0.1, 100);
+  camera.position.set(0, 0.3, 5.5);
 
-  // Lighting
-  const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-  scene.add(ambient);
-  const dirLight = new THREE.DirectionalLight(0x00dcff, 2);
-  dirLight.position.set(3, 5, 5);
-  scene.add(dirLight);
-  const dirLight2 = new THREE.DirectionalLight(0x00a896, 1);
-  dirLight2.position.set(-3, -2, 2);
-  scene.add(dirLight2);
-  const pointLight = new THREE.PointLight(0x00dcff, 1.5, 10);
-  pointLight.position.set(0, 3, 3);
-  scene.add(pointLight);
+  /* lights */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  const key = new THREE.DirectionalLight(0x00dcff, 3);
+  key.position.set(4, 6, 6); scene.add(key);
+  const fill = new THREE.DirectionalLight(0x00b4a0, 1.5);
+  fill.position.set(-4, -2, 3); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0x6c3fff, 1);
+  rim.position.set(0, -6, -4); scene.add(rim);
+  const pt = new THREE.PointLight(0x00dcff, 3, 12);
+  pt.position.set(2, 3, 4); scene.add(pt);
 
-  // Create box texture using canvas
-  function makeTexture(face) {
+  /* FRONT face texture */
+  function makeFace(type){
     const c = document.createElement('canvas');
-    c.width = 512; c.height = 512;
+    c.width=512; c.height=680;
     const ctx = c.getContext('2d');
 
-    if (face === 'front') {
-      // White background
-      ctx.fillStyle = '#f0f4ff';
-      ctx.fillRect(0, 0, 512, 512);
+    if(type==='front'){
+      /* white base */
+      ctx.fillStyle='#f2f6ff'; ctx.fillRect(0,0,512,680);
 
-      // Blue side strip
-      const grad = ctx.createLinearGradient(0, 0, 160, 512);
-      grad.addColorStop(0, '#0066cc');
-      grad.addColorStop(1, '#00aadd');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 140, 512);
+      /* left blue strip */
+      const lg = ctx.createLinearGradient(0,0,0,680);
+      lg.addColorStop(0,'#0055cc'); lg.addColorStop(1,'#0088dd');
+      ctx.fillStyle=lg; ctx.fillRect(0,0,110,680);
 
-      // Large V shape
-      ctx.save();
-      ctx.translate(100, 80);
-      const vGrad = ctx.createLinearGradient(0, 0, 250, 350);
-      vGrad.addColorStop(0, '#00DCFF');
-      vGrad.addColorStop(0.5, '#0088cc');
-      vGrad.addColorStop(1, '#005599');
-      ctx.fillStyle = vGrad;
-      ctx.font = 'bold 320px Arial';
-      ctx.fillText('V', 0, 300);
-      ctx.restore();
+      /* big V */
+      const vg = ctx.createLinearGradient(80,0,360,500);
+      vg.addColorStop(0,'#00DCFF'); vg.addColorStop(.4,'#0088cc'); vg.addColorStop(1,'#004488');
+      ctx.fillStyle=vg;
+      ctx.font='bold 440px Georgia,serif';
+      ctx.fillText('V',70,440);
 
-      // Brand name
-      ctx.fillStyle = '#003399';
-      ctx.font = 'bold 42px Arial';
-      ctx.fillText('바이오엔:오브이', 150, 380);
-      ctx.font = 'bold 30px Arial';
-      ctx.fillText('BION:OV', 165, 420);
+      /* brand text */
+      ctx.fillStyle='#002277';
+      ctx.font='bold 38px Arial'; ctx.textAlign='center';
+      ctx.fillText('바이오엔:오브이',280,530);
+      ctx.font='bold 28px Arial';
+      ctx.fillText('BIO N:OV',280,570);
+      ctx.font='16px Arial'; ctx.fillStyle='#446';
+      ctx.fillText('500 mg × 60정 (30g)',280,600);
 
-      // Sub text
-      ctx.fillStyle = '#555';
-      ctx.font = '18px Arial';
-      ctx.fillText('500 mg × 60정(30g)', 160, 455);
+      /* GMP badge */
+      ctx.strokeStyle='#0055cc'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.arc(450,630,26,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle='#0055cc'; ctx.font='bold 13px Arial';
+      ctx.fillText('GMP',450,635);
 
-      // GMP badge
-      ctx.strokeStyle = '#0066cc';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(200, 490, 20, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.fillStyle = '#0066cc';
-      ctx.font = 'bold 12px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('GMP', 200, 494);
-      ctx.textAlign = 'left';
+      /* top accent line */
+      ctx.fillStyle='#00DCFF'; ctx.fillRect(110,0,402,4);
 
-      // Bzzworld logo area
-      ctx.fillStyle = '#0066cc';
-      ctx.font = 'bold 16px Arial';
-      ctx.fillText('비즈윌드코리아', 150, 160);
-
-    } else if (face === 'side') {
-      const g = ctx.createLinearGradient(0, 0, 512, 512);
-      g.addColorStop(0, '#0055bb');
-      g.addColorStop(1, '#003388');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, 512, 512);
-      ctx.fillStyle = 'rgba(255,255,255,0.15)';
-      ctx.font = 'bold 50px Arial';
-      for (let y = 60; y < 512; y += 80) {
-        ctx.fillText('BION:OV  바이오엔', 20, y);
+      ctx.textAlign='left';
+    } else if(type==='side'){
+      const sg = ctx.createLinearGradient(0,0,512,680);
+      sg.addColorStop(0,'#004dbb'); sg.addColorStop(1,'#002877');
+      ctx.fillStyle=sg; ctx.fillRect(0,0,512,680);
+      ctx.fillStyle='rgba(0,220,255,.08)';
+      for(let y=0;y<700;y+=90){
+        ctx.font='bold 42px Arial'; ctx.fillText('BIO N:OV  바이오엔',10,y);
       }
+      ctx.strokeStyle='rgba(0,220,255,.15)';
+      ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(0,340); ctx.lineTo(512,340); ctx.stroke();
     } else {
-      ctx.fillStyle = '#e8eeff';
-      ctx.fillRect(0, 0, 512, 512);
-      ctx.fillStyle = '#ccd';
-      ctx.font = '20px Arial';
-      ctx.fillText('아연함유', 20, 50);
-      const g2 = ctx.createLinearGradient(0, 100, 512, 400);
-      g2.addColorStop(0, '#0066cc33');
-      g2.addColorStop(1, '#00DCFF22');
-      ctx.fillStyle = g2;
-      ctx.fillRect(0, 100, 512, 350);
+      ctx.fillStyle='#e6ecff'; ctx.fillRect(0,0,512,680);
+      const bg = ctx.createLinearGradient(0,0,512,680);
+      bg.addColorStop(0,'rgba(0,100,200,.08)'); bg.addColorStop(1,'rgba(0,220,255,.05)');
+      ctx.fillStyle=bg; ctx.fillRect(0,0,512,680);
+      ctx.fillStyle='rgba(0,80,180,.4)'; ctx.font='bold 20px Arial'; ctx.textAlign='center';
+      ctx.fillText('아연 함유 건강기능식품',256,80);
+      ctx.font='14px Arial'; ctx.fillStyle='rgba(0,40,120,.35)';
+      ctx.fillText('Zinc-containing health functional food',256,110);
     }
-
     return new THREE.CanvasTexture(c);
   }
 
-  const texFront = makeTexture('front');
-  const texSide  = makeTexture('side');
-  const texBack  = makeTexture('back');
-
-  const materials = [
-    new THREE.MeshStandardMaterial({ map: texSide }),   // right
-    new THREE.MeshStandardMaterial({ map: texSide }),   // left
-    new THREE.MeshStandardMaterial({ color: 0xf0f4ff }), // top
-    new THREE.MeshStandardMaterial({ color: 0xe0e8ff }), // bottom
-    new THREE.MeshStandardMaterial({ map: texFront }), // front
-    new THREE.MeshStandardMaterial({ map: texBack }),  // back
+  const tf = makeFace('front'), ts = makeFace('side'), tb = makeFace('back');
+  const mats = [
+    new THREE.MeshStandardMaterial({map:ts, roughness:.15, metalness:.1}),
+    new THREE.MeshStandardMaterial({map:ts, roughness:.15, metalness:.1}),
+    new THREE.MeshStandardMaterial({color:0xdde6ff, roughness:.2}),
+    new THREE.MeshStandardMaterial({color:0xc8d8ff, roughness:.3}),
+    new THREE.MeshStandardMaterial({map:tf, roughness:.08, metalness:.05}),
+    new THREE.MeshStandardMaterial({map:tb, roughness:.2}),
   ];
-
-  const geometry = new THREE.BoxGeometry(2, 2.7, 1.2);
-  const box = new THREE.Mesh(geometry, materials);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(2.2, 3, 1.4), mats);
   scene.add(box);
 
-  // Glow sphere behind box
-  const glowGeo = new THREE.SphereGeometry(1.8, 32, 32);
-  const glowMat = new THREE.MeshBasicMaterial({
-    color: 0x00dcff,
-    transparent: true,
-    opacity: 0.04,
-  });
-  scene.add(new THREE.Mesh(glowGeo, glowMat));
+  /* subtle glow plane behind box */
+  const gp = new THREE.Mesh(
+    new THREE.PlaneGeometry(6,8),
+    new THREE.MeshBasicMaterial({color:0x00dcff, transparent:true, opacity:.025, side:THREE.DoubleSide})
+  );
+  gp.position.z = -1.5;
+  scene.add(gp);
 
-  // Scroll-driven rotation
-  let scrollProgress = 0;
-  window.addEventListener('scroll', () => {
-    scrollProgress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-  });
-
-  const clock = new THREE.Clock();
-  let autoRotate = true;
-
-  canvas.addEventListener('mouseenter', () => autoRotate = false);
-  canvas.addEventListener('mouseleave', () => autoRotate = true);
-
-  let manualX = 0, manualY = 0;
-  canvas.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    manualX = ((e.clientX - rect.left) / rect.width - 0.5) * Math.PI;
-    manualY = ((e.clientY - rect.top) / rect.height - 0.5) * Math.PI;
+  /* interaction */
+  let autoRot=true, mxp=0, myp=0;
+  canvas.addEventListener('mouseenter',()=>autoRot=false);
+  canvas.addEventListener('mouseleave',()=>{autoRot=true;});
+  canvas.addEventListener('mousemove',e=>{
+    const r=canvas.getBoundingClientRect();
+    mxp=((e.clientX-r.left)/r.width-.5)*Math.PI*.9;
+    myp=((e.clientY-r.top)/r.height-.5)*Math.PI*.6;
   });
 
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-    if (autoRotate) {
-      box.rotation.y = t * 0.5 + scrollProgress * Math.PI * 2;
-      box.rotation.x = Math.sin(t * 0.3) * 0.15;
+  let scrollP=0;
+  window.addEventListener('scroll',()=>scrollP=scrollY/(document.body.scrollHeight-innerHeight));
+
+  const clk=new THREE.Clock();
+  (function loop(){
+    requestAnimationFrame(loop);
+    const t=clk.getElapsedTime();
+    if(autoRot){
+      box.rotation.y=t*.45+scrollP*Math.PI;
+      box.rotation.x=Math.sin(t*.25)*.12;
     } else {
-      box.rotation.y += (manualX - box.rotation.y) * 0.1;
-      box.rotation.x += (manualY - box.rotation.x) * 0.1;
+      box.rotation.y+=(mxp-box.rotation.y)*.08;
+      box.rotation.x+=(myp-box.rotation.x)*.08;
     }
-    pointLight.position.x = Math.sin(t * 0.7) * 3;
-    pointLight.position.y = Math.cos(t * 0.5) * 2;
-    renderer.render(scene, camera);
-  }
-  animate();
+    pt.position.x=Math.sin(t*.8)*3;
+    pt.position.y=Math.cos(t*.5)*2;
+    pt.intensity=2.5+Math.sin(t*1.5)*.8;
+    renderer.render(scene,camera);
+  })();
 })();
 
-/* ══════════════════════════════════════
-   CTA PARTICLE CANVAS
-══════════════════════════════════════ */
-(function() {
-  const canvas = document.getElementById('cta-canvas');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-  const section = document.getElementById('cta');
+/* ══ INTERSECTION OBSERVER — SCROLL REVEALS ══ */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-  function resize() {
-    const w = section.offsetWidth;
-    const h = section.offsetHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
+/* ══ STAT COUNTER ══ */
+const statObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    el.classList.add('visible');
+    const numEl = el.querySelector('.stat-num');
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix;
+    const dur = 2200, start = performance.now();
+    (function tick(now){
+      const p = Math.min((now-start)/dur, 1);
+      const ease = 1-Math.pow(1-p,4);
+      numEl.textContent = Math.round(ease*target) + suffix;
+      if(p<1) requestAnimationFrame(tick);
+    })(start);
+    statObs.unobserve(el);
+  });
+},{threshold:.4});
+document.querySelectorAll('.stat-block').forEach(el=>statObs.observe(el));
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-  camera.position.z = 4;
-
-  const count = 800;
-  const geo = new THREE.BufferGeometry();
-  const pos = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    pos[i*3]   = (Math.random()-0.5)*15;
-    pos[i*3+1] = (Math.random()-0.5)*10;
-    pos[i*3+2] = (Math.random()-0.5)*10;
-  }
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const mat = new THREE.PointsMaterial({ size: 0.03, color: 0x00dcff, transparent: true, opacity: 0.5 });
-  scene.add(new THREE.Points(geo, mat));
-
-  resize();
-  window.addEventListener('resize', resize);
-
-  const clock = new THREE.Clock();
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-    scene.children[0].rotation.y = t * 0.08;
-    scene.children[0].rotation.x = t * 0.04;
-    renderer.render(scene, camera);
-  }
-  animate();
-})();
-
-/* ══════════════════════════════════════
-   GSAP HERO ANIMATIONS
-══════════════════════════════════════ */
-const heroTl = gsap.timeline({ delay: 0.3 });
-heroTl
-  .to('.hero-badge', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
-  .to('.hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, '-=0.4')
-  .to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-  .to('.hero-buttons', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4');
-
-/* ══════════════════════════════════════
-   STATS COUNTER ANIMATION
-══════════════════════════════════════ */
-ScrollTrigger.batch('.stat-item', {
-  onEnter: elements => {
-    gsap.to(elements, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'power3.out' });
-    elements.forEach(el => {
-      const numEl = el.querySelector('.stat-number');
-      const target = parseInt(numEl.dataset.target);
-      const suffix = numEl.dataset.suffix;
-      let current = 0;
-      const duration = 2000;
-      const start = performance.now();
-      function update(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 4);
-        current = Math.round(eased * target);
-        numEl.textContent = current + suffix;
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      requestAnimationFrame(update);
-    });
-  },
-  start: 'top 85%',
-});
-
-/* ══════════════════════════════════════
-   PROBLEM SECTION SCROLL ANIMATIONS
-══════════════════════════════════════ */
-gsap.to('.section-label', {
-  opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-  scrollTrigger: { trigger: '#problem', start: 'top 80%' }
-});
-gsap.to('#problem .section-title', {
-  opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1,
-  scrollTrigger: { trigger: '#problem', start: 'top 80%' }
-});
-gsap.to('#problem .glow-line', {
-  opacity: 1, scaleX: 1, duration: 0.8, ease: 'power3.out', delay: 0.2,
-  scrollTrigger: { trigger: '#problem', start: 'top 75%' }
-});
-gsap.to('#problem .section-body', {
-  opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.3,
-  scrollTrigger: { trigger: '#problem', start: 'top 75%' }
-});
-gsap.to('.no-decline-chart', {
-  opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-  scrollTrigger: { trigger: '.no-decline-chart', start: 'top 85%' }
-});
-ScrollTrigger.batch('.problem-card', {
-  onEnter: el => gsap.to(el, { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, ease: 'back.out(1.5)' }),
-  start: 'top 85%',
-});
-
-/* ══════════════════════════════════════
-   PRODUCT SECTION SCROLL
-══════════════════════════════════════ */
-gsap.to('.product-3d-container', {
-  opacity: 1, x: 0, duration: 1.2, ease: 'power3.out',
-  scrollTrigger: { trigger: '#product', start: 'top 75%' }
-});
-gsap.from('.product-3d-container', { x: -80 });
-
-gsap.to('.product-info', {
-  opacity: 1, x: 0, duration: 1.2, ease: 'power3.out', delay: 0.2,
-  scrollTrigger: { trigger: '#product', start: 'top 75%' }
-});
-gsap.from('.product-info', { x: 80 });
-
-/* ══════════════════════════════════════
-   BENEFITS SCROLL
-══════════════════════════════════════ */
-gsap.to('#benefits .section-label', {
-  opacity: 1, y: 0, duration: 0.8,
-  scrollTrigger: { trigger: '#benefits', start: 'top 80%' }
-});
-gsap.to('#benefits .section-title', {
-  opacity: 1, y: 0, duration: 0.9, delay: 0.1,
-  scrollTrigger: { trigger: '#benefits', start: 'top 80%' }
-});
-gsap.to('#benefits .glow-line', {
-  opacity: 1, duration: 0.8, delay: 0.2,
-  scrollTrigger: { trigger: '#benefits', start: 'top 80%' }
-});
-ScrollTrigger.batch('.benefit-card', {
-  onEnter: el => gsap.to(el, {
-    opacity: 1, y: 0, scale: 1, stagger: 0.12,
-    duration: 0.9, ease: 'back.out(1.7)'
-  }),
-  start: 'top 85%',
-});
-
-/* ══════════════════════════════════════
-   SCIENCE SCROLL
-══════════════════════════════════════ */
-gsap.to('#science .section-label', {
-  opacity: 1, y: 0, duration: 0.8,
-  scrollTrigger: { trigger: '#science', start: 'top 80%' }
-});
-gsap.to('#science .section-title', {
-  opacity: 1, y: 0, duration: 0.9, delay: 0.1,
-  scrollTrigger: { trigger: '#science', start: 'top 80%' }
-});
-gsap.to('#science .glow-line', {
-  opacity: 1, duration: 0.8, delay: 0.2,
-  scrollTrigger: { trigger: '#science', start: 'top 80%' }
-});
-ScrollTrigger.batch('.gen-card', {
-  onEnter: el => gsap.to(el, { opacity: 1, y: 0, stagger: 0.2, duration: 1, ease: 'power3.out' }),
-  start: 'top 85%',
-});
-
-/* ══════════════════════════════════════
-   INGREDIENTS SCROLL
-══════════════════════════════════════ */
-gsap.to('#ingredients .section-label', {
-  opacity: 1, y: 0, duration: 0.8,
-  scrollTrigger: { trigger: '#ingredients', start: 'top 80%' }
-});
-gsap.to('#ingredients .section-title', {
-  opacity: 1, y: 0, duration: 0.9, delay: 0.1,
-  scrollTrigger: { trigger: '#ingredients', start: 'top 80%' }
-});
-gsap.to('#ingredients .glow-line', {
-  opacity: 1, duration: 0.8, delay: 0.2,
-  scrollTrigger: { trigger: '#ingredients', start: 'top 80%' }
-});
-ScrollTrigger.batch('.ingredient-card', {
-  onEnter: el => gsap.to(el, {
-    opacity: 1, scale: 1, rotateY: 0,
-    stagger: 0.15, duration: 1, ease: 'back.out(1.5)'
-  }),
-  start: 'top 85%',
-});
-
-/* ══════════════════════════════════════
-   CTA SCROLL
-══════════════════════════════════════ */
-gsap.to('.cta-content', {
-  opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-  scrollTrigger: { trigger: '#cta', start: 'top 75%' }
-});
-gsap.from('.cta-content', { y: 60 });
-
-/* ══════════════════════════════════════
-   TESTIMONIALS DATA
-══════════════════════════════════════ */
-const testimonials = [
-  { name: 'Sarah L.', loc: 'Singapore, 54', stars: 5, text: '"My blood pressure was 165/105 for 3 years. After 2 weeks on BIO N:OV my reading is 128/82. My doctor is shocked."' },
-  { name: 'Michael T.', loc: 'Australia, 61', stars: 5, text: '"I have more energy at 61 than I did at 45. This stuff is real. Korean science is no joke."' },
-  { name: 'Linda C.', loc: 'Malaysia, 49', stars: 5, text: '"I was sceptical but my friend kept pushing me to try it. Within 30 minutes I actually felt a difference. My skin is also noticeably clearer."' },
-  { name: 'David K.', loc: 'USA, 58', stars: 5, text: '"Was on two blood pressure medications. Now on one and my doctor says I might come off the second soon. BIO N:OV every day."' },
-  { name: 'Mei F.', loc: 'Singapore, 52', stars: 5, text: '"The energy boost is real. I used to crash by 3pm every day. Now I am active all day. And my wrinkles — honestly 30% better."' },
-  { name: 'James W.', loc: 'UK, 66', stars: 5, text: '"My father had a stroke. I was terrified. BIO N:OV gave me peace of mind and my numbers back in range. Worth every penny."' },
-  { name: 'Rachel P.', loc: 'Philippines, 45', stars: 5, text: '"I was diagnosed pre-diabetic. Blood sugar dropped noticeably in my first month. Paired with better diet — incredible results."' },
-  { name: 'Thomas N.', loc: 'Singapore, 57', stars: 5, text: '"Tried everything — arginine, beet root powder, you name it. Nothing touched BIO N:OV. The difference is night and day."' },
+/* ══ TESTIMONIALS ══ */
+const reviews=[
+  {n:'Sarah L.',l:'Singapore, 54',s:5,t:'"My blood pressure was 165/105 for 3 years. After 2 weeks on BIO N:OV my reading is 128/82. My doctor is shocked."'},
+  {n:'Michael T.',l:'Australia, 61',s:5,t:'"I have more energy at 61 than I did at 45. This stuff is real. Korean science is no joke."'},
+  {n:'Linda C.',l:'Malaysia, 49',s:5,t:'"Within 30 minutes I actually felt a difference. My skin is also noticeably clearer. I\'m a convert."'},
+  {n:'David K.',l:'USA, 58',s:5,t:'"Was on two BP medications. Now on one and my doctor says I might come off the second soon."'},
+  {n:'Mei F.',l:'Singapore, 52',s:5,t:'"The energy boost is real. I used to crash by 3pm. Now active all day. Wrinkles — honestly 30% better."'},
+  {n:'James W.',l:'UK, 66',s:5,t:'"My father had a stroke. I was terrified. BIO N:OV gave me peace of mind and my numbers back in range."'},
+  {n:'Rachel P.',l:'Philippines, 45',s:5,t:'"I was diagnosed pre-diabetic. Blood sugar dropped noticeably in my first month. Incredible results."'},
+  {n:'Thomas N.',l:'Singapore, 57',s:5,t:'"Tried everything — arginine, beet root, you name it. Nothing touched BIO N:OV. Night and day difference."'},
 ];
-
-const dupeTestimonials = [...testimonials, ...testimonials];
-const track = document.getElementById('testimonialsTrack');
-dupeTestimonials.forEach(t => {
-  track.innerHTML += `
-    <div class="testimonial-card">
-      <div class="testimonial-stars">${'★'.repeat(t.stars)}</div>
-      <p class="testimonial-text">${t.text}</p>
-      <div class="testimonial-author">
-        <div class="author-avatar">${t.name[0]}</div>
-        <div class="author-info">
-          <strong>${t.name}</strong>
-          <span>${t.loc}</span>
-        </div>
-      </div>
-    </div>`;
+const tr = document.getElementById('ttrack');
+[...reviews,...reviews].forEach(r=>{
+  tr.innerHTML+=`<div class="tcard"><div class="tstars">${'★'.repeat(r.s)}</div><p class="ttext">${r.t}</p><div class="tauthor"><div class="tavatar">${r.n[0]}</div><div><span class="tname">${r.n}</span><span class="tloc">${r.l}</span></div></div></div>`;
 });
-
-/* ══════════════════════════════════════
-   SECTION LABEL + TITLE INIT
-══════════════════════════════════════ */
-gsap.set(['.section-label', '.section-title', '.section-body', '.glow-line'], { y: 30 });
 </script>
 </body>
 </html>
