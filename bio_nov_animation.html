@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; width: 1920px; height: 1080px; }
+  canvas#c { display: block; width: 1920px; height: 1080px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   BIO N:OV — Cinematic 3D Product Reveal
+   10 seconds · 1920×1080 · 60fps
+═══════════════════════════════════════════ */
+
+const W = 1920, H = 1080;
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.outputEncoding = THREE.sRGBEncoding;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, W / H, 0.01, 200);
+camera.position.set(0, 0, 9);
+camera.lookAt(0, 0, 0);
+
+/* ── BACKGROUND GRADIENT SHADER ── */
+const bgGeo = new THREE.PlaneGeometry(40, 22);
+const bgMat = new THREE.ShaderMaterial({
+  uniforms: { time: { value: 0 } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform float time;
+    varying vec2 vUv;
+    vec3 pal(float t, vec3 a, vec3 b, vec3 c, vec3 d){
+      return a+b*cos(6.28318*(c*t+d));
+    }
+    void main(){
+      float x = vUv.x, y = vUv.y;
+      vec3 c1 = vec3(0.03, 0.04, 0.22);  // deep blue left
+      vec3 c2 = vec3(0.18, 0.02, 0.38);  // purple mid
+      vec3 c3 = vec3(0.35, 0.02, 0.28);  // magenta right
+      vec3 col = mix(c1, c2, smoothstep(0.0, 0.5, x));
+      col = mix(col, c3, smoothstep(0.4, 1.0, x));
+      // vertical: darker bottom, lighter top
+      col *= (0.6 + 0.6 * y);
+      // subtle animated shimmer
+      float shimmer = sin(x*8.0 + time*0.3) * sin(y*6.0 + time*0.2) * 0.015;
+      col += shimmer;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `,
+  depthWrite: false, side: THREE.FrontSide,
+});
+const bgMesh = new THREE.Mesh(bgGeo, bgMat);
+bgMesh.position.z = -15;
+scene.add(bgMesh);
+
+/* ── LIGHTS ── */
+const ambient = new THREE.AmbientLight(0x223366, 0.5);
+scene.add(ambient);
+
+const keyLight = new THREE.DirectionalLight(0x88ccff, 3.5);
+keyLight.position.set(5, 8, 8);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x6644ff, 1.5);
+fillLight.position.set(-6, -2, 4);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0xff44aa, 1.2);
+rimLight.position.set(2, -6, -5);
+scene.add(rimLight);
+
+const blueGlow = new THREE.PointLight(0x0088ff, 4, 18);
+blueGlow.position.set(0, -2, 3);
+scene.add(blueGlow);
+
+const pinkGlow = new THREE.PointLight(0xff44cc, 2, 12);
+pinkGlow.position.set(4, 2, 2);
+scene.add(pinkGlow);
+
+/* ── BOX TEXTURE ── */
+function makeBoxFront() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 720;
+  const ctx = c.getContext('2d');
+
+  // white background
+  ctx.fillStyle = '#f5f8ff'; ctx.fillRect(0, 0, 512, 720);
+
+  // left blue vertical stripe
+  const stripeGrad = ctx.createLinearGradient(0, 0, 0, 720);
+  stripeGrad.addColorStop(0, '#1a4ccc');
+  stripeGrad.addColorStop(1, '#0088dd');
+  ctx.fillStyle = stripeGrad; ctx.fillRect(0, 0, 80, 720);
+
+  // top blue band
+  ctx.fillStyle = '#1a4ccc'; ctx.fillRect(80, 0, 432, 12);
+
+  // V logo — giant, gradient blue
+  const vGrad = ctx.createLinearGradient(60, 60, 420, 500);
+  vGrad.addColorStop(0, '#44aaff');
+  vGrad.addColorStop(0.3, '#1166dd');
+  vGrad.addColorStop(0.7, '#0044bb');
+  vGrad.addColorStop(1, '#002299');
+  ctx.fillStyle = vGrad;
+  ctx.font = 'bold 500px Arial Black';
+  ctx.fillText('V', 50, 520);
+
+  // subtle V shadow
+  ctx.shadowColor = 'rgba(0,60,200,0.4)';
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetX = 4;
+  ctx.shadowOffsetY = 4;
+  ctx.fillStyle = vGrad;
+  ctx.fillText('V', 50, 520);
+  ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+
+  // top logo area
+  ctx.fillStyle = '#003399';
+  ctx.font = 'bold 18px Arial';
+  ctx.fillText('비즈윌드 코리아', 100, 45);
+
+  // circular logo mark
+  ctx.strokeStyle = '#003399'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(90, 38, 14, 0, Math.PI * 2); ctx.stroke();
+  ctx.font = 'bold 14px Arial'; ctx.fillStyle = '#003399';
+  ctx.textAlign = 'center'; ctx.fillText('비', 90, 43); ctx.textAlign = 'left';
+
+  // brand name
+  ctx.fillStyle = '#001a88';
+  ctx.font = 'bold 36px Arial';
+  ctx.fillText('바이오 엔:오브이', 100, 580);
+
+  ctx.font = 'bold 28px Arial Black';
+  ctx.fillStyle = '#002299';
+  ctx.fillText('BIO N:OV', 100, 618);
+
+  // subtitle Korean
+  ctx.font = '13px Arial'; ctx.fillStyle = '#334477';
+  ctx.fillText('경쟁력인 연구개발과 철저한 품질관리로 만성', 100, 642);
+
+  // dosage
+  ctx.font = '12px Arial'; ctx.fillStyle = '#445566';
+  ctx.fillText('500 mg × 60 Tablets (30 g)', 100, 662);
+
+  // bottom brand
+  ctx.font = 'bold 15px Arial'; ctx.fillStyle = '#003399';
+  ctx.fillText('이앤철유', 100, 695);
+
+  // GMP badge circle 1
+  const cx1 = 380, cy1 = 680;
+  ctx.strokeStyle = '#0044aa'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cx1, cy1, 22, 0, Math.PI * 2); ctx.stroke();
+  ctx.font = 'bold 9px Arial'; ctx.fillStyle = '#0044aa';
+  ctx.textAlign = 'center';
+  ctx.fillText('건강', cx1, cy1 - 6);
+  ctx.fillText('기능식품', cx1, cy1 + 5);
+  ctx.fillText('인증', cx1, cy1 + 16);
+
+  // GMP badge circle 2
+  const cx2 = 440, cy2 = 680;
+  ctx.strokeStyle = '#0044aa';
+  ctx.beginPath(); ctx.arc(cx2, cy2, 22, 0, Math.PI * 2); ctx.stroke();
+  ctx.font = 'bold 11px Arial'; ctx.fillStyle = '#0044aa';
+  ctx.fillText('GMP', cx2, cy2 + 4);
+  ctx.textAlign = 'left';
+
+  return new THREE.CanvasTexture(c);
+}
+
+function makeBoxSide() {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 720;
+  const ctx = c.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, 256, 720);
+  g.addColorStop(0, '#1a4ccc'); g.addColorStop(1, '#0066bb');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 256, 720);
+  ctx.fillStyle = 'rgba(255,255,255,0.10)';
+  ctx.font = 'bold 28px Arial';
+  for (let y = 50; y < 720; y += 70) ctx.fillText('BIO N:OV', 16, y);
+  return new THREE.CanvasTexture(c);
+}
+
+function makeBoxBack() {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 720;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#e8eeff'; ctx.fillRect(0, 0, 512, 720);
+  ctx.fillStyle = 'rgba(0,50,150,0.05)'; ctx.fillRect(0, 0, 512, 720);
+  ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#334477';
+  ctx.textAlign = 'center'; ctx.fillText('아연 함유 건강기능식품', 256, 60);
+  ctx.font = '13px Arial'; ctx.fillStyle = '#446688';
+  const lines = ['정규 연구기관 테스트 완료','특허번호: KACC91554P','GMP 인증 완료','미국 특허 등록'];
+  lines.forEach((l, i) => ctx.fillText(l, 256, 110 + i * 28));
+  return new THREE.CanvasTexture(c);
+}
+
+function makeBoxTop() {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#dde8ff'; ctx.fillRect(0, 0, 256, 256);
+  ctx.font = 'bold 14px Arial'; ctx.fillStyle = '#003399';
+  ctx.textAlign = 'center'; ctx.fillText('BIO N:OV', 128, 140);
+  return new THREE.CanvasTexture(c);
+}
+
+const texFront = makeBoxFront(), texSide = makeBoxSide();
+const texBack = makeBoxBack(), texTop = makeBoxTop();
+
+const boxMats = [
+  new THREE.MeshStandardMaterial({ map: texSide, roughness: 0.15, metalness: 0.05 }),
+  new THREE.MeshStandardMaterial({ map: texSide, roughness: 0.15, metalness: 0.05 }),
+  new THREE.MeshStandardMaterial({ map: texTop,  roughness: 0.2 }),
+  new THREE.MeshStandardMaterial({ map: texTop,  roughness: 0.2 }),
+  new THREE.MeshStandardMaterial({ map: texFront, roughness: 0.08, metalness: 0.05 }),
+  new THREE.MeshStandardMaterial({ map: texBack,  roughness: 0.2 }),
+];
+
+// BOX GROUP
+const boxGroup = new THREE.Group();
+scene.add(boxGroup);
+
+// Main box body
+const boxGeo = new THREE.BoxGeometry(1.8, 2.6, 1.0);
+const boxMesh = new THREE.Mesh(boxGeo, boxMats);
+boxMesh.castShadow = true;
+boxMesh.receiveShadow = true;
+boxGroup.add(boxMesh);
+
+// Box lid (top flap that opens)
+const lidGeo = new THREE.BoxGeometry(1.82, 0.4, 1.02);
+const lidMesh = new THREE.Mesh(lidGeo, [
+  new THREE.MeshStandardMaterial({ color: 0xdde4ff, roughness: 0.3 }),
+  new THREE.MeshStandardMaterial({ color: 0xdde4ff, roughness: 0.3 }),
+  new THREE.MeshStandardMaterial({ map: texTop, roughness: 0.2 }),
+  new THREE.MeshStandardMaterial({ color: 0xccd0ff }),
+  new THREE.MeshStandardMaterial({ color: 0x1a4ccc, roughness: 0.2 }),
+  new THREE.MeshStandardMaterial({ color: 0xccd0ff }),
+]);
+lidMesh.position.y = 1.3 + 0.2;
+lidMesh.castShadow = true;
+boxGroup.add(lidMesh);
+
+/* ── BLISTER PACK ── */
+function makeBlisterTex() {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 384;
+  const ctx = c.getContext('2d');
+  // silver foil base
+  const sg = ctx.createLinearGradient(0, 0, 512, 384);
+  sg.addColorStop(0, '#b0b8cc');
+  sg.addColorStop(0.5, '#d8e0f0');
+  sg.addColorStop(1, '#a8b0c4');
+  ctx.fillStyle = sg; ctx.fillRect(0, 0, 512, 384);
+  // tablet bumps — 6 x 5 grid
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 6; col++) {
+      const cx = 48 + col * 76, cy = 42 + row * 70;
+      const bg = ctx.createRadialGradient(cx-8, cy-8, 2, cx, cy, 26);
+      bg.addColorStop(0, '#e8eefa');
+      bg.addColorStop(0.5, '#c0c8dc');
+      bg.addColorStop(1, '#909ab8');
+      ctx.fillStyle = bg;
+      ctx.beginPath(); ctx.ellipse(cx, cy, 28, 22, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#8090b0'; ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+  return new THREE.CanvasTexture(c);
+}
+
+const blisterGroup = new THREE.Group();
+const blisterGeo = new THREE.BoxGeometry(1.5, 2.0, 0.08);
+const blisterMesh = new THREE.Mesh(blisterGeo, [
+  new THREE.MeshStandardMaterial({ color: 0x9090a8, roughness: 0.2, metalness: 0.6 }),
+  new THREE.MeshStandardMaterial({ color: 0x9090a8, roughness: 0.2, metalness: 0.6 }),
+  new THREE.MeshStandardMaterial({ color: 0xb0b8cc, roughness: 0.3 }),
+  new THREE.MeshStandardMaterial({ color: 0xb0b8cc, roughness: 0.3 }),
+  new THREE.MeshStandardMaterial({ map: makeBlisterTex(), roughness: 0.15, metalness: 0.5 }),
+  new THREE.MeshStandardMaterial({ color: 0x8888a0, roughness: 0.4, metalness: 0.4 }),
+]);
+blisterMesh.castShadow = true;
+blisterGroup.add(blisterMesh);
+blisterGroup.position.y = -99; // hidden initially
+scene.add(blisterGroup);
+
+/* ── TABLETS ── */
+const tablets = [];
+const tabletGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.065, 32);
+const tabletMat = new THREE.MeshStandardMaterial({
+  color: 0xe8dfc8,
+  roughness: 0.35,
+  metalness: 0.0,
+});
+const tabletCount = 30;
+for (let i = 0; i < tabletCount; i++) {
+  const t = new THREE.Mesh(tabletGeo, tabletMat);
+  t.castShadow = true;
+  // store animation data
+  t.userData = {
+    // initial inside-box position
+    startPos: new THREE.Vector3((Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 0.4),
+    // explosion target position
+    explodePos: new THREE.Vector3(
+      (Math.random() - 0.5) * 9,
+      (Math.random() - 0.5) * 5 + 1,
+      (Math.random() - 0.5) * 5
+    ),
+    // orbit params
+    orbitRadius: 2.2 + Math.random() * 2.0,
+    orbitAngle: (i / tabletCount) * Math.PI * 2,
+    orbitSpeed: 0.3 + Math.random() * 0.3,
+    orbitY: (Math.random() - 0.5) * 2,
+    rotX: Math.random() * Math.PI,
+    rotY: Math.random() * Math.PI,
+    rotSpeedX: (Math.random() - 0.5) * 1.5,
+    rotSpeedY: (Math.random() - 0.5) * 1.5,
+  };
+  t.position.copy(t.userData.startPos);
+  t.visible = false;
+  scene.add(t);
+  tablets.push(t);
+}
+
+/* ── NO MOLECULES ── */
+function makeNOMolecule() {
+  const g = new THREE.Group();
+  // N sphere (blue)
+  const nGeo = new THREE.SphereGeometry(0.18, 16, 16);
+  const nMat = new THREE.MeshStandardMaterial({
+    color: 0x2266ff, emissive: 0x1144cc, emissiveIntensity: 0.8,
+    roughness: 0.1, metalness: 0.1,
+    transparent: true, opacity: 0.9,
+  });
+  const nSphere = new THREE.Mesh(nGeo, nMat);
+  // O sphere (pink)
+  const oGeo = new THREE.SphereGeometry(0.14, 16, 16);
+  const oMat = new THREE.MeshStandardMaterial({
+    color: 0xff44cc, emissive: 0xcc2288, emissiveIntensity: 0.8,
+    roughness: 0.1, metalness: 0.1,
+    transparent: true, opacity: 0.9,
+  });
+  const oSphere = new THREE.Mesh(oGeo, oMat);
+  oSphere.position.set(0.32, 0, 0);
+  // bond
+  const bondGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.32, 8);
+  bondGeo.rotateZ(Math.PI / 2);
+  const bondMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, roughness: 0.3 });
+  const bond = new THREE.Mesh(bondGeo, bondMat);
+  bond.position.set(0.16, 0, 0);
+  // glow halo
+  const glowGeo = new THREE.SphereGeometry(0.28, 16, 16);
+  const glowMat = new THREE.MeshBasicMaterial({
+    color: 0x4488ff, transparent: true, opacity: 0.12,
+  });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+  g.add(nSphere, oSphere, bond, glow);
+  return g;
+}
+
+const noMolecules = [];
+for (let i = 0; i < 14; i++) {
+  const mol = makeNOMolecule();
+  mol.position.set(
+    (Math.random() - 0.5) * 14,
+    (Math.random() - 0.5) * 8,
+    (Math.random() - 0.5) * 6 - 3
+  );
+  mol.userData = {
+    floatSpeed: 0.2 + Math.random() * 0.3,
+    floatOffset: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.5,
+    initialX: mol.position.x,
+    initialY: mol.position.y,
+  };
+  mol.visible = false;
+  scene.add(mol);
+  noMolecules.push(mol);
+}
+
+/* ── ENERGY RINGS ── */
+function makeRing(radius, color, opacity) {
+  const geo = new THREE.TorusGeometry(radius, 0.018, 8, 120);
+  const mat = new THREE.MeshBasicMaterial({
+    color, transparent: true, opacity,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+  return new THREE.Mesh(geo, mat);
+}
+
+const rings = [];
+const ringData = [
+  { r: 1.6, color: 0x00aaff, opacity: 0.8, tiltX: 0, tiltZ: 0.3, speed: 1.2 },
+  { r: 2.0, color: 0xcc44ff, opacity: 0.6, tiltX: 0.5, tiltZ: 0.1, speed: -0.8 },
+  { r: 2.5, color: 0xff44aa, opacity: 0.45, tiltX: 0.2, tiltZ: 0.5, speed: 0.6 },
+  { r: 1.2, color: 0x44ffdd, opacity: 0.5, tiltX: 0.8, tiltZ: 0.3, speed: -1.4 },
+];
+ringData.forEach(d => {
+  const ring = makeRing(d.r, d.color, d.opacity);
+  ring.rotation.x = d.tiltX;
+  ring.rotation.z = d.tiltZ;
+  ring.visible = false;
+  ring.userData = { speed: d.speed };
+  scene.add(ring);
+  rings.push(ring);
+});
+
+/* ── BACKGROUND PARTICLES ── */
+const bgParticleCount = 1500;
+const bpGeo = new THREE.BufferGeometry();
+const bpPos = new Float32Array(bgParticleCount * 3);
+const bpCol = new Float32Array(bgParticleCount * 3);
+for (let i = 0; i < bgParticleCount; i++) {
+  bpPos[i*3]   = (Math.random() - 0.5) * 28;
+  bpPos[i*3+1] = (Math.random() - 0.5) * 16;
+  bpPos[i*3+2] = (Math.random() - 0.5) * 8 - 4;
+  const t = Math.random();
+  bpCol[i*3]   = t * 0.2 + (1-t) * 0.5;
+  bpCol[i*3+1] = t * 0.5 + (1-t) * 0.2;
+  bpCol[i*3+2] = 1.0;
+}
+bpGeo.setAttribute('position', new THREE.BufferAttribute(bpPos, 3));
+bpGeo.setAttribute('color',    new THREE.BufferAttribute(bpCol, 3));
+const bpMat = new THREE.PointsMaterial({
+  size: 0.04, vertexColors: true,
+  transparent: true, opacity: 0.0,
+  blending: THREE.AdditiveBlending, depthWrite: false,
+  sizeAttenuation: true,
+});
+const bgParticles = new THREE.Points(bpGeo, bpMat);
+scene.add(bgParticles);
+
+/* ── FLOOR GLOW RING ── */
+const floorGlowGeo = new THREE.RingGeometry(0.5, 2.5, 64);
+const floorGlowMat = new THREE.MeshBasicMaterial({
+  color: 0x0066ff, transparent: true, opacity: 0.0,
+  blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+});
+const floorGlow = new THREE.Mesh(floorGlowGeo, floorGlowMat);
+floorGlow.rotation.x = -Math.PI / 2;
+floorGlow.position.y = -1.6;
+scene.add(floorGlow);
+
+/* ── LIGHT BEAM (reveal effect) ── */
+const beamGeo = new THREE.CylinderGeometry(0.0, 0.8, 6, 32, 1, true);
+const beamMat = new THREE.MeshBasicMaterial({
+  color: 0x88ccff, transparent: true, opacity: 0.0,
+  blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+});
+const beam = new THREE.Mesh(beamGeo, beamMat);
+beam.position.y = 4;
+scene.add(beam);
+
+/* ══════════════════════════════════
+   HELPERS
+══════════════════════════════════ */
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function smoothstep(lo, hi, t) {
+  t = clamp((t - lo) / (hi - lo), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+function easeIn(t) { return t * t * t; }
+
+const v3 = new THREE.Vector3();
+
+/* ══════════════════════════════════
+   ANIMATION STATE
+══════════════════════════════════ */
+const clock = new THREE.Clock();
+let T = 0; // global time in seconds
+
+// camera state
+const camPos = new THREE.Vector3(0, 0.3, 9);
+const camTarget = new THREE.Vector3(0, 0, 0);
+const camPosGoal = new THREE.Vector3(0, 0.3, 9);
+const camTargetGoal = new THREE.Vector3(0, 0, 0);
+
+// box state
+let boxY = 0, boxYGoal = 0;
+let boxRotY = 0, boxRotX = 0;
+let lidAngle = 0; // rotation of lid on X axis (opens)
+let blisterY = -99; // blister pack Y
+
+// opacity states
+let boxOpacity = 0;
+let particleOpacity = 0;
+let ringOpacity = 0;
+let moleculeOpacity = 0;
+let beamOpacity = 0;
+let floorGlowOpacity = 0;
+
+// tablet states
+let tabletsExploded = false;
+let tabletsOrbit = false;
+
+/* ══════════════════════════════════
+   RENDER LOOP
+══════════════════════════════════ */
+function tick() {
+  requestAnimationFrame(tick);
+  const dt = clock.getDelta();
+  T += dt;
+  bgMat.uniforms.time.value = T;
+
+  /* ── SHOT 1: REVEAL (0 – 2.5s) ── */
+  if (T < 2.5) {
+    const p = T / 2.5;
+
+    // Beam appears then fades
+    beamOpacity = p < 0.3 ? easeOut(p / 0.3) * 0.7
+                : p < 0.7 ? 0.7
+                : (1 - easeIn((p - 0.7) / 0.3)) * 0.7;
+    beamMat.opacity = beamOpacity;
+
+    // Box materializes
+    boxOpacity = smoothstep(0.1, 0.6, p);
+    boxMesh.material = boxMats; // (material array handles opacity per face)
+    boxGroup.children.forEach(m => {
+      if (m.material) { /* main box is array */ }
+    });
+
+    // Box fades in by scaling from small
+    const sc = 0.5 + easeOut(p) * 0.5;
+    boxGroup.scale.set(sc, sc, sc);
+    boxGroup.position.y = lerp(-0.5, 0, easeOut(p));
+
+    // Camera pushes forward
+    camPosGoal.set(0, 0.3, lerp(12, 7.5, easeInOut(clamp(p * 1.5, 0, 1))));
+    camTargetGoal.set(0, 0, 0);
+
+    // Particles fade in
+    particleOpacity = easeOut(p * 0.5) * 0.75;
+    bpMat.opacity = particleOpacity;
+
+    // Floor glow
+    floorGlowOpacity = smoothstep(0.3, 0.9, p) * 0.6;
+    floorGlowMat.opacity = floorGlowOpacity;
+
+    // Gentle auto-rotate
+    boxGroup.rotation.y = easeInOut(p) * 0.4;
+  }
+
+  /* ── SHOT 2: ENERGY BUILD UP (2.5 – 5s) ── */
+  else if (T < 5.0) {
+    const p = (T - 2.5) / 2.5;
+    const ep = easeInOut(p);
+
+    boxGroup.scale.set(1, 1, 1);
+
+    // Levitate
+    boxGroup.position.y = lerp(0, 0.5, easeOut(clamp(p * 3, 0, 1)));
+
+    // Camera orbits
+    const camAngle = -0.3 + easeInOut(clamp(p, 0, 1)) * 1.2;
+    const camR = 7.5;
+    camPosGoal.set(Math.sin(camAngle) * camR, 0.3 + ep * 0.8, Math.cos(camAngle) * camR);
+    camTargetGoal.set(0, 0.3, 0);
+
+    // Rings appear
+    ringOpacity = smoothstep(0, 0.4, p);
+    rings.forEach((r, i) => {
+      r.visible = true;
+      r.material.opacity = ringData[i].opacity * ringOpacity;
+      r.rotation.y += dt * r.userData.speed;
+      r.position.y = boxGroup.position.y;
+    });
+
+    // NO molecules appear
+    moleculeOpacity = smoothstep(0.3, 0.9, p);
+    noMolecules.forEach((mol, i) => {
+      mol.visible = true;
+      mol.children.forEach(c => {
+        if (c.material) c.material.opacity = moleculeOpacity * (c.material.opacity < 0.2 ? 0.12 : 0.9);
+      });
+      mol.position.y = mol.userData.initialY + Math.sin(T * mol.userData.floatSpeed + mol.userData.floatOffset) * 0.3;
+      mol.rotation.y += dt * mol.userData.rotSpeed;
+    });
+
+    // Energy pulse lights
+    blueGlow.intensity = 4 + Math.sin(T * 3) * 2;
+    pinkGlow.intensity = 2 + Math.sin(T * 2.5 + 1) * 1;
+
+    // Box auto-rotate
+    boxGroup.rotation.y += dt * 0.5;
+
+    // Floor glow pulses
+    floorGlowMat.opacity = 0.6 + Math.sin(T * 3) * 0.15;
+  }
+
+  /* ── SHOT 3: EXPLOSION / OPEN (5 – 7.8s) ── */
+  else if (T < 7.8) {
+    const p = (T - 5.0) / 2.8;
+
+    boxGroup.position.y = 0.5;
+
+    // Camera backs out slightly for drama, offset to right
+    const camAngle = 1.2 + p * 0.3;
+    camPosGoal.set(Math.sin(camAngle) * 7, 1.5, Math.cos(camAngle) * 7);
+    camTargetGoal.set(0, 0.5, 0);
+
+    // Box stops rotating
+    boxGroup.rotation.y = 1.2 + (T - 5) * 0.05;
+
+    // LID OPENS (0 – 0.4 of p)
+    lidAngle = Math.min(easeOut(clamp(p * 2.5, 0, 1)) * (Math.PI * 0.85), Math.PI * 0.85);
+    lidMesh.rotation.x = -lidAngle;
+    lidMesh.position.y = 1.3 + 0.2 + Math.sin(lidAngle) * 0.2;
+
+    // BLISTER SLIDES UP (0.25 – 0.7 of p)
+    const blisterP = smoothstep(0.25, 0.7, p);
+    blisterGroup.position.set(
+      boxGroup.position.x, boxGroup.position.y + lerp(-1.0, 0.8, blisterP), boxGroup.position.z + 0.05
+    );
+    blisterGroup.rotation.y = boxGroup.rotation.y;
+
+    // TABLETS EXPLODE (0.4 – 1.0 of p)
+    const tP = clamp((p - 0.4) / 0.6, 0, 1);
+    if (tP > 0.01) {
+      tablets.forEach(t => {
+        t.visible = true;
+        const ep = easeOut(tP);
+        t.position.lerpVectors(
+          new THREE.Vector3(boxGroup.position.x, boxGroup.position.y, boxGroup.position.z),
+          t.userData.explodePos,
+          ep * 0.7
+        );
+        t.rotation.x += dt * t.userData.rotSpeedX;
+        t.rotation.y += dt * t.userData.rotSpeedY;
+      });
+    }
+
+    // Energy rings continue
+    rings.forEach((r, i) => {
+      r.rotation.y += dt * r.userData.speed;
+      r.position.y = 0.5;
+    });
+
+    // NO molecules
+    noMolecules.forEach((mol) => {
+      mol.position.y = mol.userData.initialY + Math.sin(T * mol.userData.floatSpeed + mol.userData.floatOffset) * 0.3;
+      mol.rotation.y += dt * mol.userData.rotSpeed;
+    });
+
+    floorGlowMat.opacity = 0.5 + Math.sin(T * 4) * 0.2;
+    blueGlow.intensity = 5 + Math.sin(T * 5) * 2;
+  }
+
+  /* ── SHOT 4: ORBIT + RESET (7.8 – 10s) ── */
+  else if (T < 10.5) {
+    const p = clamp((T - 7.8) / 2.2, 0, 1);
+    const ep = easeInOut(p);
+
+    boxGroup.position.y = 0.5;
+    boxGroup.rotation.y += dt * 0.2;
+
+    // Camera zooms in gently, moves left to leave right side empty
+    camPosGoal.set(
+      lerp(-1.5, -2.0, ep),
+      lerp(1.5, 0.8, ep),
+      lerp(7.0, 5.8, ep)
+    );
+    camTargetGoal.set(lerp(-0.5, -0.8, ep), 0.3, 0);
+
+    // Tablets orbit
+    const orbitP = easeOut(clamp(p * 2, 0, 1));
+    tablets.forEach(t => {
+      const d = t.userData;
+      // lerp from explode position to orbit position
+      const orbitAngle = d.orbitAngle + T * d.orbitSpeed * 0.35;
+      const orbitTarget = new THREE.Vector3(
+        Math.cos(orbitAngle) * d.orbitRadius,
+        d.orbitY + boxGroup.position.y + Math.sin(T * 0.5 + d.orbitAngle) * 0.15,
+        Math.sin(orbitAngle) * d.orbitRadius * 0.6,
+      );
+      t.position.lerp(orbitTarget, orbitP * 0.08);
+      t.rotation.x += dt * d.rotSpeedX * (1 - orbitP * 0.7);
+      t.rotation.y += dt * d.rotSpeedY * (1 - orbitP * 0.7);
+    });
+
+    // Rings continue
+    rings.forEach((r, i) => {
+      r.rotation.y += dt * r.userData.speed * 0.6;
+      r.position.y = 0.5;
+    });
+
+    // NO molecules
+    noMolecules.forEach(mol => {
+      mol.position.y = mol.userData.initialY + Math.sin(T * mol.userData.floatSpeed + mol.userData.floatOffset) * 0.3;
+      mol.rotation.y += dt * mol.userData.rotSpeed;
+    });
+
+    // Glow intensifies then settles
+    blueGlow.intensity = 3 + Math.sin(T * 1.5) * 0.8;
+    floorGlowMat.opacity = 0.5 + Math.sin(T * 2) * 0.1;
+  }
+
+  /* ── LOOP (10.5s+) ── */
+  else {
+    // Reset to beginning for seamless loop
+    T = 0.02;
+    // Clean up
+    tablets.forEach(t => { t.visible = false; t.position.copy(t.userData.startPos); });
+    lidMesh.rotation.x = 0; lidMesh.position.y = 1.3 + 0.2;
+    blisterGroup.position.y = -99;
+    boxGroup.scale.set(0.5, 0.5, 0.5);
+    boxGroup.rotation.y = 0;
+  }
+
+  // ── BACKGROUND PARTICLES slow drift ──
+  const bpPositions = bpGeo.attributes.position.array;
+  for (let i = 0; i < bgParticleCount; i++) {
+    bpPositions[i*3+1] += dt * 0.04; // drift up
+    if (bpPositions[i*3+1] > 8) bpPositions[i*3+1] -= 16;
+  }
+  bpGeo.attributes.position.needsUpdate = true;
+
+  // ── SMOOTH CAMERA ──
+  camPos.lerp(camPosGoal, dt * 3.5);
+  camTarget.lerp(camTargetGoal, dt * 3.5);
+  camera.position.copy(camPos);
+  camera.lookAt(camTarget);
+
+  // ── DYNAMIC LIGHTING ──
+  blueGlow.position.x = Math.sin(T * 0.7) * 3;
+  blueGlow.position.y = Math.cos(T * 0.5) * 1.5;
+  pinkGlow.position.x = Math.cos(T * 0.6) * 3;
+  pinkGlow.position.y = Math.sin(T * 0.4) * 1.5;
+
+  renderer.render(scene, camera);
+}
+
+// Start
+boxGroup.position.y = -0.5;
+tick();
+</script>
+</body>
+</html>
