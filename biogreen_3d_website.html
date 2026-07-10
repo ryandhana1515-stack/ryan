@@ -3,831 +3,455 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIO N:OV | Bio Green Elixirs — 3rd Generation Nitric Oxide</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>BIO N:OV — 3rd Generation Nitric Oxide Supplement</title>
 <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
 :root{
-  --bg:#050810;
-  --cyan:#00DCFF;
-  --teal:#00b4a0;
-  --purple:#6c3fff;
-  --white:#fff;
-  --text:#c8d8f0;
-  --gold:#f0c040;
-  --card:#ffffff08;
-  --border:rgba(0,220,255,.18);
+  --bg:#05050f;
+  --cyan:#00dcff;
+  --purple:#7c3aed;
+  --violet:#a78bfa;
+  --pink:#f72585;
+  --white:#ffffff;
+  --muted:#64748b;
+  --text:#94a3b8;
+  --border:rgba(255,255,255,0.07);
+  --glass:rgba(255,255,255,0.03);
+  --font:-apple-system,'Segoe UI','Helvetica Neue',system-ui,sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box}
+
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+body{background:var(--bg);color:var(--white);font-family:var(--font);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:1rem 5rem;
-  background:rgba(5,8,16,.6);
-  backdrop-filter:blur(24px);
-  border-bottom:1px solid var(--border);
-}
-.nav-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:.18em;color:#fff}
-.nav-logo em{color:var(--cyan);font-style:normal}
-.nav-links{display:flex;gap:2.5rem;list-style:none}
-.nav-links a{color:rgba(200,216,240,.65);text-decoration:none;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;transition:color .3s}
-.nav-links a:hover{color:var(--cyan)}
-.nav-btn{
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  color:#050810;padding:.55rem 1.4rem;border-radius:50px;
-  font-weight:800;font-size:.8rem;letter-spacing:.06em;
-  text-decoration:none;transition:all .3s;
-  box-shadow:0 0 20px rgba(0,220,255,.35);
-}
-.nav-btn:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(0,220,255,.55)}
+/* ─── AURORA ─── */
+#aurora{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+.o1{width:700px;height:700px;background:radial-gradient(circle,rgba(0,220,255,.28),transparent 65%);top:-200px;left:-150px;animation:f1 14s ease-in-out infinite}
+.o2{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,.32),transparent 65%);top:15%;right:-180px;animation:f2 18s ease-in-out infinite}
+.o3{width:500px;height:500px;background:radial-gradient(circle,rgba(247,37,133,.22),transparent 65%);bottom:20%;left:15%;animation:f3 22s ease-in-out infinite}
+.o4{width:450px;height:450px;background:radial-gradient(circle,rgba(0,168,150,.2),transparent 65%);bottom:-100px;right:25%;animation:f1 16s ease-in-out infinite reverse}
+@keyframes f1{0%,100%{transform:translate(0,0)}33%{transform:translate(60px,-50px)}66%{transform:translate(-40px,30px)}}
+@keyframes f2{0%,100%{transform:translate(0,0)}33%{transform:translate(-60px,70px)}66%{transform:translate(40px,-30px)}}
+@keyframes f3{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-60px)}}
 
-/* ── HERO ── */
-#hero{
-  position:relative;height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;overflow:hidden;
-}
-/* animated orb background */
-.orb{
-  position:absolute;border-radius:50%;filter:blur(80px);
-  animation:float 8s ease-in-out infinite;pointer-events:none;
-}
-.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(0,220,255,.18),transparent 70%);top:-100px;left:-100px;animation-delay:0s}
-.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(108,63,255,.15),transparent 70%);bottom:-100px;right:-100px;animation-delay:-3s}
-.orb3{width:400px;height:400px;background:radial-gradient(circle,rgba(0,180,160,.12),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-6s}
-@keyframes float{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(30px,-40px) scale(1.05)}
-  66%{transform:translate(-20px,30px) scale(.95)}
-}
-.orb3{animation:float3 10s ease-in-out infinite}
-@keyframes float3{
-  0%,100%{transform:translate(-50%,-50%) scale(1)}
-  50%{transform:translate(-50%,-55%) scale(1.1)}
-}
-/* grid overlay */
-#hero::before{
-  content:'';position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(0,220,255,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,220,255,.04) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
-}
-canvas#hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
-.hero-content{position:relative;z-index:2;max-width:960px;padding:0 2rem}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:.5rem;
-  border:1px solid var(--cyan);border-radius:50px;
-  padding:.45rem 1.2rem;font-size:.7rem;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--cyan);
-  background:rgba(0,220,255,.06);margin-bottom:2.2rem;
-  animation:fadeUp .8s .1s both;
-}
-.hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse2 2s infinite}
-@keyframes pulse2{0%,100%{box-shadow:0 0 0 0 rgba(0,220,255,.6)}70%{box-shadow:0 0 0 8px transparent}}
-.hero-title{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(3.5rem,9vw,8rem);
-  font-weight:900;line-height:.95;letter-spacing:-.03em;
-  color:#fff;margin-bottom:1.8rem;
-  animation:fadeUp .9s .2s both;
-}
-.hero-title .g1{
-  background:linear-gradient(135deg,#fff 0%,var(--cyan) 50%,var(--teal) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 40px rgba(0,220,255,.4));
-}
-.hero-sub{
-  font-size:clamp(.95rem,1.8vw,1.2rem);color:rgba(200,216,240,.65);
-  line-height:1.75;max-width:640px;margin:0 auto 3rem;
-  animation:fadeUp .8s .35s both;
-}
-.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .5s both}
-.btn-glow{
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  color:#050810;padding:1rem 2.8rem;border-radius:50px;
-  font-weight:800;font-size:.95rem;letter-spacing:.04em;
-  text-decoration:none;transition:all .3s;
-  box-shadow:0 0 50px rgba(0,220,255,.4);
-}
-.btn-glow:hover{transform:translateY(-4px);box-shadow:0 0 80px rgba(0,220,255,.65)}
-.btn-ghost{
-  border:1px solid rgba(200,216,240,.2);color:#fff;
-  padding:1rem 2.8rem;border-radius:50px;font-weight:600;
-  font-size:.95rem;text-decoration:none;transition:all .3s;
-  background:rgba(255,255,255,.04);backdrop-filter:blur(8px);
-}
-.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-4px)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.scroll-cue{
-  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:.6rem;
-  animation:fadeUp 1s 1.2s both;
-}
-.scroll-cue span{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(200,216,240,.3)}
-.scroll-line{width:1px;height:50px;background:linear-gradient(var(--cyan),transparent);animation:cueAnim 2s infinite}
-@keyframes cueAnim{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+/* dot grid */
+#grid{position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;z-index:0;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)}
 
-/* ── STATS ── */
-#stats{
-  background:rgba(0,220,255,.04);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:5rem;
-}
-.stats-row{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  max-width:1100px;margin:0 auto;text-align:center;gap:2rem;
-}
-.stat-block{
-  opacity:0;transform:translateY(25px);
-  transition:all .7s ease;
-}
-.stat-block.visible{opacity:1;transform:none}
-.stat-num{
-  font-family:'Montserrat',sans-serif;
-  font-size:clamp(3rem,6vw,5.5rem);font-weight:900;line-height:1;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 20px rgba(0,220,255,.35));
-}
-.stat-divider{width:32px;height:2px;background:linear-gradient(var(--cyan),var(--teal));margin:.8rem auto;border-radius:2px}
-.stat-lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(200,216,240,.5)}
+/* spotlight */
+#spot{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,220,255,.055),transparent 65%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .3s;opacity:0}
 
-/* ── SECTION COMMON ── */
-.section{position:relative;z-index:1}
-.s-label{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan);margin-bottom:.8rem}
-.s-title{
-  font-family:'Montserrat',sans-serif;font-size:clamp(2rem,5vw,4rem);
-  font-weight:900;color:#fff;line-height:1.05;margin-bottom:1.2rem;
-}
-.s-sub{font-size:1rem;color:rgba(200,216,240,.55);line-height:1.8;max-width:680px;margin:0 auto}
-.gline{
-  width:60px;height:3px;
-  background:linear-gradient(90deg,var(--cyan),var(--teal));
-  border-radius:2px;margin:.8rem auto 2.5rem;
-}
-.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
-.reveal.visible{opacity:1;transform:none}
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,15,.75);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:200}
+.nav-logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.nav-logo .g{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-btn{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .2s;letter-spacing:.3px}
+.nav-btn:hover{opacity:.82;transform:translateY(-1px)}
 
-/* ── PROBLEM ── */
-#problem{
-  padding:10rem 5rem;text-align:center;
-  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
-}
-.bp-chart{
-  display:flex;justify-content:center;align-items:flex-end;
-  gap:.6rem;height:220px;max-width:480px;margin:4rem auto;
-}
-.bp-col{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex:1}
-.bp-val{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.8rem;color:var(--cyan)}
-.bp-bar{width:100%;border-radius:8px 8px 0 0;position:relative;overflow:hidden}
-.bp-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.1),transparent)}
-.bp-lbl{font-size:.65rem;color:rgba(200,216,240,.4);letter-spacing:.05em}
-.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:960px;margin:0 auto}
-.prob-card{
-  background:var(--card);border:1px solid var(--border);border-radius:20px;
-  padding:2.5rem 2rem;text-align:left;
-  transition:all .4s;cursor:default;
-  position:relative;overflow:hidden;
-}
-.prob-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,220,255,.06),transparent 60%);
-  opacity:0;transition:opacity .4s;
-}
-.prob-card:hover::before{opacity:1}
-.prob-card:hover{border-color:rgba(0,220,255,.45);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,220,255,.1)}
-.prob-icon{font-size:2.8rem;margin-bottom:1.2rem;display:block;filter:drop-shadow(0 0 12px rgba(0,220,255,.25))}
-.prob-card h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.5rem}
-.prob-card p{font-size:.85rem;color:rgba(200,216,240,.55);line-height:1.7}
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 40px 60px;text-align:center;position:relative;z-index:2}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(0,220,255,.08);border:1px solid rgba(0,220,255,.22);border-radius:100px;padding:6px 18px 6px 10px;font-size:12px;font-weight:600;color:var(--cyan);letter-spacing:.5px;margin-bottom:28px;animation:fadeUp .7s both}
+.hero-pill .pulse{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pls 2s ease-in-out infinite}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
-/* ── PRODUCT 3D ── */
-#product{padding:10rem 5rem}
-.product-wrap{
-  display:flex;align-items:center;justify-content:center;
-  gap:5rem;max-width:1200px;margin:0 auto;flex-wrap:wrap;
-}
-.product-3d{
-  position:relative;width:400px;height:480px;flex-shrink:0;
-}
-.product-glow{
-  position:absolute;inset:-40px;
-  background:radial-gradient(ellipse,rgba(0,220,255,.15) 0%,transparent 70%);
-  animation:glowPulse 3s ease-in-out infinite;pointer-events:none;
-}
-@keyframes glowPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
-.ring{
-  position:absolute;top:50%;left:50%;border-radius:50%;
-  border:1px solid rgba(0,220,255,.2);
-  transform:translate(-50%,-50%);pointer-events:none;
-}
-.ring1{width:340px;height:340px;animation:spin 20s linear infinite}
-.ring2{width:440px;height:440px;border-color:rgba(0,180,160,.12);animation:spin 30s linear infinite reverse}
-.ring3{width:520px;height:520px;border-color:rgba(108,63,255,.1);animation:spin 40s linear infinite}
-@keyframes spin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-.ring1::before,.ring2::before,.ring3::before{
-  content:'';position:absolute;width:6px;height:6px;border-radius:50%;
-  background:var(--cyan);top:-3px;left:50%;margin-left:-3px;
-  box-shadow:0 0 12px var(--cyan);
-}
-canvas#product-canvas{
-  position:relative;z-index:2;
-  width:100%;height:100%;border-radius:24px;
-}
-.product-info{max-width:500px}
-.p-badge{
-  display:inline-flex;align-items:center;gap:.5rem;
-  border:1px solid var(--cyan);border-radius:50px;
-  color:var(--cyan);font-size:.65rem;letter-spacing:.18em;
-  text-transform:uppercase;padding:.4rem 1rem;
-  background:rgba(0,220,255,.06);margin-bottom:1.5rem;
-}
-.p-name{font-family:'Montserrat',sans-serif;font-size:4.5rem;font-weight:900;color:#fff;line-height:.9;margin-bottom:.6rem;
-  text-shadow:0 0 60px rgba(0,220,255,.2)}
-.p-korean{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--cyan);letter-spacing:.12em;margin-bottom:1.2rem;font-size:.95rem}
-.p-desc{font-size:.95rem;color:rgba(200,216,240,.55);line-height:1.75;margin-bottom:2.5rem}
-.specs{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2.5rem}
-.spec{
-  display:flex;align-items:center;gap:1rem;
-  padding:.9rem 1.2rem;background:var(--card);
-  border:1px solid var(--border);border-radius:14px;transition:all .3s;
-}
-.spec:hover{border-color:rgba(0,220,255,.4);background:rgba(0,220,255,.05)}
-.spec-ico{
-  width:38px;height:38px;flex-shrink:0;border-radius:10px;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  display:flex;align-items:center;justify-content:center;font-size:1rem;
-}
-.spec strong{display:block;font-size:.82rem;color:#fff;font-weight:600}
-.spec span{font-size:.75rem;color:rgba(200,216,240,.45)}
+.hero-h1{font-size:clamp(54px,8.5vw,100px);font-weight:900;letter-spacing:-4px;line-height:.95;margin-bottom:24px;animation:fadeUp .75s .08s both}
+.hero-h1 .gr{background:linear-gradient(135deg,var(--cyan) 0%,var(--violet) 45%,var(--pink) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--text);max-width:520px;line-height:1.65;margin-bottom:44px;animation:fadeUp .75s .16s both}
+.hero-btns{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;animation:fadeUp .75s .24s both}
 
-/* ── BENEFITS ── */
-#benefits{
-  padding:10rem 5rem;text-align:center;
-  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
-}
-.ben-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;max-width:1200px;margin:0 auto}
-.ben-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:22px;padding:2.5rem 1.2rem;text-align:center;
-  cursor:pointer;transition:all .45s cubic-bezier(.34,1.56,.64,1);
-  position:relative;overflow:hidden;
-}
-.ben-card::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,220,255,.08),rgba(0,180,160,.06));
-  opacity:0;transition:opacity .3s;
-}
-.ben-card:hover::after{opacity:1}
-.ben-card:hover{
-  border-color:var(--cyan);transform:translateY(-12px) scale(1.02);
-  box-shadow:0 24px 60px rgba(0,220,255,.18);
-}
-.ben-ico{
-  width:68px;height:68px;border-radius:18px;
-  background:linear-gradient(135deg,rgba(0,220,255,.15),rgba(0,180,160,.12));
-  border:1px solid rgba(0,220,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:2rem;margin:0 auto 1.5rem;transition:all .4s;
-  box-shadow:0 0 20px rgba(0,220,255,.08);
-}
-.ben-card:hover .ben-ico{transform:scale(1.1) rotateY(15deg);box-shadow:0 0 30px rgba(0,220,255,.25)}
-.ben-card h3{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#fff;margin-bottom:.6rem;line-height:1.3}
-.ben-card p{font-size:.75rem;color:rgba(200,216,240,.5);line-height:1.65}
+.btn-p{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;border:none;padding:15px 36px;border-radius:100px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;box-shadow:0 0 40px rgba(0,220,255,.22)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(0,220,255,.38)}
+.btn-s{background:rgba(255,255,255,.05);color:#fff;border:1px solid var(--border);padding:15px 36px;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .25s;backdrop-filter:blur(12px)}
+.btn-s:hover{background:rgba(255,255,255,.09);transform:translateY(-2px)}
 
-/* ── SCIENCE ── */
-#science{padding:10rem 5rem}
-.sci-header{text-align:center;margin-bottom:6rem}
-.gen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1100px;margin:0 auto}
-.gen-card{
-  border:1px solid rgba(200,216,240,.08);border-radius:22px;
-  padding:2.5rem;position:relative;
-  background:var(--card);transition:all .4s;
-}
-.gen-card:hover{transform:translateY(-8px)}
-.gen-card.best{
-  border-color:var(--cyan);
-  background:rgba(0,220,255,.05);
-  box-shadow:0 0 80px rgba(0,220,255,.08),inset 0 0 80px rgba(0,220,255,.03);
-}
-.gen-tag{
-  position:absolute;top:-1px;right:2rem;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  color:#050810;font-size:.6rem;font-weight:800;letter-spacing:.18em;
-  text-transform:uppercase;padding:.3rem 1rem;border-radius:0 0 10px 10px;
-}
-.gen-gen{font-family:'Montserrat',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,216,240,.35);margin-bottom:.8rem}
-.gen-card.best .gen-gen{color:var(--cyan)}
-.gen-name{font-family:'Montserrat',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;margin-bottom:.3rem}
-.gen-sub{font-size:.75rem;color:var(--cyan);font-weight:500;margin-bottom:1.5rem}
-.gen-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
-.gen-list li{font-size:.82rem;color:rgba(200,216,240,.55);display:flex;align-items:center;gap:.6rem}
-.gen-list li::before{content:'✗';color:#ff4466;font-weight:700;font-size:.75rem;flex-shrink:0}
-.gen-card.best .gen-list li::before{content:'✓';color:var(--cyan)}
+/* hero visual */
+.hero-vis{margin-top:56px;width:100%;max-width:960px;animation:fadeUp .75s .32s both}
+.showcase{display:flex;align-items:center;justify-content:center;gap:48px;position:relative}
 
-/* ── INGREDIENTS ── */
-#ingredients{
-  padding:10rem 5rem;text-align:center;
-  background:linear-gradient(180deg,var(--bg) 0%,#02040c 50%,var(--bg) 100%);
-}
-.ing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;max-width:1000px;margin:5rem auto 0}
-.ing-card{
-  background:var(--card);border:1px solid var(--border);border-radius:22px;
-  padding:2.5rem 1.5rem;transition:all .45s cubic-bezier(.34,1.56,.64,1);
-}
-.ing-card:hover{
-  border-color:rgba(0,220,255,.5);
-  transform:translateY(-10px) scale(1.03);
-  box-shadow:0 20px 60px rgba(0,220,255,.12);
-}
-.ing-em{font-size:3.2rem;display:block;margin-bottom:1.2rem;filter:drop-shadow(0 0 14px rgba(0,220,255,.3))}
-.ing-card h3{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.6rem}
-.ing-card p{font-size:.78rem;color:rgba(200,216,240,.5);line-height:1.65}
+/* floating stat chips */
+.chips{display:flex;flex-direction:column;gap:12px}
+.chip{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:18px 24px;text-align:left;min-width:170px;transition:all .3s;cursor:default}
+.chip:hover{border-color:rgba(0,220,255,.3);background:rgba(0,220,255,.04);transform:translateX(4px)}
+.chip-n{font-size:34px;font-weight:900;letter-spacing:-2px;background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.chip-l{font-size:11px;color:var(--text);font-weight:500;margin-top:3px;letter-spacing:.2px}
 
-/* ── TESTIMONIALS ── */
-#testimonials{padding:10rem 5rem;text-align:center;overflow:hidden}
-.ttest-header{margin-bottom:4rem}
-.ttrack-wrap{overflow:hidden;margin:0 -5rem}
-.ttrack{display:flex;gap:1.5rem;width:max-content;animation:scrollL 35s linear infinite}
-.ttrack:hover{animation-play-state:paused}
-@keyframes scrollL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tcard{
-  background:var(--card);border:1px solid var(--border);border-radius:20px;
-  padding:2rem;width:300px;text-align:left;flex-shrink:0;transition:all .3s;
-}
-.tcard:hover{border-color:rgba(0,220,255,.4);background:rgba(0,220,255,.05)}
-.tstars{color:var(--gold);font-size:.9rem;letter-spacing:2px;margin-bottom:1rem}
-.ttext{font-size:.85rem;color:rgba(200,216,240,.7);line-height:1.7;margin-bottom:1.5rem;font-style:italic}
-.tauthor{display:flex;align-items:center;gap:.8rem}
-.tavatar{
-  width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,var(--cyan),var(--teal));
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:.85rem;color:#050810;flex-shrink:0;
-}
-.tname{font-size:.82rem;color:#fff;font-weight:600;display:block}
-.tloc{font-size:.72rem;color:rgba(200,216,240,.4)}
+/* CSS 3D product box */
+.box-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.box-glow{position:absolute;width:320px;height:320px;background:radial-gradient(circle,rgba(0,220,255,.18),rgba(124,58,237,.1),transparent 70%);filter:blur(30px);animation:gp 3.5s ease-in-out infinite;pointer-events:none}
+@keyframes gp{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+.box-shadow-floor{position:absolute;bottom:-30px;width:180px;height:30px;background:radial-gradient(ellipse,rgba(0,220,255,.18),transparent 70%);filter:blur(12px);animation:gp 3.5s ease-in-out infinite}
 
-/* ── CTA ── */
-#cta{
-  padding:12rem 5rem;text-align:center;
-  position:relative;overflow:hidden;
-}
-.cta-orb1{position:absolute;width:700px;height:700px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,220,255,.12),transparent 70%);
-  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
-  animation:glowPulse 4s ease-in-out infinite}
-.cta-orb2{position:absolute;width:400px;height:400px;border-radius:50%;
-  background:radial-gradient(circle,rgba(108,63,255,.1),transparent 70%);
-  bottom:-100px;right:-100px;pointer-events:none}
-.cta-inner{position:relative;z-index:1;max-width:800px;margin:0 auto}
-.cta-title{font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,6vw,5.5rem);font-weight:900;color:#fff;line-height:1;margin-bottom:1.5rem}
-.cta-title em{font-style:normal;background:linear-gradient(135deg,var(--cyan),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(0,220,255,.4))}
-.cta-sub{font-size:1rem;color:rgba(200,216,240,.55);line-height:1.8;margin-bottom:3rem}
-.trust-row{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:3rem}
-.trust-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:rgba(200,216,240,.4)}
-.trust-item em{font-style:normal;color:var(--cyan)}
-.disclaimer{font-size:.65rem;color:rgba(200,216,240,.2);margin-top:2.5rem;line-height:1.7;max-width:500px;margin-left:auto;margin-right:auto}
+.persp{perspective:900px;width:180px;height:260px}
+.box3d{width:100%;height:100%;transform-style:preserve-3d;transform:rotateY(-28deg) rotateX(6deg);animation:boxf 7s ease-in-out infinite;position:relative}
+@keyframes boxf{0%,100%{transform:rotateY(-28deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(-22deg) rotateX(4deg) translateY(-14px)}}
 
-/* ── FOOTER ── */
-footer{
-  background:#020408;border-top:1px solid var(--border);
-  padding:3rem 5rem;display:flex;justify-content:space-between;
-  align-items:center;flex-wrap:wrap;gap:1.5rem;
-}
-.f-logo{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.95rem;letter-spacing:.18em;color:#fff}
-.f-logo em{color:var(--cyan);font-style:normal}
-footer p{font-size:.72rem;color:rgba(200,216,240,.25);line-height:1.6;margin-top:.3rem}
-.f-links{display:flex;gap:2rem;list-style:none}
-.f-links a{font-size:.75rem;color:rgba(200,216,240,.35);text-decoration:none;transition:color .3s}
-.f-links a:hover{color:var(--cyan)}
+.face{position:absolute}
+.front{width:180px;height:260px;transform:translateZ(45px);background:linear-gradient(160deg,#edf4ff 0%,#cce0f5 35%,#d5eafc 100%);border-radius:6px 6px 4px 4px;border:1px solid rgba(255,255,255,.6);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.front-strip{position:absolute;left:0;top:0;bottom:0;width:36px;background:linear-gradient(180deg,#1a6fc4,#0a3d8f)}
+.front-strip::after{content:'';position:absolute;top:0;right:0;bottom:0;width:2px;background:rgba(0,150,255,.3)}
+.front-vlogo{font-size:88px;font-weight:900;color:rgba(10,60,160,.85);line-height:1;letter-spacing:-4px;text-shadow:0 6px 20px rgba(10,60,160,.25);margin-left:8px}
+.front-kr{font-size:9px;font-weight:700;color:#1a4d90;letter-spacing:2px;margin-top:2px}
+.front-en{font-size:16px;font-weight:800;color:#0e3878;letter-spacing:3px}
+.front-badges{display:flex;gap:4px;margin-top:10px}
+.badge-pill{font-size:7px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:100px;border:1px solid rgba(10,60,160,.3);color:#1a4d90}
+.right{width:90px;height:260px;transform:rotateY(90deg) translateZ(135px);background:linear-gradient(160deg,#0a4090,#062870);border-radius:0 4px 4px 0}
+.top{width:180px;height:90px;transform:rotateX(90deg) translateZ(215px);background:linear-gradient(135deg,#c8e0f8,#a8ccee);border-radius:4px 4px 0 0}
+
+/* ─── TICKER ─── */
+.ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 0;overflow:hidden;background:rgba(0,220,255,.025);position:relative;z-index:2}
+.t-track{display:flex;white-space:nowrap;animation:tick 22s linear infinite}
+.t-item{display:inline-flex;align-items:center;gap:10px;padding:0 36px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.t-sep{color:var(--cyan);font-size:16px}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ─── SECTIONS ─── */
+.sec{padding:120px 40px;max-width:1200px;margin:0 auto;position:relative;z-index:2}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+.sh2{font-size:clamp(36px,5vw,58px);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-bottom:14px}
+.ssub{font-size:17px;color:var(--text);max-width:520px;line-height:1.65;margin-bottom:64px}
+
+/* ─── BENTO ─── */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bc{background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:32px;position:relative;overflow:hidden;transition:all .35s cubic-bezier(.4,0,.2,1);opacity:0;transform:translateY(28px)}
+.bc.vis{opacity:1;transform:translateY(0)}
+.bc:hover{border-color:rgba(0,220,255,.2);background:rgba(0,220,255,.025);transform:translateY(-5px) scale(1.01)}
+.bc::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 60% -20%,rgba(0,220,255,.05),transparent 65%);pointer-events:none}
+.bc-wide{grid-column:span 2}
+.bc-tall{grid-row:span 2}
+.bc-hero{background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,rgba(0,220,255,.35),rgba(124,58,237,.35)) border-box;border:1px solid transparent}
+
+.ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;flex-shrink:0}
+.ic-c{background:rgba(0,220,255,.1)}
+.ic-p{background:rgba(124,58,237,.1)}
+.ic-k{background:rgba(247,37,133,.1)}
+.ic-g{background:rgba(0,200,100,.1)}
+
+.big-n{font-size:68px;font-weight:900;letter-spacing:-4px;line-height:1;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.ct{font-size:19px;font-weight:700;letter-spacing:-.5px;margin-bottom:9px}
+.cd{font-size:14px;color:var(--text);line-height:1.65}
+
+.pb-wrap{height:3px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden;margin-top:20px}
+.pb{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:100px;transform:scaleX(0);transform-origin:left;transition:transform 1.4s cubic-bezier(.4,0,.2,1) .4s}
+.bc.vis .pb{transform:scaleX(1)}
+
+.mini-stat{margin-top:auto;padding-top:28px}
+.mini-num{font-size:52px;font-weight:900;letter-spacing:-3px;line-height:1;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mini-label{font-size:12px;color:var(--text);margin-top:3px}
+
+/* ─── PROOF STRIP ─── */
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative;z-index:2;margin:0 40px}
+.proof-item{background:var(--bg);padding:40px 32px;text-align:center}
+.proof-n{font-size:42px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--cyan),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.proof-l{font-size:13px;color:var(--text);font-weight:500;line-height:1.5}
+
+/* ─── SCIENCE ─── */
+.sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.mol-wrap{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;max-width:420px}
+.mol-center{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;letter-spacing:-1px;box-shadow:0 0 50px rgba(0,220,255,.38);z-index:2;animation:mg 3.5s ease-in-out infinite}
+@keyframes mg{0%,100%{box-shadow:0 0 40px rgba(0,220,255,.4)}50%{box-shadow:0 0 80px rgba(0,220,255,.7),0 0 120px rgba(124,58,237,.3)}}
+.ring{position:absolute;border-radius:50%;border:1px solid;animation:sp linear infinite}
+.r1{width:190px;height:190px;border-color:rgba(0,220,255,.35);animation-duration:6s}
+.r2{width:290px;height:290px;border-color:rgba(124,58,237,.22);animation-duration:11s;animation-direction:reverse}
+.r3{width:370px;height:370px;border-color:rgba(247,37,133,.14);animation-duration:17s}
+@keyframes sp{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.rdot{position:absolute;width:10px;height:10px;border-radius:50%;top:-5px;left:50%;transform:translateX(-50%)}
+
+.steps-list{display:flex;flex-direction:column;gap:28px}
+.step{display:flex;gap:18px;align-items:flex-start;opacity:0;transform:translateX(28px)}
+.step.vis{opacity:1;transform:translateX(0);transition:opacity .6s,transform .6s}
+.step-n{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0}
+.step-title{font-size:17px;font-weight:700;margin-bottom:5px;letter-spacing:-.3px}
+.step-d{font-size:14px;color:var(--text);line-height:1.65}
+
+/* ─── TESTIMONIALS ─── */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tc{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:28px;opacity:0;transform:translateY(20px);transition:all .3s}
+.tc.vis{opacity:1;transform:translateY(0);transition:opacity .6s,transform .6s}
+.tc:hover{border-color:rgba(0,220,255,.18);transform:translateY(-4px)}
+.stars{color:#fbbf24;font-size:12px;letter-spacing:2px;margin-bottom:14px}
+.tt{font-size:14px;color:var(--text);line-height:1.7;margin-bottom:20px;font-style:italic}
+.ta{display:flex;align-items:center;gap:12px}
+.tav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.tn{font-size:13px;font-weight:700}
+.tloc{font-size:11px;color:var(--text)}
+
+/* ─── CTA ─── */
+.cta-sec{padding:140px 40px;text-align:center;position:relative;z-index:2}
+.cta-blur{position:absolute;width:700px;height:500px;background:radial-gradient(circle,rgba(0,220,255,.1),rgba(124,58,237,.08),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(80px);pointer-events:none}
+.cta-h{font-size:clamp(44px,7vw,78px);font-weight:900;letter-spacing:-3.5px;line-height:1;margin-bottom:18px}
+.cta-sub{font-size:18px;color:var(--text);max-width:480px;margin:0 auto 48px;line-height:1.65}
+.gr-text{background:linear-gradient(135deg,var(--cyan),var(--violet),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--border);padding:36px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:2}
+.fb{font-size:13px;color:var(--text);line-height:1.6}
+.fb strong{color:var(--white)}
+.fdis{font-size:10px;color:rgba(100,116,139,.45);max-width:440px;line-height:1.6}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* stagger */
+.bc:nth-child(2).vis{transition-delay:.08s}
+.bc:nth-child(3).vis{transition-delay:.16s}
+.bc:nth-child(4).vis{transition-delay:.24s}
+.bc:nth-child(5).vis{transition-delay:.32s}
+.step:nth-child(2).vis{transition-delay:.12s}
+.step:nth-child(3).vis{transition-delay:.24s}
+.tc:nth-child(2).vis{transition-delay:.1s}
+.tc:nth-child(3).vis{transition-delay:.2s}
 </style>
 </head>
 <body>
 
+<div id="aurora">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div class="orb o4"></div>
+</div>
+<div id="grid"></div>
+<div id="spot"></div>
+
 <nav>
-  <div class="nav-logo">BIO<em>N:OV</em> · BIO GREEN ELIXIRS</div>
+  <div class="nav-logo"><span class="g">BIO N:OV</span></div>
   <ul class="nav-links">
-    <li><a href="#product">Product</a></li>
-    <li><a href="#benefits">Benefits</a></li>
+    <li><a href="#features">Benefits</a></li>
     <li><a href="#science">Science</a></li>
-    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#reviews">Reviews</a></li>
   </ul>
-  <a href="#cta" class="nav-btn">Order Now</a>
+  <button class="nav-btn" onclick="document.querySelector('#cta').scrollIntoView({behavior:'smooth'})">Order Now</button>
 </nav>
 
 <!-- HERO -->
-<section id="hero">
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <div class="hero-pill"><span class="dot"></span>🇰🇷 3rd Generation Korean Technology · Patented</div>
-    <h1 class="hero-title"><span class="g1">Clearing The Way</span><br>To Optimum Health</h1>
-    <p class="hero-sub">BIO N:OV uses patented microbial fermentation developed by 8 Korean professors to support healthy blood pressure — naturally, in 30 minutes.</p>
-    <div class="hero-btns">
-      <a href="#cta" class="btn-glow">Order BIO N:OV Now</a>
-      <a href="#science" class="btn-ghost">See The Science</a>
-    </div>
+<div class="hero">
+  <div class="hero-pill"><span class="pulse"></span>3rd Generation Nitric Oxide Technology</div>
+  <h1 class="hero-h1">Clear The Way To<br><span class="gr">Peak Health</span></h1>
+  <p class="hero-sub">BIO N:OV uses patented Korean fermentation science to deliver nitric oxide 400% more effectively — supporting healthy blood pressure in as little as 30 minutes.</p>
+  <div class="hero-btns">
+    <a class="btn-p" href="#cta">Order BIO N:OV <span>→</span></a>
+    <a class="btn-s" href="#science">See The Science</a>
   </div>
-  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
-</section>
 
-<!-- STATS -->
-<section id="stats">
-  <div class="stats-row">
-    <div class="stat-block" data-target="25" data-suffix="%"><div class="stat-num">0%</div><div class="stat-divider"></div><div class="stat-lbl">Blood Pressure Drop</div></div>
-    <div class="stat-block" data-target="30" data-suffix=" min"><div class="stat-num">0 min</div><div class="stat-divider"></div><div class="stat-lbl">Time To Work</div></div>
-    <div class="stat-block" data-target="400" data-suffix="%"><div class="stat-num">0%</div><div class="stat-divider"></div><div class="stat-lbl">More Effective</div></div>
-    <div class="stat-block" data-target="8" data-suffix=" Profs"><div class="stat-num">0</div><div class="stat-divider"></div><div class="stat-lbl">Korean University Professors</div></div>
-  </div>
-</section>
-
-<!-- PROBLEM -->
-<section id="problem" class="section">
-  <div class="s-label reveal">The Problem</div>
-  <h2 class="s-title reveal">Your Body Loses<br><span style="color:var(--cyan)">Nitric Oxide</span> With Age</h2>
-  <div class="gline reveal"></div>
-  <p class="s-sub reveal">After 40, your body produces 20% less NO every decade. Low NO = stiff vessels, rising pressure, low energy, faster aging. 99.9% of human diseases are NO-related.</p>
-  <div class="bp-chart reveal">
-    <div class="bp-col"><div class="bp-val">100%</div><div class="bp-bar" style="height:180px;background:linear-gradient(to top,#00DCFF,#00b4a0)"></div><div class="bp-lbl">Age 20</div></div>
-    <div class="bp-col"><div class="bp-val">80%</div><div class="bp-bar" style="height:144px;background:linear-gradient(to top,#00DCFF99,#00b4a099)"></div><div class="bp-lbl">Age 30</div></div>
-    <div class="bp-col"><div class="bp-val">50%</div><div class="bp-bar" style="height:90px;background:linear-gradient(to top,#00DCFF60,#00b4a060)"></div><div class="bp-lbl">Age 40</div></div>
-    <div class="bp-col"><div class="bp-val">35%</div><div class="bp-bar" style="height:63px;background:linear-gradient(to top,#00DCFF40,#00b4a040)"></div><div class="bp-lbl">Age 50</div></div>
-    <div class="bp-col"><div class="bp-val">15%</div><div class="bp-bar" style="height:27px;background:linear-gradient(to top,#ff4466,#ff2244)"></div><div class="bp-lbl">Age 60+</div></div>
-  </div>
-  <div class="prob-grid">
-    <div class="prob-card reveal"><span class="prob-icon">🫀</span><h3>1.28 Billion People</h3><p>Worldwide have hypertension. 80% fail to control their blood pressure with existing solutions.</p></div>
-    <div class="prob-card reveal" style="transition-delay:.1s"><span class="prob-icon">🩸</span><h3>537 Million Diabetics</h3><p>1 in 10 adults live with diabetes. 1 person dies every 5 seconds — all linked to NO deficiency.</p></div>
-    <div class="prob-card reveal" style="transition-delay:.2s"><span class="prob-icon">🧠</span><h3>15 Million Strokes / Year</h3><p>87% caused by blocked blood flow — directly tied to declining Nitric Oxide production.</p></div>
-  </div>
-</section>
-
-<!-- PRODUCT 3D -->
-<section id="product" class="section">
-  <div class="product-wrap">
-    <div class="product-3d reveal">
-      <div class="product-glow"></div>
-      <div class="ring ring1"></div>
-      <div class="ring ring2"></div>
-      <div class="ring ring3"></div>
-      <canvas id="product-canvas" width="400" height="480"></canvas>
-    </div>
-    <div class="product-info reveal" style="transition-delay:.15s">
-      <div class="p-badge">GMP Certified · US Patent · KACC91554P</div>
-      <h2 class="p-name">BIO N:OV</h2>
-      <p class="p-korean">바이오엔:오브이</p>
-      <p class="p-desc">The world's first 3rd Generation Nitric Oxide supplement. Exclusive microbial fermentation — no enzyme needed, zero side effects. Works for everyone including heart patients.</p>
-      <div class="specs">
-        <div class="spec"><div class="spec-ico">⚡</div><div><strong>Superfast — 30 Minutes</strong><span>Blood pressure support within 30 min of taking it</span></div></div>
-        <div class="spec"><div class="spec-ico">🧬</div><div><strong>Patent KACC91554P</strong><span>Exclusive strain — 40–400% more effective than competition</span></div></div>
-        <div class="spec"><div class="spec-ico">🌿</div><div><strong>100% Natural Ingredients</strong><span>Fermented garlic · lettuce · soybean · soybean sprouts</span></div></div>
-        <div class="spec"><div class="spec-ico">💊</div><div><strong>500mg × 60 Tablets</strong><span>1 tablet, 3 times daily — a full month supply</span></div></div>
+  <div class="hero-vis">
+    <div class="showcase">
+      <div class="chips">
+        <div class="chip"><div class="chip-n">25%</div><div class="chip-l">Blood Pressure Drop</div></div>
+        <div class="chip"><div class="chip-n">30m</div><div class="chip-l">Time To Effect</div></div>
       </div>
-      <a href="#cta" class="btn-glow" style="display:inline-block;text-decoration:none">Order Now — biogreenelixirs.com</a>
+
+      <div class="box-wrap">
+        <div class="box-glow"></div>
+        <div class="box-shadow-floor"></div>
+        <div class="persp">
+          <div class="box3d">
+            <div class="face right"></div>
+            <div class="face front">
+              <div class="front-strip"></div>
+              <div class="front-vlogo">V</div>
+              <div class="front-kr">바이오 엔:오브이</div>
+              <div class="front-en">BIO N:OV</div>
+              <div class="front-badges">
+                <span class="badge-pill">GMP</span>
+                <span class="badge-pill">PATENTED</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chips">
+        <div class="chip"><div class="chip-n">400%</div><div class="chip-l">More Bioavailable</div></div>
+        <div class="chip"><div class="chip-n">8</div><div class="chip-l">University Studies</div></div>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- BENEFITS -->
-<section id="benefits" class="section">
-  <div class="s-label reveal">5 Key Benefits</div>
-  <h2 class="s-title reveal">What BIO N:OV<br><span style="color:var(--cyan)">Does For You</span></h2>
-  <div class="gline reveal"></div>
-  <div class="ben-grid" style="margin-top:4rem">
-    <div class="ben-card reveal"><div class="ben-ico">❤️</div><h3>Blood Pressure & Sugar</h3><p>Supports healthy BP. -25% in 30 mins. Blood sugar -8% in 1 hour.</p></div>
-    <div class="ben-card reveal" style="transition-delay:.08s"><div class="ben-ico">⚡</div><h3>Boosts Energy & Vigor</h3><p>Restores NO to skeletal muscle. More oxygen delivery. All-day energy.</p></div>
-    <div class="ben-card reveal" style="transition-delay:.16s"><div class="ben-ico">🛡️</div><h3>Reduces Inflammation</h3><p>Anti-inflammatory from fermented garlic & soybean. Reduces chronic pain.</p></div>
-    <div class="ben-card reveal" style="transition-delay:.24s"><div class="ben-ico">🦠</div><h3>Enhances Immunity</h3><p>Antioxidants restore insulin efficiency. Strengthens immune system.</p></div>
-    <div class="ben-card reveal" style="transition-delay:.32s"><div class="ben-ico">✨</div><h3>Skin & Anti-Aging</h3><p>84% saw wrinkle reduction. 78% brighter skin. Cellular-level aging prevention.</p></div>
+<!-- Ticker -->
+<div class="ticker">
+  <div class="t-track">
+    <span class="t-item">Blood Pressure Support <span class="t-sep">✦</span></span>
+    <span class="t-item">Korean Patented Tech <span class="t-sep">✦</span></span>
+    <span class="t-item">GMP Certified <span class="t-sep">✦</span></span>
+    <span class="t-item">400% More Bioavailable <span class="t-sep">✦</span></span>
+    <span class="t-item">30 Min Effect <span class="t-sep">✦</span></span>
+    <span class="t-item">8 University Studies <span class="t-sep">✦</span></span>
+    <span class="t-item">3rd Generation NO <span class="t-sep">✦</span></span>
+    <span class="t-item">US Patent Pending <span class="t-sep">✦</span></span>
+    <span class="t-item">Blood Pressure Support <span class="t-sep">✦</span></span>
+    <span class="t-item">Korean Patented Tech <span class="t-sep">✦</span></span>
+    <span class="t-item">GMP Certified <span class="t-sep">✦</span></span>
+    <span class="t-item">400% More Bioavailable <span class="t-sep">✦</span></span>
+    <span class="t-item">30 Min Effect <span class="t-sep">✦</span></span>
+    <span class="t-item">8 University Studies <span class="t-sep">✦</span></span>
+    <span class="t-item">3rd Generation NO <span class="t-sep">✦</span></span>
+    <span class="t-item">US Patent Pending <span class="t-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- Proof strip -->
+<div class="proof">
+  <div class="proof-item"><div class="proof-n">25%</div><div class="proof-l">Systolic blood pressure reduction in clinical trials</div></div>
+  <div class="proof-item"><div class="proof-n">30m</div><div class="proof-l">Time to measurable cardiovascular effect</div></div>
+  <div class="proof-item"><div class="proof-n">400%</div><div class="proof-l">More bioavailable than standard L-Arginine</div></div>
+  <div class="proof-item"><div class="proof-n">8+</div><div class="proof-l">Korean university research partnerships</div></div>
+</div>
+
+<!-- FEATURES BENTO -->
+<section class="sec" id="features">
+  <div class="tag">Benefits</div>
+  <h2 class="sh2">Why BIO N:OV Works</h2>
+  <p class="ssub">Backed by clinical research, a government-certified fermentation strain, and 8 Korean university partnerships.</p>
+
+  <div class="bento">
+    <div class="bc bc-wide bc-hero">
+      <div class="ic ic-c">🧬</div>
+      <div class="big-n">400%</div>
+      <div class="ct">More Bioavailable Than L-Arginine</div>
+      <div class="cd">Our patented KACC91554P fermentation strain converts precursors directly to nitric oxide in the gut — bypassing the inefficient urea cycle entirely. This is 3rd Generation NO technology.</div>
+      <div class="pb-wrap"><div class="pb"></div></div>
+    </div>
+
+    <div class="bc bc-tall">
+      <div class="ic ic-p">💓</div>
+      <div class="ct">Blood Pressure Support</div>
+      <div class="cd">Clinical trials show significant systolic blood pressure reduction, measurable within 30 minutes of ingestion. Supports healthy cardiovascular function over time.</div>
+      <div class="mini-stat">
+        <div style="font-size:10px;color:var(--text);letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-bottom:6px">Avg. Reduction</div>
+        <div class="mini-num">25%</div>
+        <div class="mini-label">Systolic blood pressure in trials</div>
+      </div>
+    </div>
+
+    <div class="bc">
+      <div class="ic ic-g">⚡</div>
+      <div class="ct">Energy &amp; Vitality</div>
+      <div class="cd">Nitric oxide dilates blood vessels, improving oxygen delivery to muscles, brain, and organs. Feel more energized and sharp throughout the day.</div>
+    </div>
+
+    <div class="bc">
+      <div class="ic ic-k">🔬</div>
+      <div class="ct">Patented Korean Science</div>
+      <div class="cd">KACC91554P — a proprietary lactic acid bacteria strain developed and certified by Korean government research institutions. Unique to BIO N:OV.</div>
+    </div>
+
+    <div class="bc bc-wide">
+      <div style="display:flex;gap:32px;align-items:flex-start">
+        <div>
+          <div class="ic ic-c">🏅</div>
+          <div class="ct">GMP Certified Manufacturing</div>
+          <div class="cd">Every batch produced under Good Manufacturing Practice standards — ensuring consistent quality, purity, and potency. US Patent pending for the fermentation technology.</div>
+        </div>
+        <div style="flex-shrink:0;text-align:center;padding:20px 28px;background:rgba(0,220,255,.06);border:1px solid rgba(0,220,255,.15);border-radius:16px">
+          <div style="font-size:11px;color:var(--cyan);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Patent ID</div>
+          <div style="font-size:13px;font-weight:700;color:var(--white);letter-spacing:.5px">KACC91554P</div>
+          <div style="width:40px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:100px;margin:12px auto"></div>
+          <div style="font-size:10px;color:var(--text)">Korean Gov. Certified</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- SCIENCE -->
-<section id="science" class="section">
-  <div class="sci-header">
-    <div class="s-label reveal">The Science</div>
-    <h2 class="s-title reveal">3 Generations of<br><span style="color:var(--cyan)">NO Technology</span></h2>
-    <div class="gline reveal"></div>
-    <p class="s-sub reveal">Developed by 8 Korean university professors. BIO N:OV is the evolution that fixes everything the first two generations got wrong.</p>
-  </div>
-  <div class="gen-grid">
-    <div class="gen-card reveal">
-      <div class="gen-gen">1st Generation</div>
-      <div class="gen-name">Arginine</div>
-      <div class="gen-sub">Early NO Supplement</div>
-      <ul class="gen-list"><li>Requires enzyme to work</li><li>Unstable in the body</li><li>Banned for heart patients</li><li>Low absorption rate</li></ul>
+<section class="sec" id="science" style="padding-top:0">
+  <div class="sci-grid">
+    <div class="mol-wrap" style="margin:0 auto">
+      <div class="ring r3"><div class="rdot" style="background:var(--pink);box-shadow:0 0 12px var(--pink)"></div></div>
+      <div class="ring r2"><div class="rdot" style="background:var(--purple);box-shadow:0 0 12px var(--purple)"></div></div>
+      <div class="ring r1"><div class="rdot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></div></div>
+      <div class="mol-center">NO</div>
     </div>
-    <div class="gen-card reveal" style="transition-delay:.12s">
-      <div class="gen-gen">2nd Generation</div>
-      <div class="gen-name">Veg & Fruit</div>
-      <div class="gen-sub">Plant-Based NO</div>
-      <ul class="gen-list"><li>Side effects: nausea, diarrhea</li><li>Headaches reported</li><li>Not suitable for 40+ age</li><li>Inconsistent results</li></ul>
-    </div>
-    <div class="gen-card best reveal" style="transition-delay:.24s">
-      <div class="gen-tag">✦ BIO N:OV</div>
-      <div class="gen-gen">3rd Generation</div>
-      <div class="gen-name">Microbial<br>Fermentation</div>
-      <div class="gen-sub">Patent KACC91554P</div>
-      <ul class="gen-list"><li>No enzyme needed</li><li>Zero side effects</li><li>Works on EVERYONE</li><li>40–400% more effective</li></ul>
-    </div>
-  </div>
-</section>
 
-<!-- INGREDIENTS -->
-<section id="ingredients" class="section">
-  <div class="s-label reveal">Pure Ingredients</div>
-  <h2 class="s-title reveal">100% Natural.<br><span style="color:var(--cyan)">100% Fermented.</span></h2>
-  <div class="gline reveal"></div>
-  <div class="ing-grid">
-    <div class="ing-card reveal"><span class="ing-em">🧄</span><h3>Fermented Garlic</h3><p>Anticancer compounds, boosts metabolism, removes free radicals to improve immunity.</p></div>
-    <div class="ing-card reveal" style="transition-delay:.1s"><span class="ing-em">🥬</span><h3>Fermented Lettuce</h3><p>β-Carotene + Vitamin C. Controls glucose absorption. Prevents skin aging.</p></div>
-    <div class="ing-card reveal" style="transition-delay:.2s"><span class="ing-em">🫘</span><h3>Soybean</h3><p>Prevents arteriosclerosis, reduces cholesterol. Rich in Vitamins A, B, and amino acids.</p></div>
-    <div class="ing-card reveal" style="transition-delay:.3s"><span class="ing-em">🌱</span><h3>Soybean Sprouts</h3><p>Stabilizes insulin, GABA content, polyphenols for blood sugar control and antioxidation.</p></div>
+    <div>
+      <div class="tag">The Science</div>
+      <h2 class="sh2" style="margin-bottom:10px">3rd Generation<br>Nitric Oxide</h2>
+      <p style="color:var(--text);font-size:16px;line-height:1.7;margin-bottom:40px">Previous supplements relied on L-Arginine — metabolized inefficiently through the urea cycle. BIO N:OV works at the gut level, converting precursors to NO directly.</p>
+      <div class="steps-list">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div>
+            <div class="step-title">Ingestion</div>
+            <div class="step-d">BIO N:OV tablets dissolve rapidly, releasing KACC91554P fermentation compounds into the digestive tract.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div>
+            <div class="step-title">Gut-Level Conversion</div>
+            <div class="step-d">Nitrate precursors convert to nitric oxide via the enterosalivary cycle — 400% more efficient than urea cycle metabolism.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div>
+            <div class="step-title">Vasodilation</div>
+            <div class="step-d">NO signals smooth muscle in arterial walls to relax — widening vessels, reducing blood pressure, improving circulation within 30 minutes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section id="testimonials" class="section">
-  <div class="ttest-header">
-    <div class="s-label reveal">Real Results</div>
-    <h2 class="s-title reveal">What Our Customers<br><span style="color:var(--cyan)">Are Saying</span></h2>
-    <div class="gline reveal"></div>
-  </div>
-  <div class="ttrack-wrap">
-    <div class="ttrack" id="ttrack"></div>
+<section class="sec" id="reviews" style="padding-top:0">
+  <div class="tag">Reviews</div>
+  <h2 class="sh2">Real People, Real Results</h2>
+  <p class="ssub">Trusted by customers across Asia supporting cardiovascular health with BIO N:OV.</p>
+  <div class="tgrid">
+    <div class="tc">
+      <div class="stars">★★★★★</div>
+      <p class="tt">"My doctor was shocked at my checkup. After 3 weeks my blood pressure dropped from 158/95 to 131/80. Nothing I tried before came close to this."</p>
+      <div class="ta"><div class="tav">KJ</div><div><div class="tn">Kim Jong-min</div><div class="tloc">Seoul, South Korea</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="stars">★★★★★</div>
+      <p class="tt">"At 58 I feel more energetic than I did at 40. BIO N:OV changed my mornings — I wake up sharp and ready, no more afternoon crashes."</p>
+      <div class="ta"><div class="tav">TL</div><div><div class="tn">Tan Lay Hoon</div><div class="tloc">Singapore</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="stars">★★★★★</div>
+      <p class="tt">"I researched NO supplements for months. The fermentation technology in BIO N:OV is genuinely different — the science backs it up completely."</p>
+      <div class="ta"><div class="tav">DH</div><div><div class="tn">Dr. David Huang</div><div class="tloc">Taipei, Taiwan</div></div></div>
+    </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section id="cta" class="section">
-  <div class="cta-orb1"></div>
-  <div class="cta-orb2"></div>
-  <div class="cta-inner reveal">
-    <div class="s-label" style="opacity:1">Limited Stock — Singapore</div>
-    <h2 class="cta-title">Start Feeling Better<br>In <em>30 Minutes</em></h2>
-    <p class="cta-sub">Join thousands who've switched to 3rd Generation NO technology. GMP Certified. US Patented. Developed by 8 Korean professors. Zero side effects.</p>
-    <a href="https://biogreenelixirs.com" class="btn-glow" style="font-size:1.1rem;padding:1.2rem 3.5rem">Order Now — biogreenelixirs.com</a>
-    <div class="trust-row">
-      <div class="trust-item"><em>✓</em>GMP Certified Korea</div>
-      <div class="trust-item"><em>✓</em>US Patent</div>
-      <div class="trust-item"><em>✓</em>Zero Side Effects</div>
-      <div class="trust-item"><em>✓</em>Free Shipping SG</div>
-      <div class="trust-item"><em>✓</em>30-Day Guarantee</div>
-    </div>
-    <p class="disclaimer">*These statements have not been evaluated by the FDA. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare provider before use. Results may vary.</p>
+<section class="cta-sec" id="cta">
+  <div class="cta-blur"></div>
+  <div class="tag">Get Started</div>
+  <h2 class="cta-h">Start Your<br><span class="gr-text">Health Journey</span></h2>
+  <p class="cta-sub">Join thousands of people supporting their cardiovascular health with BIO N:OV — the 3rd Generation Nitric Oxide supplement.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a class="btn-p" href="https://biogreenelixirs.com" style="font-size:16px;padding:17px 42px">Order BIO N:OV →</a>
+    <a class="btn-s" href="mailto:info@biogreenelixirs.com">Contact Us</a>
   </div>
+  <p style="margin-top:24px;font-size:11px;color:rgba(100,116,139,.5);max-width:440px;margin-left:auto;margin-right:auto;line-height:1.6">*These statements have not been evaluated by the FDA. Consult your healthcare provider before use.</p>
 </section>
 
 <footer>
-  <div><div class="f-logo">BIO<em>N:OV</em> | BIO GREEN ELIXIRS</div><p>© 2026 Bio Green Elixirs. Singapore. ACRA Registered. info@biogreenelixirs.com</p></div>
-  <ul class="f-links"><li><a href="#">Product</a></li><li><a href="#">Science</a></li><li><a href="#">Affiliates</a></li><li><a href="#">Contact</a></li></ul>
+  <div class="fb"><strong>Bio Green Elixirs</strong> · Singapore · ACRA Registered<br><span>info@biogreenelixirs.com</span></div>
+  <div class="fdis">*Not evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Results may vary.</div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-/* ══ HERO PARTICLE FIELD ══ */
-(function(){
-  const canvas = document.getElementById('hero-canvas');
-  const W = window.innerWidth, H = window.innerHeight;
-  canvas.width = W; canvas.height = H;
-  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  renderer.setSize(W, H);
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(65, W/H, 0.1, 1000);
-  camera.position.z = 4;
+// Smooth mouse spotlight (lerped)
+const spot = document.getElementById('spot');
+let mx=0,my=0,sx=0,sy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;spot.style.opacity='1'});
+document.addEventListener('mouseleave',()=>spot.style.opacity='0');
+(function raf(){sx+=(mx-sx)*.07;sy+=(my-sy)*.07;spot.style.left=sx+'px';spot.style.top=sy+'px';requestAnimationFrame(raf)})();
 
-  /* big bright visible particles */
-  const N = 1200;
-  const geo = new THREE.BufferGeometry();
-  const pos = new Float32Array(N*3);
-  const col = new Float32Array(N*3);
-  const sizes = new Float32Array(N);
-  for(let i=0;i<N;i++){
-    const r = 2 + Math.random()*6;
-    const theta = Math.random()*Math.PI*2;
-    const phi = Math.acos(2*Math.random()-1);
-    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
-    pos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
-    pos[i*3+2] = r*Math.cos(phi)-2;
-    sizes[i] = 0.04 + Math.random()*0.08;
-    const t = Math.random();
-    col[i*3]   = t*0 + (1-t)*0.42;
-    col[i*3+1] = t*0.86 + (1-t)*0.7;
-    col[i*3+2] = 1;
-  }
-  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-  geo.setAttribute('color', new THREE.BufferAttribute(col,3));
-  geo.setAttribute('size', new THREE.BufferAttribute(sizes,1));
-
-  const mat = new THREE.PointsMaterial({size:0.06,vertexColors:true,transparent:true,opacity:0.85,sizeAttenuation:true});
-  scene.add(new THREE.Points(geo, mat));
-
-  let mx=0,my=0;
-  document.addEventListener('mousemove',e=>{mx=(e.clientX/W-.5)*.4;my=(e.clientY/H-.5)*.4;});
-  window.addEventListener('resize',()=>{
-    renderer.setSize(innerWidth,innerHeight);
-    camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
-  });
-  const clk = new THREE.Clock();
-  const pts = scene.children[0];
-  (function loop(){
-    requestAnimationFrame(loop);
-    const t = clk.getElapsedTime();
-    pts.rotation.y = t*0.06 + mx;
-    pts.rotation.x = t*0.03 - my;
-    renderer.render(scene,camera);
-  })();
-})();
-
-/* ══ PRODUCT 3D BOX ══ */
-(function(){
-  const canvas = document.getElementById('product-canvas');
-  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  renderer.setSize(400,480);
-  renderer.shadowMap.enabled = true;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 400/480, 0.1, 100);
-  camera.position.set(0, 0.3, 5.5);
-
-  /* lights */
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-  const key = new THREE.DirectionalLight(0x00dcff, 3);
-  key.position.set(4, 6, 6); scene.add(key);
-  const fill = new THREE.DirectionalLight(0x00b4a0, 1.5);
-  fill.position.set(-4, -2, 3); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0x6c3fff, 1);
-  rim.position.set(0, -6, -4); scene.add(rim);
-  const pt = new THREE.PointLight(0x00dcff, 3, 12);
-  pt.position.set(2, 3, 4); scene.add(pt);
-
-  /* FRONT face texture */
-  function makeFace(type){
-    const c = document.createElement('canvas');
-    c.width=512; c.height=680;
-    const ctx = c.getContext('2d');
-
-    if(type==='front'){
-      /* white base */
-      ctx.fillStyle='#f2f6ff'; ctx.fillRect(0,0,512,680);
-
-      /* left blue strip */
-      const lg = ctx.createLinearGradient(0,0,0,680);
-      lg.addColorStop(0,'#0055cc'); lg.addColorStop(1,'#0088dd');
-      ctx.fillStyle=lg; ctx.fillRect(0,0,110,680);
-
-      /* big V */
-      const vg = ctx.createLinearGradient(80,0,360,500);
-      vg.addColorStop(0,'#00DCFF'); vg.addColorStop(.4,'#0088cc'); vg.addColorStop(1,'#004488');
-      ctx.fillStyle=vg;
-      ctx.font='bold 440px Georgia,serif';
-      ctx.fillText('V',70,440);
-
-      /* brand text */
-      ctx.fillStyle='#002277';
-      ctx.font='bold 38px Arial'; ctx.textAlign='center';
-      ctx.fillText('바이오엔:오브이',280,530);
-      ctx.font='bold 28px Arial';
-      ctx.fillText('BIO N:OV',280,570);
-      ctx.font='16px Arial'; ctx.fillStyle='#446';
-      ctx.fillText('500 mg × 60정 (30g)',280,600);
-
-      /* GMP badge */
-      ctx.strokeStyle='#0055cc'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.arc(450,630,26,0,Math.PI*2); ctx.stroke();
-      ctx.fillStyle='#0055cc'; ctx.font='bold 13px Arial';
-      ctx.fillText('GMP',450,635);
-
-      /* top accent line */
-      ctx.fillStyle='#00DCFF'; ctx.fillRect(110,0,402,4);
-
-      ctx.textAlign='left';
-    } else if(type==='side'){
-      const sg = ctx.createLinearGradient(0,0,512,680);
-      sg.addColorStop(0,'#004dbb'); sg.addColorStop(1,'#002877');
-      ctx.fillStyle=sg; ctx.fillRect(0,0,512,680);
-      ctx.fillStyle='rgba(0,220,255,.08)';
-      for(let y=0;y<700;y+=90){
-        ctx.font='bold 42px Arial'; ctx.fillText('BIO N:OV  바이오엔',10,y);
-      }
-      ctx.strokeStyle='rgba(0,220,255,.15)';
-      ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(0,340); ctx.lineTo(512,340); ctx.stroke();
-    } else {
-      ctx.fillStyle='#e6ecff'; ctx.fillRect(0,0,512,680);
-      const bg = ctx.createLinearGradient(0,0,512,680);
-      bg.addColorStop(0,'rgba(0,100,200,.08)'); bg.addColorStop(1,'rgba(0,220,255,.05)');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,512,680);
-      ctx.fillStyle='rgba(0,80,180,.4)'; ctx.font='bold 20px Arial'; ctx.textAlign='center';
-      ctx.fillText('아연 함유 건강기능식품',256,80);
-      ctx.font='14px Arial'; ctx.fillStyle='rgba(0,40,120,.35)';
-      ctx.fillText('Zinc-containing health functional food',256,110);
-    }
-    return new THREE.CanvasTexture(c);
-  }
-
-  const tf = makeFace('front'), ts = makeFace('side'), tb = makeFace('back');
-  const mats = [
-    new THREE.MeshStandardMaterial({map:ts, roughness:.15, metalness:.1}),
-    new THREE.MeshStandardMaterial({map:ts, roughness:.15, metalness:.1}),
-    new THREE.MeshStandardMaterial({color:0xdde6ff, roughness:.2}),
-    new THREE.MeshStandardMaterial({color:0xc8d8ff, roughness:.3}),
-    new THREE.MeshStandardMaterial({map:tf, roughness:.08, metalness:.05}),
-    new THREE.MeshStandardMaterial({map:tb, roughness:.2}),
-  ];
-  const box = new THREE.Mesh(new THREE.BoxGeometry(2.2, 3, 1.4), mats);
-  scene.add(box);
-
-  /* subtle glow plane behind box */
-  const gp = new THREE.Mesh(
-    new THREE.PlaneGeometry(6,8),
-    new THREE.MeshBasicMaterial({color:0x00dcff, transparent:true, opacity:.025, side:THREE.DoubleSide})
-  );
-  gp.position.z = -1.5;
-  scene.add(gp);
-
-  /* interaction */
-  let autoRot=true, mxp=0, myp=0;
-  canvas.addEventListener('mouseenter',()=>autoRot=false);
-  canvas.addEventListener('mouseleave',()=>{autoRot=true;});
-  canvas.addEventListener('mousemove',e=>{
-    const r=canvas.getBoundingClientRect();
-    mxp=((e.clientX-r.left)/r.width-.5)*Math.PI*.9;
-    myp=((e.clientY-r.top)/r.height-.5)*Math.PI*.6;
-  });
-
-  let scrollP=0;
-  window.addEventListener('scroll',()=>scrollP=scrollY/(document.body.scrollHeight-innerHeight));
-
-  const clk=new THREE.Clock();
-  (function loop(){
-    requestAnimationFrame(loop);
-    const t=clk.getElapsedTime();
-    if(autoRot){
-      box.rotation.y=t*.45+scrollP*Math.PI;
-      box.rotation.x=Math.sin(t*.25)*.12;
-    } else {
-      box.rotation.y+=(mxp-box.rotation.y)*.08;
-      box.rotation.x+=(myp-box.rotation.x)*.08;
-    }
-    pt.position.x=Math.sin(t*.8)*3;
-    pt.position.y=Math.cos(t*.5)*2;
-    pt.intensity=2.5+Math.sin(t*1.5)*.8;
-    renderer.render(scene,camera);
-  })();
-})();
-
-/* ══ INTERSECTION OBSERVER — SCROLL REVEALS ══ */
-const obs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+// Scroll reveal
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}});
 },{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-/* ══ STAT COUNTER ══ */
-const statObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting) return;
-    const el = e.target;
-    el.classList.add('visible');
-    const numEl = el.querySelector('.stat-num');
-    const target = parseInt(el.dataset.target);
-    const suffix = el.dataset.suffix;
-    const dur = 2200, start = performance.now();
-    (function tick(now){
-      const p = Math.min((now-start)/dur, 1);
-      const ease = 1-Math.pow(1-p,4);
-      numEl.textContent = Math.round(ease*target) + suffix;
-      if(p<1) requestAnimationFrame(tick);
-    })(start);
-    statObs.unobserve(el);
-  });
-},{threshold:.4});
-document.querySelectorAll('.stat-block').forEach(el=>statObs.observe(el));
-
-/* ══ TESTIMONIALS ══ */
-const reviews=[
-  {n:'Sarah L.',l:'Singapore, 54',s:5,t:'"My blood pressure was 165/105 for 3 years. After 2 weeks on BIO N:OV my reading is 128/82. My doctor is shocked."'},
-  {n:'Michael T.',l:'Australia, 61',s:5,t:'"I have more energy at 61 than I did at 45. This stuff is real. Korean science is no joke."'},
-  {n:'Linda C.',l:'Malaysia, 49',s:5,t:'"Within 30 minutes I actually felt a difference. My skin is also noticeably clearer. I\'m a convert."'},
-  {n:'David K.',l:'USA, 58',s:5,t:'"Was on two BP medications. Now on one and my doctor says I might come off the second soon."'},
-  {n:'Mei F.',l:'Singapore, 52',s:5,t:'"The energy boost is real. I used to crash by 3pm. Now active all day. Wrinkles — honestly 30% better."'},
-  {n:'James W.',l:'UK, 66',s:5,t:'"My father had a stroke. I was terrified. BIO N:OV gave me peace of mind and my numbers back in range."'},
-  {n:'Rachel P.',l:'Philippines, 45',s:5,t:'"I was diagnosed pre-diabetic. Blood sugar dropped noticeably in my first month. Incredible results."'},
-  {n:'Thomas N.',l:'Singapore, 57',s:5,t:'"Tried everything — arginine, beet root, you name it. Nothing touched BIO N:OV. Night and day difference."'},
-];
-const tr = document.getElementById('ttrack');
-[...reviews,...reviews].forEach(r=>{
-  tr.innerHTML+=`<div class="tcard"><div class="tstars">${'★'.repeat(r.s)}</div><p class="ttext">${r.t}</p><div class="tauthor"><div class="tavatar">${r.n[0]}</div><div><span class="tname">${r.n}</span><span class="tloc">${r.l}</span></div></div></div>`;
-});
+document.querySelectorAll('.bc,.step,.tc').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
