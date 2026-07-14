@@ -47,16 +47,12 @@ function Coaster({ scrollRef }) {
   return (
     <group ref={groupRef}>
       <mesh>
-        <cylinderGeometry args={[1.15, 1.15, 0.22, 128, 1]} />
+        <cylinderGeometry args={[1.15, 1.15, 0.22, 256, 1]} />
         <meshStandardMaterial map={tex} roughness={0.93} metalness={0.02} />
       </mesh>
       <mesh position={[0, 0.12, 0]}>
-        <cylinderGeometry args={[0.93, 0.93, 0.04, 128, 1]} />
+        <cylinderGeometry args={[0.93, 0.93, 0.04, 256, 1]} />
         <meshStandardMaterial color="#7A3C0A" roughness={0.98} metalness={0} />
-      </mesh>
-      <mesh position={[0, 0.11, 0]}>
-        <torusGeometry args={[1.15, 0.018, 8, 128]} />
-        <meshStandardMaterial color="#D4841A" roughness={0.85} metalness={0.05} />
       </mesh>
     </group>
   )

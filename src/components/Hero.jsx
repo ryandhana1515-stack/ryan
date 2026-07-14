@@ -30,8 +30,6 @@ function Coaster({ rotX = 0, rotY = 0, posY = 0 }) {
 
   useFrame((state) => {
     if (!groupRef.current) return
-    groupRef.current.rotation.x = rotX
-    groupRef.current.rotation.y += 0.003
     groupRef.current.position.y = posY + Math.sin(state.clock.elapsedTime * 0.8) * 0.04
   })
 
@@ -39,18 +37,13 @@ function Coaster({ rotX = 0, rotY = 0, posY = 0 }) {
     <group ref={groupRef}>
       {/* Main disc body */}
       <mesh>
-        <cylinderGeometry args={[1.15, 1.15, 0.22, 128, 1]} />
+        <cylinderGeometry args={[1.15, 1.15, 0.22, 256, 1]} />
         <meshStandardMaterial map={tex} roughness={0.93} metalness={0.02} />
       </mesh>
       {/* Inner concave bowl - darker recessed area */}
       <mesh position={[0, 0.12, 0]}>
-        <cylinderGeometry args={[0.93, 0.93, 0.04, 128, 1]} />
+        <cylinderGeometry args={[0.93, 0.93, 0.04, 256, 1]} />
         <meshStandardMaterial color="#7A3C0A" roughness={0.98} metalness={0} />
-      </mesh>
-      {/* Subtle rim edge */}
-      <mesh position={[0, 0.11, 0]}>
-        <torusGeometry args={[1.15, 0.018, 8, 128]} />
-        <meshStandardMaterial color="#D4841A" roughness={0.85} metalness={0.05} />
       </mesh>
     </group>
   )
@@ -59,10 +52,10 @@ function Coaster({ rotX = 0, rotY = 0, posY = 0 }) {
 function HeroScene() {
   return (<>
     <color attach="background" args={['#2A3828']} />
-    <ambientLight intensity={0.6} />
-    <directionalLight position={[2, 6, 4]} intensity={2.5} color="#FFF8F0" />
-    <directionalLight position={[-3, 2, -2]} intensity={0.4} color="#A0C080" />
-    <pointLight position={[0, -3, 2]} intensity={0.8} color="#805020" />
+    <ambientLight intensity={0.5} />
+    <directionalLight position={[3, 8, 5]} intensity={3.2} color="#FFF8EE" castShadow />
+    <directionalLight position={[-4, 2, -1]} intensity={0.5} color="#A8C890" />
+    <pointLight position={[0, -2, 3]} intensity={1.0} color="#804818" />
     <Suspense fallback={null}>
       <Environment preset="apartment" />
       <Coaster rotX={0} posY={0} />
@@ -116,11 +109,11 @@ export default function Hero() {
 
         {/* Giant ORYZO */}
         <h1 style={{
-          fontFamily: 'Space Grotesk', fontWeight: 700,
-          fontSize: 'clamp(5.5rem, 23vw, 18rem)',
-          lineHeight: 0.85, color: '#F5EFE0',
-          textAlign: 'center', letterSpacing: '-0.02em',
-          margin: '0.1em 0',
+          fontFamily: 'Syne, Space Grotesk, sans-serif', fontWeight: 800,
+          fontSize: 'clamp(5rem, 30.5vw, 28rem)',
+          lineHeight: 0.82, color: '#F5EFE0',
+          textAlign: 'center', letterSpacing: '-0.03em',
+          margin: '0.08em 0',
         }}>
           ORYZO
         </h1>
@@ -141,7 +134,7 @@ export default function Hero() {
 
       {/* 3D Canvas — coaster */}
       <div style={{ height: '55vw', maxHeight: '520px', minHeight: '280px', position: 'relative', zIndex: 2, marginTop: '-2rem' }}>
-        <Canvas camera={{ position: [0, 2.8, 0.1], fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
+        <Canvas camera={{ position: [1.2, 4.2, 3.0], fov: 38 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false }}>
           <HeroScene />
         </Canvas>
       </div>

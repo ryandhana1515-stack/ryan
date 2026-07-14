@@ -39,16 +39,12 @@ function FloatingCoaster() {
   return (
     <group ref={groupRef} position={[0, 0.3, 0]}>
       <mesh>
-        <cylinderGeometry args={[1.0, 1.0, 0.2, 128]} />
+        <cylinderGeometry args={[1.0, 1.0, 0.2, 256]} />
         <meshStandardMaterial map={tex} roughness={0.93} metalness={0.02} />
       </mesh>
       <mesh position={[0, 0.105, 0]}>
-        <cylinderGeometry args={[0.8, 0.8, 0.03, 128]} />
+        <cylinderGeometry args={[0.8, 0.8, 0.03, 256]} />
         <meshStandardMaterial color="#7A3C0A" roughness={0.98} />
-      </mesh>
-      <mesh position={[0, 0.1, 0]}>
-        <torusGeometry args={[1.0, 0.015, 8, 128]} />
-        <meshStandardMaterial color="#D4841A" roughness={0.85} />
       </mesh>
     </group>
   )
