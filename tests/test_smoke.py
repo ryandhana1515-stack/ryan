@@ -29,7 +29,8 @@ def client():
 def test_all_department_agents_provisioned(client):
     agents = {a["key"] for a in client.get("/api/agents").json()}
     assert agents == {"sales", "support", "marketing", "branding", "content",
-                      "social", "voice", "finance", "hr", "sop", "analytics"}
+                      "social", "voice", "finance", "hr", "sop", "analytics",
+                      "manager", "website", "image", "video"}
 
 
 def test_lead_webhook_triggers_instant_sales_reply_in_approval_queue(client):
@@ -141,7 +142,41 @@ def test_dashboard_summary(client):
     s = client.get("/api/dashboard/summary").json()
     assert s["metrics"]["leads_today"] >= 3
     assert 0 <= s["health"]["overall"] <= 100
-    assert len(s["agents"]) == 11
+    assert len(s["agents"]) == 15
+
+
+def test_manager_delegates_to_content_agent(client):
+    r = client.post("/api/manager/chat", json={
+        "message": "Write 3 Instagram captions about laser facials", "history": []})
+    body = r.json()
+    assert body["delegated_to"] == "content"
+    assert body["reply"]
+
+
+def test_manager_image_agent_returns_media(client):
+    r = client.post("/api/manager/chat", json={
+        "message": "Create an image of a modern clinic reception", "history": []})
+    body = r.json()
+    assert body["delegated_to"] == "image"
+    assert body["media"] and body["media"][0]["url"].startswith("/generated/")
+    file_resp = client.get(body["media"][0]["url"])
+    assert file_resp.status_code == 200
+
+
+def test_manager_website_agent_returns_page(client):
+    r = client.post("/api/manager/chat", json={
+        "message": "Make me a landing page for my July promo", "history": []})
+    body = r.json()
+    assert body["delegated_to"] == "website"
+    assert body["artifacts"] and body["artifacts"][0]["url"].startswith("/generated/")
+    page = client.get(body["artifacts"][0]["url"])
+    assert page.status_code == 200 and b"<html" in page.content.lower()
+
+
+def test_manager_plain_question_gets_direct_reply(client):
+    r = client.post("/api/manager/chat", json={"message": "hello", "history": []})
+    body = r.json()
+    assert body["delegated_to"] is None and body["reply"]
 
 
 def test_daily_digest(client):

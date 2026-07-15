@@ -5,3 +5,4 @@ __pycache__/
 output/
 aibos.db
 .pytest_cache/
+app/static/generated/

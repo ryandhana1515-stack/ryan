@@ -123,5 +123,22 @@ def _mock(system: str, user: str) -> LLMResult:
             "I'm sorry you're running into this. I don't have a documented answer, so I've "
             "opened a ticket and our team will follow up today.\n[ESCALATE]")
 
+    if "landing page generator" in system.lower():
+        safe = user[:120].replace("<", "&lt;")
+        return LLMResult(f"""<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft Landing Page</title></head>
+<body style="font-family:sans-serif;margin:0;color:#111">
+<section style="background:#1a3f6e;color:#fff;text-align:center;padding:72px 24px">
+  <h1 style="font-size:36px;margin:0 0 12px">Your Headline Here</h1>
+  <p style="opacity:.85;max-width:560px;margin:0 auto 24px">Mock draft for: {safe}</p>
+  <a href="#offer" style="background:#fff;color:#1a3f6e;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:700">Get Started</a>
+</section>
+<section id="offer" style="max-width:760px;margin:48px auto;padding:0 24px">
+  <h2>Why choose us</h2><p>Benefit one. Benefit two. Benefit three.</p>
+  <p style="color:#666">(Set an LLM API key to generate a real, brand-voiced page.)</p>
+</section>
+</body></html>""")
+
     # Generic department agents (marketing, finance, hr, analytics, ...)
     return LLMResult("[mock draft]\n" + user[:400])

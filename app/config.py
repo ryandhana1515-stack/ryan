@@ -16,6 +16,15 @@ DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{REPO_ROOT / 'aibos.db'}")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 
+# fal.ai — generative media (image/video agents)
+FAL_KEY = os.getenv("FAL_KEY", "")
+FAL_IMAGE_MODEL = os.getenv("AIBOS_FAL_IMAGE_MODEL", "fal-ai/flux/schnell")
+FAL_VIDEO_MODEL = os.getenv("AIBOS_FAL_VIDEO_MODEL", "fal-ai/ltx-video")
+FAL_VIDEO_TIMEOUT = int(os.getenv("AIBOS_FAL_VIDEO_TIMEOUT", "300"))
+
+# Where generated media/websites land (served at /generated)
+GENERATED_DIR = Path(__file__).resolve().parent / "static" / "generated"
+
 # Model routing policy (doc 3 §3.3): frontier for conversations, small for
 # classification. Overridable per deployment.
 MODEL_FRONTIER = os.getenv("AIBOS_MODEL_FRONTIER", "claude-sonnet-5")
