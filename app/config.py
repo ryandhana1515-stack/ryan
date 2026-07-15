@@ -17,6 +17,15 @@ DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{REPO_ROOT / 'aibos.db'}")
 # Basic, any username). REQUIRED before exposing the app to the internet.
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 
+# Stripe Payment Links (created in the Stripe dashboard, no code needed).
+# When set, the public signup flow sends buyers straight to checkout.
+STRIPE_LINKS = {
+    "starter": os.getenv("STRIPE_LINK_STARTER", ""),
+    "growth": os.getenv("STRIPE_LINK_GROWTH", ""),
+    "scale": os.getenv("STRIPE_LINK_SCALE", ""),
+    "reseller": os.getenv("STRIPE_LINK_RESELLER", ""),
+}
+
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 

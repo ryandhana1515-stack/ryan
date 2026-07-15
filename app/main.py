@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 
-from app.api import agents_api, crm, dashboard, knowledge, manager_api
+from app.api import agents_api, crm, dashboard, knowledge, manager_api, public
 from app.config import GENERATED_DIR
 from app.db import SessionLocal, init_db
 from app.workflows import register_all
@@ -39,6 +39,7 @@ app.include_router(agents_api.router)
 app.include_router(knowledge.router)
 app.include_router(dashboard.router)
 app.include_router(manager_api.router)
+app.include_router(public.router)
 
 _STATIC = Path(__file__).parent / "static"
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
@@ -61,6 +62,12 @@ def chat_page():
 def landing_page():
     """Public marketing landing page (multi-language)."""
     return FileResponse(_STATIC / "landing.html")
+
+
+@app.get("/signup", include_in_schema=False)
+def signup_page():
+    """Public signup funnel — creates a lead in the owner's own tenant."""
+    return FileResponse(_STATIC / "signup.html")
 
 
 @app.get("/health", include_in_schema=False)

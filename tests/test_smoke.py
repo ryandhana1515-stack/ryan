@@ -231,6 +231,32 @@ def test_daily_digest(client):
     assert r["digest"]
 
 
+def test_public_signup_creates_lead_in_owner_tenant(client):
+    r = client.post("/api/public/signup", json={
+        "business": "Glow Studio", "name": "Mei Lin", "phone": "+6598765432",
+        "email": "mei@glow.sg", "country": "Singapore", "plan": "growth",
+        "message": "Automate my Instagram replies"})
+    assert r.json()["ok"] is True
+    leads = client.get("/api/leads").json()
+    assert any(l["source"] == "omnix_signup" for l in leads)
+
+
+def test_public_signup_honeypot_drops_bots(client):
+    before = len(client.get("/api/leads").json())
+    r = client.post("/api/public/signup", json={
+        "business": "Bot Inc", "name": "Bot", "website": "spam.com"})
+    assert r.json()["ok"] is True  # bot sees success, nothing stored
+    assert len(client.get("/api/leads").json()) == before
+
+
+def test_signup_page_public_when_locked(client, monkeypatch):
+    from app import config as cfg
+
+    monkeypatch.setattr(cfg, "ADMIN_PASSWORD", "secret123")
+    assert client.get("/signup").status_code == 200
+    assert client.get("/api/public/plans").status_code == 200
+
+
 def test_admin_password_locks_the_app(client, monkeypatch):
     from app import config as cfg
 

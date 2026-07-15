@@ -9,7 +9,7 @@ import secrets
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-PUBLIC_PATHS = {"/health", "/welcome"}
+PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/api/public/plans", "/api/public/signup"}
 
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):

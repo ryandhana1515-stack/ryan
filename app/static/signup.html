@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get started — OmniX AI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --accent: #2a78d6; --accent-dark: #1a5cb0; --ink: #0d1220; --ink-2: #4a5266;
+          --bg: #f4f6fa; --card: #ffffff; --border: #e5e8ef; }
+  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink);
+         background: var(--bg); min-height: 100vh; padding: 24px; }
+  .box { max-width: 520px; margin: 24px auto; background: var(--card); border: 1px solid var(--border);
+         border-radius: 18px; padding: 32px; }
+  .logo { font-size: 18px; font-weight: 800; margin-bottom: 18px; }
+  .logo span { color: var(--accent); }
+  h1 { font-size: 24px; letter-spacing: -.02em; margin-bottom: 6px; }
+  .sub { color: var(--ink-2); font-size: 14.5px; margin-bottom: 22px; }
+  label { display: block; font-size: 13.5px; font-weight: 600; margin: 14px 0 5px; }
+  input, select, textarea { width: 100%; font: inherit; font-size: 15px; padding: 11px 13px;
+    border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--ink); }
+  textarea { min-height: 80px; resize: vertical; }
+  .hp { position: absolute; left: -9999px; }
+  button { width: 100%; margin-top: 22px; font: inherit; font-size: 16px; font-weight: 700;
+           padding: 14px; border: 0; border-radius: 12px; background: var(--accent); color: #fff; cursor: pointer; }
+  button:hover { background: var(--accent-dark); }
+  button:disabled { opacity: .6; }
+  .fine { font-size: 12.5px; color: var(--ink-2); text-align: center; margin-top: 12px; }
+  #done { display: none; text-align: center; padding: 20px 0; }
+  #done .big { font-size: 44px; }
+  #done h2 { margin: 10px 0 8px; }
+  #done p { color: var(--ink-2); font-size: 15px; }
+  #paybtn { display: inline-block; margin-top: 18px; background: var(--accent); color: #fff;
+            font-weight: 700; text-decoration: none; padding: 13px 30px; border-radius: 12px; }
+  a.back { color: var(--ink-2); font-size: 13.5px; text-decoration: none; display: inline-block; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">Omni<span>X</span> AI</div>
+  <div id="formwrap">
+    <h1>Get started</h1>
+    <div class="sub">Tell us about your business — our AI team (yes, the same one you're buying) will contact you within minutes.</div>
+    <form id="f">
+      <label>Business name</label>
+      <input name="business" required placeholder="e.g. Brow Revolution">
+      <label>Your name</label>
+      <input name="name" required placeholder="e.g. Ryan Dhana">
+      <label>WhatsApp number</label>
+      <input name="phone" placeholder="+65 ...">
+      <label>Email</label>
+      <input name="email" type="email" placeholder="you@business.com">
+      <label>Country</label>
+      <input name="country" placeholder="e.g. Singapore">
+      <label>Plan</label>
+      <select name="plan" id="plan">
+        <option value="starter">Starter — $49/mo</option>
+        <option value="growth" selected>Growth — $149/mo (most popular)</option>
+        <option value="scale">Scale — $399/mo</option>
+        <option value="reseller">Reseller / White-label — from $297/mo</option>
+      </select>
+      <label>What do you want AI to automate first?</label>
+      <textarea name="message" placeholder="e.g. Reply to my Instagram leads and book appointments automatically"></textarea>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off">
+      <button id="go">Start my 14-day free trial</button>
+      <div class="fine">No card needed for the trial. Cancel anytime.</div>
+    </form>
+  </div>
+  <div id="done">
+    <div class="big">🎉</div>
+    <h2>You're in!</h2>
+    <p id="donemsg">Our AI team has your details and will message you within minutes on WhatsApp or email.</p>
+    <a id="paybtn" href="#" style="display:none">Activate my plan now →</a>
+    <br><a class="back" href="/welcome">← Back to site</a>
+  </div>
+</div>
+<script>
+const params = new URLSearchParams(location.search);
+if (params.get("plan")) {
+  const sel = document.getElementById("plan");
+  if ([...sel.options].some(o => o.value === params.get("plan"))) sel.value = params.get("plan");
+}
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("go");
+  btn.disabled = true; btn.textContent = "Setting things up…";
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  try {
+    const r = await fetch("/api/public/signup", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const res = await r.json();
+    document.getElementById("formwrap").style.display = "none";
+    document.getElementById("done").style.display = "block";
+    if (res.pay_link) {
+      const pb = document.getElementById("paybtn");
+      pb.href = res.pay_link; pb.style.display = "inline-block";
+      document.getElementById("donemsg").textContent =
+        "Our AI team will contact you shortly — or activate your plan right now:";
+    }
+  } catch (err) {
+    btn.disabled = false; btn.textContent = "Start my 14-day free trial";
+    alert("Connection problem — please try again.");
+  }
+});
+</script>
+</body>
+</html>
