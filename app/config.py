@@ -13,6 +13,10 @@ AGENTS_CONFIG_DIR = REPO_ROOT / "config" / "agents"
 
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{REPO_ROOT / 'aibos.db'}")
 
+# When set, the whole app (except /health) requires this password (HTTP
+# Basic, any username). REQUIRED before exposing the app to the internet.
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 

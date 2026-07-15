@@ -30,6 +30,10 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="AI Business Operating System", version="0.2.0", lifespan=lifespan)
 
+from app.auth import BasicAuthMiddleware  # noqa: E402
+
+app.add_middleware(BasicAuthMiddleware)
+
 app.include_router(crm.router)
 app.include_router(agents_api.router)
 app.include_router(knowledge.router)

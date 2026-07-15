@@ -9,6 +9,13 @@ class Base(DeclarativeBase):
     pass
 
 
+# Managed Postgres (DigitalOcean/Heroku-style) hands out postgres:// URLs;
+# SQLAlchemy needs the explicit driver scheme.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
 engine_kwargs: dict = {}
 if DATABASE_URL.startswith("sqlite"):
     engine_kwargs["connect_args"] = {"check_same_thread": False}
