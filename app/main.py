@@ -76,6 +76,12 @@ def signup_page():
     return FileResponse(_STATIC / "signup.html")
 
 
+@app.get("/offer", include_in_schema=False)
+def offer_page():
+    """Public founding-member offer page."""
+    return FileResponse(_STATIC / "offer.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}

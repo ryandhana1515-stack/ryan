@@ -254,6 +254,7 @@ def test_signup_page_public_when_locked(client, monkeypatch):
 
     monkeypatch.setattr(cfg, "ADMIN_PASSWORD", "secret123")
     assert client.get("/signup").status_code == 200
+    assert client.get("/offer").status_code == 200
     assert client.get("/api/public/plans").status_code == 200
 
 

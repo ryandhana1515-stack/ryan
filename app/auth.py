@@ -9,7 +9,7 @@ import secrets
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/favicon.ico",
+PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/offer", "/favicon.ico",
                 "/api/public/plans", "/api/public/signup"}
 PUBLIC_PREFIXES = ("/static/brand/",)  # logo assets used by public pages
 
