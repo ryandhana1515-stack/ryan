@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="120" viewBox="0 0 420 120">
+  <defs>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#2a78d6"/>
+    </linearGradient>
+    <radialGradient id="core2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2a78d6"/>
+    </radialGradient>
+  </defs>
+  <!-- Neural X: four agents connected to one intelligent core -->
+  <g transform="translate(60,60)" stroke="url(#g2)" stroke-width="9" stroke-linecap="round">
+    <line x1="-30" y1="-30" x2="-9" y2="-9"/>
+    <line x1="30" y1="-30" x2="9" y2="-9"/>
+    <line x1="-30" y1="30" x2="-9" y2="9"/>
+    <line x1="30" y1="30" x2="9" y2="9"/>
+  </g>
+  <g transform="translate(60,60)">
+    <circle cx="-30" cy="-30" r="8" fill="#06b6d4"/>
+    <circle cx="30" cy="-30" r="8" fill="#2a78d6"/>
+    <circle cx="-30" cy="30" r="8" fill="#2a78d6"/>
+    <circle cx="30" cy="30" r="8" fill="#7c4ae8"/>
+    <circle cx="0" cy="0" r="13" fill="url(#core2)"/>
+  </g>
+  <text x="118" y="73" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#0d1220">Omni<tspan fill="#06b6d4">X</tspan> AI</text>
+</svg>
