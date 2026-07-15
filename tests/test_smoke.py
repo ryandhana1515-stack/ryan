@@ -179,6 +179,53 @@ def test_manager_plain_question_gets_direct_reply(client):
     assert body["delegated_to"] is None and body["reply"]
 
 
+def test_manager_comments_on_ai_employees_with_real_numbers(client):
+    r = client.post("/api/manager/chat", json={
+        "message": "How are my AI employees doing?", "history": []})
+    body = r.json()
+    assert body["delegated_to"] is None
+    assert "Sales AI" in body["reply"] and "runs this week" in body["reply"]
+
+
+def test_manager_business_status_uses_live_metrics(client):
+    r = client.post("/api/manager/chat", json={
+        "message": "How is the business doing today?", "history": []})
+    body = r.json()
+    assert body["delegated_to"] is None
+    assert "Business Health Score" in body["reply"]
+
+
+def test_manager_agentic_loop_chains_tools_then_replies(client, monkeypatch):
+    """Simulates the real-LLM path: the manager calls two tools, receives
+    their results in its transcript, then gives a final answer."""
+    from app import config as cfg
+    from app.agents import llm as llm_mod
+    from app.agents import manager
+
+    monkeypatch.setattr(cfg, "USE_MOCK_LLM", False)
+    monkeypatch.setattr(cfg, "ANTHROPIC_API_KEY", "scripted")
+
+    seen_prompts = []
+    responses = iter([
+        llm_mod.LLMResult('{"action": "tool", "tool": "list_agents", "args": {}}'),
+        llm_mod.LLMResult('{"action": "tool", "tool": "get_business_summary", "args": {}}'),
+        llm_mod.LLMResult('{"action": "reply", "message": "Assessment: sales agent is your workhorse."}'),
+    ])
+
+    def scripted(system, user, tier="frontier", max_tokens=1024):
+        seen_prompts.append(user)
+        return next(responses)
+
+    monkeypatch.setattr(manager.llm, "complete", scripted)
+    r = client.post("/api/manager/chat", json={
+        "message": "Give me an assessment of my AI team", "history": []})
+    body = r.json()
+    assert body["reply"].startswith("Assessment:")
+    # tool results were fed back into the loop's transcript
+    assert "You called list_agents" in seen_prompts[1]
+    assert "You called get_business_summary" in seen_prompts[2]
+
+
 def test_daily_digest(client):
     r = client.post("/api/dashboard/daily-digest").json()
     assert r["digest"]
