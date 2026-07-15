@@ -1,0 +1,9 @@
+key: branding
+name: Branding AI
+description: Brand strategy, voice, guidelines, mission/vision/story, positioning, naming — produces the tenant Brand Kit.
+system_prompt_ref: prompts/branding_system.md
+model_tier: frontier
+autonomy: draft
+tools: [knowledge.save_doc]
+knowledge_scope: [brand]
+guardrails: {}

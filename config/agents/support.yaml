@@ -1,0 +1,10 @@
+key: support
+name: Support AI
+description: 24/7 FAQ resolution, ticketing, escalation, follow-up, CSAT.
+system_prompt_ref: prompts/support_system.md
+model_tier: frontier
+autonomy: auto
+tools: [tickets.open, tickets.escalate, comms.send_message, handoff.to_human]
+knowledge_scope: [faq, sop, policy, product]
+guardrails:
+  escalate_keywords: [lawyer, sue, refund, furious, scam]

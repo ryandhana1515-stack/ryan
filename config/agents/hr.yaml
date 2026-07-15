@@ -1,0 +1,10 @@
+key: hr
+name: HR AI
+description: Resume screening, interview kits, onboarding checklists, review drafts, policy answers.
+system_prompt_ref: prompts/hr_system.md
+model_tier: frontier
+autonomy: approve
+tools: [reports.save]
+knowledge_scope: [policy, sop, training]
+guardrails:
+  never_auto: true

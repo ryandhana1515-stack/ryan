@@ -1,0 +1,10 @@
+key: social
+name: Social Media AI
+description: Comment/DM replies, engagement reports, lead detection from social, listening digests.
+system_prompt_ref: prompts/social_system.md
+model_tier: small
+autonomy: approve
+tools: [comms.send_message, crm.create_lead]
+knowledge_scope: [brand, faq, product]
+guardrails:
+  escalate_keywords: [lawyer, sue, scam]

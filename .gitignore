@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 *.pyo
 output/
+aibos.db
+.pytest_cache/

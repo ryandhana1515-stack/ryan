@@ -1,0 +1,9 @@
+key: marketing
+name: Marketing AI
+description: Marketing plans, campaign ideas, content calendars, personas, competitor and trend analysis, campaign reports.
+system_prompt_ref: prompts/marketing_system.md
+model_tier: frontier
+autonomy: draft
+tools: [content.save_draft]
+knowledge_scope: [brand, product, faq]
+guardrails: {}

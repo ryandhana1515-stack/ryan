@@ -1,0 +1,9 @@
+key: analytics
+name: Analytics AI
+description: Daily CEO digest, health score commentary, anomaly explanations, periodic report packs. Read-only.
+system_prompt_ref: prompts/analytics_system.md
+model_tier: frontier
+autonomy: auto
+tools: [reports.save]
+knowledge_scope: []
+guardrails: {}
