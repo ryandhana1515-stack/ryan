@@ -9,14 +9,18 @@ import secrets
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/api/public/plans", "/api/public/signup"}
+PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/favicon.ico",
+                "/api/public/plans", "/api/public/signup"}
+PUBLIC_PREFIXES = ("/static/brand/",)  # logo assets used by public pages
 
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         from app import config
 
-        if not config.ADMIN_PASSWORD or request.url.path in PUBLIC_PATHS:
+        path = request.url.path
+        if (not config.ADMIN_PASSWORD or path in PUBLIC_PATHS
+                or path.startswith(PUBLIC_PREFIXES)):
             return await call_next(request)
 
         header = request.headers.get("authorization", "")

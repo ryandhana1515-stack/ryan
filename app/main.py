@@ -44,6 +44,12 @@ app.include_router(public.router)
 _STATIC = Path(__file__).parent / "static"
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/generated", StaticFiles(directory=GENERATED_DIR), name="generated")
+app.mount("/static", StaticFiles(directory=_STATIC), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(_STATIC / "brand" / "favicon-64.png")
 
 
 @app.get("/", include_in_schema=False)

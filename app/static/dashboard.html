@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CEO Command Center — AI-BOS</title>
+<title>CEO Command Center — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
 <style>
   :root {
     color-scheme: light;
@@ -69,9 +70,12 @@
 </head>
 <body>
 <header>
-  <div>
-    <h1 id="tenant">CEO Command Center <small>AI Business OS — live</small></h1>
-    <div class="status" style="margin-top:4px"><span id="refreshed" class="empty"></span></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="/static/brand/logo-128.png" alt="OmniX AI" style="width:44px;height:44px;border-radius:10px">
+    <div>
+      <h1 id="tenant">CEO Command Center <small>OmniX AI — live</small></h1>
+      <div class="status" style="margin-top:4px"><span id="refreshed" class="empty"></span></div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;gap:18px">
     <a href="/chat" style="background:var(--series-1);color:#fff;text-decoration:none;
@@ -114,7 +118,7 @@ const TILE_DEFS = [
 async function load() {
   const s = await (await fetch("/api/dashboard/summary")).json();
   document.getElementById("tenant").innerHTML =
-    s.tenant + " <small>CEO Command Center — AI Business OS</small>";
+    s.tenant + " <small>CEO Command Center — OmniX AI</small>";
   document.getElementById("health").textContent = s.health.overall;
   document.getElementById("tiles").innerHTML = TILE_DEFS.map(([k, label, fmt]) =>
     `<div class="tile"><div class="v">${fmt(s.metrics[k] ?? 0)}</div><div class="k">${label}</div></div>`).join("");
