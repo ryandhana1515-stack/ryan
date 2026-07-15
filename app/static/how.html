@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --grad: linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+          --accent: #8b5cf6; --cyan: #22d3ee;
+          --ink: #f2f5ff; --ink-2: #a3adce;
+          --bg: #0a0e1e; --card: #121a38; --border: #263059; --good: #34d399; }
+  body { font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 22px 70px; }
+  nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--ink); }
+  .logo img { width: 34px; height: 34px; border-radius: 8px; }
+  .logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn { display: inline-block; background: var(--grad); color: #fff; font-weight: 800; text-decoration: none;
+         padding: 13px 26px; border-radius: 12px; box-shadow: 0 4px 24px rgba(109,91,245,.45); }
+  .btn-ghost { background: none; box-shadow: none; border: 1px solid var(--border); color: var(--ink); font-weight: 600; }
+  h1 { font-size: clamp(30px, 5.5vw, 44px); line-height: 1.13; letter-spacing: -.02em; font-weight: 850; }
+  h1 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: normal; }
+  .lead { color: var(--ink-2); font-size: 18px; margin: 14px 0 40px; }
+  h2 { font-size: 24px; letter-spacing: -.01em; margin: 46px 0 18px; }
+  .tl { position: relative; padding-left: 34px; }
+  .tl::before { content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px;
+                background: linear-gradient(180deg, #22d3ee, #6d5bf5, #d946ef); opacity: .5; }
+  .ev { position: relative; margin-bottom: 26px; }
+  .ev::before { content: ""; position: absolute; left: -30px; top: 6px; width: 12px; height: 12px;
+                border-radius: 50%; background: var(--grad); box-shadow: 0 0 12px rgba(109,91,245,.8); }
+  .ev .t { font-size: 12.5px; color: var(--cyan); font-weight: 700; letter-spacing: .05em; }
+  .ev h3 { font-size: 17px; margin: 3px 0 5px; }
+  .ev p { color: var(--ink-2); font-size: 15px; }
+  .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px 15px; font-size: 14.5px; margin-top: 9px; }
+  .bubble b { color: var(--cyan); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; display: block; margin-bottom: 3px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin: 18px 0; }
+  .card h3 { font-size: 17px; margin-bottom: 8px; }
+  .card p, .card li { color: var(--ink-2); font-size: 15px; }
+  .card ul { padding-left: 20px; margin-top: 8px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .stat { text-align: center; padding: 18px; }
+  .stat .n { font-size: 30px; font-weight: 900; background: var(--grad); -webkit-background-clip: text;
+             background-clip: text; color: transparent; }
+  .stat .l { color: var(--ink-2); font-size: 13.5px; }
+  .cta-block { text-align: center; margin-top: 46px; padding: 36px 24px; background: var(--card);
+               border: 1px solid var(--border); border-radius: 18px; }
+  .cta-block h2 { margin: 0 0 8px; }
+  .cta-block p { color: var(--ink-2); margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="/welcome"><img src="/static/brand/logo-128.png" alt="OmniX AI">Omni<span>X</span> AI</a>
+    <a class="btn btn-ghost" href="/welcome">← Back</a>
+  </nav>
+
+  <h1>What actually happens when a customer messages you at <em>2:47am</em></h1>
+  <p class="lead">This is a real walk-through of one night in a business running on OmniX AI —
+     every step below happens automatically, while the owner sleeps.</p>
+
+  <div class="tl">
+    <div class="ev"><div class="t">2:47 AM</div>
+      <h3>A lead arrives</h3>
+      <p>Someone sees your Instagram ad and messages you.</p>
+      <div class="bubble"><b>Customer</b>"Hi, how much is your treatment? Do you have slots this week?"</div>
+    </div>
+    <div class="ev"><div class="t">2:47 AM — 8 SECONDS LATER</div>
+      <h3>Sales AI answers — correctly</h3>
+      <p>It replies in the customer's language, using YOUR real prices and policies (it cannot invent things — it only knows what you taught it).</p>
+      <div class="bubble"><b>Sales AI</b>"Hi! Our signature treatment is $180, and yes — we have Thursday 2pm or Saturday 11am available. Which suits you better?"</div>
+    </div>
+    <div class="ev"><div class="t">2:49 AM</div>
+      <h3>It qualifies and scores the lead</h3>
+      <p>Behind the scenes it detects buying signals, scores the lead 87/100, and moves them toward booking — one question at a time, never pushy.</p>
+    </div>
+    <div class="ev"><div class="t">2:52 AM</div>
+      <h3>Appointment booked</h3>
+      <p>The slot is reserved, a confirmation goes out, and reminders are scheduled for 24h and 3h before — no-shows drop sharply.</p>
+    </div>
+    <div class="ev"><div class="t">7:00 AM</div>
+      <h3>You wake up to a briefing, not chaos</h3>
+      <p>Your Analytics AI has already read the numbers.</p>
+      <div class="bubble"><b>Daily digest</b>"3 new leads overnight. 1 appointment booked (Thu 2pm, $180). 1 lead asking about refunds — escalated to you. Health score 82."</div>
+    </div>
+    <div class="ev"><div class="t">7:05 AM</div>
+      <h3>You approve with your coffee</h3>
+      <p>Anything sensitive waits in your Approval Queue. You read, tap Approve or edit — 5 minutes, done. That's your new admin day.</p>
+    </div>
+  </div>
+
+  <h2>The safety system that makes this trustworthy</h2>
+  <div class="card">
+    <h3>🎚️ The autonomy dial — you're always in control</h3>
+    <p>Every AI employee starts in <b>Approve mode</b>: it drafts, you tap OK before anything is sent.
+       When an employee proves itself, you promote it to full autopilot — one employee at a time.
+       There's also a kill switch on each one. Money actions (payments, payroll) can <b>never</b> go automatic, by design.</p>
+  </div>
+  <div class="card">
+    <h3>🧠 It only knows YOUR truth</h3>
+    <p>Your AI team answers from your uploaded services, prices, policies, and FAQs — not from the open internet.
+       If it doesn't know, it says it will check and hands over to you, instead of making something up.</p>
+  </div>
+  <div class="card">
+    <h3>🔐 Your data stays yours</h3>
+    <p>Each business gets its own locked, isolated account. Your customer list is never shared, never sold,
+       and you can export it and leave anytime.</p>
+  </div>
+
+  <h2>What's in the box</h2>
+  <div class="card">
+    <ul>
+      <li><b>15 AI employees</b> — Sales, Support, Voice, Marketing, Branding, Content, Social Media, Image, Video, Website, Finance, HR, SOP, Analytics, and the Manager AI you simply chat with</li>
+      <li><b>CEO dashboard</b> — revenue, leads, conversion, appointments, health score, live</li>
+      <li><b>Approval queue</b> — one screen where you stay in charge</li>
+      <li><b>Knowledge base</b> — teach it once, it answers forever</li>
+      <li><b>12+ languages</b> — your customers' language, automatically, anywhere in the world</li>
+    </ul>
+  </div>
+
+  <h2>Setting up takes one call</h2>
+  <div class="grid2">
+    <div class="card stat"><div class="n">1</div><div class="l">Sign up free — no card needed</div></div>
+    <div class="card stat"><div class="n">2</div><div class="l">One setup call: we load your services, prices &amp; FAQs together</div></div>
+    <div class="card stat"><div class="n">3</div><div class="l">Your AI team goes to work — you approve from your phone</div></div>
+  </div>
+
+  <div class="cta-block">
+    <h2>See it with your own business's name on it</h2>
+    <p>14 days free. Founding members lock $49/month for life.</p>
+    <a class="btn" href="/signup">Start free trial</a>&nbsp;&nbsp;
+    <a class="btn btn-ghost" href="/offer">See the founding offer</a>
+  </div>
+</div>
+</body>
+</html>

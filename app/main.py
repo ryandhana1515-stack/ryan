@@ -82,6 +82,12 @@ def offer_page():
     return FileResponse(_STATIC / "offer.html")
 
 
+@app.get("/how", include_in_schema=False)
+def how_page():
+    """Public 'how it works' walkthrough page."""
+    return FileResponse(_STATIC / "how.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}
