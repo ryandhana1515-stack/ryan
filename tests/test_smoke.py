@@ -237,6 +237,7 @@ def test_admin_password_locks_the_app(client, monkeypatch):
     monkeypatch.setattr(cfg, "ADMIN_PASSWORD", "secret123")
     assert client.get("/api/agents").status_code == 401       # no password
     assert client.get("/health").status_code == 200           # health stays open
+    assert client.get("/welcome").status_code == 200          # marketing page stays public
     ok = client.get("/api/agents", auth=("ceo", "secret123")) # correct password
     assert ok.status_code == 200
     bad = client.get("/api/agents", auth=("ceo", "wrong"))

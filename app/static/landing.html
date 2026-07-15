@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OmniX AI — The AI Business Operating System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --accent: #2a78d6; --accent-dark: #1a5cb0; --ink: #0d1220; --ink-2: #4a5266;
+          --bg: #ffffff; --bg-soft: #f4f6fa; --border: #e5e8ef; }
+  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  .logo { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
+  .logo span { color: var(--accent); }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); }
+  .btn { display: inline-block; padding: 12px 26px; border-radius: 10px; font-weight: 700;
+         text-decoration: none; font-size: 15px; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-dark); }
+  .btn-ghost { color: var(--ink); border: 1px solid var(--border); padding: 8px 18px; }
+  .hero { text-align: center; padding: 72px 0 56px; }
+  .hero h1 { font-size: clamp(32px, 5.5vw, 54px); line-height: 1.12; letter-spacing: -.03em; font-weight: 850; }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero p { max-width: 640px; margin: 20px auto 32px; font-size: 19px; color: var(--ink-2); }
+  .hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .trustline { margin-top: 18px; font-size: 13px; color: var(--ink-2); }
+  section { padding: 56px 0; }
+  section.soft { background: var(--bg-soft); }
+  h2 { font-size: clamp(24px, 3.5vw, 34px); letter-spacing: -.02em; text-align: center; margin-bottom: 8px; }
+  .sub { text-align: center; color: var(--ink-2); max-width: 620px; margin: 0 auto 36px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .step { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+  .step .n { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff;
+             display: flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 12px; }
+  .step h3 { font-size: 17px; margin-bottom: 6px; }
+  .step p { font-size: 14.5px; color: var(--ink-2); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .card .emoji { font-size: 22px; }
+  .card h3 { font-size: 15.5px; margin: 8px 0 4px; }
+  .card p { font-size: 13.5px; color: var(--ink-2); }
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; align-items: stretch; }
+  .plan { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 26px; display: flex; flex-direction: column; }
+  .plan.featured { border: 2px solid var(--accent); position: relative; }
+  .plan .tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+               background: var(--accent); color: #fff; font-size: 12px; font-weight: 700;
+               padding: 3px 12px; border-radius: 99px; }
+  .plan h3 { font-size: 18px; }
+  .price { font-size: 38px; font-weight: 850; margin: 10px 0 2px; }
+  .price small { font-size: 14px; font-weight: 500; color: var(--ink-2); }
+  .plan ul { list-style: none; padding: 0; margin: 16px 0 22px; }
+  .plan li { font-size: 14.5px; padding: 5px 0 5px 26px; position: relative; color: var(--ink-2); }
+  .plan li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 800; }
+  .plan .btn { margin-top: auto; text-align: center; }
+  .wl { background: linear-gradient(120deg, #10203a, #1a3f6e); color: #fff; border-radius: 18px;
+        padding: 36px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+  .wl h3 { font-size: 24px; margin-bottom: 6px; }
+  .wl p { opacity: .85; max-width: 560px; }
+  footer { padding: 36px 0 48px; text-align: center; color: var(--ink-2); font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo">Omni<span>X</span> AI</div>
+    <div class="nav-right">
+      <select id="lang" onchange="setLang(this.value)">
+        <option value="en">English</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="th">ไทย</option>
+        <option value="zh">中文</option>
+      </select>
+      <a class="btn btn-ghost" href="/" data-i="login">Log in</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1 data-i="h1">Run your business with <em>AI employees</em> — 24/7, in any language</h1>
+    <p data-i="h1sub">OmniX AI replies to every lead in seconds, books appointments, follows up, writes your content, and shows you the whole business on one CEO dashboard — while you focus on growth.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#pricing" data-i="cta1">Start free trial</a>
+      <a class="btn btn-ghost" href="#how" data-i="cta2">See how it works</a>
+    </div>
+    <div class="trustline" data-i="trust">Built for salons, clinics, agencies, and service businesses across Asia.</div>
+  </div>
+</div>
+
+<section class="soft" id="how">
+  <div class="wrap">
+    <h2 data-i="howh">Your business, on autopilot</h2>
+    <p class="sub" data-i="howsub">Three steps — no technical skills needed.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3 data-i="s1h">Connect your channels</h3><p data-i="s1p">WhatsApp, Instagram, Facebook, TikTok leads — everything flows into one place.</p></div>
+      <div class="step"><div class="n">2</div><h3 data-i="s2h">Teach it your business</h3><p data-i="s2p">Upload your services, prices, and FAQs. Your AI team answers exactly like your best staff.</p></div>
+      <div class="step"><div class="n">3</div><h3 data-i="s3h">Approve and grow</h3><p data-i="s3p">AI drafts, you tap Approve. As trust grows, switch agents to full autopilot.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-i="teamh">Meet your AI team</h2>
+    <p class="sub" data-i="teamsub">15 AI employees, one monthly price — they never sleep, never quit, and speak your customers' language.</p>
+    <div class="grid">
+      <div class="card"><div class="emoji">💬</div><h3 data-i="a1h">Sales AI</h3><p data-i="a1p">Replies to every lead in under a minute, qualifies, and books the appointment.</p></div>
+      <div class="card"><div class="emoji">🛟</div><h3 data-i="a2h">Support AI</h3><p data-i="a2p">Answers customer questions 24/7 from your own knowledge base.</p></div>
+      <div class="card"><div class="emoji">📣</div><h3 data-i="a3h">Marketing & Content AI</h3><p data-i="a3p">Plans campaigns and writes posts, captions, and TikTok scripts in your brand voice.</p></div>
+      <div class="card"><div class="emoji">🎨</div><h3 data-i="a4h">Image & Video AI</h3><p data-i="a4p">Creates ad visuals and short clips for your promotions.</p></div>
+      <div class="card"><div class="emoji">📞</div><h3 data-i="a5h">Voice AI</h3><p data-i="a5p">Calls customers to confirm appointments and follow up — human-like, polite, tireless.</p></div>
+      <div class="card"><div class="emoji">📊</div><h3 data-i="a6h">Analytics AI</h3><p data-i="a6p">Tells you every morning what matters: sales, leads, cash, risks.</p></div>
+      <div class="card"><div class="emoji">🧭</div><h3 data-i="a7h">Manager AI</h3><p data-i="a7p">One chat that commands them all — like texting your operations manager.</p></div>
+      <div class="card"><div class="emoji">🗂️</div><h3 data-i="a8h">HR, Finance & SOP AI</h3><p data-i="a8p">Screens resumes, drafts money reports, writes procedures for your team.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="soft" id="pricing">
+  <div class="wrap">
+    <h2 data-i="prh">Simple pricing</h2>
+    <p class="sub" data-i="prsub">Start free for 14 days. Cancel anytime.</p>
+    <div class="plans">
+      <div class="plan">
+        <h3>Starter</h3>
+        <div class="price">$49<small data-i="mo">/month</small></div>
+        <ul>
+          <li data-i="p1a">Sales, Support & Content AI</li>
+          <li data-i="p1b">500 AI actions / month</li>
+          <li data-i="p1c">WhatsApp + web chat</li>
+          <li data-i="p1d">CEO dashboard</li>
+        </ul>
+        <a class="btn btn-primary" href="/" data-i="choose">Choose plan</a>
+      </div>
+      <div class="plan featured">
+        <div class="tag" data-i="pop">Most popular</div>
+        <h3>Growth</h3>
+        <div class="price">$149<small data-i="mo2">/month</small></div>
+        <ul>
+          <li data-i="p2a">All 15 AI employees</li>
+          <li data-i="p2b">2,500 AI actions / month</li>
+          <li data-i="p2c">Instagram, Facebook & TikTok</li>
+          <li data-i="p2d">Image & video generation</li>
+        </ul>
+        <a class="btn btn-primary" href="/" data-i="choose2">Choose plan</a>
+      </div>
+      <div class="plan">
+        <h3>Scale</h3>
+        <div class="price">$399<small data-i="mo3">/month</small></div>
+        <ul>
+          <li data-i="p3a">Everything in Growth</li>
+          <li data-i="p3b">10,000 AI actions / month</li>
+          <li data-i="p3c">AI voice calling</li>
+          <li data-i="p3d">Priority onboarding & support</li>
+        </ul>
+        <a class="btn btn-primary" href="/" data-i="choose3">Choose plan</a>
+      </div>
+    </div>
+    <div style="height:22px"></div>
+    <div class="wl">
+      <div>
+        <h3 data-i="wlh">White-label: sell OmniX AI as your own</h3>
+        <p data-i="wlp">Agencies and resellers — your brand, your domain, your prices. Client accounts from $19/month. Build your own software empire on our engine.</p>
+      </div>
+      <a class="btn btn-primary" href="/" data-i="wlcta">Become a reseller</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div data-i="foot">© OmniX AI — The AI Business Operating System. Made in Singapore 🇸🇬</div>
+  </div>
+</footer>
+
+<script>
+const T = {
+  ms: {
+    login: "Log masuk",
+    h1: "Jalankan bisnes anda dengan <em>pekerja AI</em> — 24/7, dalam apa jua bahasa",
+    h1sub: "OmniX AI membalas setiap lead dalam beberapa saat, menempah temujanji, membuat susulan, menulis kandungan anda, dan menunjukkan seluruh bisnes pada satu papan pemuka CEO — sementara anda fokus pada pertumbuhan.",
+    cta1: "Mula percubaan percuma", cta2: "Lihat cara ia berfungsi",
+    trust: "Dibina untuk salun, klinik, agensi dan bisnes servis di seluruh Asia.",
+    howh: "Bisnes anda, secara autopilot", howsub: "Tiga langkah — tiada kemahiran teknikal diperlukan.",
+    s1h: "Sambungkan saluran anda", s1p: "WhatsApp, Instagram, Facebook, lead TikTok — semuanya masuk ke satu tempat.",
+    s2h: "Ajar bisnes anda", s2p: "Muat naik servis, harga dan FAQ anda. Pasukan AI menjawab seperti staf terbaik anda.",
+    s3h: "Lulus dan berkembang", s3p: "AI menyediakan draf, anda tekan Lulus. Bila yakin, tukar ejen ke autopilot penuh.",
+    teamh: "Kenali pasukan AI anda", teamsub: "15 pekerja AI, satu harga bulanan — tidak tidur, tidak berhenti kerja, dan bertutur dalam bahasa pelanggan anda.",
+    a1h: "AI Jualan", a1p: "Membalas setiap lead dalam masa seminit, menapis dan menempah temujanji.",
+    a2h: "AI Sokongan", a2p: "Menjawab soalan pelanggan 24/7 daripada pangkalan pengetahuan anda.",
+    a3h: "AI Pemasaran & Kandungan", a3p: "Merancang kempen dan menulis pos, kapsyen dan skrip TikTok dalam suara jenama anda.",
+    a4h: "AI Imej & Video", a4p: "Mencipta visual iklan dan klip pendek untuk promosi anda.",
+    a5h: "AI Panggilan Suara", a5p: "Menelefon pelanggan untuk sahkan temujanji dan buat susulan — mesra dan tidak jemu.",
+    a6h: "AI Analitik", a6p: "Memberitahu anda setiap pagi apa yang penting: jualan, lead, tunai, risiko.",
+    a7h: "AI Pengurus", a7p: "Satu chat yang mengawal semuanya — seperti menghantar mesej kepada pengurus operasi anda.",
+    a8h: "AI HR, Kewangan & SOP", a8p: "Menapis resume, menyediakan laporan kewangan, menulis prosedur untuk pasukan anda.",
+    prh: "Harga mudah", prsub: "Mula percuma selama 14 hari. Batal bila-bila masa.",
+    mo: "/bulan", mo2: "/bulan", mo3: "/bulan", pop: "Paling popular",
+    p1a: "AI Jualan, Sokongan & Kandungan", p1b: "500 tindakan AI / bulan", p1c: "WhatsApp + chat web", p1d: "Papan pemuka CEO",
+    p2a: "Semua 15 pekerja AI", p2b: "2,500 tindakan AI / bulan", p2c: "Instagram, Facebook & TikTok", p2d: "Penjanaan imej & video",
+    p3a: "Semua dalam Growth", p3b: "10,000 tindakan AI / bulan", p3c: "Panggilan suara AI", p3d: "Onboarding & sokongan keutamaan",
+    choose: "Pilih pelan", choose2: "Pilih pelan", choose3: "Pilih pelan",
+    wlh: "White-label: jual OmniX AI sebagai jenama anda", wlp: "Agensi dan penjual semula — jenama anda, domain anda, harga anda. Akaun klien dari $19/bulan.",
+    wlcta: "Jadi penjual semula", foot: "© OmniX AI — Sistem Operasi Bisnes AI. Dibuat di Singapura 🇸🇬"
+  },
+  id: {
+    login: "Masuk",
+    h1: "Jalankan bisnis Anda dengan <em>karyawan AI</em> — 24/7, dalam bahasa apa pun",
+    h1sub: "OmniX AI membalas setiap prospek dalam hitungan detik, membuat janji temu, menindaklanjuti, menulis konten Anda, dan menampilkan seluruh bisnis di satu dasbor CEO — sementara Anda fokus bertumbuh.",
+    cta1: "Mulai uji coba gratis", cta2: "Lihat cara kerjanya",
+    trust: "Dibangun untuk salon, klinik, agensi, dan bisnis jasa di seluruh Asia.",
+    howh: "Bisnis Anda, berjalan otomatis", howsub: "Tiga langkah — tanpa keahlian teknis.",
+    s1h: "Hubungkan saluran Anda", s1p: "WhatsApp, Instagram, Facebook, prospek TikTok — semua masuk ke satu tempat.",
+    s2h: "Ajari bisnis Anda", s2p: "Unggah layanan, harga, dan FAQ Anda. Tim AI menjawab seperti staf terbaik Anda.",
+    s3h: "Setujui dan berkembang", s3p: "AI membuat draf, Anda tekan Setujui. Saat sudah yakin, alihkan agen ke autopilot penuh.",
+    teamh: "Kenali tim AI Anda", teamsub: "15 karyawan AI, satu harga bulanan — tidak tidur, tidak resign, dan berbicara bahasa pelanggan Anda.",
+    a1h: "AI Penjualan", a1p: "Membalas setiap prospek dalam semenit, mengkualifikasi, dan membuat janji temu.",
+    a2h: "AI Dukungan", a2p: "Menjawab pertanyaan pelanggan 24/7 dari basis pengetahuan Anda.",
+    a3h: "AI Pemasaran & Konten", a3p: "Merencanakan kampanye dan menulis posting, caption, dan skrip TikTok dengan suara merek Anda.",
+    a4h: "AI Gambar & Video", a4p: "Membuat visual iklan dan klip pendek untuk promosi Anda.",
+    a5h: "AI Panggilan Suara", a5p: "Menelepon pelanggan untuk konfirmasi janji dan tindak lanjut — sopan dan tak kenal lelah.",
+    a6h: "AI Analitik", a6p: "Memberi tahu Anda setiap pagi hal yang penting: penjualan, prospek, kas, risiko.",
+    a7h: "AI Manajer", a7p: "Satu chat yang mengendalikan semuanya — seperti mengirim pesan ke manajer operasional Anda.",
+    a8h: "AI HR, Keuangan & SOP", a8p: "Menyaring CV, menyusun laporan keuangan, menulis prosedur untuk tim Anda.",
+    prh: "Harga sederhana", prsub: "Gratis 14 hari. Batalkan kapan saja.",
+    mo: "/bulan", mo2: "/bulan", mo3: "/bulan", pop: "Paling populer",
+    p1a: "AI Penjualan, Dukungan & Konten", p1b: "500 aksi AI / bulan", p1c: "WhatsApp + chat web", p1d: "Dasbor CEO",
+    p2a: "Semua 15 karyawan AI", p2b: "2.500 aksi AI / bulan", p2c: "Instagram, Facebook & TikTok", p2d: "Pembuatan gambar & video",
+    p3a: "Semua di Growth", p3b: "10.000 aksi AI / bulan", p3c: "Panggilan suara AI", p3d: "Onboarding & dukungan prioritas",
+    choose: "Pilih paket", choose2: "Pilih paket", choose3: "Pilih paket",
+    wlh: "White-label: jual OmniX AI dengan merek Anda", wlp: "Agensi dan reseller — merek Anda, domain Anda, harga Anda. Akun klien mulai $19/bulan.",
+    wlcta: "Jadi reseller", foot: "© OmniX AI — Sistem Operasi Bisnis AI. Dibuat di Singapura 🇸🇬"
+  },
+  th: {
+    login: "เข้าสู่ระบบ",
+    h1: "ขับเคลื่อนธุรกิจของคุณด้วย<em>พนักงาน AI</em> — ตลอด 24 ชั่วโมง ทุกภาษา",
+    h1sub: "OmniX AI ตอบทุกลูกค้าภายในไม่กี่วินาที จองนัดหมาย ติดตามผล เขียนคอนเทนต์ และแสดงภาพรวมธุรกิจทั้งหมดบนแดชบอร์ด CEO เดียว — ให้คุณโฟกัสที่การเติบโต",
+    cta1: "เริ่มทดลองใช้ฟรี", cta2: "ดูวิธีการทำงาน",
+    trust: "สร้างมาเพื่อร้านเสริมสวย คลินิก เอเจนซี่ และธุรกิจบริการทั่วเอเชีย",
+    howh: "ธุรกิจของคุณ ทำงานอัตโนมัติ", howsub: "สามขั้นตอน — ไม่ต้องมีความรู้ด้านเทคนิค",
+    s1h: "เชื่อมต่อช่องทางของคุณ", s1p: "WhatsApp, Instagram, Facebook, ลูกค้าจาก TikTok — ทุกอย่างรวมอยู่ในที่เดียว",
+    s2h: "สอนธุรกิจของคุณ", s2p: "อัปโหลดบริการ ราคา และคำถามที่พบบ่อย ทีม AI จะตอบเหมือนพนักงานที่ดีที่สุดของคุณ",
+    s3h: "อนุมัติและเติบโต", s3p: "AI ร่างข้อความ คุณแตะอนุมัติ เมื่อมั่นใจแล้ว เปลี่ยนเป็นอัตโนมัติเต็มรูปแบบ",
+    teamh: "พบกับทีม AI ของคุณ", teamsub: "พนักงาน AI 15 คน ราคาเดียวต่อเดือน — ไม่หลับ ไม่ลาออก และพูดภาษาลูกค้าของคุณ",
+    a1h: "AI ฝ่ายขาย", a1p: "ตอบทุกลูกค้าภายในหนึ่งนาที คัดกรอง และจองนัดหมาย",
+    a2h: "AI ฝ่ายบริการ", a2p: "ตอบคำถามลูกค้าตลอด 24 ชั่วโมงจากฐานความรู้ของคุณ",
+    a3h: "AI การตลาดและคอนเทนต์", a3p: "วางแผนแคมเปญและเขียนโพสต์ แคปชั่น สคริปต์ TikTok ในน้ำเสียงแบรนด์ของคุณ",
+    a4h: "AI รูปภาพและวิดีโอ", a4p: "สร้างภาพโฆษณาและคลิปสั้นสำหรับโปรโมชั่นของคุณ",
+    a5h: "AI โทรศัพท์", a5p: "โทรหาลูกค้าเพื่อยืนยันนัดหมายและติดตามผล — สุภาพและไม่รู้จักเหนื่อย",
+    a6h: "AI วิเคราะห์", a6p: "บอกคุณทุกเช้าว่าอะไรสำคัญ: ยอดขาย ลูกค้าใหม่ เงินสด ความเสี่ยง",
+    a7h: "AI ผู้จัดการ", a7p: "แชทเดียวที่สั่งการทุกอย่าง — เหมือนส่งข้อความหาผู้จัดการของคุณ",
+    a8h: "AI ฝ่ายบุคคล การเงิน และ SOP", a8p: "คัดกรองเรซูเม่ ร่างรายงานการเงิน เขียนขั้นตอนการทำงานให้ทีมของคุณ",
+    prh: "ราคาเรียบง่าย", prsub: "ทดลองฟรี 14 วัน ยกเลิกได้ทุกเมื่อ",
+    mo: "/เดือน", mo2: "/เดือน", mo3: "/เดือน", pop: "ยอดนิยม",
+    p1a: "AI ฝ่ายขาย บริการ และคอนเทนต์", p1b: "500 การทำงาน AI / เดือน", p1c: "WhatsApp + แชทเว็บ", p1d: "แดชบอร์ด CEO",
+    p2a: "พนักงาน AI ทั้ง 15 คน", p2b: "2,500 การทำงาน AI / เดือน", p2c: "Instagram, Facebook และ TikTok", p2d: "สร้างรูปภาพและวิดีโอ",
+    p3a: "ทุกอย่างใน Growth", p3b: "10,000 การทำงาน AI / เดือน", p3c: "AI โทรศัพท์", p3d: "การดูแลระดับพรีเมียม",
+    choose: "เลือกแพ็กเกจ", choose2: "เลือกแพ็กเกจ", choose3: "เลือกแพ็กเกจ",
+    wlh: "White-label: ขาย OmniX AI ในแบรนด์ของคุณ", wlp: "เอเจนซี่และตัวแทนจำหน่าย — แบรนด์ของคุณ โดเมนของคุณ ราคาของคุณ บัญชีลูกค้าเริ่มต้น $19/เดือน",
+    wlcta: "สมัครเป็นตัวแทน", foot: "© OmniX AI — ระบบปฏิบัติการธุรกิจ AI สร้างในสิงคโปร์ 🇸🇬"
+  },
+  zh: {
+    login: "登录",
+    h1: "让<em>AI员工</em>为您经营生意 — 全天候，支持任何语言",
+    h1sub: "OmniX AI 秒回每一位客户咨询、自动预约、跟进回访、撰写内容，并在一个 CEO 仪表盘上展示整个企业 — 让您专注于增长。",
+    cta1: "免费试用", cta2: "了解运作方式",
+    trust: "为全亚洲的美容院、诊所、代理机构和服务型企业打造。",
+    howh: "您的生意，自动运转", howsub: "三个步骤 — 无需任何技术背景。",
+    s1h: "连接您的渠道", s1p: "WhatsApp、Instagram、Facebook、TikTok 客源 — 全部汇入一处。",
+    s2h: "录入您的业务", s2p: "上传服务项目、价格和常见问题。AI 团队像您最优秀的员工一样回答。",
+    s3h: "审批并增长", s3p: "AI 起草，您点击批准。信任建立后，可切换为全自动模式。",
+    teamh: "认识您的 AI 团队", teamsub: "15 位 AI 员工，一个月费 — 不睡觉、不辞职、说客户的语言。",
+    a1h: "销售 AI", a1p: "一分钟内回复每位客户，筛选意向并预约到店。",
+    a2h: "客服 AI", a2p: "基于您的知识库，全天候回答客户问题。",
+    a3h: "营销与内容 AI", a3p: "策划活动，用您的品牌声音撰写帖子、文案和 TikTok 脚本。",
+    a4h: "图像与视频 AI", a4p: "为您的促销活动生成广告图片和短视频。",
+    a5h: "语音电话 AI", a5p: "致电客户确认预约并跟进 — 礼貌周到，不知疲倦。",
+    a6h: "分析 AI", a6p: "每天早晨告诉您重点：销售额、客源、现金流、风险。",
+    a7h: "经理 AI", a7p: "一个对话指挥所有员工 — 就像给运营经理发消息。",
+    a8h: "人事、财务与流程 AI", a8p: "筛选简历、起草财务报告、为团队编写标准流程。",
+    prh: "简单定价", prsub: "免费试用 14 天，随时取消。",
+    mo: "/月", mo2: "/月", mo3: "/月", pop: "最受欢迎",
+    p1a: "销售、客服与内容 AI", p1b: "每月 500 次 AI 操作", p1c: "WhatsApp + 网页聊天", p1d: "CEO 仪表盘",
+    p2a: "全部 15 位 AI 员工", p2b: "每月 2,500 次 AI 操作", p2c: "Instagram、Facebook 和 TikTok", p2d: "图像与视频生成",
+    p3a: "包含 Growth 全部功能", p3b: "每月 10,000 次 AI 操作", p3c: "AI 语音外呼", p3d: "优先入驻与支持",
+    choose: "选择方案", choose2: "选择方案", choose3: "选择方案",
+    wlh: "白标：以您的品牌销售 OmniX AI", wlp: "代理商与经销商 — 您的品牌、您的域名、您的定价。客户账户低至 $19/月。",
+    wlcta: "成为经销商", foot: "© OmniX AI — AI 商业操作系统。新加坡制造 🇸🇬"
+  }
+};
+
+const EN = {};
+document.querySelectorAll("[data-i]").forEach(el => { EN[el.dataset.i] = el.innerHTML; });
+
+function setLang(code) {
+  const dict = code === "en" ? EN : T[code];
+  if (!dict) return;
+  document.querySelectorAll("[data-i]").forEach(el => {
+    const s = dict[el.dataset.i];
+    if (s) el.innerHTML = s;
+  });
+  document.documentElement.lang = code;
+  try { localStorage.setItem("omnix_lang", code); } catch (e) {}
+}
+
+try {
+  const saved = localStorage.getItem("omnix_lang");
+  if (saved && saved !== "en") { document.getElementById("lang").value = saved; setLang(saved); }
+} catch (e) {}
+</script>
+</body>
+</html>

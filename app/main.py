@@ -57,6 +57,12 @@ def chat_page():
     return FileResponse(_STATIC / "chat.html")
 
 
+@app.get("/welcome", include_in_schema=False)
+def landing_page():
+    """Public marketing landing page (multi-language)."""
+    return FileResponse(_STATIC / "landing.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}
