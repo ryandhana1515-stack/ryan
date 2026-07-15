@@ -71,6 +71,28 @@
   .wl h3 { font-size: 24px; margin-bottom: 6px; }
   .wl p { opacity: .85; max-width: 560px; }
   footer { padding: 36px 0 48px; text-align: center; color: var(--ink-2); font-size: 13.5px; }
+  .agent-card { cursor: pointer; transition: transform .15s, box-shadow .15s; }
+  .agent-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(109,91,245,.25); border-color: var(--accent); }
+  .watch { display: inline-block; margin-top: 10px; font-size: 12.5px; font-weight: 700;
+           background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #vmodal { position: fixed; inset: 0; background: rgba(5,8,20,.85); display: none;
+            align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+  #vmodal.open { display: flex; }
+  .vbox { background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+          max-width: 720px; width: 100%; padding: 22px; }
+  .vbox .vhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .vbox h3 { font-size: 19px; }
+  .vbox .close { cursor: pointer; font-size: 26px; color: var(--ink-2); background: none; border: 0; }
+  .vframe { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden;
+            background: #0a0e1e; border: 1px solid var(--border); }
+  .vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vsoon { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+           justify-content: center; gap: 10px; color: var(--ink-2); text-align: center; padding: 20px; }
+  .vsoon .big { font-size: 40px; }
+  .socials { display: flex; gap: 18px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .socials a { color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 600;
+               border: 1px solid var(--border); padding: 8px 16px; border-radius: 99px; }
+  .socials a:hover { color: var(--ink); border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -125,21 +147,21 @@
     <h2 data-i="teamh">Meet your AI team</h2>
     <p class="sub" data-i="teamsub">15 AI employees, one monthly price — they never sleep, never quit, and speak your customers' language.</p>
     <div class="grid">
-      <div class="card"><div class="emoji">💬</div><h3 data-i="a1h">Sales AI</h3><p data-i="a1p">Replies to every lead in under a minute, qualifies, and books the appointment.</p></div>
-      <div class="card"><div class="emoji">🛟</div><h3 data-i="a2h">Support AI</h3><p data-i="a2p">Answers customer questions 24/7 from your own knowledge base.</p></div>
-      <div class="card"><div class="emoji">📞</div><h3 data-i="a5h">Voice AI</h3><p data-i="a5p">Calls customers to confirm appointments and follow up — human-like, polite, tireless.</p></div>
-      <div class="card"><div class="emoji">📣</div><h3 data-i="mk_h">Marketing AI</h3><p data-i="mk_p">Plans your campaigns, calendars, and customer personas — from your real numbers.</p></div>
-      <div class="card"><div class="emoji">🏷️</div><h3 data-i="br_h">Branding AI</h3><p data-i="br_p">Writes your mission, story, and brand voice — every other agent obeys it.</p></div>
-      <div class="card"><div class="emoji">✍️</div><h3 data-i="co_h">Content AI</h3><p data-i="co_p">Posts, captions, TikTok scripts, and emails — in your voice, in any language.</p></div>
-      <div class="card"><div class="emoji">💬</div><h3 data-i="sm_h">Social Media AI</h3><p data-i="sm_p">Drafts replies to comments and DMs — and spots buyers hiding in them.</p></div>
-      <div class="card"><div class="emoji">🎨</div><h3 data-i="im_h">Image AI</h3><p data-i="im_p">Turns one sentence into professional ad visuals for your promotions.</p></div>
-      <div class="card"><div class="emoji">🎬</div><h3 data-i="vd_h">Video AI</h3><p data-i="vd_p">Creates short promo clips and reels for your offers.</p></div>
-      <div class="card"><div class="emoji">🌐</div><h3 data-i="wb_h">Website AI</h3><p data-i="wb_p">Generates complete landing pages for any promotion, overnight.</p></div>
-      <div class="card"><div class="emoji">💰</div><h3 data-i="fi_h">Finance AI</h3><p data-i="fi_p">Plain-English money reports: revenue drivers, cash runway, who owes you.</p></div>
-      <div class="card"><div class="emoji">🧑‍💼</div><h3 data-i="hr_h">HR AI</h3><p data-i="hr_p">Screens resumes fairly, drafts interview kits and onboarding plans.</p></div>
-      <div class="card"><div class="emoji">📋</div><h3 data-i="sp_h">SOP AI</h3><p data-i="sp_p">Writes the step-by-step manuals that make your business run without you.</p></div>
-      <div class="card"><div class="emoji">📊</div><h3 data-i="a6h">Analytics AI</h3><p data-i="a6p">Tells you every morning what matters: sales, leads, cash, risks.</p></div>
-      <div class="card"><div class="emoji">🧭</div><h3 data-i="a7h">Manager AI</h3><p data-i="a7p">One chat that commands them all — like texting your operations manager.</p></div>
+      <div class="card agent-card" data-agent="sales"><div class="emoji">💬</div><h3 data-i="a1h">Sales AI</h3><p data-i="a1p">Replies to every lead in under a minute, qualifies, and books the appointment.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="support"><div class="emoji">🛟</div><h3 data-i="a2h">Support AI</h3><p data-i="a2p">Answers customer questions 24/7 from your own knowledge base.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="voice"><div class="emoji">📞</div><h3 data-i="a5h">Voice AI</h3><p data-i="a5p">Calls customers to confirm appointments and follow up — human-like, polite, tireless.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="marketing"><div class="emoji">📣</div><h3 data-i="mk_h">Marketing AI</h3><p data-i="mk_p">Plans your campaigns, calendars, and customer personas — from your real numbers.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="branding"><div class="emoji">🏷️</div><h3 data-i="br_h">Branding AI</h3><p data-i="br_p">Writes your mission, story, and brand voice — every other agent obeys it.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="content"><div class="emoji">✍️</div><h3 data-i="co_h">Content AI</h3><p data-i="co_p">Posts, captions, TikTok scripts, and emails — in your voice, in any language.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="social"><div class="emoji">💬</div><h3 data-i="sm_h">Social Media AI</h3><p data-i="sm_p">Drafts replies to comments and DMs — and spots buyers hiding in them.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="image"><div class="emoji">🎨</div><h3 data-i="im_h">Image AI</h3><p data-i="im_p">Turns one sentence into professional ad visuals for your promotions.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="video"><div class="emoji">🎬</div><h3 data-i="vd_h">Video AI</h3><p data-i="vd_p">Creates short promo clips and reels for your offers.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="website"><div class="emoji">🌐</div><h3 data-i="wb_h">Website AI</h3><p data-i="wb_p">Generates complete landing pages for any promotion, overnight.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="finance"><div class="emoji">💰</div><h3 data-i="fi_h">Finance AI</h3><p data-i="fi_p">Plain-English money reports: revenue drivers, cash runway, who owes you.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="hr"><div class="emoji">🧑‍💼</div><h3 data-i="hr_h">HR AI</h3><p data-i="hr_p">Screens resumes fairly, drafts interview kits and onboarding plans.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="sop"><div class="emoji">📋</div><h3 data-i="sp_h">SOP AI</h3><p data-i="sp_p">Writes the step-by-step manuals that make your business run without you.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="analytics"><div class="emoji">📊</div><h3 data-i="a6h">Analytics AI</h3><p data-i="a6p">Tells you every morning what matters: sales, leads, cash, risks.</p><span class="watch">▶ Watch what it can do</span></div>
+      <div class="card agent-card" data-agent="manager"><div class="emoji">🧭</div><h3 data-i="a7h">Manager AI</h3><p data-i="a7p">One chat that commands them all — like texting your operations manager.</p><span class="watch">▶ Watch what it can do</span></div>
     </div>
     </div>
   </div>
@@ -196,8 +218,16 @@
   </div>
 </section>
 
+<div id="vmodal" onclick="if(event.target===this)closeVideo()">
+  <div class="vbox">
+    <div class="vhead"><h3 id="vtitle">Agent</h3><button class="close" onclick="closeVideo()">×</button></div>
+    <div class="vframe" id="vframe"></div>
+  </div>
+</div>
+
 <footer>
   <div class="wrap">
+    <div class="socials" id="socials"></div>
     <div data-i="foot">© OmniX AI — The AI Business Operating System. Made in Singapore 🇸🇬</div>
   </div>
 </footer>
@@ -539,6 +569,47 @@ function setLang(code) {
   document.documentElement.dir = code === "ar" ? "rtl" : "ltr";
   try { localStorage.setItem("omnix_lang", code); } catch (e) {}
 }
+
+// ---- Agent videos: paste YouTube video IDs here as they are published ----
+const AGENT_VIDEOS = {
+  sales: "", support: "", voice: "", marketing: "", branding: "", content: "",
+  social: "", image: "", video: "", website: "", finance: "", hr: "",
+  sop: "", analytics: "", manager: "",
+};
+const AGENT_NAMES = {
+  sales: "Sales AI", support: "Support AI", voice: "Voice AI", marketing: "Marketing AI",
+  branding: "Branding AI", content: "Content AI", social: "Social Media AI", image: "Image AI",
+  video: "Video AI", website: "Website AI", finance: "Finance AI", hr: "HR AI",
+  sop: "SOP AI", analytics: "Analytics AI", manager: "Manager AI",
+};
+// ---- Social links: fill in and they appear in the footer ----
+const SOCIALS = {
+  TikTok: "", Instagram: "", Facebook: "", YouTube: "", LinkedIn: "",
+};
+
+function openVideo(key) {
+  const modal = document.getElementById("vmodal");
+  document.getElementById("vtitle").textContent = AGENT_NAMES[key] || key;
+  const frame = document.getElementById("vframe");
+  const vid = AGENT_VIDEOS[key];
+  frame.innerHTML = vid
+    ? '<iframe src="https://www.youtube-nocookie.com/embed/' + vid + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+    : '<div class="vsoon"><div class="big">🎬</div><div><b>Video coming soon.</b><br>Meanwhile — see it live: start a free trial and watch this agent work on your own business.</div><a class="btn btn-primary" href="/signup" style="margin-top:6px">Start free trial</a></div>';
+  modal.classList.add("open");
+}
+function closeVideo() {
+  document.getElementById("vmodal").classList.remove("open");
+  document.getElementById("vframe").innerHTML = "";
+}
+document.querySelectorAll(".agent-card").forEach(c =>
+  c.addEventListener("click", () => openVideo(c.dataset.agent)));
+const socialsEl = document.getElementById("socials");
+Object.entries(SOCIALS).forEach(([name, url]) => {
+  if (!url) return;
+  const a = document.createElement("a");
+  a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = name;
+  socialsEl.appendChild(a);
+});
 
 try {
   const saved = localStorage.getItem("omnix_lang");
