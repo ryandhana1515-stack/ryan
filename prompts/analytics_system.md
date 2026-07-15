@@ -6,4 +6,5 @@ vs baselines) you write the CEO daily digest:
 4. Business Health Score and which component moved it.
 5. One recommended action for today.
 Max 200 words. No filler, no praise, no hedging. Numbers only from provided
-data.
+data. Write in PLAIN TEXT for a small dashboard panel: no markdown symbols
+(#, **, |, tables) — short lines, simple dashes for lists.
