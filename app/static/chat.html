@@ -62,6 +62,8 @@
 </div>
 <form id="f">
   <input id="box" placeholder="Tell your Manager AI what you need…" autocomplete="off" autofocus>
+  <button type="button" id="mic" title="Speak instead of typing"
+          style="background:var(--surface-1,#1a1a19);border:1px solid var(--border);color:inherit">🎙️</button>
   <button id="send">Send</button>
 </form>
 <script>
@@ -125,6 +127,31 @@ document.getElementById("f").addEventListener("submit", async (e) => {
   }
   send.disabled = false; box.focus();
 });
+
+// Voice commands: speak to your Manager AI (Chrome/Edge/Safari)
+const micBtn = document.getElementById("mic");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  const rec = new SR();
+  rec.lang = navigator.language || "en-US";
+  rec.interimResults = false;
+  let listening = false;
+  micBtn.addEventListener("click", () => {
+    if (listening) { rec.stop(); return; }
+    listening = true; micBtn.textContent = "🔴";
+    rec.start();
+  });
+  rec.onresult = (e) => {
+    box.value = (box.value + " " + e.results[0][0].transcript).trim();
+  };
+  rec.onend = () => {
+    listening = false; micBtn.textContent = "🎙️";
+    if (box.value.trim()) document.getElementById("f").dispatchEvent(new Event("submit"));
+  };
+  rec.onerror = () => { listening = false; micBtn.textContent = "🎙️"; };
+} else {
+  micBtn.style.display = "none";
+}
 
 // Allow other pages to open the chat with a question ready to go: /chat?q=...
 const preq = new URLSearchParams(location.search).get("q");

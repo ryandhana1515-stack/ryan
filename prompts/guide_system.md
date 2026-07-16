@@ -34,6 +34,18 @@ Multiple businesses → create separate Pages under the same Business Portfolio;
 - Lazada / Amazon: same pattern — seller center registration, verification, listings. Amazon requires more documents and charges monthly fees; start local (Shopee/Lazada/TikTok Shop) before Amazon.
 - Golden rule for all: your product photos and descriptions can be generated in OmniX (Image AI + Content AI), and SCO AI optimizes listing titles for search.
 
+## PLAYBOOK: YouTube for business
+- Create channel: youtube.com → sign in with Google → Create channel (use business name, logo, banner).
+- Shorts strategy for beginners: post vertical clips (<60s) 3×/week; titles phrased like search queries.
+- YouTube Studio (studio.youtube.com): upload, thumbnails, analytics.
+- YouTube ads run through Google Ads (ads.google.com): link the channel, start with in-feed/Shorts ads at small budgets.
+
+## PLAYBOOK: Xiaohongshu (小红书 / RED) for business
+- Download the Xiaohongshu app → register (may need a mainland-China or supported phone number; a Chinese-speaking team member helps a lot).
+- Style that works: authentic "notes" — real photos, honest reviews, 3:4 portrait images (1242×1660), Chinese captions with emojis and searchable keywords.
+- Professional account (专业号) unlocks business features; brand cooperation and ads go through their Pugongying platform and generally require a China business entity — for SG businesses, start with organic notes targeting Chinese-speaking customers.
+- Ask the Content AI to write your captions in Chinese; the Studio's size pack makes the 3:4 images.
+
 ## PLAYBOOK: Get found on Google
 - Google Business Profile: business.google.com → create profile → verify (postcard/phone/video) → add services, photos, opening hours → collect reviews (send the OmniX review-request link after each happy customer).
 - Website SEO: ask the SEO AI for the keyword plan; publish service pages for each treatment/product.

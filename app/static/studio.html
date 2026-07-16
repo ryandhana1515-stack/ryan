@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creative Studio — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --grad: linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+          --accent: #8b5cf6; --cyan: #22d3ee; --ink: #f2f5ff; --ink-2: #a3adce;
+          --bg: #0a0e1e; --card: #121a38; --border: #263059; --good: #34d399; }
+  body { font: 15px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 22px 20px 70px; }
+  nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--ink); }
+  .logo img { width: 34px; height: 34px; border-radius: 8px; }
+  .logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  a.navlink { color: var(--ink-2); text-decoration: none; font-size: 13.5px; border: 1px solid var(--border);
+              padding: 8px 16px; border-radius: 9px; margin-left: 6px; }
+  h1 { font-size: clamp(26px, 4.5vw, 38px); letter-spacing: -.02em; font-weight: 850; }
+  h1 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: normal; }
+  .lead { color: var(--ink-2); margin: 8px 0 26px; }
+  h2 { font-size: 20px; margin: 34px 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+  input[type=text] { width: 100%; font: inherit; padding: 11px 13px; border-radius: 10px;
+    border: 1px solid var(--border); background: #0d1430; color: var(--ink); }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 14px; }
+  .gen-btn { width: 100%; font: inherit; font-weight: 800; font-size: 15px; padding: 13px; border: 0;
+             border-radius: 11px; background: var(--grad); color: #fff; cursor: pointer; margin-bottom: 10px; }
+  .gen-btn:disabled { opacity: .55; cursor: wait; }
+  .out { background: #0d1430; border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+         font-size: 13.5px; color: var(--ink-2); white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+  .out:empty::before { content: "Output appears here…"; opacity: .5; }
+  .out img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
+  .drop { border: 2px dashed var(--border); border-radius: 14px; padding: 26px; text-align: center;
+          color: var(--ink-2); cursor: pointer; }
+  .drop:hover { border-color: var(--accent); color: var(--ink); }
+  .pack { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 16px; }
+  .pk { background: #0d1430; border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: center; }
+  .pk img { width: 100%; border-radius: 8px; }
+  .pk .n { font-size: 11.5px; color: var(--ink-2); margin: 6px 0 2px; }
+  .pk a { color: var(--cyan); font-size: 12px; font-weight: 700; text-decoration: none; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .conn { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+  .conn h3 { font-size: 15px; margin-bottom: 4px; }
+  .conn p { color: var(--ink-2); font-size: 12.5px; min-height: 34px; }
+  .conn a { display: inline-block; margin-top: 8px; margin-right: 10px; color: var(--cyan); font-weight: 700;
+            font-size: 13px; text-decoration: none; }
+  .badge { float: right; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 99px;
+           border: 1px solid rgba(52,211,153,.4); color: var(--good); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="/"><img src="/static/brand/logo-128.png" alt="OmniX AI">Omni<span>X</span> AI</a>
+    <div>
+      <a class="navlink" href="/">Dashboard</a>
+      <a class="navlink" href="/launch">Launch Pad</a>
+      <a class="navlink" href="/chat">Manager AI</a>
+    </div>
+  </nav>
+
+  <h1>🎨 Creative Studio — <em>make it once, publish it everywhere</em></h1>
+  <p class="lead">Create videos, images, and copy with your AI team — then get every platform's size in one click:
+     Facebook, Instagram, TikTok, YouTube, and Xiaohongshu.</p>
+
+  <div class="card">
+    <input type="text" id="topic" placeholder="What are you creating content about? e.g. July promo: hybrid brow embroidery $180">
+    <div class="row">
+      <div>
+        <button class="gen-btn" onclick="gen('image', this)">🖼️ Create a picture</button>
+        <div class="out" id="out-image"></div>
+      </div>
+      <div>
+        <button class="gen-btn" onclick="gen('video', this)">🎬 Create a video clip</button>
+        <div class="out" id="out-video"></div>
+      </div>
+      <div>
+        <button class="gen-btn" onclick="gen('captions', this)">✍️ Captions for all 5 platforms</button>
+        <div class="out" id="out-captions"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>📐 One picture → every platform's size (magic button)</h2>
+  <div class="card">
+    <div class="drop" id="drop" onclick="document.getElementById('file').click()">
+      Click here and choose a picture (or one you just generated) —<br>
+      I'll instantly produce Facebook/Instagram feed, square, Story/Reel/TikTok, YouTube thumbnail, and Xiaohongshu sizes.
+    </div>
+    <input type="file" id="file" accept="image/*" style="display:none">
+    <div class="pack" id="pack"></div>
+  </div>
+
+  <h2>🎬 The best video tools — one click away, with a coach</h2>
+  <div class="grid">
+    <div class="conn"><span class="badge">IN-APP</span><h3>Your Video AI</h3><p>AI clips from a text prompt (fal.ai).</p>
+      <a href="/chat?q=Create a short cinematic promo video clip for my current promotion">Create →</a></div>
+    <div class="conn"><h3>CapCut</h3><p>The editor: stitch clips, captions, music, trends.</p>
+      <a href="https://capcut.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to edit my first video in CapCut with captions and music for TikTok">🤝 Guide me</a></div>
+    <div class="conn"><h3>HeyGen</h3><p>Talking presenter videos — your digital twin speaks any script.</p>
+      <a href="https://heygen.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to make a talking presenter video in HeyGen using my agent scripts">🤝 Guide me</a></div>
+    <div class="conn"><h3>Higgsfield</h3><p>Cinematic AI footage from text prompts.</p>
+      <a href="https://higgsfield.ai" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me to create cinematic AI clips in Higgsfield using my video prompt pack">🤝 Guide me</a></div>
+    <div class="conn"><h3>Canva</h3><p>Templates, motion posts, brand kits.</p>
+      <a href="https://canva.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me to create branded social media videos in Canva">🤝 Guide me</a></div>
+    <div class="conn"><h3>Google Veo / Flow</h3><p>Frontier text-to-video for hero shots.</p>
+      <a href="https://labs.google/flow" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me to create AI video clips with Google Veo Flow">🤝 Guide me</a></div>
+  </div>
+
+  <h2>🖼️ The best picture tools</h2>
+  <div class="grid">
+    <div class="conn"><span class="badge">IN-APP</span><h3>Your Image AI</h3><p>Ad visuals from one sentence (fal.ai).</p>
+      <a href="/chat?q=Create an image for my current promotion, elegant and premium">Create →</a></div>
+    <div class="conn"><h3>ChatGPT</h3><p>Great at posters, vouchers, text-in-image designs.</p>
+      <a href="https://chatgpt.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me to create a promotional voucher image with ChatGPT and use it in my ads">🤝 Guide me</a></div>
+    <div class="conn"><h3>Midjourney</h3><p>The most artistic image AI for premium brand shots.</p>
+      <a href="https://midjourney.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me to create brand images with Midjourney">🤝 Guide me</a></div>
+  </div>
+
+  <h2>📤 Then publish — your five platforms</h2>
+  <div class="grid">
+    <div class="conn"><h3>📘 Facebook & Instagram</h3><p>Post + schedule in Business Suite; ads in Ads Manager.</p>
+      <a href="https://business.facebook.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to post and schedule my content on Facebook and Instagram">🤝 Guide me</a></div>
+    <div class="conn"><h3>🎵 TikTok</h3><p>Post, run ads, or sell via TikTok Shop.</p>
+      <a href="https://www.tiktok.com/upload" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to post my video on TikTok and boost it with Promote or ads">🤝 Guide me</a></div>
+    <div class="conn"><h3>▶️ YouTube</h3><p>Upload longs + Shorts; ads via Google Ads.</p>
+      <a href="https://studio.youtube.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to set up my YouTube channel and upload my first video and Short">🤝 Guide me</a></div>
+    <div class="conn"><h3>📕 Xiaohongshu (小红书)</h3><p>The China/Chinese-community discovery platform.</p>
+      <a href="https://www.xiaohongshu.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to set up a Xiaohongshu account for my business and post my first note">🤝 Guide me</a></div>
+    <div class="conn"><h3>🛍️ TikTok Shop / Shopee</h3><p>Sell products; affiliate program.</p>
+      <a href="https://seller.tiktokglobalshop.com" target="_blank" rel="noopener">Open →</a>
+      <a href="/chat?q=Guide me step by step to register as a TikTok Shop seller and list my first product">🤝 Guide me</a></div>
+  </div>
+</div>
+
+<script>
+async function manager(message) {
+  const r = await fetch("/api/manager/chat", { method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, history: [] }) });
+  return r.json();
+}
+async function gen(kind, btn) {
+  const topic = document.getElementById("topic").value.trim() || "our current promotion";
+  btn.disabled = true; const orig = btn.textContent; btn.textContent = "Creating…";
+  try {
+    if (kind === "image") {
+      const res = await manager(`Create an image for social media about: ${topic}. Elegant, premium, scroll-stopping.`);
+      const out = document.getElementById("out-image"); out.textContent = res.reply || "";
+      (res.media || []).forEach(m => { const i = document.createElement("img"); i.src = m.url; out.appendChild(i); });
+    }
+    if (kind === "video") {
+      const res = await manager(`Create a short promo video clip about: ${topic}. Cinematic, premium.`);
+      const out = document.getElementById("out-video"); out.textContent = res.reply || "";
+      (res.media || []).forEach(m => {
+        if (m.url.endsWith(".svg")) { const i = document.createElement("img"); i.src = m.url; out.appendChild(i); }
+        else { const v = document.createElement("video"); v.src = m.url; v.controls = true; v.style.maxWidth = "100%"; out.appendChild(v); }
+      });
+    }
+    if (kind === "captions") {
+      const res = await manager(`Write ready-to-post captions about "${topic}" for each platform separately: Facebook, Instagram (with hashtags), TikTok (with search keywords), YouTube (title + description), and Xiaohongshu (in Chinese with emojis). Label each clearly.`);
+      document.getElementById("out-captions").textContent = res.reply || "";
+    }
+  } catch (e) { alert("Connection problem — try again."); }
+  btn.disabled = false; btn.textContent = orig;
+}
+
+document.getElementById("file").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const drop = document.getElementById("drop");
+  drop.textContent = "Working the magic… creating all platform sizes…";
+  const fd = new FormData(); fd.append("file", f);
+  try {
+    const r = await fetch("/api/media/resize-pack", { method: "POST", body: fd });
+    const data = await r.json();
+    const pack = document.getElementById("pack"); pack.innerHTML = "";
+    const NAMES = { facebook_instagram_feed: "FB / IG feed", square_post: "Square post",
+                    story_reel_tiktok: "Story · Reel · TikTok", youtube_thumbnail: "YouTube thumbnail",
+                    xiaohongshu: "Xiaohongshu" };
+    (data.pack || []).forEach(p => {
+      const d = document.createElement("div"); d.className = "pk";
+      d.innerHTML = `<img src="${p.url}"><div class="n">${NAMES[p.platform] || p.platform} · ${p.width}×${p.height}</div>
+                     <a href="${p.url}" download>Download</a>`;
+      pack.appendChild(d);
+    });
+    drop.innerHTML = "✅ Done — all sizes below. Click to convert another picture.";
+  } catch (err) {
+    drop.textContent = "Something went wrong — click to try again.";
+  }
+  e.target.value = "";
+});
+</script>
+</body>
+</html>

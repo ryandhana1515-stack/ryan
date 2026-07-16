@@ -231,6 +231,26 @@ def test_daily_digest(client):
     assert r["digest"]
 
 
+def test_media_resize_pack_produces_all_platform_sizes(client):
+    import io
+
+    from PIL import Image
+
+    buf = io.BytesIO()
+    Image.new("RGB", (2000, 1200), (40, 90, 200)).save(buf, "PNG")
+    buf.seek(0)
+    r = client.post("/api/media/resize-pack",
+                    files={"file": ("promo.png", buf, "image/png")})
+    assert r.status_code == 200
+    pack = r.json()["pack"]
+    assert len(pack) == 5
+    assert {p["platform"] for p in pack} == {
+        "facebook_instagram_feed", "square_post", "story_reel_tiktok",
+        "youtube_thumbnail", "xiaohongshu"}
+    for p in pack:
+        assert client.get(p["url"]).status_code == 200
+
+
 def test_public_signup_creates_lead_in_owner_tenant(client):
     r = client.post("/api/public/signup", json={
         "business": "Glow Studio", "name": "Mei Lin", "phone": "+6598765432",
