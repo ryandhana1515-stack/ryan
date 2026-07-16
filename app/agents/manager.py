@@ -168,6 +168,8 @@ def _decide_llm(session: Session, tenant, message: str, history: list[dict]) -> 
 _KEYWORD_ROUTES: list[tuple[tuple[str, ...], str]] = [
     (("image", "photo", "picture", "logo", "visual", "poster"), "image"),
     (("video", "reel", "clip", "animation"), "video"),
+    (("seo", "keyword", "rank on google", "backlink", "google business"), "seo"),
+    (("sco", "search channel", "amazon listing", "tiktok search", "youtube title", "app store"), "sco"),
     (("website", "landing page", "web page", "webpage", "site"), "website"),
     (("tiktok", "instagram", "post", "caption", "blog", "email", "hashtag", "content", "script"), "content"),
     (("plan", "campaign", "calendar", "marketing", "persona", "competitor"), "marketing"),

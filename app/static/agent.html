@@ -86,7 +86,7 @@
 const AGENT_VIDEOS = {
   sales: "", support: "", voice: "", marketing: "", branding: "", content: "",
   social: "", image: "", video: "", website: "", finance: "", hr: "",
-  sop: "", analytics: "", manager: "",
+  sop: "", analytics: "", manager: "", seo: "", sco: "",
 };
 
 const A = {
@@ -174,6 +174,18 @@ does:["Reads your live numbers every morning","Tells you the ONE thing that matt
 good:["Brutally honest — it will tell you the pipeline is dry while it's still fixable","No dashboards to decode: one paragraph, plain language","It connects causes: 'leads dropped 40% — your Meta campaign paused Tuesday'"],
 example:'<div class="bubble"><b>Analytics AI — 7:00am</b>"Headline: bookings strong, cash needs attention. 9 appointments this week (+3). But two big invoices overdue and supplies cost spiked. Do one thing today: chase the Glow Ltd invoice. Health: 78/100."</div>',
 cta:"Run your business from one honest paragraph" },
+seo: { emoji:"🔎", name:"SEO AI", tag:"Get found by people already searching for you.",
+problem:"Every day, people in your city Google exactly what you sell — and find your competitors, because their pages are optimized and yours aren't. Ranking isn't luck; it's structure.",
+does:["Builds your keyword strategy grouped by buying intent","Optimizes your pages: titles, descriptions, headings, FAQs","Writes content briefs that can actually win rankings","Optimizes your Google Business Profile for local searches"],
+good:["White-hat only — no tricks that get you penalized later","It's honest: rankings take weeks, and it tells you so while compounding results","Local SEO focus: 'brow studio near me' is where service businesses win"],
+example:'<div class="bubble"><b>You</b>"Help me rank for brow lamination in Singapore."</div><div class="bubble"><b>SEO AI</b>"Target set: \'brow lamination singapore\' (buy-intent, your service page), \'brow lamination vs microblading\' (compare-intent, new article — brief attached), plus 12 Google Business fixes. Title tag draft: \'Brow Lamination Singapore | Brow Revolution — from $120\'."</div>',
+cta:"Be the answer when they search" },
+sco: { emoji:"🧲", name:"SCO AI", tag:"Google is one search box. Your customers use seven.",
+problem:"Your audience searches on TikTok before Google, checks Instagram before your website, and increasingly asks AI assistants for recommendations. If you only optimize for Google, you're invisible in six other places.",
+does:["Optimizes TikTok hooks, captions, and hashtags for TikTok search","Tunes YouTube titles, descriptions, and tags to match real queries","Rewrites your Instagram bio and captions for Instagram SEO","Prepares marketplace listings and AI-assistant-friendly brand facts"],
+good:["One topic in, a full channel package out — each version native to its platform, never copy-pasted","It optimizes for where your NEXT customer searches, not where marketers used to look","AI-search ready: structured answers so assistants like ChatGPT can cite your brand"],
+example:'<div class="bubble"><b>You</b>"Optimize my brow lamination service across channels."</div><div class="bubble"><b>SCO AI</b>"Package ready — TikTok: hook \'brow lamination singapore — watch this before you book\' + 6 search-tags. YouTube: title + chaptered description. Instagram: keyword bio line + alt-texts. AI assistants: 5 quotable brand facts phrased as answers."</div>',
+cta:"Be findable everywhere they search" },
 manager: { emoji:"🧭", name:"Manager AI", tag:"One conversation. A whole company moves.",
 problem:"Fourteen employees — human or AI — still need managing. Unless you have a chief of staff who briefs you, delegates for you, and reviews the team's work.",
 does:["You chat with it in plain language, like texting a manager","It researches your live business data before answering","It delegates work to the right AI employee and reports back","It reviews your AI team's performance with real numbers"],
@@ -182,7 +194,7 @@ example:'<div class="bubble"><b>You</b>"How\'s my AI team doing this week?"</div
 cta:"Manage everything with one chat" },
 };
 
-const ORDER = ["sales","support","voice","marketing","branding","content","social","image","video","website","finance","hr","sop","analytics","manager"];
+const ORDER = ["sales","support","voice","marketing","branding","content","social","image","video","website","seo","sco","finance","hr","sop","analytics","manager"];
 
 const key = new URLSearchParams(location.search).get("a");
 const a = A[key];
