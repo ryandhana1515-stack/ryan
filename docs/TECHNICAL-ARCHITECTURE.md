@@ -13,7 +13,7 @@
 | AI (text) | LLM port: Anthropic → OpenRouter → deterministic mock | `app/agents/llm.py` |
 | AI (media) | fal.ai adapter (image + queued video) with offline placeholder | `app/agents/media.py` |
 | Retrieval | Keyword-scored RAG over tenant knowledge chunks (pgvector upgrade path isolated here) | `app/agents/rag.py` |
-| Auth (Phase 1) | HTTP Basic via `ADMIN_PASSWORD` env; public paths/prefixes allowlist | `app/auth.py` |
+| Auth | Customer accounts: scrypt-hashed passwords + HMAC-signed session cookies (`app/security.py`, `/api/auth/*`, `/login`); each registration provisions its own tenant + 18 agents. HTTP Basic via `ADMIN_PASSWORD` remains the admin/scripts fallback | `app/auth.py`, `app/api/accounts.py` |
 | Events | In-process pub/sub persisted to `events` table (swap for Redis Streams/NATS later without touching subscribers) | `app/events.py` |
 | Media utils | Pillow platform-size packs | `app/api/media.py` |
 | Deployment | Docker (`Dockerfile`) on DigitalOcean App Platform, autodeploy from GitHub branch; seeds idempotently on boot | `DEPLOY.md` |

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — OmniX AI</title>
+<link rel="icon" href="/static/brand/favicon-64.png">
+<style>
+:root {
+  --grad:   linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+  --accent: #8b5cf6;  --cyan: #22d3ee;  --magenta: #d946ef;
+  --ink:    #f2f5ff;  --ink-2: #a3adce;
+  --bg:     #0a0e1e;  --bg-soft:#0e1430;  --card: #121a38;  --border: #263059;
+  --good:   #34d399;  --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--ink); min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.wrap { width: 100%; max-width: 420px; animation: rise .45s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+.logo { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 22px; }
+.logo img { width: 44px; height: 44px; border-radius: 12px; }
+.logo b { font-size: 22px; letter-spacing: -.02em; }
+.logo b span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px 24px; }
+.tabs { display: flex; gap: 6px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; padding: 5px; margin-bottom: 20px; }
+.tabs button {
+  flex: 1; padding: 10px; border: 0; border-radius: 9px; cursor: pointer;
+  background: transparent; color: var(--ink-2); font-weight: 800; font-size: 14px;
+}
+.tabs button.on { background: var(--grad); color: #fff; }
+label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 14px 0 6px; }
+input {
+  width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 15px;
+  background: var(--bg-soft); border: 1px solid var(--border); color: var(--ink);
+}
+input:focus { outline: none; border-color: var(--accent); }
+.btn {
+  width: 100%; margin-top: 20px; padding: 14px; border: 0; border-radius: 12px;
+  background: var(--grad); color: #fff; font-weight: 800; font-size: 15px;
+  cursor: pointer; box-shadow: 0 8px 26px rgba(139, 92, 246, .35);
+}
+.btn:disabled { opacity: .6; cursor: wait; }
+.msg { margin-top: 14px; font-size: 14px; text-align: center; min-height: 20px; }
+.msg.err { color: var(--danger); }
+.msg.ok { color: var(--good); }
+.hint { margin-top: 18px; font-size: 13px; color: var(--ink-2); text-align: center; line-height: 1.6; }
+.hint a { color: var(--cyan); text-decoration: none; }
+.hp { position: absolute; left: -9999px; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><img src="/static/brand/logo-128.png" alt="OmniX AI"><b>Omni<span>X</span> AI</b></div>
+  <div class="card">
+    <div class="tabs">
+      <button id="tab-in" class="on" onclick="show('in')">Sign in</button>
+      <button id="tab-up" onclick="show('up')">Create account</button>
+    </div>
+
+    <form id="f-in" onsubmit="return login(event)">
+      <label>Email</label>
+      <input id="in-email" type="email" required autocomplete="email" placeholder="you@business.com">
+      <label>Password</label>
+      <input id="in-pass" type="password" required autocomplete="current-password" placeholder="••••••••">
+      <button class="btn" id="in-btn">Open my workspace →</button>
+    </form>
+
+    <form id="f-up" style="display:none" onsubmit="return registerAcct(event)">
+      <label>Business name</label>
+      <input id="up-biz" required maxlength="200" placeholder="e.g. Brow Revolution">
+      <label>Your name</label>
+      <input id="up-name" required maxlength="200" placeholder="e.g. Ryan">
+      <label>Email</label>
+      <input id="up-email" type="email" required autocomplete="email" placeholder="you@business.com">
+      <label>Password <span style="text-transform:none;font-weight:600">(8+ characters)</span></label>
+      <input id="up-pass" type="password" required minlength="8" autocomplete="new-password" placeholder="••••••••">
+      <input class="hp" id="up-web" tabindex="-1" autocomplete="off" placeholder="website">
+      <button class="btn" id="up-btn">Create my workspace + 18 AI employees →</button>
+    </form>
+
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="hint">New here? <a href="/welcome">See what OmniX AI does →</a></div>
+</div>
+
+<script>
+const qs = new URLSearchParams(location.search);
+if (location.hash === '#create' || qs.get('mode') === 'create') show('up');
+
+function show(which) {
+  document.getElementById('f-in').style.display = which === 'in' ? '' : 'none';
+  document.getElementById('f-up').style.display = which === 'up' ? '' : 'none';
+  document.getElementById('tab-in').classList.toggle('on', which === 'in');
+  document.getElementById('tab-up').classList.toggle('on', which === 'up');
+  setMsg('', '');
+}
+function setMsg(text, cls) {
+  const m = document.getElementById('msg');
+  m.textContent = text; m.className = 'msg ' + cls;
+}
+async function post(url, body) {
+  const r = await fetch(url, {method: 'POST',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || 'Something went wrong — try again.');
+  return data;
+}
+async function login(e) {
+  e.preventDefault();
+  const btn = document.getElementById('in-btn'); btn.disabled = true;
+  try {
+    const d = await post('/api/auth/login', {
+      email: document.getElementById('in-email').value,
+      password: document.getElementById('in-pass').value});
+    setMsg('Welcome back, ' + d.name + '!', 'ok');
+    location.href = '/';
+  } catch (err) { setMsg(err.message, 'err'); btn.disabled = false; }
+  return false;
+}
+async function registerAcct(e) {
+  e.preventDefault();
+  const btn = document.getElementById('up-btn'); btn.disabled = true;
+  try {
+    const d = await post('/api/auth/register', {
+      business: document.getElementById('up-biz').value,
+      name: document.getElementById('up-name').value,
+      email: document.getElementById('up-email').value,
+      password: document.getElementById('up-pass').value,
+      website: document.getElementById('up-web').value});
+    setMsg('Workspace "' + d.tenant + '" created — your 18 AI employees are ready!', 'ok');
+    setTimeout(() => location.href = '/', 900);
+  } catch (err) { setMsg(err.message, 'err'); btn.disabled = false; }
+  return false;
+}
+</script>
+</body>
+</html>

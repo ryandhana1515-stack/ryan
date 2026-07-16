@@ -22,12 +22,14 @@ Turns the system into an always-on web app with its own URL. ~15 minutes.
    | Key | Value |
    |---|---|
    | `ADMIN_PASSWORD` | a strong password — the app is locked with it |
+   | `SECRET_KEY` | a long random string — signs customer login sessions (mark Encrypted). Changing it logs everyone out |
    | `OPENROUTER_API_KEY` | your OpenRouter key (mark Encrypted) |
    | `FAL_KEY` | your fal.ai key (mark Encrypted) |
 6. Click **Create Resources**. First build takes a few minutes.
 7. Open the URL DigitalOcean gives you (like `https://xxxxx.ondigitalocean.app`).
-   The browser asks for a username and password: type anything as username
-   and your `ADMIN_PASSWORD` as the password.
+   Go to `/login` and sign in with any email + your `ADMIN_PASSWORD` —
+   that opens the owner workspace. Customers create their own accounts
+   on the same page ("Create account" tab).
 
 ## Notes
 

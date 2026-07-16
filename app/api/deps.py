@@ -1,15 +1,26 @@
-from fastapi import Depends, Header, HTTPException
+from fastapi import Depends, Header, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_session
 from app.models import Tenant
+from app.security import SESSION_COOKIE, verify_session_token
 
 
-def get_tenant(session: Session = Depends(get_session),
+def get_tenant(request: Request, session: Session = Depends(get_session),
                x_tenant_id: str | None = Header(default=None)) -> Tenant:
-    """Phase 1 tenant resolution: X-Tenant-Id header, or the sole tenant.
-    Replaced by JWT claims when auth (Keycloak) lands — see docs/08."""
+    """Tenant resolution, in order: signed session cookie (customer
+    accounts), X-Tenant-Id header (admin/scripts), else the first tenant
+    (the platform owner's — admin basic auth and local dev)."""
+    payload = getattr(request.state, "session", None)
+    if payload is None:
+        token = request.cookies.get(SESSION_COOKIE)
+        payload = verify_session_token(token) if token else None
+    if payload is not None:
+        tenant = session.get(Tenant, payload.get("t", ""))
+        if tenant is not None:
+            return tenant
+        raise HTTPException(401, "session workspace no longer exists")
     if x_tenant_id:
         tenant = session.get(Tenant, x_tenant_id)
         if tenant is None:

@@ -291,3 +291,92 @@ def test_admin_password_locks_the_app(client, monkeypatch):
     assert ok.status_code == 200
     bad = client.get("/api/agents", auth=("ceo", "wrong"))
     assert bad.status_code == 401
+
+
+# ------------------------------------------------------ customer accounts
+
+def test_register_creates_private_workspace_with_all_employees(client):
+    with TestClient(app) as c:
+        r = c.post("/api/auth/register", json={
+            "business": "Glow Beauty Bar", "name": "Aisha",
+            "email": "aisha@glowbar.com", "password": "sunshine88",
+            "goal": "Automate my WhatsApp replies"})
+        assert r.status_code == 200 and r.json()["ok"] is True
+
+        me = c.get("/api/auth/me").json()
+        assert me["tenant"] == "Glow Beauty Bar" and me["name"] == "Aisha"
+
+        # her own 18 AI employees, provisioned instantly
+        agents = c.get("/api/agents").json()
+        assert len(agents) == 18
+
+        # her knowledge base starts with her own brand doc, not the demo's
+        hits = c.get("/api/knowledge/search", params={"q": "Glow Beauty Bar"}).json()
+        assert hits and hits[0]["doc_title"] == "About Glow Beauty Bar"
+
+    # dogfooding: the platform owner's tenant got her as a lead
+    owner_leads = client.get("/api/leads").json()
+    assert any(l["source"] == "omnix_account" for l in owner_leads)
+
+
+def test_workspaces_are_isolated_between_customers(client):
+    with TestClient(app) as c1, TestClient(app) as c2:
+        c1.post("/api/auth/register", json={
+            "business": "Studio One", "name": "One",
+            "email": "one@studio.com", "password": "password1"})
+        c2.post("/api/auth/register", json={
+            "business": "Studio Two", "name": "Two",
+            "email": "two@studio.com", "password": "password2"})
+
+        lead = c1.post("/api/webhooks/lead", json={
+            "name": "Private Customer", "phone": "+6511112222",
+            "channel": "webchat", "message": "price please"}).json()
+
+        ids1 = {l["id"] for l in c1.get("/api/leads").json()}
+        ids2 = {l["id"] for l in c2.get("/api/leads").json()}
+        assert lead["lead_id"] in ids1
+        assert lead["lead_id"] not in ids2
+
+
+def test_login_logout_and_wrong_password(client):
+    with TestClient(app) as c:
+        ok = c.post("/api/auth/login", json={
+            "email": "aisha@glowbar.com", "password": "sunshine88"})
+        assert ok.status_code == 200 and ok.json()["tenant"] == "Glow Beauty Bar"
+        assert c.get("/api/auth/me").status_code == 200
+
+        c.post("/api/auth/logout")
+        assert c.get("/api/auth/me").status_code == 401
+
+        bad = c.post("/api/auth/login", json={
+            "email": "aisha@glowbar.com", "password": "wrong-pass"})
+        assert bad.status_code == 401
+
+
+def test_duplicate_email_rejected(client):
+    with TestClient(app) as c:
+        r = c.post("/api/auth/register", json={
+            "business": "Copycat", "name": "Copy",
+            "email": "aisha@glowbar.com", "password": "different99"})
+        assert r.status_code == 409
+
+
+def test_admin_password_signs_in_to_owner_workspace(client, monkeypatch):
+    from app import config as cfg
+
+    monkeypatch.setattr(cfg, "ADMIN_PASSWORD", "secret123")
+    with TestClient(app) as c:
+        r = c.post("/api/auth/login", json={
+            "email": "founder@omnix.ai", "password": "secret123"})
+        assert r.status_code == 200
+        assert r.json()["tenant"] == "Demo Marketing Agency"  # first (owner) tenant
+
+
+def test_locked_browser_page_redirects_to_login(client, monkeypatch):
+    from app import config as cfg
+
+    monkeypatch.setattr(cfg, "ADMIN_PASSWORD", "secret123")
+    with TestClient(app) as c:
+        r = c.get("/", headers={"accept": "text/html"}, follow_redirects=False)
+        assert r.status_code == 303 and r.headers["location"] == "/login"
+        assert c.get("/login").status_code == 200  # the door itself stays open

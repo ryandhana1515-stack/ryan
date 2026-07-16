@@ -39,9 +39,11 @@ class Tenant(Base):
 
 class User(TenantScoped, Base):
     __tablename__ = "users"
-    email: Mapped[str] = mapped_column(String(200))
+    email: Mapped[str] = mapped_column(String(200), index=True)
     name: Mapped[str] = mapped_column(String(200))
     role: Mapped[str] = mapped_column(String(50), default="manager")  # doc 8 roles
+    password_hash: Mapped[str] = mapped_column(String(300), default="")
+    is_owner: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 # ---------------------------------------------------------------- CRM

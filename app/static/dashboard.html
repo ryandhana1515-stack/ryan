@@ -74,7 +74,10 @@
     <img src="/static/brand/logo-128.png" alt="OmniX AI" style="width:44px;height:44px;border-radius:10px">
     <div>
       <h1 id="tenant">CEO Command Center <small>OmniX AI — live</small></h1>
-      <div class="status" style="margin-top:4px"><span id="refreshed" class="empty"></span></div>
+      <div class="status" style="margin-top:4px"><span id="refreshed" class="empty"></span>
+        <span id="whoami" class="empty"></span>
+        <a id="signout" href="#" style="display:none;color:var(--text-secondary);font-size:12px;margin-left:8px"
+           onclick="fetch('/api/auth/logout',{method:'POST'}).then(()=>location.href='/login');return false">Sign out</a></div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -138,6 +141,13 @@ async function load() {
   document.getElementById("refreshed").textContent = "updated " + new Date().toLocaleTimeString();
   loadApprovals();
 }
+
+// Show who is signed in (customer accounts); admins without a session see nothing extra.
+fetch("/api/auth/me").then(r => r.ok ? r.json() : null).then(me => {
+  if (!me) return;
+  document.getElementById("whoami").textContent = " · " + me.name + " — " + me.tenant;
+  document.getElementById("signout").style.display = "inline";
+}).catch(() => {});
 
 async function loadApprovals() {
   const items = await (await fetch("/api/approvals")).json();
