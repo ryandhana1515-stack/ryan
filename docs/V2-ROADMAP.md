@@ -52,13 +52,20 @@ TikTok APIs V2-B, needs platform developer approval).
 🔜 **New modules queue:**
 
 ### Phase V2-A — this month (no external approvals needed)
-1. **Team Management** — invite teammates into your workspace with roles
-   (owner/manager/staff). Acceptance: second user logs in, sees same
-   tenant, cannot manage billing.
-2. **Content Calendar / Social Scheduler** — plan posts per platform,
-   schedule, mark posted, see appointments alongside. Acceptance: create
-   → appears on calendar → publish-now flow → status posted.
-3. **Business Consultant agent** — strategy Q&A grounded in tenant KPIs
+1. **Team Management** — ✅ SHIPPED (/team): owner adds manager/staff
+   teammates who sign in to the same workspace.
+2. **Content Calendar / Social Scheduler** — ✅ SHIPPED (/calendar):
+   plan posts per platform, open-composer + Guide-me publish flow.
+3. **Video Studio** — ✅ SHIPPED (/video-studio, from the founder's
+   "Master Build Prompt"): guided wizard (goal → brief → creative
+   direction) → AI Director (concept/hook/script/storyboard/credit
+   estimate) → per-scene edit/regenerate → provider router with the
+   adapter port (`app/video/providers.py`: fal.ai live; HeyGen/Veo/
+   Runway adapters enable when their keys are added; labelled Demo mode
+   renders real MP4s locally — never fakes a provider) → ffmpeg
+   assembly → 16:9 / 9:16 / 1:1 exports. Timeline editor, voice tracks,
+   Stripe credits = next iterations.
+4. **Business Consultant agent** — strategy Q&A grounded in tenant KPIs
    (the PDF's "CEO agent" reviewer split from Manager).
 
 ### Phase V2-B — needs keys/approvals from the founder

@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 
 from app.api import (accounts, agents_api, calendar_api, crm, dashboard,
-                     knowledge, manager_api, media, public, team)
+                     knowledge, manager_api, media, public, team, video_studio)
 from app.config import GENERATED_DIR
 from app.db import SessionLocal, init_db
 from app.workflows import register_all
@@ -45,6 +45,7 @@ app.include_router(media.router)
 app.include_router(accounts.router)
 app.include_router(team.router)
 app.include_router(calendar_api.router)
+app.include_router(video_studio.router)
 
 _STATIC = Path(__file__).parent / "static"
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
@@ -79,6 +80,12 @@ def landing_page():
 def login_page():
     """Customer sign-in / create-account page."""
     return FileResponse(_STATIC / "login.html")
+
+
+@app.get("/video-studio", include_in_schema=False)
+def video_studio_page():
+    """Guided video production: brief -> AI Director -> storyboard -> render."""
+    return FileResponse(_STATIC / "video-studio.html")
 
 
 @app.get("/calendar", include_in_schema=False)

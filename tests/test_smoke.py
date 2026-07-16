@@ -431,6 +431,75 @@ def test_calendar_shows_appointments_alongside_posts(client):
         assert "contact" in a and "starts_at" in a
 
 
+# -------------------------------------------------------- video studio
+
+def test_video_director_builds_plan_and_storyboard(client):
+    r = client.post("/api/video-studio/projects", json={
+        "title": "Serum launch", "goal": "product_ad",
+        "brief": {"product": "GlowLab Serum", "audience": "women 25-45",
+                  "duration_sec": 30, "cta": "Order at glowlab.sg",
+                  "selling_points": "glow in 7 days"},
+        "direction": {"style": "Luxury", "tone": "warm"}})
+    assert r.status_code == 200
+    project = r.json()
+    assert project["status"] == "awaiting_approval"
+    assert 3 <= len(project["scenes"]) <= 8
+    assert project["estimated_credits"] >= 0
+    first = project["scenes"][0]
+    assert first["visual_prompt"] and first["duration_sec"] >= 2
+    # plan is grounded in the brief, not invented
+    assert "GlowLab" in (project["plan"]["concept"] + project["plan"]["script"])
+
+
+def test_video_scene_generates_real_playable_mp4_in_demo_mode(client):
+    project = client.get("/api/video-studio/projects").json()[0]
+    detail = client.get(f"/api/video-studio/projects/{project['id']}").json()
+    scene = detail["scenes"][0]
+    r = client.post(f"/api/video-studio/scenes/{scene['id']}/generate")
+    assert r.status_code == 200
+    out = r.json()
+    assert out["status"] == "completed"
+    assert out["provider"] == "demo"  # honest: labelled demo, not a fake provider
+    assert out["media_url"].endswith(".mp4")
+    clip = client.get(out["media_url"])
+    assert clip.status_code == 200 and len(clip.content) > 1000
+
+
+def test_video_assemble_exports_requested_formats(client):
+    project = client.get("/api/video-studio/projects").json()[0]
+    detail = client.get(f"/api/video-studio/projects/{project['id']}").json()
+    # generate one more scene so the concat has 2 clips
+    client.post(f"/api/video-studio/scenes/{detail['scenes'][1]['id']}/generate")
+    r = client.post(f"/api/video-studio/projects/{project['id']}/assemble",
+                    json={"formats": ["landscape_16_9", "vertical_9_16"]})
+    assert r.status_code == 200
+    outputs = r.json()["outputs"]
+    assert {o["format"] for o in outputs} == {"landscape_16_9", "vertical_9_16"}
+    for o in outputs:
+        assert client.get(o["url"]).status_code == 200
+
+
+def test_video_scene_edit_and_provider_not_enabled(client):
+    project = client.get("/api/video-studio/projects").json()[0]
+    detail = client.get(f"/api/video-studio/projects/{project['id']}").json()
+    scene = detail["scenes"][2]
+    r = client.patch(f"/api/video-studio/scenes/{scene['id']}",
+                     json={"dialogue": "New line", "provider": "heygen"})
+    assert r.json()["dialogue"] == "New line"
+    # heygen has no key -> honest error, never a silent substitution
+    r = client.post(f"/api/video-studio/scenes/{scene['id']}/generate")
+    assert r.status_code == 502
+    assert "not currently enabled" in r.json()["detail"]
+
+
+def test_video_provider_roster_reports_availability_honestly(client):
+    roster = {p["id"]: p for p in client.get("/api/video-studio/providers").json()}
+    assert roster["demo"]["available"] is True
+    assert roster["heygen"]["available"] is False  # no key set in tests
+    assert roster["veo"]["available"] is False
+    assert roster["runway"]["available"] is False
+
+
 def test_locked_browser_page_redirects_to_login(client, monkeypatch):
     from app import config as cfg
 

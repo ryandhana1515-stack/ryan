@@ -38,6 +38,13 @@ FAL_VIDEO_TIMEOUT = int(os.getenv("AIBOS_FAL_VIDEO_TIMEOUT", "300"))
 # Where generated media/websites land (served at /generated)
 GENERATED_DIR = Path(__file__).resolve().parent / "static" / "generated"
 
+# Video Studio provider keys (all optional — providers without a key show
+# an honest "not enabled" state and the router falls back to fal/demo).
+HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")       # Google Veo
+RUNWAY_API_KEY = os.getenv("RUNWAY_API_KEY", "")
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+
 # Model routing policy (doc 3 §3.3): frontier for conversations, small for
 # classification. Overridable per deployment.
 MODEL_FRONTIER = os.getenv("AIBOS_MODEL_FRONTIER", "claude-sonnet-5")

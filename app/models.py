@@ -228,6 +228,42 @@ class ApprovalItem(TenantScoped, Base):
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
+# ------------------------------------------------------ Video Studio
+
+class VideoProject(TenantScoped, Base):
+    """One video production: brief -> AI Director plan -> scenes -> render."""
+    __tablename__ = "video_projects"
+    title: Mapped[str] = mapped_column(String(300))
+    goal: Mapped[str] = mapped_column(String(50), default="product_ad")
+    brief: Mapped[dict] = mapped_column(JSON, default=dict)       # step 2 answers
+    direction: Mapped[dict] = mapped_column(JSON, default=dict)   # step 3 answers
+    plan: Mapped[dict] = mapped_column(JSON, default=dict)        # AI Director output
+    status: Mapped[str] = mapped_column(String(30), default="draft")
+    # draft|awaiting_approval|generating|completed|failed
+    estimated_credits: Mapped[float] = mapped_column(Float, default=0.0)
+    outputs: Mapped[list] = mapped_column(JSON, default=list)     # final exports
+
+
+class VideoScene(TenantScoped, Base):
+    __tablename__ = "video_scenes"
+    project_id: Mapped[str] = mapped_column(ForeignKey("video_projects.id"), index=True)
+    idx: Mapped[int] = mapped_column(Integer, default=0)
+    purpose: Mapped[str] = mapped_column(String(200), default="")
+    scene_type: Mapped[str] = mapped_column(String(30), default="broll")
+    # presenter|broll|product|text
+    dialogue: Mapped[str] = mapped_column(Text, default="")
+    on_screen_text: Mapped[str] = mapped_column(String(300), default="")
+    visual_prompt: Mapped[str] = mapped_column(Text, default="")
+    camera: Mapped[str] = mapped_column(String(200), default="")
+    duration_sec: Mapped[int] = mapped_column(Integer, default=5)
+    provider: Mapped[str] = mapped_column(String(30), default="auto")
+    status: Mapped[str] = mapped_column(String(30), default="draft")
+    # draft|queued|generating|completed|failed
+    media_url: Mapped[str] = mapped_column(String(500), default="")
+    error: Mapped[str] = mapped_column(Text, default="")
+    estimated_credits: Mapped[float] = mapped_column(Float, default=0.0)
+
+
 # ------------------------------------------------------ Events & audit
 
 class Event(TenantScoped, Base):
