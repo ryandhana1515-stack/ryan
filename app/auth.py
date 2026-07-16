@@ -10,8 +10,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/offer", "/how", "/agents",
-                "/favicon.ico", "/api/public/plans", "/api/public/signup"}
-PUBLIC_PREFIXES = ("/static/brand/",)  # logo assets used by public pages
+                "/videos", "/favicon.ico", "/api/public/plans", "/api/public/signup"}
+PUBLIC_PREFIXES = ("/static/brand/", "/static/videos/")  # assets used by public pages
 
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):

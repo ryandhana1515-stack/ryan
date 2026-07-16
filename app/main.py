@@ -94,6 +94,12 @@ def agent_page():
     return FileResponse(_STATIC / "agent.html")
 
 
+@app.get("/videos", include_in_schema=False)
+def videos_page():
+    """Public real-footage gallery."""
+    return FileResponse(_STATIC / "videos.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}
