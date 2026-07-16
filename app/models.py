@@ -228,6 +228,16 @@ class ApprovalItem(TenantScoped, Base):
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
+class Artifact(TenantScoped, Base):
+    """AI-built deliverables that must OUTLIVE redeploys (websites, funnels,
+    long-form docs). Content lives in the DB — never on container disk."""
+    __tablename__ = "artifacts"
+    kind: Mapped[str] = mapped_column(String(30), default="website", index=True)
+    title: Mapped[str] = mapped_column(String(300), default="")
+    content: Mapped[str] = mapped_column(Text, default="")
+    content_type: Mapped[str] = mapped_column(String(60), default="text/html")
+
+
 # ------------------------------------------------------ Video Studio
 
 class VideoProject(TenantScoped, Base):

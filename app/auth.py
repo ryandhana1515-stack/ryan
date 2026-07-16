@@ -21,7 +21,7 @@ PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/offer", "/how", "/agents",
                 "/videos", "/favicon.ico", "/login",
                 "/api/public/plans", "/api/public/signup",
                 "/api/auth/register", "/api/auth/login", "/api/auth/logout"}
-PUBLIC_PREFIXES = ("/static/brand/", "/static/videos/", "/generated/")  # public assets + shareable AI-generated funnels
+PUBLIC_PREFIXES = ("/static/brand/", "/static/videos/", "/generated/", "/site/")  # public assets + shareable AI-built pages
 
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):

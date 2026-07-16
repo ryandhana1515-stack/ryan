@@ -272,10 +272,13 @@ def _run_website(session: Session, tenant, agent, task: str) -> tuple[str, list[
                 "max-width:720px;margin:40px auto;line-height:1.6'>"
                 f"<h1>Draft (no LLM key set)</h1><pre style='white-space:pre-wrap'>{html}</pre>"
                 "</body></html>")
-    config.GENERATED_DIR.mkdir(parents=True, exist_ok=True)
-    path = config.GENERATED_DIR / f"site_{uuid.uuid4().hex[:10]}.html"
-    path.write_text(html)
-    url = f"/generated/{path.name}"
+    # Stored in the DB (not container disk) so the link survives redeploys.
+    from app.models import Artifact
+    artifact = Artifact(tenant_id=tenant.id, kind="website",
+                        title=task[:140] or "Landing page", content=html)
+    session.add(artifact)
+    session.flush()
+    url = f"/site/{artifact.id}"
     return "Done — your landing page draft is ready. Open it, and tell me what to change.", \
            [{"type": "page", "url": url, "title": "Landing page draft"}]
 

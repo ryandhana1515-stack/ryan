@@ -168,9 +168,13 @@ def test_manager_website_agent_returns_page(client):
         "message": "Make me a landing page for my July promo", "history": []})
     body = r.json()
     assert body["delegated_to"] == "website"
-    assert body["artifacts"] and body["artifacts"][0]["url"].startswith("/generated/")
+    # pages are DB-backed (/site/...) so links survive redeploys
+    assert body["artifacts"] and body["artifacts"][0]["url"].startswith("/site/")
     page = client.get(body["artifacts"][0]["url"])
     assert page.status_code == 200 and b"<html" in page.content.lower()
+    # and they are public-shareable even when the app is locked
+    with TestClient(app) as anon:
+        assert anon.get(body["artifacts"][0]["url"]).status_code == 200
 
 
 def test_manager_plain_question_gets_direct_reply(client):

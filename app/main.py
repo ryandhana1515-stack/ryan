@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.api import (accounts, agents_api, calendar_api, crm, dashboard,
                      knowledge, manager_api, media, public, team, video_studio)
 from app.config import GENERATED_DIR
-from app.db import SessionLocal, init_db
+from app.db import SessionLocal, get_session, init_db
 from app.workflows import register_all
 
 
@@ -56,6 +57,18 @@ app.mount("/static", StaticFiles(directory=_STATIC), name="static")
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
     return FileResponse(_STATIC / "brand" / "favicon-64.png")
+
+
+@app.get("/site/{artifact_id}", include_in_schema=False)
+def serve_site(artifact_id: str, session: Session = Depends(get_session)):
+    """AI-built pages, served from the DB so links never die on redeploy.
+    Public on purpose: these are shareable marketing pages."""
+    from app.models import Artifact
+
+    artifact = session.get(Artifact, artifact_id)
+    if artifact is None:
+        raise HTTPException(404, "This page doesn't exist (or was deleted).")
+    return HTMLResponse(artifact.content)
 
 
 @app.get("/", include_in_schema=False)
