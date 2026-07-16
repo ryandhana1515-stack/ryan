@@ -11,7 +11,7 @@ from starlette.responses import Response
 
 PUBLIC_PATHS = {"/health", "/welcome", "/signup", "/offer", "/how", "/agents",
                 "/videos", "/favicon.ico", "/api/public/plans", "/api/public/signup"}
-PUBLIC_PREFIXES = ("/static/brand/", "/static/videos/")  # assets used by public pages
+PUBLIC_PREFIXES = ("/static/brand/", "/static/videos/", "/generated/")  # public assets + shareable AI-generated funnels
 
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):

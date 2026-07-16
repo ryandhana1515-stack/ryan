@@ -100,6 +100,12 @@ def videos_page():
     return FileResponse(_STATIC / "videos.html")
 
 
+@app.get("/launch", include_in_schema=False)
+def launch_page():
+    """Launch Pad: campaign builder + platform doors (behind login)."""
+    return FileResponse(_STATIC / "launch.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}

@@ -273,7 +273,7 @@ function startDemo() {
     return /^(customer|you\b|staff|comment)/i.test(label.trim());
   }
   function step() {
-    if (i >= items.length) { setTimeout(endcard, 900); return; }
+    if (i >= items.length) { setTimeout(endcard, 2600); return; }
     const item = items[i];
     const side = isLeft(item.label) ? "left" : "right";
     const typing = document.createElement("div");
@@ -283,8 +283,8 @@ function startDemo() {
     setTimeout(() => {
       typing.outerHTML = '<div class="dmsg ' + side + '"><b>' + item.label + '</b>' + item.text + '</div>';
       i++;
-      setTimeout(step, 1500);
-    }, side === "left" ? 900 : 1300);
+      setTimeout(step, 2800);
+    }, side === "left" ? 1700 : 2400);
   }
   function endcard() {
     const card = document.createElement("div");
@@ -295,7 +295,7 @@ function startDemo() {
       '<button class="replay" onclick="startDemo()">↺ Replay demo</button>';
     stage.querySelector(".demo").appendChild(card);
   }
-  setTimeout(step, 700);
+  setTimeout(step, 1200);
 }
 </script>
 </body>
