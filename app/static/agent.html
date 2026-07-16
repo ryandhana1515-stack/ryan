@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meet your AI employee — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --grad: linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+          --accent: #8b5cf6; --cyan: #22d3ee;
+          --ink: #f2f5ff; --ink-2: #a3adce;
+          --bg: #0a0e1e; --card: #121a38; --border: #263059; }
+  body { font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 24px 22px 70px; }
+  nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--ink); }
+  .logo img { width: 34px; height: 34px; border-radius: 8px; }
+  .logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn { display: inline-block; background: var(--grad); color: #fff; font-weight: 800; text-decoration: none;
+         padding: 14px 28px; border-radius: 12px; box-shadow: 0 4px 24px rgba(109,91,245,.45); }
+  .btn-ghost { background: none; box-shadow: none; border: 1px solid var(--border); color: var(--ink); font-weight: 600; padding: 10px 20px; }
+  .emoji-hero { font-size: 54px; }
+  h1 { font-size: clamp(30px, 5.5vw, 44px); line-height: 1.13; letter-spacing: -.02em; font-weight: 850; margin: 8px 0 4px; }
+  .tagline { font-size: 19px; background: var(--grad); -webkit-background-clip: text; background-clip: text;
+             color: transparent; font-weight: 700; margin-bottom: 22px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin: 16px 0; }
+  .card h2 { font-size: 18px; margin-bottom: 10px; }
+  .card p { color: var(--ink-2); font-size: 15.5px; }
+  .card ul { list-style: none; padding: 0; }
+  .card li { padding: 7px 0 7px 30px; position: relative; color: var(--ink-2); font-size: 15.5px; }
+  .card li::before { content: "✓"; position: absolute; left: 2px; color: var(--cyan); font-weight: 900; }
+  .why li::before { content: "★"; color: #f0b429; }
+  .bubble { background: #0d1430; border: 1px solid var(--border); border-radius: 12px; padding: 12px 15px;
+            font-size: 14.5px; margin-top: 10px; }
+  .bubble b { color: var(--cyan); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; display: block; margin-bottom: 3px; }
+  .vframe { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden;
+            background: #0d1430; border: 1px solid var(--border); }
+  .vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .vsoon { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+           justify-content: center; gap: 8px; color: var(--ink-2); text-align: center; padding: 20px; }
+  .vsoon .big { font-size: 38px; }
+  .cta-block { text-align: center; margin-top: 34px; padding: 32px 22px; background: var(--card);
+               border: 1px solid var(--border); border-radius: 18px; }
+  .cta-block h2 { margin-bottom: 6px; }
+  .cta-block p { color: var(--ink-2); margin-bottom: 18px; }
+  .others { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
+  .others a { font-size: 13px; color: var(--ink-2); text-decoration: none; border: 1px solid var(--border);
+              padding: 6px 12px; border-radius: 99px; }
+  .others a:hover { color: var(--ink); border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="/welcome"><img src="/static/brand/logo-128.png" alt="OmniX AI">Omni<span>X</span> AI</a>
+    <a class="btn btn-ghost" href="/welcome#pricing">← All AI employees</a>
+  </nav>
+
+  <div class="emoji-hero" id="a-emoji"></div>
+  <h1 id="a-name"></h1>
+  <div class="tagline" id="a-tag"></div>
+
+  <div class="card"><h2>The problem it kills</h2><p id="a-problem"></p></div>
+
+  <div class="card"><h2>Watch it in action</h2><div class="vframe" id="a-video"></div></div>
+
+  <div class="card"><h2>What it does for you</h2><ul id="a-does"></ul></div>
+
+  <div class="card why"><h2>Why it's so good</h2><ul id="a-good"></ul></div>
+
+  <div class="card"><h2>A real moment</h2><div id="a-example"></div></div>
+
+  <div class="cta-block">
+    <h2 id="a-cta"></h2>
+    <p>Free for 14 days. No card needed. Founding members lock $49/month for life.</p>
+    <a class="btn" href="/signup">Start free trial</a>&nbsp;&nbsp;
+    <a class="btn btn-ghost" href="/offer">See founding offer</a>
+  </div>
+
+  <div class="others" id="a-others"></div>
+</div>
+
+<script>
+// Paste YouTube video IDs here as agent videos are published
+const AGENT_VIDEOS = {
+  sales: "", support: "", voice: "", marketing: "", branding: "", content: "",
+  social: "", image: "", video: "", website: "", finance: "", hr: "",
+  sop: "", analytics: "", manager: "",
+};
+
+const A = {
+sales: { emoji:"💬", name:"Sales AI", tag:"Your closer who never sleeps.",
+problem:"Most businesses lose their hottest leads to one thing: slow replies. A customer messages five salons at 11pm — the first one to answer usually wins the booking. You were asleep. Your competitor's AI wasn't.",
+does:["Replies to every lead in seconds — WhatsApp, web chat, 2am included","Asks smart qualifying questions and scores every lead 0–100","Handles 'too expensive' and other objections using YOUR offers","Books the appointment and schedules the reminders"],
+good:["It never gets tired, moody, or forgets to follow up — lead #1 and lead #500 get the same A-game","It hands hot or upset customers to a human instantly, with the full conversation attached","It starts in Approve mode: nothing is sent until you tap OK — until you decide it's earned autopilot"],
+example:'<div class="bubble"><b>Customer — 2:47am</b>"Hi, how much is your treatment? Any slots this week?"</div><div class="bubble"><b>Sales AI — 8 seconds later</b>"Hi! Our signature treatment is $180 — and yes, Thursday 2pm or Saturday 11am are open. Which suits you better?"</div>',
+cta:"Stop losing leads while you sleep" },
+support: { emoji:"🛟", name:"Support AI", tag:"Customer service that never closes.",
+problem:"Customers don't have questions during office hours — they have them at night, on Sundays, mid-scroll. Every unanswered question is a customer quietly walking to a competitor.",
+does:["Answers questions 24/7 from YOUR prices, policies, and FAQs","Opens tickets for real problems and tracks them to resolution","Escalates angry or complex cases to you immediately, with a summary","Follows up the next day and measures satisfaction"],
+good:["It cannot invent answers — it only speaks from the knowledge you gave it, and says so when it doesn't know","First-touch resolution means most questions never reach your desk at all","Every conversation is saved to the customer's history — context never gets lost"],
+example:'<div class="bubble"><b>Customer</b>"Is the treatment painful? I\'m nervous 😅"</div><div class="bubble"><b>Support AI</b>"Totally normal question! Most clients describe it as light scratching — we apply a numbing cream first, and our specialists go extra gentle for first-timers. You\'re in safe hands 💜"</div>',
+cta:"Give your customers midnight answers" },
+voice: { emoji:"📞", name:"Voice AI", tag:"Your phone team that never gets tired of calling.",
+problem:"No-shows quietly eat 10–20% of a service business's revenue. The fix is boring: confirmation calls and follow-ups. Nobody has time for boring — except an AI.",
+does:["Calls to confirm every appointment the day before","Calls back missed calls so no enquiry dies on voicemail","Runs follow-up and reactivation call campaigns on your old customer list","Logs summaries and outcomes of every call into the CRM"],
+good:["Polite, natural scripts in your brand voice — it confirms names, dates, and times by repeating them back","It makes the 40 calls you keep postponing, every single day","Old customer lists turn back into revenue without you touching a phone"],
+example:'<div class="bubble"><b>Voice AI — on a call</b>"Hi Sarah, calling from Brow Revolution to confirm your appointment tomorrow at 3pm. Should I keep it, or would another time suit you better?"</div>',
+cta:"Cut your no-shows this week" },
+marketing: { emoji:"📣", name:"Marketing AI", tag:"A marketing director for $1.60 a day.",
+problem:"Most small businesses don't have a marketing strategy — they have random posting and hope. Agencies charge $800+/month to fix that, and half of them just guess prettily.",
+does:["Builds monthly marketing plans from your REAL sales numbers","Generates campaign ideas, content calendars, and A/B tests","Creates detailed customer personas from your actual audience","Reports what worked and kills what didn't"],
+good:["Its plans are grounded in your data — not recycled templates","It plans a month in minutes and adjusts weekly as numbers come in","It coordinates the whole content team: what it plans, Content AI writes and Image AI illustrates"],
+example:'<div class="bubble"><b>You</b>"Plan my July campaign, budget $2,000."</div><div class="bubble"><b>Marketing AI</b>"July theme: \'Summer-Ready Brows\'. 3 angles: bridal season, holiday photos, referral push. Budget split: 60% Meta ads, 25% TikTok, 15% retention broadcasts. Calendar and 3 A/B tests attached…"</div>',
+cta:"Get a real strategy, not random posts" },
+branding: { emoji:"🏷️", name:"Branding AI", tag:"The strategist who makes you sound like a brand, not a shop.",
+problem:"Customers pay premium prices to brands, not to shops. If your posts, replies, and pages all sound different — or sound like everyone else — you compete on price forever.",
+does:["Interviews you and writes your mission, vision, and company story","Defines your brand voice: three adjectives, do's and don'ts","Positions your offer against your competitors","Generates names for products, packages, and campaigns"],
+good:["Every other AI employee obeys the voice it defines — instant consistency everywhere","It captures the story you never had time to write down","A clear brand lets you raise prices with a straight face"],
+example:'<div class="bubble"><b>Branding AI — from your brand kit</b>"Voice: warm, confident, plain-spoken. We say \'your best brows, engineered\' — we never say \'cheap\', \'discount\', or \'guru\'. Story: born from a founder who believed beauty services should feel like precision engineering…"</div>',
+cta:"Sound like the premium option — everywhere" },
+content: { emoji:"✍️", name:"Content AI", tag:"A month of content from one instruction.",
+problem:"Content is a treadmill: the algorithm punishes you for resting, but writing daily posts at midnight is how business owners burn out.",
+does:["Writes Instagram/Facebook posts, captions, and hashtags","Writes TikTok scripts with hooks, beats, and CTAs","Writes emails, WhatsApp broadcasts, blogs, and ad copy","All in your brand voice, in any language"],
+good:["Platform-native: a TikTok script and a LinkedIn post are built differently, and it knows the difference","It never runs out of ideas — it recycles your winners into new angles","Batch a month of content in one sitting, approve from your phone"],
+example:'<div class="bubble"><b>You</b>"Write a TikTok script about brow lamination."</div><div class="bubble"><b>Content AI</b>"HOOK (0-2s): \'Your brows aren\'t messy. They\'re just unmanaged.\' … BEAT 2: before/after close-up … CTA: \'Book the transformation — link in bio.\'"</div>',
+cta:"Never face a blank caption box again" },
+social: { emoji:"💬", name:"Social Media AI", tag:"The community manager who finds money in your comments.",
+problem:"Your comment section and DMs are full of buyers asking soft questions — 'how much?', 'where are you located?' — and most of them never get answered before they scroll away forever.",
+does:["Drafts replies to comments and DMs in your voice","Spots buying intent and flags it as a lead for Sales AI","Keeps heated threads out of public view — politely","Writes your weekly engagement report"],
+good:["It treats every comment as a potential customer, because it is","Escalation rules: anything risky or angry goes straight to a human","It turns engagement from a chore into a lead source you can measure"],
+example:'<div class="bubble"><b>Comment on your reel</b>"do u do this for sensitive skin??"</div><div class="bubble"><b>Social Media AI — draft + lead flag 🚩</b>"Yes we do! We patch-test first and use a gentle formula. Want me to DM you the details? 💜" — lead created, score 65</div>',
+cta:"Turn your DMs into a sales channel" },
+image: { emoji:"🎨", name:"Image AI", tag:"A designer who works from one sentence.",
+problem:"Every promo needs a visual. Designers cost money, Canva marathons cost evenings, and 'I'll just use a stock photo' costs your brand its face.",
+does:["Turns one sentence into professional ad visuals","Matches your brand colors and aesthetic","Generates variations until you're happy","Feeds the content calendar with fresh graphics"],
+good:["Minutes, not days — promo idea to finished visual in one chat message","No per-image designer invoices — it's included in your plan","Consistent premium look across every channel"],
+example:'<div class="bubble"><b>You</b>"Create an image for my July promo — elegant, our colors."</div><div class="bubble"><b>Image AI</b>🖼️ Generated: luxurious studio scene, cyan-violet accents, July offer composition — 4 variations ready for your approval.</div>',
+cta:"Get tomorrow's visuals tonight" },
+video: { emoji:"🎬", name:"Video AI", tag:"Short-form video without the production day.",
+problem:"Video gets the reach, but filming, editing, and captioning eats entire days — so most businesses simply don't post it, and the algorithm forgets them.",
+does:["Creates short promo clips and reels from a text description","Feeds your daily-posting calendar with motion content","Generates video variations for A/B testing ads","Works with Image AI for a consistent look"],
+good:["Your feed never goes quiet — clips on demand, every day","Test 5 ad variations for pennies instead of one for hundreds","No camera, no crew, no editing software"],
+example:'<div class="bubble"><b>You</b>"Make a 6-second teaser for the July promo."</div><div class="bubble"><b>Video AI</b>🎬 Generated: slow-glow pan across studio, headline fade-in \'July: Summer-Ready Brows\', CTA end-card — ready to post.</div>',
+cta:"Keep your feed alive without filming" },
+website: { emoji:"🌐", name:"Website AI", tag:"A landing page by tomorrow — made tonight.",
+problem:"Every campaign deserves its own page, but web developers take weeks and DIY builders take weekends. So promos launch pageless, and conversions leak.",
+does:["Generates complete landing pages from one instruction","Writes the page in your brand voice with your real offers","Includes hero, benefits, proof, FAQ, and call-to-action","Publishes instantly on your OmniX address"],
+good:["Campaign idea at 9pm, live page by 9:15pm","No developer, no page-builder subscription, no template hunting","Every page is written to convert, not just to exist"],
+example:'<div class="bubble"><b>You</b>"Make me a landing page for the July laser promo."</div><div class="bubble"><b>Website AI</b>🌐 Done — hero: \'July Only: Summer-Ready Skin\', 3 benefits, price anchor, FAQ, booking CTA. Open the draft link and tell me what to change.</div>',
+cta:"Launch pages at the speed of ideas" },
+finance: { emoji:"💰", name:"Finance AI", tag:"Finally understand your own money.",
+problem:"Most owners fly blind between accountant visits: revenue feels fine, then the bank balance disagrees. Spreadsheets don't explain — they just stare back.",
+does:["Turns your numbers into plain-English monthly reports","Tracks cash flow and warns you about runway","Chases overdue invoices with polite drafts","Flags cost anomalies before they become holes"],
+good:["It explains WHY: 'revenue up 12% because rebooking rate improved' — not just charts","It names names: exactly who owes you and for how long","It never moves money on its own — by design, forever"],
+example:'<div class="bubble"><b>Finance AI — monthly report</b>"Good month with one warning. Revenue $18.4k (+12%) driven by rebookings. Costs stable except supplies (+31% — check the new vendor). Two invoices overdue: Aisha ($340, 12 days), Glow Ltd ($1,100, 21 days). Cash runway: 4.2 months."</div>',
+cta:"Get CFO clarity without the CFO salary" },
+hr: { emoji:"🧑‍💼", name:"HR AI", tag:"Hiring stops eating your weekends.",
+problem:"One job post = 50 resumes = a lost weekend of reading, and the best candidate often slips away while you're still sorting the pile.",
+does:["Screens and scores every resume against YOUR job requirements","Drafts tailored interview questions per candidate","Builds onboarding checklists and 30/60/90 plans","Drafts performance reviews and answers policy questions"],
+good:["Fair by design: it judges skills and experience, ignores names, age, gender, photos","Resume #47 gets the same attention as resume #1","Your new hire's first week runs off a checklist, not off your memory"],
+example:'<div class="bubble"><b>HR AI — screening result</b>"Candidate: 84/100. Strengths: 4y beauty industry, customer-facing, bilingual. Concern: 3 jobs in 2 years — ask why. Suggested interview Q: \'Walk me through a difficult client you turned around.\' Recommendation: advance."</div>',
+cta:"Hire faster, fairer, without the pile" },
+sop: { emoji:"📋", name:"SOP AI", tag:"Gets the business out of your head.",
+problem:"If everything lives in the owner's head, the owner can never rest — and the business can never be sold. Documented businesses are worth multiples of dependent ones.",
+does:["Interviews you and writes step-by-step procedure manuals","Documents every department: opening, closing, service, refunds","Answers staff questions from your documents, with citations","Reminds you to review procedures as things change"],
+good:["A new hire can follow its manuals on day one, unsupervised","Staff stop asking you the same question five times — they ask the AI","Buyers and investors pay more for a business that runs on paper, not on you"],
+example:'<div class="bubble"><b>Staff member</b>"How do I handle a refund request?"</div><div class="bubble"><b>SOP AI</b>"Per \'Refund & Cancellation Policy v2\': ① Confirm purchase within 30 days ② Offer reschedule first ③ If declined, escalate to manager for approval — refunds are never processed without one. Source: Refund SOP, step 4."</div>',
+cta:"Build a business that runs without you" },
+analytics: { emoji:"📊", name:"Analytics AI", tag:"The morning briefing that tells you the truth.",
+problem:"Data isn't the problem — attention is. The numbers were always there; nobody had time to read them until the problem got expensive.",
+does:["Reads your live numbers every morning","Tells you the ONE thing that matters today","Explains anomalies with likely causes","Computes your Business Health Score and risk alerts"],
+good:["Brutally honest — it will tell you the pipeline is dry while it's still fixable","No dashboards to decode: one paragraph, plain language","It connects causes: 'leads dropped 40% — your Meta campaign paused Tuesday'"],
+example:'<div class="bubble"><b>Analytics AI — 7:00am</b>"Headline: bookings strong, cash needs attention. 9 appointments this week (+3). But two big invoices overdue and supplies cost spiked. Do one thing today: chase the Glow Ltd invoice. Health: 78/100."</div>',
+cta:"Run your business from one honest paragraph" },
+manager: { emoji:"🧭", name:"Manager AI", tag:"One conversation. A whole company moves.",
+problem:"Fourteen employees — human or AI — still need managing. Unless you have a chief of staff who briefs you, delegates for you, and reviews the team's work.",
+does:["You chat with it in plain language, like texting a manager","It researches your live business data before answering","It delegates work to the right AI employee and reports back","It reviews your AI team's performance with real numbers"],
+good:["No dashboards or menus needed — just say what you want","It checks the numbers before it speaks, so it never guesses","It tells you which employees earned autopilot and which need watching"],
+example:'<div class="bubble"><b>You</b>"How\'s my AI team doing this week?"</div><div class="bubble"><b>Manager AI</b>"Sales AI: 41 runs, 0 errors — your workhorse, ready for full autopilot. Content AI: 12 drafts, 2 edited by you — improving. Voice AI: idle — want me to schedule confirmation calls for this week\'s 9 appointments?"</div>',
+cta:"Manage everything with one chat" },
+};
+
+const ORDER = ["sales","support","voice","marketing","branding","content","social","image","video","website","finance","hr","sop","analytics","manager"];
+
+const key = new URLSearchParams(location.search).get("a");
+const a = A[key];
+if (!a) { location.href = "/welcome"; }
+else {
+  document.title = a.name + " — OmniX AI";
+  document.getElementById("a-emoji").textContent = a.emoji;
+  document.getElementById("a-name").textContent = a.name;
+  document.getElementById("a-tag").textContent = a.tag;
+  document.getElementById("a-problem").textContent = a.problem;
+  document.getElementById("a-does").innerHTML = a.does.map(d => "<li>" + d + "</li>").join("");
+  document.getElementById("a-good").innerHTML = a.good.map(d => "<li>" + d + "</li>").join("");
+  document.getElementById("a-example").innerHTML = a.example;
+  document.getElementById("a-cta").textContent = a.cta;
+  const vid = AGENT_VIDEOS[key];
+  document.getElementById("a-video").innerHTML = vid
+    ? '<iframe src="https://www.youtube-nocookie.com/embed/' + vid + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
+    : '<div class="vsoon"><div class="big">🎬</div><div><b>Video coming soon.</b><br>Best demo? Watch it work on YOUR business — free for 14 days.</div></div>';
+  document.getElementById("a-others").innerHTML =
+    ORDER.filter(k => k !== key).map(k => '<a href="/agents?a=' + k + '">' + A[k].emoji + " " + A[k].name + "</a>").join("");
+}
+</script>
+</body>
+</html>

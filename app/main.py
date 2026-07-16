@@ -88,6 +88,12 @@ def how_page():
     return FileResponse(_STATIC / "how.html")
 
 
+@app.get("/agents", include_in_schema=False)
+def agent_page():
+    """Public per-agent detail page (?a=sales ... ?a=manager)."""
+    return FileResponse(_STATIC / "agent.html")
+
+
 @app.get("/health", include_in_schema=False)
 def health():
     return {"status": "ok"}

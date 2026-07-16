@@ -256,6 +256,7 @@ def test_signup_page_public_when_locked(client, monkeypatch):
     assert client.get("/signup").status_code == 200
     assert client.get("/offer").status_code == 200
     assert client.get("/how").status_code == 200
+    assert client.get("/agents?a=sales").status_code == 200
     assert client.get("/api/public/plans").status_code == 200
 
 
