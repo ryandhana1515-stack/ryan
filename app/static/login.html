@@ -106,7 +106,11 @@ async function post(url, body) {
   const r = await fetch(url, {method: 'POST',
     headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.detail || 'Something went wrong — try again.');
+  if (!r.ok) {
+    const detail = typeof data.detail === 'string' ? data.detail
+      : 'Server error (code ' + r.status + ') — please send this number to support.';
+    throw new Error(detail);
+  }
   return data;
 }
 async function login(e) {

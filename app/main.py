@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="AI Business Operating System", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="AI Business Operating System", version="0.3.1", lifespan=lifespan)
 
 from app.auth import BasicAuthMiddleware  # noqa: E402
 
@@ -122,4 +122,4 @@ def studio_page():
 
 @app.get("/health", include_in_schema=False)
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "version": app.version}
