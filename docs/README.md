@@ -8,6 +8,19 @@ while the CEO focuses on strategy, leadership, partnerships, and growth.
 This design is **multi-tenant from day one** so the same platform can run your
 own companies first and later be white-labeled and sold to SMEs.
 
+
+## Master Documents (for developers, designers, and AI agents)
+
+| Document | Purpose |
+|---|---|
+| [PRD.md](PRD.md) | Master Product Requirements — vision, all 8 modules, every feature marked LIVE/PARTIAL/PLANNED |
+| [TECHNICAL-ARCHITECTURE.md](TECHNICAL-ARCHITECTURE.md) | How the live system is built and how to extend it (stack, repo map, orchestration, APIs, integrations plan) |
+| [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) | Brand tokens, components, screen inventory, interaction patterns |
+| [AI-EMPLOYEE-BIBLE.md](AI-EMPLOYEE-BIBLE.md) | Full spec of all 18 AI employees + memory/learning system + hiring recipe |
+
+> ⚠️ Rule #1 for any hired developer or AI agent: **OmniX AI is a live,
+> deployed product.** Extend this codebase — never rebuild from scratch.
+
 ## Document Index
 
 | # | Document | What it covers |
