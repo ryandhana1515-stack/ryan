@@ -40,6 +40,37 @@
   .vsoon { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
            justify-content: center; gap: 8px; color: var(--ink-2); text-align: center; padding: 20px; }
   .vsoon .big { font-size: 38px; }
+  .demo { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .demo-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+               border-bottom: 1px solid var(--border); font-weight: 700; font-size: 14px; }
+  .demo-head .live { margin-left: auto; color: #f87171; font-size: 11px; font-weight: 800;
+                     letter-spacing: .08em; animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .demo-msgs { flex: 1; padding: 14px; overflow: hidden; display: flex; flex-direction: column;
+               gap: 10px; justify-content: flex-end; }
+  .dmsg { max-width: 82%; padding: 10px 13px; border-radius: 12px; font-size: 13.5px;
+          line-height: 1.45; animation: rise .4s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+  .dmsg.left { align-self: flex-start; background: #0d1430; border: 1px solid var(--border); }
+  .dmsg.right { align-self: flex-end; border: 1px solid var(--accent);
+                background: linear-gradient(120deg, rgba(34,211,238,.14), rgba(217,70,239,.14)); }
+  .dmsg b { display: block; font-size: 10.5px; color: var(--cyan); text-transform: uppercase;
+            letter-spacing: .06em; margin-bottom: 3px; }
+  .typing { display: inline-flex; gap: 4px; padding: 13px 14px; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-2);
+              animation: tp 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes tp { 30% { transform: translateY(-4px); } }
+  .endcard { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+             justify-content: center; gap: 12px; background: rgba(10,14,30,.93); text-align: center;
+             padding: 22px; animation: rise .5s ease; }
+  .endcard img { width: 54px; height: 54px; border-radius: 12px; }
+  .endcard .t { font-size: 20px; font-weight: 850; background: var(--grad);
+                -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .endcard .s { color: var(--ink-2); font-size: 13.5px; }
+  .replay { cursor: pointer; color: var(--ink-2); font-size: 13px; font-weight: 600;
+            border: 1px solid var(--border); border-radius: 99px; padding: 7px 16px; background: none; }
+  .replay:hover { color: var(--ink); border-color: var(--accent); }
   .cta-block { text-align: center; margin-top: 34px; padding: 32px 22px; background: var(--card);
                border: 1px solid var(--border); border-radius: 18px; }
   .cta-block h2 { margin-bottom: 6px; }
@@ -210,11 +241,61 @@ else {
   document.getElementById("a-example").innerHTML = a.example;
   document.getElementById("a-cta").textContent = a.cta;
   const vid = AGENT_VIDEOS[key];
-  document.getElementById("a-video").innerHTML = vid
-    ? '<iframe src="https://www.youtube-nocookie.com/embed/' + vid + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
-    : '<div class="vsoon"><div class="big">🎬</div><div><b>Video coming soon.</b><br>Best demo? Watch it work on YOUR business — free for 14 days.</div></div>';
+  if (vid) {
+    document.getElementById("a-video").innerHTML =
+      '<iframe src="https://www.youtube-nocookie.com/embed/' + vid + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+  } else {
+    startDemo();
+  }
   document.getElementById("a-others").innerHTML =
     ORDER.filter(k => k !== key).map(k => '<a href="/agents?a=' + k + '">' + A[k].emoji + " " + A[k].name + "</a>").join("");
+}
+
+// Built-in animated demo: plays the agent's example conversation like a
+// live chat recording, ending on a branded card. Used when no video is set.
+function startDemo() {
+  const stage = document.getElementById("a-video");
+  stage.innerHTML =
+    '<div class="demo"><div class="demo-head">' + a.emoji + ' ' + a.name +
+    '<span class="live">● LIVE DEMO</span></div><div class="demo-msgs" id="dmsgs"></div></div>';
+  const tmp = document.createElement("div");
+  tmp.innerHTML = a.example;
+  const items = [...tmp.querySelectorAll(".bubble")].map(bb => {
+    const lab = bb.querySelector("b");
+    const label = lab ? lab.textContent : "";
+    if (lab) lab.remove();
+    return { label, text: bb.textContent.trim() };
+  });
+  const msgs = document.getElementById("dmsgs");
+  let i = 0;
+
+  function isLeft(label) {
+    return /^(customer|you\b|staff|comment)/i.test(label.trim());
+  }
+  function step() {
+    if (i >= items.length) { setTimeout(endcard, 900); return; }
+    const item = items[i];
+    const side = isLeft(item.label) ? "left" : "right";
+    const typing = document.createElement("div");
+    typing.className = "dmsg " + side;
+    typing.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+    msgs.appendChild(typing);
+    setTimeout(() => {
+      typing.outerHTML = '<div class="dmsg ' + side + '"><b>' + item.label + '</b>' + item.text + '</div>';
+      i++;
+      setTimeout(step, 1500);
+    }, side === "left" ? 900 : 1300);
+  }
+  function endcard() {
+    const card = document.createElement("div");
+    card.className = "endcard";
+    card.innerHTML = '<img src="/static/brand/logo-128.png" alt="OmniX AI">' +
+      '<div class="t">' + a.tag + '</div>' +
+      '<div class="s">Free for 14 days — watch it do this for YOUR business.</div>' +
+      '<button class="replay" onclick="startDemo()">↺ Replay demo</button>';
+    stage.querySelector(".demo").appendChild(card);
+  }
+  setTimeout(step, 700);
 }
 </script>
 </body>
