@@ -125,6 +125,13 @@ document.getElementById("f").addEventListener("submit", async (e) => {
   }
   send.disabled = false; box.focus();
 });
+
+// Allow other pages to open the chat with a question ready to go: /chat?q=...
+const preq = new URLSearchParams(location.search).get("q");
+if (preq) {
+  box.value = preq;
+  setTimeout(() => document.getElementById("f").dispatchEvent(new Event("submit")), 400);
+}
 </script>
 </body>
 </html>

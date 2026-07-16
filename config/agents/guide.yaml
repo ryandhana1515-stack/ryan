@@ -1,0 +1,9 @@
+key: guide
+name: Guide AI
+description: Your patient setup coach — walks beginners step-by-step through Meta ads, TikTok Shop, Shopee, Google Business, posting systems, and every platform registration.
+system_prompt_ref: prompts/guide_system.md
+model_tier: frontier
+autonomy: auto
+tools: []
+knowledge_scope: [sop, faq, brand]
+guardrails: {}

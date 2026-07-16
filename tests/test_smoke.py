@@ -30,7 +30,7 @@ def test_all_department_agents_provisioned(client):
     agents = {a["key"] for a in client.get("/api/agents").json()}
     assert agents == {"sales", "support", "marketing", "branding", "content",
                       "social", "voice", "finance", "hr", "sop", "analytics",
-                      "manager", "website", "image", "video", "seo", "sco"}
+                      "manager", "website", "image", "video", "seo", "sco", "guide"}
 
 
 def test_lead_webhook_triggers_instant_sales_reply_in_approval_queue(client):
@@ -142,7 +142,7 @@ def test_dashboard_summary(client):
     s = client.get("/api/dashboard/summary").json()
     assert s["metrics"]["leads_today"] >= 3
     assert 0 <= s["health"]["overall"] <= 100
-    assert len(s["agents"]) == 17
+    assert len(s["agents"]) == 18
 
 
 def test_manager_delegates_to_content_agent(client):
