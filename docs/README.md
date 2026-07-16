@@ -17,6 +17,7 @@ own companies first and later be white-labeled and sold to SMEs.
 | [TECHNICAL-ARCHITECTURE.md](TECHNICAL-ARCHITECTURE.md) | How the live system is built and how to extend it (stack, repo map, orchestration, APIs, integrations plan) |
 | [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) | Brand tokens, components, screen inventory, interaction patterns |
 | [AI-EMPLOYEE-BIBLE.md](AI-EMPLOYEE-BIBLE.md) | Full spec of all 18 AI employees + memory/learning system + hiring recipe |
+| [V2-ROADMAP.md](V2-ROADMAP.md) | The founder's V2 PRD/Build-Guide PDFs reconciled against the live product — what exists, what's next, in which phase |
 
 > ⚠️ Rule #1 for any hired developer or AI agent: **OmniX AI is a live,
 > deployed product.** Extend this codebase — never rebuild from scratch.

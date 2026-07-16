@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content Calendar — OmniX AI</title>
+<link rel="icon" href="/static/brand/favicon-64.png">
+<style>
+:root {
+  --grad:   linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+  --accent: #8b5cf6;  --cyan: #22d3ee;  --magenta: #d946ef;
+  --ink:    #f2f5ff;  --ink-2: #a3adce;
+  --bg:     #0a0e1e;  --bg-soft:#0e1430;  --card: #121a38;  --border: #263059;
+  --good:   #34d399;  --warn: #f0b429;  --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--ink); padding: 22px; }
+.wrap { max-width: 900px; margin: 0 auto; }
+header { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+h1 { font-size: clamp(22px, 4vw, 30px); letter-spacing: -.02em; }
+h1 span { background: var(--grad); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+.nav a { color: var(--ink-2); text-decoration: none; font-size: 14px;
+  font-weight: 700; margin-left: 14px; }
+.nav a:hover { color: var(--cyan); }
+.card { background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+label { display: block; font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2);
+  margin: 10px 0 5px; }
+input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 9px;
+  font-size: 14px; background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--ink); font-family: inherit; }
+textarea { min-height: 64px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; }
+.btn { padding: 12px 18px; border: 0; border-radius: 11px; background: var(--grad);
+  color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 14px;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, .3); }
+.btn-ghost { background: transparent; border: 1px solid var(--border);
+  color: var(--ink); box-shadow: none; padding: 7px 12px; border-radius: 9px;
+  font-size: 13px; font-weight: 700; cursor: pointer; }
+.day { margin: 22px 0 10px; font-size: 15px; font-weight: 800; color: var(--cyan);
+  text-transform: uppercase; letter-spacing: .05em; }
+.item { display: flex; gap: 12px; align-items: flex-start; background: var(--card);
+  border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; animation: rise .35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.item .emoji { font-size: 24px; }
+.item .body { flex: 1; min-width: 0; }
+.item .meta { font-size: 12px; color: var(--ink-2); font-weight: 700; }
+.item .cap { font-size: 14px; margin: 4px 0 8px; white-space: pre-wrap;
+  word-break: break-word; }
+.badge { display: inline-block; padding: 2px 9px; border-radius: 99px;
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.badge.scheduled { background: rgba(240,180,41,.15); color: var(--warn); }
+.badge.posted { background: rgba(52,211,153,.15); color: var(--good); }
+.badge.skipped { background: rgba(163,173,206,.15); color: var(--ink-2); }
+.badge.appt { background: rgba(34,211,238,.15); color: var(--cyan); }
+.acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.acts a { color: var(--cyan); font-size: 13px; font-weight: 700;
+  text-decoration: none; padding: 7px 4px; }
+.empty { color: var(--ink-2); font-size: 14px; padding: 8px 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📅 Content <span>Calendar</span></h1>
+    <nav class="nav">
+      <a href="/">Dashboard</a><a href="/studio">Studio</a>
+      <a href="/launch">Launch Pad</a><a href="/chat">Manager AI</a>
+    </nav>
+  </header>
+
+  <div class="card">
+    <b>Plan a post</b>
+    <div class="row">
+      <div><label>Platform</label><select id="p-platform"></select></div>
+      <div><label>When</label><input id="p-when" type="datetime-local"></div>
+      <div><label>Image/video link (optional)</label><input id="p-media" placeholder="/generated/... or https://..."></div>
+    </div>
+    <label>Caption</label>
+    <textarea id="p-cap" placeholder="Write it yourself — or ask Manager AI to write it, then paste here"></textarea>
+    <button class="btn" onclick="createPost()">Add to calendar</button>
+    <a href="/chat?q=Write me a week of captions for my upcoming posts" style="color:var(--cyan);font-size:13px;font-weight:700;margin-left:14px;text-decoration:none">🤝 Ask Content AI to write captions →</a>
+  </div>
+
+  <div id="feed"><div class="empty">Loading…</div></div>
+</div>
+
+<script>
+let PLATFORMS = {};
+
+function dayKey(d) { return d.toLocaleDateString(undefined,
+  {weekday: 'long', day: 'numeric', month: 'short'}); }
+
+async function load() {
+  const data = await (await fetch('/api/calendar?days=21')).json();
+  PLATFORMS = data.platforms;
+  const sel = document.getElementById('p-platform');
+  sel.innerHTML = Object.entries(PLATFORMS).map(([k, v]) =>
+    `<option value="${k}">${v.emoji} ${v.label}</option>`).join('');
+
+  const items = [
+    ...data.posts.map(p => ({...p, kind: 'post', at: new Date(p.scheduled_at)})),
+    ...data.appointments.map(a => ({...a, kind: 'appt', at: new Date(a.starts_at)})),
+  ].sort((a, b) => a.at - b.at);
+
+  const feed = document.getElementById('feed');
+  if (!items.length) {
+    feed.innerHTML = '<div class="empty">Nothing planned yet — add your first post above. A steady calendar beats random posting.</div>';
+    return;
+  }
+  let html = '', lastDay = '';
+  for (const it of items) {
+    const day = dayKey(it.at);
+    if (day !== lastDay) { html += `<div class="day">${day}</div>`; lastDay = day; }
+    const time = it.at.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+    if (it.kind === 'appt') {
+      html += `<div class="item"><div class="emoji">🗓️</div><div class="body">
+        <div class="meta">${time} · Appointment <span class="badge appt">${it.status}</span></div>
+        <div class="cap">${esc(it.contact)}</div></div></div>`;
+    } else {
+      const pf = PLATFORMS[it.platform] || PLATFORMS.other;
+      const openBtn = pf.post_url && it.status === 'scheduled'
+        ? `<a href="${pf.post_url}" target="_blank" rel="noopener">Open ${pf.label} →</a>
+           <a href="/chat?q=${encodeURIComponent('Guide me step by step to publish this post on ' + pf.label)}">🤝 Guide me →</a>` : '';
+      const media = it.media_url ? `<a href="${esc(it.media_url)}" target="_blank" rel="noopener">📎 media</a>` : '';
+      html += `<div class="item"><div class="emoji">${pf.emoji}</div><div class="body">
+        <div class="meta">${time} · ${pf.label} <span class="badge ${it.status}">${it.status}</span></div>
+        <div class="cap">${esc(it.caption) || '<i>no caption yet</i>'}</div>
+        <div class="acts">${openBtn}${media}
+          ${it.status === 'scheduled' ? `<button class="btn-ghost" onclick="setStatus('${it.id}','posted')">✅ Mark posted</button>
+          <button class="btn-ghost" onclick="setStatus('${it.id}','skipped')">Skip</button>` : ''}
+          <button class="btn-ghost" onclick="del('${it.id}')">🗑</button>
+        </div></div></div>`;
+    }
+  }
+  feed.innerHTML = html;
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+async function createPost() {
+  const when = document.getElementById('p-when').value;
+  if (!when) { alert('Pick a date and time first.'); return; }
+  await fetch('/api/calendar/posts', {method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({platform: document.getElementById('p-platform').value,
+      caption: document.getElementById('p-cap').value,
+      media_url: document.getElementById('p-media').value,
+      scheduled_at: new Date(when).toISOString()})});
+  document.getElementById('p-cap').value = '';
+  load();
+}
+async function setStatus(id, status) {
+  await fetch('/api/calendar/posts/' + id, {method: 'PATCH',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify({status})});
+  load();
+}
+async function del(id) {
+  await fetch('/api/calendar/posts/' + id, {method: 'DELETE'});
+  load();
+}
+load();
+</script>
+</body>
+</html>

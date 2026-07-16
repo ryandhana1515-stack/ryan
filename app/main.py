@@ -6,7 +6,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 
-from app.api import accounts, agents_api, crm, dashboard, knowledge, manager_api, media, public
+from app.api import (accounts, agents_api, calendar_api, crm, dashboard,
+                     knowledge, manager_api, media, public, team)
 from app.config import GENERATED_DIR
 from app.db import SessionLocal, init_db
 from app.workflows import register_all
@@ -42,6 +43,8 @@ app.include_router(manager_api.router)
 app.include_router(public.router)
 app.include_router(media.router)
 app.include_router(accounts.router)
+app.include_router(team.router)
+app.include_router(calendar_api.router)
 
 _STATIC = Path(__file__).parent / "static"
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
@@ -76,6 +79,18 @@ def landing_page():
 def login_page():
     """Customer sign-in / create-account page."""
     return FileResponse(_STATIC / "login.html")
+
+
+@app.get("/calendar", include_in_schema=False)
+def calendar_page():
+    """Content calendar / social scheduler."""
+    return FileResponse(_STATIC / "calendar.html")
+
+
+@app.get("/team", include_in_schema=False)
+def team_page():
+    """Workspace team management."""
+    return FileResponse(_STATIC / "team.html")
 
 
 @app.get("/signup", include_in_schema=False)

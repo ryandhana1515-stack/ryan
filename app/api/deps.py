@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_session
-from app.models import Tenant
+from app.models import Tenant, User
 from app.security import SESSION_COOKIE, verify_session_token
 
 
@@ -30,3 +30,16 @@ def get_tenant(request: Request, session: Session = Depends(get_session),
     if tenant is None:
         raise HTTPException(404, "no tenant provisioned — run: python -m app.seed")
     return tenant
+
+
+def get_current_user(request: Request,
+                     session: Session = Depends(get_session)) -> User | None:
+    """The signed-in user, or None when running on admin basic auth /
+    unlocked local dev (both act as the workspace owner)."""
+    payload = getattr(request.state, "session", None)
+    if payload is None:
+        token = request.cookies.get(SESSION_COOKIE)
+        payload = verify_session_token(token) if token else None
+    if payload is None:
+        return None
+    return session.get(User, payload.get("u", ""))

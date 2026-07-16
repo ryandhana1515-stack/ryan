@@ -372,6 +372,65 @@ def test_admin_password_signs_in_to_owner_workspace(client, monkeypatch):
         assert r.json()["tenant"] == "Demo Marketing Agency"  # first (owner) tenant
 
 
+def test_team_owner_adds_member_who_shares_workspace(client):
+    with TestClient(app) as owner:
+        owner.post("/api/auth/register", json={
+            "business": "Team Studio", "name": "Boss",
+            "email": "boss@teamstudio.com", "password": "bosspass99"})
+        r = owner.post("/api/team", json={
+            "name": "Sarah", "email": "sarah@teamstudio.com",
+            "password": "sarahpass1", "role": "manager"})
+        assert r.status_code == 200
+        emails = {u["email"] for u in owner.get("/api/team").json()}
+        assert emails == {"boss@teamstudio.com", "sarah@teamstudio.com"}
+
+    with TestClient(app) as member:
+        r = member.post("/api/auth/login", json={
+            "email": "sarah@teamstudio.com", "password": "sarahpass1"})
+        assert r.json()["tenant"] == "Team Studio"  # same workspace
+        # staff/managers cannot manage the team
+        r = member.post("/api/team", json={
+            "name": "X", "email": "x@teamstudio.com", "password": "xxxxxxxx"})
+        assert r.status_code == 403
+
+
+def test_team_owner_cannot_be_removed(client):
+    with TestClient(app) as owner:
+        owner.post("/api/auth/login", json={
+            "email": "boss@teamstudio.com", "password": "bosspass99"})
+        team = owner.get("/api/team").json()
+        boss = next(u for u in team if u["is_owner"])
+        sarah = next(u for u in team if not u["is_owner"])
+        assert owner.delete(f"/api/team/{boss['id']}").status_code == 422
+        assert owner.delete(f"/api/team/{sarah['id']}").json()["ok"] is True
+
+
+def test_content_calendar_post_lifecycle(client):
+    from datetime import timedelta
+
+    from app.models import utcnow
+
+    when = (utcnow() + timedelta(days=2)).isoformat()
+    post = client.post("/api/calendar/posts", json={
+        "platform": "tiktok", "caption": "New brow transformation 😍",
+        "scheduled_at": when}).json()
+    cal = client.get("/api/calendar").json()
+    assert any(p["id"] == post["id"] and p["platform"] == "tiktok"
+               for p in cal["posts"])
+    assert "tiktok" in cal["platforms"]
+
+    r = client.patch(f"/api/calendar/posts/{post['id']}", json={"status": "posted"})
+    assert r.json()["status"] == "posted"
+    assert client.delete(f"/api/calendar/posts/{post['id']}").json()["ok"] is True
+
+
+def test_calendar_shows_appointments_alongside_posts(client):
+    cal = client.get("/api/calendar?days=30").json()
+    assert isinstance(cal["appointments"], list)  # booked demo appts flow in
+    for a in cal["appointments"]:
+        assert "contact" in a and "starts_at" in a
+
+
 def test_locked_browser_page_redirects_to_login(client, monkeypatch):
     from app import config as cfg
 

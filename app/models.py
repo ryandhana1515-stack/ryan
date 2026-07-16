@@ -101,6 +101,19 @@ class Message(TenantScoped, Base):
     sentiment: Mapped[str] = mapped_column(String(20), default="")
 
 
+class ScheduledPost(TenantScoped, Base):
+    """Content calendar entries — planned social posts per platform."""
+    __tablename__ = "scheduled_posts"
+    platform: Mapped[str] = mapped_column(String(30), default="instagram")
+    # facebook|instagram|tiktok|youtube|xiaohongshu|other
+    caption: Mapped[str] = mapped_column(Text, default="")
+    media_url: Mapped[str] = mapped_column(String(500), default="")
+    scheduled_at: Mapped[datetime] = mapped_column(DateTime)
+    status: Mapped[str] = mapped_column(String(20), default="scheduled")
+    # scheduled|posted|skipped
+    posted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class Appointment(TenantScoped, Base):
     __tablename__ = "appointments"
     contact_id: Mapped[str] = mapped_column(ForeignKey("contacts.id"))
