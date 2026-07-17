@@ -1,4 +1,5 @@
 import Reveal from './Reveal'
+import Parallax from './Parallax'
 
 const VENTURES = [
   { name: 'Halcyon', sector: 'Climate infrastructure', year: '2024' },
@@ -11,8 +12,21 @@ const VENTURES = [
 
 export default function Ventures() {
   return (
-    <section className="px-6 md:px-12 lg:px-16 py-24 md:py-32 border-t border-white/10">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative overflow-hidden px-6 md:px-12 lg:px-16 py-24 md:py-32 border-t border-white/10">
+      {/* Drifting oversized label behind the list */}
+      <Parallax
+        speed={-0.32}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <span
+          className="select-none font-semibold text-white/[0.05] leading-none whitespace-nowrap"
+          style={{ fontSize: 'clamp(6rem, 20vw, 18rem)', letterSpacing: '-0.04em' }}
+        >
+          VENTURES
+        </span>
+      </Parallax>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         <Reveal>
           <span className="text-sm uppercase tracking-[0.2em] text-gray-400">
             Selected ventures
