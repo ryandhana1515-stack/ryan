@@ -422,6 +422,19 @@ body.cursor-hover .cursor-ring { width: 80px; height: 80px; margin: -40px 0 0 -4
 [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.6,.2,1), transform .8s cubic-bezier(.2,.6,.2,1); }
 [data-reveal].in { opacity: 1; transform: none; }
 
+/* When GSAP drives the scroll, it owns these elements — kill CSS transitions
+   so they don't fight the tweens, and let GSAP set the initial hidden state. */
+body.gsap-on [data-reveal],
+body.gsap-on .statcard, body.gsap-on .gen, body.gsap-on .way,
+body.gsap-on .ing__card, body.gsap-on .member, body.gsap-on .benefit,
+body.gsap-on .bar { transition: none !important; }
+body.gsap-on .section__title { will-change: clip-path, transform, opacity; }
+
+/* ---------- Pinned horizontal scroll: the 5 ways ---------- */
+body.hways #product { overflow: visible; }
+body.hways .ways { display: flex; flex-wrap: nowrap; width: max-content; gap: 22px; will-change: transform; }
+body.hways .way { min-width: 340px; flex: 0 0 auto; min-height: 300px; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
   .hero__grid { grid-template-columns: 1fr; }
