@@ -1,4 +1,3 @@
-import Navbar from './Navbar'
 import FadeIn from './FadeIn'
 import AnimatedHeading from './AnimatedHeading'
 
@@ -7,7 +6,7 @@ const VIDEO_URL =
 
 export default function Hero() {
   return (
-    <div className="relative h-screen w-full overflow-hidden">
+    <section id="top" className="relative h-screen w-full overflow-hidden">
       {/* Full-screen raw background video — no overlay of any kind */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -20,8 +19,6 @@ export default function Hero() {
 
       {/* Foreground */}
       <div className="relative z-10 flex flex-col h-full">
-        <Navbar />
-
         <div className="px-6 md:px-12 lg:px-16 flex-1 flex flex-col justify-end pb-12 lg:pb-16">
           <div className="lg:grid lg:grid-cols-2 lg:items-end">
             {/* Left column — main content */}
@@ -63,6 +60,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
