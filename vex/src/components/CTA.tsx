@@ -1,12 +1,26 @@
 import Reveal from './Reveal'
+import Parallax from './Parallax'
 
 export default function CTA() {
   return (
     <section
       id="contact"
-      className="px-6 md:px-12 lg:px-16 py-32 md:py-48 border-t border-white/10"
+      className="relative overflow-hidden px-6 md:px-12 lg:px-16 py-32 md:py-48 border-t border-white/10"
     >
-      <div className="max-w-4xl mx-auto text-center">
+      {/* Oversized wordmark drifting behind the content for depth */}
+      <Parallax
+        speed={-0.22}
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <span
+          className="select-none font-semibold text-white/[0.04] leading-none whitespace-nowrap"
+          style={{ fontSize: 'clamp(9rem, 32vw, 26rem)', letterSpacing: '-0.05em' }}
+        >
+          VEX
+        </span>
+      </Parallax>
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
         <Reveal>
           <span className="text-sm uppercase tracking-[0.2em] text-gray-400">
             Let's talk

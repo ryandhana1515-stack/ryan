@@ -1,5 +1,6 @@
 import FadeIn from './FadeIn'
 import AnimatedHeading from './AnimatedHeading'
+import Parallax from './Parallax'
 
 const VIDEO_URL =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4'
@@ -20,7 +21,8 @@ export default function Hero() {
       {/* Foreground */}
       <div className="relative z-10 flex flex-col h-full">
         <div className="px-6 md:px-12 lg:px-16 flex-1 flex flex-col justify-end pb-12 lg:pb-16">
-          <div className="lg:grid lg:grid-cols-2 lg:items-end">
+          <Parallax speed={0.08}>
+            <div className="lg:grid lg:grid-cols-2 lg:items-end">
             {/* Left column — main content */}
             <div>
               <AnimatedHeading
@@ -57,7 +59,8 @@ export default function Hero() {
                 </div>
               </FadeIn>
             </div>
-          </div>
+            </div>
+          </Parallax>
         </div>
       </div>
     </section>
