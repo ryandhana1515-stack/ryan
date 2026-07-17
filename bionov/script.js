@@ -93,35 +93,82 @@
     });
   }
 
-  /* ---- Parallax on hero product + ambient orbs ---- */
+  /* ---- 3D scroll engine: rotates the hero product in space with inertia,
+          floats it, drives depth parallax, and tilts section products ---- */
   if (!reduce) {
-    const product = document.querySelector('.hero__product');
-    const orbs = document.querySelectorAll('.orb');
-    let ticking = false;
-    function parallax() {
-      const y = window.scrollY;
-      if (product) product.style.transform = 'translateY(' + y * 0.06 + 'px)';
-      orbs.forEach((o, i) => {
-        o.style.transform = 'translateY(' + y * (0.03 + i * 0.015) + 'px)';
-      });
-      ticking = false;
-    }
-    window.addEventListener('scroll', () => {
-      if (!ticking) { requestAnimationFrame(parallax); ticking = true; }
-    }, { passive: true });
-
-    // Subtle pointer tilt on hero product
+    const slab = document.getElementById('heroSlab');
+    const hero = document.getElementById('hero');
     const stage = document.querySelector('.hero__stage');
-    if (stage && product && window.matchMedia('(pointer:fine)').matches) {
-      stage.addEventListener('mousemove', (e) => {
+    const orbs = document.querySelectorAll('.orb');
+    const tiltEls = document.querySelectorAll('[data-tilt3d]');
+    const fine = window.matchMedia('(pointer:fine)').matches;
+
+    // pointer targets (-0.5..0.5) and their smoothed values
+    let ptX = 0, ptY = 0, pX = 0, pY = 0;
+    if (stage && fine) {
+      stage.addEventListener('pointermove', (e) => {
         const r = stage.getBoundingClientRect();
-        const cx = (e.clientX - r.left) / r.width - 0.5;
-        const cy = (e.clientY - r.top) / r.height - 0.5;
-        product.style.transform =
-          'perspective(900px) rotateY(' + cx * 8 + 'deg) rotateX(' + -cy * 8 + 'deg)';
+        ptX = (e.clientX - r.left) / r.width - 0.5;
+        ptY = (e.clientY - r.top) / r.height - 0.5;
       });
-      stage.addEventListener('mouseleave', () => { product.style.transform = ''; });
+      stage.addEventListener('pointerleave', () => { ptX = 0; ptY = 0; });
     }
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+    let rotY = -12, rotX = 6;   // smoothed rotation carrying inertia
+
+    function heroProgress() {
+      if (!hero) return 0;
+      const r = hero.getBoundingClientRect();
+      return Math.max(0, Math.min(1, -r.top / (r.height || 1)));
+    }
+
+    let raf = 0;
+    function tick(ts) {
+      const y = window.scrollY;
+      const prog = heroProgress();
+
+      // smooth the pointer so motion feels weighted, not twitchy
+      pX = lerp(pX, ptX, 0.09);
+      pY = lerp(pY, ptY, 0.09);
+
+      // scroll spins the product; pointer nudges it; inertia via slow lerp
+      const targetY = -14 + prog * 40 + pX * 18;
+      const targetX = 6 + prog * -6 + pY * -12;
+      rotY = lerp(rotY, targetY, 0.06);
+      rotX = lerp(rotX, targetX, 0.06);
+      const floatY = Math.sin(ts / 1300) * 9 - prog * 34;
+      if (slab) {
+        slab.style.transform =
+          'translateY(' + floatY.toFixed(2) + 'px) rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg)';
+      }
+
+      // ambient orbs drift at different depths → parallax through space
+      for (let i = 0; i < orbs.length; i++) {
+        orbs[i].style.transform = 'translate3d(0,' + (y * (0.03 + i * 0.022)).toFixed(1) + 'px,0)';
+      }
+
+      // section products bank toward the viewer as they cross center
+      if (tiltEls.length) {
+        const vh = window.innerHeight;
+        tiltEls.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.bottom < -80 || r.top > vh + 80) return; // skip offscreen
+          const d = ((r.top + r.height / 2) - vh / 2) / vh; // -0.5..0.5
+          el.style.transform =
+            'perspective(1100px) rotateY(' + (d * -20).toFixed(2) + 'deg) rotateX(' + (d * 5).toFixed(2) + 'deg)';
+        });
+      }
+
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    // pause the loop when the tab is hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(raf); }
+      else { raf = requestAnimationFrame(tick); }
+    });
   }
 
   /* ---- Smooth anchor scroll (respects reduced motion via CSS) ---- */

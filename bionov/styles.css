@@ -199,10 +199,22 @@ em { font-style: normal; color: var(--ink); }
   position: absolute; width: 118%; aspect-ratio: 1; border-radius: 50%;
   background: var(--grad-soft); filter: blur(40px);
 }
+/* 3D scene: the product becomes a slab that rotates in space on scroll */
+.hero__scene { width: 100%; display: flex; justify-content: center; perspective: 1500px; perspective-origin: 50% 42%; }
+.hero__slab {
+  position: relative; transform-style: preserve-3d; will-change: transform;
+  transform: rotateX(6deg) rotateY(-12deg);
+}
+/* back plane gives the slab visible thickness + a cast shadow when it turns */
+.hero__slab::after {
+  content: ""; position: absolute; inset: 0; border-radius: var(--r);
+  transform: translateZ(-30px);
+  background: linear-gradient(160deg, #0a1836, #1a0b2e);
+  box-shadow: 0 50px 100px rgba(0, 0, 0, .6);
+}
 .hero__product {
-  position: relative; border-radius: var(--r);
+  position: relative; border-radius: var(--r); backface-visibility: hidden;
   box-shadow: 0 40px 90px rgba(0, 0, 0, .55), 0 0 0 1px var(--line);
-  will-change: transform;
 }
 .hero__tag {
   position: absolute; font-family: var(--font); font-size: 12px; letter-spacing: .04em;
@@ -249,6 +261,7 @@ em { font-style: normal; color: var(--ink); }
 .split__media img { border-radius: var(--r); border: 1px solid var(--line); }
 .split__media--product { position: relative; display: flex; align-items: center; justify-content: center; padding: 30px; }
 .split__media--product img { border: 0; filter: drop-shadow(0 40px 60px rgba(0,0,0,.6)); max-height: 560px; width: auto; }
+[data-tilt3d] { will-change: transform; transform-style: preserve-3d; }
 .product-halo { position: absolute; width: 78%; aspect-ratio: 1; border-radius: 50%; background: var(--grad-soft); filter: blur(50px); z-index: -1; }
 .product-halo--sm { width: 70%; }
 
@@ -423,4 +436,6 @@ em { font-style: normal; color: var(--ink); }
   * { animation: none !important; scroll-behavior: auto; }
   [data-reveal] { opacity: 1; transform: none; transition: none; }
   .bar { transform: scaleY(1); }
+  .hero__slab { transform: rotateX(4deg) rotateY(-8deg); }
+  [data-tilt3d] { transform: none !important; }
 }
