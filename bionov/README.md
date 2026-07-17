@@ -1,37 +1,43 @@
-# BIO N:OV — Landing Site
+# BIO N:OV — Immersive Landing Site
 
-A single-page marketing site for **BIO N:OV**, a third-generation nitric-oxide
-supplement by Bzzworld Korea. The design language is a clone of the award-winning
+A WebGL-driven marketing site for **BIO N:OV**, a third-generation nitric-oxide
+supplement by Bzzworld Korea. The design language clones the award-winning
 [oryzo.ai](https://oryzo.ai) (Awwwards Site of the Day by Lusion): a dark,
-full-bleed "museum artifact" canvas, generous negative space, a fixed transparent
-nav with the wordmark left / links right, and physics-flavoured scroll motion —
-here dressed in BIO N:OV's blue → violet → coral brand gradient.
+full-bleed "museum artifact" canvas, generous negative space, and physics-driven
+motion — here rebuilt as a fully immersive experience in BIO N:OV's blue →
+violet → coral brand gradient.
 
-All product copy and figures are sourced from the official BIO N:OV brand deck
-(`BIO_NOV_ENG_V1`).
+All product copy and figures are sourced from the official BIO N:OV brand deck.
+
+## The immersive layer
+
+- **Real 3D product** — a WebGL box (Three.js) with canvas-drawn brand faces that
+  auto-rotates, spins as you scroll through the hero, drifts up and fades into the
+  content, and can be dragged to spin. Its face carries the "V" mark, name, weight,
+  and GMP/health badges.
+- **Live aurora background** — a custom GLSL shader flows brand-coloured light
+  through a dark, readable ground and reacts to scroll and pointer.
+- **Nitric-oxide particle field** — hundreds of additive-blended glowing points
+  drift and swirl with subtle mouse parallax.
+- **Buttery smooth scroll** (Lenis), cinematic scroll-reveals, and count-up stats.
+- **Glow cursor**, **magnetic buttons**, and **hover-tilt cards** for tactile,
+  21st.dev-style micro-interactions.
+
+Everything degrades gracefully: without WebGL the hero shows a static product
+render, and `prefers-reduced-motion` disables the heavy motion.
 
 ## Structure
 
-- `index.html` — markup and content
-- `styles.css` — design system (dark theme, brand gradient, responsive layout)
-- `script.js` — scroll progress, nav state, scroll-reveal, count-up stats,
-  hero parallax / pointer tilt, mobile menu
-- `assets/` — product imagery extracted from the brand deck
-  - `hero-product.jpg` — hero product render on the brand gradient
-  - `body-systems.jpg` — "99.9% of diseases are NO-related" visual
-  - `box.png` — isolated product box (transparent) for showcase sections
-
-## Sections
-
-Hero → NO-decline-with-age → 99.9% of diseases → global disease stats →
-"NO Matters" benefits → three generations of NO tech → why BIO N:OV →
-5 ways it optimises the body → measured results → fermented ingredients &
-patent → R&D team → usage & storage → contact.
+- `index.html` — markup, import map, WebGL canvas
+- `styles.css` — dark design system, brand gradient, cursor/scrim, responsive layout
+- `main.js` — orchestration (smooth scroll, reveals, cursor, magnetic, tilt, nav)
+- `scene.js` — the Three.js scene (shader background, particles, 3D product)
+- `vendor/` — locally-vendored `three.module.min.js` and `lenis.mjs` (no CDN)
+- `assets/` — product imagery from the brand deck
 
 ## Run
 
-It's a static site — no build step. Open `index.html` directly, or serve the
-folder:
+ES modules require an HTTP origin (not `file://`):
 
 ```bash
 cd bionov
@@ -40,7 +46,7 @@ python3 -m http.server 8000
 ```
 
 Fonts (Space Grotesk + Inter) load from Google Fonts with a system-font
-fallback, so the page degrades gracefully offline.
+fallback.
 
-> Health-functional-food statements are not evaluated as medical treatment.
-> This site is a design demo built from the BIO N:OV brand materials.
+> BIO N:OV is a health functional food by Bzzworld Korea. Statements are brand-deck
+> marketing copy, not medical claims. Consult a physician for medical advice.
