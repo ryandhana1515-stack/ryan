@@ -1,14 +1,15 @@
 'use client'
 
 /**
- * Cinematic hero: a chain of Kling first-frame→last-frame clips, each
- * anchored by REAL BIO N:OV photography from the PDF, scrubbed as one
- * continuous film by scroll. Crossfades bridge the clip boundaries; the
- * hero title sits over the opening shot. Falls back to the cover photo
- * for reduced motion.
+ * Cinematic autoplay hero: five Kling 3.0 first-frame→last-frame clips,
+ * every clip anchored by REAL BIO N:OV photography, playing continuously
+ * as one film with crossfades — like a broadcast commercial. Scroll fades
+ * the title and releases the pin; the motion itself never depends on
+ * scrolling. Playback pauses automatically when the hero leaves the
+ * viewport.
  */
 import { useEffect, useRef, useState } from 'react'
-import { ensureGsap, gsap, ScrollTrigger, scrollToTarget } from '@/lib/scroll/gsap'
+import { ensureGsap, ScrollTrigger, scrollToTarget } from '@/lib/scroll/gsap'
 import { clamp01, seg } from '@/components/three/filmMath'
 import { heroContent, product } from '@/data/site-content'
 import { asset } from '@/lib/assets'
@@ -26,7 +27,7 @@ const SEGMENTS = [
   { id: 'hero-chain-4', poster: '/assets/product/references/lifestyle-open-box.png' },
   { id: 'hero-chain-5', poster: '/assets/product/references/blister-flatlay.png' },
 ]
-const XFADE = 0.045 // crossfade width as fraction of total progress
+const FADE_S = 0.9 // crossfade duration in seconds
 
 function remoteFor(id: string): string | undefined {
   return (cinematic as { videos: Record<string, CineVideo> }).videos?.[id]?.remoteUrl
@@ -51,21 +52,68 @@ export default function ChainedHeroFilm() {
     if (!track || !stage) return
 
     const n = SEGMENTS.length
-    const targets = SEGMENTS.map(() => ({ t: 0 }))
-    let raf = 0
-    const tick = () => {
-      for (let i = 0; i < n; i++) {
-        const v = videoRefs.current[i]
-        if (!v) continue
-        const d = v.duration
-        if (d && Number.isFinite(d)) {
-          const want = targets[i].t * Math.max(0, d - 0.05)
-          if (Math.abs(v.currentTime - want) > 0.02) v.currentTime = want
-        }
-      }
-      raf = requestAnimationFrame(tick)
+    const vids = videoRefs.current
+    let active = 0
+    let visible = false
+    let disposed = false
+
+    const setOpacity = (el: HTMLVideoElement | null, o: number) => {
+      if (el) el.style.opacity = String(o)
     }
-    raf = requestAnimationFrame(tick)
+
+    // crossfade helper driven by rAF
+    const crossfade = (from: number, to: number) => {
+      const a = vids[from]
+      const b = vids[to]
+      if (!b) return
+      b.currentTime = 0
+      void b.play().catch(() => {})
+      const t0 = performance.now()
+      const step = (t: number) => {
+        if (disposed) return
+        const k = clamp01((t - t0) / (FADE_S * 1000))
+        setOpacity(b, k)
+        setOpacity(a, 1 - k)
+        if (k < 1) requestAnimationFrame(step)
+        else a?.pause()
+      }
+      requestAnimationFrame(step)
+    }
+
+    const advance = () => {
+      if (disposed || !visible) return
+      const next = (active + 1) % n
+      crossfade(active, next)
+      active = next
+    }
+
+    // chain playback via 'ended'; near-end fallback timer for safety
+    const handlers: Array<() => void> = []
+    vids.forEach((v, i) => {
+      if (!v) return
+      const onEnded = () => {
+        if (i === active) advance()
+      }
+      v.addEventListener('ended', onEnded)
+      handlers.push(() => v.removeEventListener('ended', onEnded))
+    })
+
+    // start / pause with visibility
+    const startIfNeeded = () => {
+      const v = vids[active]
+      if (v && visible) {
+        void v.play().catch(() => {})
+      }
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? false
+        if (visible) startIfNeeded()
+        else vids.forEach((v) => v?.pause())
+      },
+      { threshold: 0.05 },
+    )
+    io.observe(stage)
 
     const st = ScrollTrigger.create({
       trigger: track,
@@ -74,40 +122,26 @@ export default function ChainedHeroFilm() {
       scrub: true,
       onUpdate: (self) => {
         const p = self.progress
-        for (let i = 0; i < n; i++) {
-          const a = i / n
-          const b = (i + 1) / n
-          const local = clamp01(seg(p, a, b))
-          gsap.to(targets[i], { t: local, duration: 0.25, ease: 'power2.out', overwrite: true })
-          const v = videoRefs.current[i]
-          if (!v) continue
-          // visible in window, crossfade at both edges (first has no lead-in)
-          const fadeIn = i === 0 ? 1 : clamp01(seg(p, a - XFADE, a + XFADE))
-          const fadeOut = i === n - 1 ? 1 : 1 - clamp01(seg(p, b - XFADE, b + XFADE))
-          const o = fadeIn * fadeOut
-          v.style.opacity = String(o)
-          v.style.zIndex = String(10 + i)
-        }
-        // hero overlay fades over the first fifth of segment 1
         const hero = heroRef.current
         if (hero) {
-          const o = 1 - clamp01(seg(p, 0.04, 0.12))
+          const o = 1 - clamp01(seg(p, 0.25, 0.55))
           hero.style.opacity = String(o)
           hero.style.transform = `translateY(${(1 - o) * -30}px)`
           hero.style.pointerEvents = o > 0.5 ? 'auto' : 'none'
         }
-        // fade the stage into the 3D chapter at the very end
-        stage.style.opacity = String(1 - clamp01(seg(p, 0.972, 1)))
+        stage.style.opacity = String(1 - clamp01(seg(p, 0.9, 1)))
       },
     })
 
     return () => {
+      disposed = true
       st.kill()
-      cancelAnimationFrame(raf)
+      io.disconnect()
+      handlers.forEach((h) => h())
+      vids.forEach((v) => v?.pause())
     }
   }, [reduced])
 
-  // Static fallback (SSR + reduced motion)
   if (reduced !== false) {
     return (
       <section aria-label="BIO N:OV introduction" className="relative">
@@ -131,7 +165,7 @@ export default function ChainedHeroFilm() {
 
   return (
     <section aria-label="BIO N:OV cinematic hero film">
-      <div ref={trackRef} className="relative" style={{ height: '850vh' }}>
+      <div ref={trackRef} className="relative" style={{ height: '320vh' }}>
         <div ref={stageRef} className="film-viewport bg-[#3a55b8]">
           {SEGMENTS.map((s, i) => (
             <video
@@ -139,19 +173,19 @@ export default function ChainedHeroFilm() {
               ref={(el) => {
                 videoRefs.current[i] = el
               }}
-              className="absolute inset-0 h-full w-full object-cover"
-              style={{ opacity: i === 0 ? 1 : 0 }}
+              className="absolute inset-0 h-full w-full object-cover transition-none"
+              style={{ opacity: i === 0 ? 1 : 0, zIndex: 10 + i }}
               muted
               playsInline
+              autoPlay={i === 0}
               preload={i < 2 ? 'auto' : 'metadata'}
               poster={asset(s.poster)}
-              crossOrigin="anonymous"
               src={remoteFor(s.id)}
               aria-hidden
             />
           ))}
 
-          {/* cinematic grade: vignette + subtle top gradient for nav legibility */}
+          {/* cinematic grade */}
           <div
             aria-hidden
             className="absolute inset-0 z-30"
@@ -161,7 +195,6 @@ export default function ChainedHeroFilm() {
             }}
           />
 
-          {/* hero overlay */}
           <div ref={heroRef} className="absolute inset-0 z-40 flex items-center">
             <div className="mx-auto grid w-full max-w-7xl items-center px-6 md:grid-cols-2">
               <div className="text-white">
@@ -191,7 +224,7 @@ export default function ChainedHeroFilm() {
               </div>
             </div>
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center text-white/85">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em]">Scroll — the film follows you</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em]">Scroll to continue</p>
               <div className="mx-auto mt-2 h-9 w-5 rounded-full border-2 border-white/70 p-1">
                 <div className="h-2 w-1.5 animate-bounce rounded-full bg-white/90" />
               </div>

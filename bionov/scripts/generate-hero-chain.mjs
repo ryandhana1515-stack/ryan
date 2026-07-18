@@ -19,12 +19,12 @@ const NEG =
   'morphing text, changing logo, label deformation, warping packaging, extra products, different packaging, hands, people, fire, smoke, debris, watermark, text overlay'
 
 // endpoints known to support start+end frame guidance, best first
+// Kling 3.0 first+last frame: start_image_url + end_image_url
 const ENDPOINTS = [
-  'fal-ai/kling-video/v2.1/pro/image-to-video',
-  'fal-ai/kling-video/v1.6/pro/image-to-video',
-  'fal-ai/kling-video/v1.6/standard/image-to-video',
+  'fal-ai/kling-video/v3/pro/image-to-video',
+  'fal-ai/kling-video/v3/standard/image-to-video',
 ]
-const COST = { 'fal-ai/kling-video/v2.1/pro/image-to-video': 0.45, 'fal-ai/kling-video/v1.6/pro/image-to-video': 0.45, 'fal-ai/kling-video/v1.6/standard/image-to-video': 0.35 }
+const COST = { 'fal-ai/kling-video/v3/pro/image-to-video': 0.6, 'fal-ai/kling-video/v3/standard/image-to-video': 0.4 }
 
 function ledger(id, model, cost) {
   const l = JSON.parse(fs.readFileSync(LEDGER, 'utf-8'))
@@ -50,11 +50,13 @@ async function chainClip(id, fromKf, toKf, prompt) {
       const r = await fal.subscribe(ep, {
         input: {
           prompt,
-          image_url: uri(fromKf),
-          tail_image_url: uri(toKf),
+          start_image_url: uri(fromKf),
+          end_image_url: uri(toKf),
           duration: '5',
+          aspect_ratio: '16:9',
           negative_prompt: NEG,
           cfg_scale: 0.5,
+          generate_audio: false,
         },
         logs: false,
       })
