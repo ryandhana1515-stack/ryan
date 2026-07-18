@@ -24,6 +24,42 @@
       "local": "public/assets/videos/final/hero-chain-1.mp4",
       "firstFrame": "cover-hero",
       "lastFrame": "boxes-wood"
+    },
+    "hero-chain-2": {
+      "id": "hero-chain-2",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c8bb/D7WGDfPOn2aLc00yqwX_j_output.mp4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "local": "public/assets/videos/final/hero-chain-2.mp4",
+      "firstFrame": "boxes-wood",
+      "lastFrame": "lifestyle-marble"
+    },
+    "hero-chain-3": {
+      "id": "hero-chain-3",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c8d0/X_eMVSsONKSaiDMGce955_output.mp4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "local": "public/assets/videos/final/hero-chain-3.mp4",
+      "firstFrame": "lifestyle-marble",
+      "lastFrame": "lifestyle-open-box"
+    },
+    "hero-chain-4": {
+      "id": "hero-chain-4",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c8de/c0ELKyK2huRg_lqWz-BMf_output.mp4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "local": "public/assets/videos/final/hero-chain-4.mp4",
+      "firstFrame": "lifestyle-open-box",
+      "lastFrame": "blister-flatlay"
+    },
+    "hero-chain-5": {
+      "id": "hero-chain-5",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c8f6/zMfETwN47Q0vI1PiArI1g_output.mp4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "local": "public/assets/videos/final/hero-chain-5.mp4",
+      "firstFrame": "blister-flatlay",
+      "lastFrame": "usage-glass"
     }
   },
   "stills": {

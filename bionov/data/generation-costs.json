@@ -1,6 +1,6 @@
 {
   "budgetUsd": 100,
-  "totalEstimatedUsd": 1.2,
+  "totalEstimatedUsd": 3.0000000000000004,
   "records": [
     {
       "assetId": "fermentation-world",
@@ -31,6 +31,30 @@
       "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
       "estimatedCostUsd": 0.45,
       "timestamp": "2026-07-18T19:39:46.102Z"
+    },
+    {
+      "assetId": "hero-chain-2",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "estimatedCostUsd": 0.45,
+      "timestamp": "2026-07-18T19:43:20.659Z"
+    },
+    {
+      "assetId": "hero-chain-3",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "estimatedCostUsd": 0.45,
+      "timestamp": "2026-07-18T19:46:46.271Z"
+    },
+    {
+      "assetId": "hero-chain-4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "estimatedCostUsd": 0.45,
+      "timestamp": "2026-07-18T19:49:01.248Z"
+    },
+    {
+      "assetId": "hero-chain-5",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "estimatedCostUsd": 0.45,
+      "timestamp": "2026-07-18T19:50:52.468Z"
     }
   ]
 }
