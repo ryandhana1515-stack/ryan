@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { ensureGsap, gsap, ScrollTrigger, scrollToTarget } from '@/lib/scroll/gsap'
+import { ensureGsap, ScrollTrigger } from '@/lib/scroll/gsap'
 import { heroContent, product } from '@/data/site-content'
 import { CH, seg, clamp01 } from '@/components/three/filmMath'
 import { asset } from '@/lib/assets'
@@ -98,9 +98,9 @@ export default function ScrollFilm() {
       <section aria-label="BIO N:OV introduction" className="relative flex min-h-screen items-center justify-center bg-nov-gradient-soft">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-24 md:grid-cols-2">
           <div>
-            <h1 className="font-display text-6xl font-extrabold tracking-tight gradient-text md:text-7xl">
+            <h2 className="font-display text-6xl font-extrabold tracking-tight gradient-text md:text-7xl">
               {heroContent.title}
-            </h1>
+            </h2>
             <p className="mt-4 font-display text-2xl font-semibold text-nov-ink md:text-3xl">
               {heroContent.subtitle.join(' ')}
             </p>
@@ -142,37 +142,26 @@ export default function ScrollFilm() {
 
           <FilmCanvas progressRef={progressRef} mode="film" className="!absolute inset-0" />
 
-          {/* ——— Chapter 1: hero overlay */}
+          {/* ——— Chapter 1: interactive-3D intro overlay */}
           <div id="ov-hero" className="absolute inset-0 flex items-center" style={{ opacity: 1 }}>
             <div className="mx-auto grid w-full max-w-7xl items-center px-6 md:grid-cols-2">
               <div className="text-white">
                 <p className="mb-3 font-display text-sm font-semibold uppercase tracking-[0.35em] text-white/80">
-                  {product.korean} · Health Functional Food
+                  Interactive · Chapter 01
                 </p>
-                <h1 className="font-display text-6xl font-extrabold leading-none tracking-tight drop-shadow-sm md:text-8xl">
-                  BIO&nbsp;N:OV
-                </h1>
-                <p className="mt-5 font-display text-2xl font-semibold leading-snug md:text-4xl">
-                  {heroContent.subtitle[0]}
+                <h2 className="font-display text-5xl font-extrabold leading-none tracking-tight drop-shadow-sm md:text-7xl">
+                  Now take
                   <br />
-                  {heroContent.subtitle[1]}
+                  it apart.
+                </h2>
+                <p className="mt-6 max-w-md text-lg text-white/85">
+                  Scroll to rotate, open and explore the real {product.name} — rebuilt in
+                  interactive 3D with the original packaging artwork.
                 </p>
-                <p className="mt-6 max-w-md text-lg text-white/85">{heroContent.supporting}</p>
-                <div className="mt-8 flex flex-wrap gap-4">
-                  {heroContent.buttons.map((b) => (
-                    <button
-                      key={b.label}
-                      onClick={() => scrollToTarget(b.target)}
-                      className="rounded-full bg-white/95 px-7 py-3.5 font-display text-sm font-bold text-nov-deep shadow-lg transition hover:bg-white"
-                    >
-                      {b.label}
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center text-white/85">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em]">Scroll to explore</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em]">Keep scrolling</p>
               <div className="mx-auto mt-2 h-9 w-5 rounded-full border-2 border-white/70 p-1">
                 <div className="h-2 w-1.5 animate-bounce rounded-full bg-white/90" />
               </div>

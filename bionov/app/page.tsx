@@ -27,6 +27,10 @@ const KlingTransition = dynamic(
   () => import('@/components/hero/KlingTransition'),
   { ssr: false },
 )
+const ChainedHeroFilm = dynamic(
+  () => import('@/components/hero/ChainedHeroFilm'),
+  { ssr: false },
+)
 
 export default function Home() {
   useLenis()
@@ -34,16 +38,10 @@ export default function Home() {
     <>
       <Nav />
       <main id="main">
-        {/* Chapters 1–7: pinned cinematic product film */}
+        {/* Cinematic hero: chained Kling first→last frame film of the real product */}
+        <ChainedHeroFilm />
+        {/* Chapters 1–7: pinned interactive 3D product film */}
         <ScrollFilm />
-        {/* Kling cinematic transition — real photographic BIO N:OV */}
-        <KlingTransition
-          clipId="kling-bionov-arrival"
-          poster="/assets/product/references/cover-hero.png"
-          kicker="The Real Thing"
-          title="Photographed. Not imagined."
-          body="The original BIO N:OV — brought to life with AI cinematography."
-        />
         {/* Chapter 8 */}
         <WhyBioNov />
         {/* Chapter 9 */}
