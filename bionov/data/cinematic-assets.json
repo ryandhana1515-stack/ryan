@@ -15,6 +15,15 @@
       "local": "public/assets/videos/final/kling-bionov-arrival.mp4",
       "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
       "seed": "original PDF cover photo"
+    },
+    "hero-chain-1": {
+      "id": "hero-chain-1",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c8a6/kWUIwRP8DeKIUKnwPDzC0_output.mp4",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "local": "public/assets/videos/final/hero-chain-1.mp4",
+      "firstFrame": "cover-hero",
+      "lastFrame": "boxes-wood"
     }
   },
   "stills": {

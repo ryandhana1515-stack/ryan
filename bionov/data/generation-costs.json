@@ -1,6 +1,6 @@
 {
   "budgetUsd": 100,
-  "totalEstimatedUsd": 0.75,
+  "totalEstimatedUsd": 1.2,
   "records": [
     {
       "assetId": "fermentation-world",
@@ -25,6 +25,12 @@
       "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
       "estimatedCostUsd": 0.35,
       "timestamp": "2026-07-18T19:16:29.896Z"
+    },
+    {
+      "assetId": "hero-chain-1",
+      "model": "fal-ai/kling-video/v2.1/pro/image-to-video",
+      "estimatedCostUsd": 0.45,
+      "timestamp": "2026-07-18T19:39:46.102Z"
     }
   ]
 }
