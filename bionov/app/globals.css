@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --nov-cyan: #29c4f0;
+  --nov-blue: #1b6fd8;
+  --nov-deep: #123fa8;
+  --nov-purple: #8b7be8;
+  --nov-pink: #f272b6;
+  --nov-orange: #f5822a;
+  --nov-ink: #12275a;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing */
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  @apply bg-white text-nov-ink antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(41, 196, 240, 0.3);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Focus visibility for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--nov-cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Gradient text helper */
+.gradient-text {
+  background: linear-gradient(100deg, #29c4f0, #1b6fd8 45%, #8b7be8 80%, #f272b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll film container */
+.film-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* Soft card */
+.nov-card {
+  @apply rounded-3xl bg-white shadow-[0_10px_40px_rgba(18,63,168,0.08)] border border-nov-mist;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
