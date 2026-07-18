@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
 import { ensureGsap, ScrollTrigger } from '@/lib/scroll/gsap'
 import { fermentation, product } from '@/data/site-content'
 import { clamp01, prand, seg } from '@/components/three/filmMath'
+import { asset } from '@/lib/assets'
 
 interface Bubble {
   x: number
@@ -137,6 +138,16 @@ export default function Fermentation() {
     <section id="fermentation" aria-label="Microbial fermentation technology">
       <div ref={trackRef} className="relative" style={{ height: '320vh' }}>
         <div className="film-viewport bg-gradient-to-b from-white via-nov-mist to-white">
+          {/* fal.ai-generated fermentation world backdrop (soft, behind the canvas) */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center opacity-[0.32]"
+            style={{
+              backgroundImage: `url(${asset('/assets/diagrams/fermentation-world.png')})`,
+              maskImage: 'radial-gradient(120% 90% at 50% 50%, black 40%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(120% 90% at 50% 50%, black 40%, transparent 100%)',
+            }}
+          />
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden />
 
           <div ref={captionRef} className="absolute inset-x-0 top-[12%] px-6 text-center" style={{ opacity: 0 }}>

@@ -1,5 +1,30 @@
 {
   "budgetUsd": 100,
-  "totalEstimatedUsd": 0,
-  "records": []
+  "totalEstimatedUsd": 0.75,
+  "records": [
+    {
+      "assetId": "fermentation-world",
+      "model": "fal-ai/flux/dev(sync)",
+      "estimatedCostUsd": 0.025,
+      "timestamp": "2026-07-18T19:15:23.745Z"
+    },
+    {
+      "assetId": "molecule-world",
+      "model": "fal-ai/flux/dev(sync)",
+      "estimatedCostUsd": 0.025,
+      "timestamp": "2026-07-18T19:15:23.766Z"
+    },
+    {
+      "assetId": "kling-bionov-levitation",
+      "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
+      "estimatedCostUsd": 0.35,
+      "timestamp": "2026-07-18T19:16:29.884Z"
+    },
+    {
+      "assetId": "kling-bionov-arrival",
+      "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
+      "estimatedCostUsd": 0.35,
+      "timestamp": "2026-07-18T19:16:29.896Z"
+    }
+  ]
 }

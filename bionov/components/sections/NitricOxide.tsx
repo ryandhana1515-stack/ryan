@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
 import { ensureGsap, ScrollTrigger } from '@/lib/scroll/gsap'
 import { nitricOxide } from '@/data/site-content'
 import { clamp01, seg } from '@/components/three/filmMath'
+import { asset } from '@/lib/assets'
 
 export default function NitricOxide() {
   const trackRef = useRef<HTMLDivElement>(null)
@@ -76,7 +77,17 @@ export default function NitricOxide() {
     <section id="nitric-oxide" aria-label="Why nitric oxide matters">
       <div ref={trackRef} className="relative" style={{ height: '300vh' }}>
         <div className="film-viewport overflow-hidden bg-gradient-to-br from-nov-mist via-white to-[#fbeff8]">
-          <div className="mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
+          {/* fal.ai-generated molecular world backdrop */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center opacity-[0.22]"
+            style={{
+              backgroundImage: `url(${asset('/assets/diagrams/molecule-world.png')})`,
+              maskImage: 'radial-gradient(110% 85% at 50% 45%, black 35%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(110% 85% at 50% 45%, black 35%, transparent 100%)',
+            }}
+          />
+          <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-center px-6">
             <div className="text-center">
               <p className="font-display text-xs font-bold uppercase tracking-[0.4em] text-nov-blue">
                 Chapter 10

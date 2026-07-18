@@ -1,0 +1,32 @@
+{
+  "videos": {
+    "kling-bionov-levitation": {
+      "id": "kling-bionov-levitation",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c81a/RvHFxDMRK9eAo1rcLoAg4_output.mp4",
+      "local": "public/assets/videos/final/kling-bionov-levitation.mp4",
+      "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
+      "seed": "original PDF cover photo"
+    },
+    "kling-bionov-arrival": {
+      "id": "kling-bionov-arrival",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa2c81a/12VQHiAR6O-ENXQXOerL5_output.mp4",
+      "local": "public/assets/videos/final/kling-bionov-arrival.mp4",
+      "model": "fal-ai/kling-video/v2.1/standard/image-to-video",
+      "seed": "original PDF cover photo"
+    }
+  },
+  "stills": {
+    "fermentation-world": {
+      "id": "fermentation-world",
+      "kind": "still",
+      "local": "public/assets/diagrams/fermentation-world.png"
+    },
+    "molecule-world": {
+      "id": "molecule-world",
+      "kind": "still",
+      "local": "public/assets/diagrams/molecule-world.png"
+    }
+  }
+}

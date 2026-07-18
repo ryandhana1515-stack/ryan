@@ -5,11 +5,14 @@
 import Reveal from '@/components/scroll/Reveal'
 import { productInfo, product, roadmap, ingredients } from '@/data/site-content'
 import { asset } from '@/lib/assets'
+import { useParallaxGroup } from '@/lib/scroll/useParallax'
 
 export default function ProductShowcase() {
+  const ref = useParallaxGroup<HTMLElement>()
   return (
-    <section id="product-info" className="relative overflow-hidden bg-white py-28">
-      <div aria-hidden className="absolute -right-40 top-24 h-96 w-96 rounded-full bg-nov-cyan/10 blur-3xl" />
+    <section ref={ref} id="product-info" className="relative overflow-hidden bg-white py-28">
+      <div aria-hidden data-parallax="1.1" className="absolute -right-40 top-24 h-96 w-96 rounded-full bg-nov-cyan/10 blur-3xl" />
+      <div aria-hidden data-parallax="-0.8" className="absolute -left-32 bottom-32 h-80 w-80 rounded-full bg-nov-purple/10 blur-3xl" />
       <div className="relative mx-auto max-w-6xl px-6">
         <Reveal effect="clip-up">
           <p className="font-display text-xs font-bold uppercase tracking-[0.4em] text-nov-blue">
@@ -23,14 +26,16 @@ export default function ProductShowcase() {
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-2">
           <Reveal effect="slide-right">
             <div className="relative">
-              <div aria-hidden className="absolute inset-0 scale-90 rounded-full bg-nov-gradient opacity-15 blur-3xl" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={asset('/assets/product/references/box-cutout.png')}
-                alt="BIO N:OV product box — tall white packaging with a large cyan-to-deep-blue V graphic, Korean lettering and certification seals"
-                className="relative mx-auto w-full max-w-sm drop-shadow-2xl"
-                loading="lazy"
-              />
+              <div aria-hidden data-parallax="0.9" className="absolute inset-0 scale-90 rounded-full bg-nov-gradient opacity-15 blur-3xl" />
+              <div data-parallax="-0.35">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={asset('/assets/product/references/box-cutout.png')}
+                  alt="BIO N:OV product box — tall white packaging with a large cyan-to-deep-blue V graphic, Korean lettering and certification seals"
+                  className="relative mx-auto w-full max-w-sm drop-shadow-2xl"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </Reveal>
 

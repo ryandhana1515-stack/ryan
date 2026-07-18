@@ -23,6 +23,10 @@ const ReassemblyFinale = dynamic(
   () => import('@/components/hero/ReassemblyFinale'),
   { ssr: false },
 )
+const KlingTransition = dynamic(
+  () => import('@/components/hero/KlingTransition'),
+  { ssr: false },
+)
 
 export default function Home() {
   useLenis()
@@ -32,6 +36,14 @@ export default function Home() {
       <main id="main">
         {/* Chapters 1–7: pinned cinematic product film */}
         <ScrollFilm />
+        {/* Kling cinematic transition — real photographic BIO N:OV */}
+        <KlingTransition
+          clipId="kling-bionov-arrival"
+          poster="/assets/product/references/cover-hero.png"
+          kicker="The Real Thing"
+          title="Photographed. Not imagined."
+          body="The original BIO N:OV — brought to life with AI cinematography."
+        />
         {/* Chapter 8 */}
         <WhyBioNov />
         {/* Chapter 9 */}
@@ -52,6 +64,15 @@ export default function Home() {
         <ProductShowcase />
         <TechnologyRoadmap />
         <FeaturedIngredients />
+        {/* Kling cinematic transition into the finale */}
+        <KlingTransition
+          clipId="kling-bionov-levitation"
+          poster="/assets/product/references/cover-hero.png"
+          kicker="Chapter 17"
+          title="Everything returns to the box."
+          body="Scroll on — the journey reassembles itself."
+          heightVh={220}
+        />
         {/* Chapters 17–18: reassembly + closing CTA */}
         <ReassemblyFinale />
         <Faq />
