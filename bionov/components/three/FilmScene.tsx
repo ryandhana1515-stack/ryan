@@ -154,28 +154,16 @@ function ProductBox({
       {/* soft contact shadow */}
       <mesh position={[0, -BOX_H / 2 - 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[1.15, 48]} />
-        <meshBasicMaterial color="#020614" transparent opacity={0.45} />
+        <meshBasicMaterial color="#0e2a6e" transparent opacity={0.18} />
       </mesh>
-      {/* glowing stage ring — echoes the hero film's energy rings */}
+      {/* subtle stage rings — premium accent, tuned for the bright gradients */}
       <mesh position={[0, -BOX_H / 2 - 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[1.28, 1.36, 96]} />
-        <meshBasicMaterial
-          color="#2fd0ff"
-          transparent
-          opacity={0.55}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
+        <ringGeometry args={[1.28, 1.35, 96]} />
+        <meshBasicMaterial color="#1b6fd8" transparent opacity={0.28} depthWrite={false} />
       </mesh>
       <mesh position={[0, -BOX_H / 2 - 0.018, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[1.55, 1.58, 96]} />
-        <meshBasicMaterial
-          color="#7f7ce8"
-          transparent
-          opacity={0.3}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
+        <meshBasicMaterial color="#8b7be8" transparent opacity={0.18} depthWrite={false} />
       </mesh>
     </group>
   )
@@ -407,13 +395,12 @@ function Particles({ quality }: { quality: 'high' | 'low' }) {
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.04}
-        color="#3fd4ff"
+        size={0.035}
+        color="#5fb8ee"
         transparent
-        opacity={0.75}
+        opacity={0.55}
         sizeAttenuation
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
       />
     </points>
   )
@@ -547,13 +534,13 @@ function SceneContent(props: SceneProps) {
   return (
     <>
       <StudioEnvironment />
-      {/* cinematic dark-stage lighting: warm key, cyan rim, magenta fill */}
-      <ambientLight intensity={0.32} />
-      <directionalLight position={[4, 6, 5]} intensity={2.1} color="#fff4e8" />
-      <directionalLight position={[-5, 3, -4]} intensity={1.7} color="#29c4f0" />
-      <directionalLight position={[5, 1, -3]} intensity={0.9} color="#8b7be8" />
-      <pointLight position={[0, -2, 4]} intensity={0.5} color="#f272b6" />
-      <fog attach="fog" args={['#0a1030', 8, 20]} />
+      {/* bright clinical-luxury lighting: warm key, cool cyan rim, soft pink fill */}
+      <ambientLight intensity={0.55} />
+      <directionalLight position={[4, 6, 5]} intensity={1.7} color="#fff8f0" />
+      <directionalLight position={[-5, 3, -4]} intensity={0.8} color="#8fd8f8" />
+      <directionalLight position={[5, 1, -3]} intensity={0.4} color="#b9aef2" />
+      <pointLight position={[0, -2, 4]} intensity={0.35} color="#f2a8d8" />
+      <fog attach="fog" args={['#dcebfb', 9, 19]} />
       <ProductBox {...props} group={boxGroup} />
       <Blisters {...props} />
       <Tablets {...props} />
@@ -562,8 +549,8 @@ function SceneContent(props: SceneProps) {
       <Choreography {...props} boxGroup={boxGroup} />
       {props.quality === 'high' && (
         <EffectComposer>
-          <Bloom intensity={0.38} luminanceThreshold={0.88} luminanceSmoothing={0.25} mipmapBlur />
-          <Vignette eskil={false} offset={0.18} darkness={0.72} />
+          <Bloom intensity={0.3} luminanceThreshold={0.92} luminanceSmoothing={0.2} mipmapBlur />
+          <Vignette eskil={false} offset={0.12} darkness={0.42} />
         </EffectComposer>
       )}
     </>

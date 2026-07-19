@@ -43,16 +43,32 @@ npm run dev        # http://localhost:3000
 npm run build      # static export to out/
 ```
 
-## Deployment (GitHub Pages)
+## Deployment
+
+### GitHub Pages (current)
 
 ```bash
 npm run build
+touch out/.nojekyll
 npx gh-pages -d bionov/out --dotfiles   # from the repo root
 ```
 
-The site is served under `/ryan/` — `basePath` and `assetPrefix` are set in
+The site is served under `/ryan/` — `basePath` and `assetPrefix` come from
 `next.config.mjs`. `.nojekyll` is required (the `_next/` folder would be
 ignored by Jekyll otherwise).
+
+### Vercel
+
+The project is Vercel-ready. Because Vercel serves from the domain root,
+disable the GitHub Pages prefix at build time:
+
+1. Import the repo in Vercel, set **Root Directory** to `bionov`.
+2. Add env var `NEXT_PUBLIC_BASE_PATH` = `` (empty string).
+3. Build command `next build` (default), output is the static `out/`
+   export — Vercel detects it automatically.
+
+For a custom domain (e.g. biogreenelixirs.com) just attach it in Vercel —
+no code changes needed.
 
 ## fal.ai asset pipeline (optional enhancement)
 

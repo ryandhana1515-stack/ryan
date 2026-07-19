@@ -14,7 +14,7 @@ const body = Inter({
   weight: ['400', '500', '600'],
 })
 
-const BASE = process.env.NODE_ENV === 'production' ? '/ryan' : ''
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ryandhana1515-stack.github.io'),
