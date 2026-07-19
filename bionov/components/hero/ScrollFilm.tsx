@@ -36,7 +36,8 @@ const WINDOWS: OverlayWindow[] = [
   { id: 'ov-opening', a: CH.opening[0] + 0.02, b: CH.opening[1], fade: 0.03 },
   { id: 'ov-release', a: CH.release[0] + 0.02, b: CH.release[1], fade: 0.03 },
   { id: 'ov-inside', a: CH.field[0] + 0.02, b: CH.field[1], fade: 0.04 },
-  { id: 'ov-macro', a: CH.macro[0] + 0.03, b: CH.dissolve[0] + 0.04, fade: 0.04 },
+  { id: 'ov-macro', a: CH.macro[0] + 0.03, b: CH.dissolve[0] + 0.02, fade: 0.04 },
+  { id: 'ov-ingredients', a: CH.dissolve[0] + 0.03, b: 0.995, fade: 0.04 },
 ]
 
 function windowOpacity(p: number, w: OverlayWindow): number {
@@ -184,8 +185,8 @@ export default function ScrollFilm() {
           </ChapterCaption>
 
           {/* ——— Chapter 5 */}
-          <ChapterCaption id="ov-release" kicker="Chapter 05" title="A closer look.">
-            Naturally speckled, compressed herbal tablets — matte, botanical, precise.
+          <ChapterCaption id="ov-release" kicker="Chapter 05" title="One tablet. Three times a day.">
+            Your daily rhythm — three naturally speckled herbal tablets, exactly as directed on the label.
           </ChapterCaption>
 
           {/* ——— Chapter 6 */}
@@ -201,8 +202,49 @@ export default function ScrollFilm() {
 
           {/* ——— Chapter 7 */}
           <ChapterCaption id="ov-macro" kicker="Chapter 07" title="Botanical, down to the grain.">
-            Fermented garlic and lettuce extracts, compressed into every tablet.
+            Look closer — every speckle is compressed plant matter.
           </ChapterCaption>
+
+          {/* ——— Ingredient reveal as the tablet gently breaks apart */}
+          <div
+            id="ov-ingredients"
+            className="pointer-events-none absolute inset-x-0 bottom-[6%] px-6"
+            style={{ opacity: 0 }}
+          >
+            <div className="mx-auto max-w-3xl text-center text-white">
+              <p className="font-display text-xs font-bold uppercase tracking-[0.4em] text-white/75">
+                What&rsquo;s inside
+              </p>
+              <h2 className="mt-2 font-display text-3xl font-extrabold md:text-5xl">
+                Grown, fermented, compressed.
+              </h2>
+              <div className="mx-auto mt-5 grid max-w-2xl grid-cols-4 gap-3">
+                {[
+                  { img: 'lettuce', label: 'Fermented Lettuce' },
+                  { img: 'garlic', label: 'Fermented Garlic' },
+                  { img: 'sprouts', label: 'Soybean Sprouts' },
+                  { img: 'soybean', label: 'Soybean' },
+                ].map((ing) => (
+                  <figure key={ing.img} className="overflow-hidden rounded-2xl bg-white/10 backdrop-blur-sm">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={asset(`/assets/ingredients/${ing.img}.png`)}
+                      alt={ing.label}
+                      className="h-20 w-full object-cover md:h-28"
+                      loading="lazy"
+                    />
+                    <figcaption className="px-1 py-2 text-[10px] font-semibold leading-tight text-white/90 md:text-xs">
+                      {ing.label}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <p className="mx-auto mt-4 max-w-lg text-sm text-white/85">
+                A fermented composition of natural vegetables and herbs — prepared with the
+                proprietary microbial strain KACC91554P.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

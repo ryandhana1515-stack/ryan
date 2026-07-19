@@ -274,16 +274,28 @@ function Blisters({ progressRef, mode }: SceneProps) {
   )
 }
 
-// ————————————————————————————————————————————— instanced tablets
-function Tablets({ progressRef, mode, quality }: SceneProps) {
-  const count = quality === 'high' ? 84 : 36
+// ————————————————————————————————————————————— three calm tablets
+// One tablet, three times a day: exactly three tablets drift out of the
+// box on gentle arcs — no swarm. The hero tablet then approaches the
+// camera and softly breaks apart into fragments for the ingredient
+// reveal.
+const TABLET_HOMES: Array<[number, number, number]> = [
+  [0.0, 1.25, 1.1], // hero — sits on the camera's macro path
+  [-1.15, 1.6, 0.2],
+  [1.05, 0.95, -0.45],
+]
+
+function Tablets({ progressRef, mode }: SceneProps) {
+  const count = 3
   const mesh = useRef<THREE.InstancedMesh>(null)
+  const frag = useRef<THREE.InstancedMesh>(null)
   const tex = useMemo(() => makeTabletTexture(), [])
   const geo = useMemo(
     // small short oblong rounded rectangle — matches the PDF tablets
     () => new RoundedBoxGeometry(0.34, 0.13, 0.19, 3, 0.055),
     [],
   )
+  const fragGeo = useMemo(() => new RoundedBoxGeometry(0.11, 0.07, 0.08, 2, 0.03), [])
   const mat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -293,27 +305,31 @@ function Tablets({ progressRef, mode, quality }: SceneProps) {
       }),
     [tex],
   )
+  const fragMat = useMemo(() => {
+    const m = mat.clone()
+    m.transparent = true
+    return m
+  }, [mat])
   const dummy = useMemo(() => new THREE.Object3D(), [])
 
-  // per-instance stable params
-  const params = useMemo(
+  const FRAGS = 12
+  const fragParams = useMemo(
     () =>
-      Array.from({ length: count }, (_, i) => ({
+      Array.from({ length: FRAGS }, (_, i) => ({
         dir: new THREE.Vector3(
-          prand(i * 3 + 1) * 2 - 1,
-          prand(i * 3 + 2) * 1.6 - 0.55,
-          prand(i * 3 + 3) * 2 - 1,
+          prand(i * 3 + 21) * 2 - 1,
+          prand(i * 3 + 22) * 2 - 1,
+          prand(i * 3 + 23) * 2 - 1,
         ).normalize(),
-        radius: 1.5 + prand(i * 5 + 4) * 3.6,
+        dist: 0.35 + prand(i * 5 + 24) * 0.75,
         rot: new THREE.Euler(
-          prand(i * 7 + 5) * Math.PI * 2,
-          prand(i * 7 + 6) * Math.PI * 2,
-          prand(i * 7 + 7) * Math.PI * 2,
+          prand(i * 7 + 25) * Math.PI * 2,
+          prand(i * 7 + 26) * Math.PI * 2,
+          prand(i * 7 + 27) * Math.PI * 2,
         ),
-        spin: 0.4 + prand(i * 11 + 8) * 1.2,
-        curve: prand(i * 13 + 9) * Math.PI * 2,
+        spin: 0.5 + prand(i * 11 + 28) * 1.1,
       })),
-    [count],
+    [],
   )
 
   useFrame((state) => {
@@ -333,44 +349,80 @@ function Tablets({ progressRef, mode, quality }: SceneProps) {
     const m = mesh.current
     if (!m) return
     const origin = new THREE.Vector3(0, BOX_H / 2 - 0.2, 0)
+    const heroTarget = new THREE.Vector3(0, 1.2, 2.2)
+
     for (let i = 0; i < count; i++) {
-      const prm = params[i]
-      // curved path: swirl around Y while travelling outward
-      const swirl = prm.curve + spread * 1.7
-      const r = prm.radius * spread
-      const px = origin.x + Math.cos(swirl) * prm.dir.x * r - Math.sin(swirl) * prm.dir.z * r * 0.4
-      const py = origin.y + prm.dir.y * r + Math.sin(t * 0.5 + i) * 0.03 * spread
-      const pz = origin.z + Math.sin(swirl) * prm.dir.x * r * 0.4 + Math.cos(swirl) * prm.dir.z * r
-      dummy.position.set(px, py, pz)
-      dummy.rotation.set(
-        prm.rot.x + t * prm.spin * 0.25 * spread,
-        prm.rot.y + t * prm.spin * 0.2 * spread,
-        prm.rot.z,
+      const home = TABLET_HOMES[i]
+      // gentle arc from box mouth to resting position
+      const arc = Math.sin(spread * Math.PI) * 0.35
+      dummy.position.set(
+        origin.x + (home[0] - origin.x) * spread,
+        origin.y + (home[1] - origin.y) * spread + arc,
+        origin.z + (home[2] - origin.z) * spread,
       )
-      // macro: tablet 0 becomes the star, others shrink away
+      // slow, calm float + rotation
+      dummy.position.y += Math.sin(t * 0.6 + i * 2.1) * 0.045 * spread
+      dummy.rotation.set(
+        0.3 + i + t * 0.12,
+        i * 1.7 + t * 0.16,
+        0.2 * i,
+      )
       let s = spread > 0.005 ? 1 : 0
       if (i === 0) {
-        // hero tablet placed on the camera's macro path
-        const mp = macro
-        dummy.position.lerp(new THREE.Vector3(0, 1.2, 2.2), mp)
-        dummy.rotation.set(
-          prm.rot.x * (1 - mp) + mp * 0.4,
-          prm.rot.y + t * 0.15,
-          prm.rot.z * (1 - mp),
-        )
-        s = spread > 0.005 ? 1 + mp * 2.2 : 0
+        // hero tablet drifts to the camera for the macro chapter…
+        dummy.position.lerp(heroTarget, macro)
+        dummy.rotation.set(0.3 * (1 - macro) + macro * 0.4, t * 0.15, 0)
+        s = spread > 0.005 ? 1 + macro * 2.2 : 0
+        // …then softly fades as it breaks apart
+        s *= 1 - dissolve
       } else {
-        s *= 1 - macro * 0.85
+        // companions politely drift aside during the macro
+        dummy.position.x += macro * (i === 1 ? -1.4 : 1.4)
+        s *= 1 - macro * 0.9
       }
-      s *= 1 - dissolve
       dummy.scale.setScalar(Math.max(0.0001, s))
       dummy.updateMatrix()
       m.setMatrixAt(i, dummy.matrix)
     }
     m.instanceMatrix.needsUpdate = true
+
+    // fragments: a soft, slow break — not an explosion
+    const f = frag.current
+    if (f) {
+      const ease = smoothDissolve(dissolve)
+      for (let i = 0; i < FRAGS; i++) {
+        const prm = fragParams[i]
+        dummy.position.set(
+          heroTarget.x + prm.dir.x * prm.dist * ease,
+          heroTarget.y + prm.dir.y * prm.dist * ease * 0.8 - ease * 0.12,
+          heroTarget.z + prm.dir.z * prm.dist * ease,
+        )
+        dummy.rotation.set(
+          prm.rot.x + t * prm.spin * 0.2,
+          prm.rot.y + t * prm.spin * 0.15,
+          prm.rot.z,
+        )
+        const s = ease > 0.01 ? (1 - ease * 0.55) * (mode === 'film' ? 1 : 0) : 0.0001
+        dummy.scale.setScalar(s)
+        dummy.updateMatrix()
+        f.setMatrixAt(i, dummy.matrix)
+      }
+      fragMat.opacity = dissolve > 0.01 ? 1 - dissolve * 0.75 : 0
+      f.instanceMatrix.needsUpdate = true
+    }
   })
 
-  return <instancedMesh ref={mesh} args={[geo, mat, count]} frustumCulled={false} />
+  return (
+    <>
+      <instancedMesh ref={mesh} args={[geo, mat, count]} frustumCulled={false} />
+      <instancedMesh ref={frag} args={[fragGeo, fragMat, 12]} frustumCulled={false} />
+    </>
+  )
+}
+
+// gentle ease for the break-apart: slow start, calm settle
+function smoothDissolve(d: number): number {
+  return d * d * (3 - 2 * d)
 }
 
 // ————————————————————————————————————————————— ambient particles + trails
@@ -464,10 +516,14 @@ function Choreography({
   const { camera } = useThree()
   const target = useMemo(() => new THREE.Vector3(), [])
 
-  useFrame(() => {
+  useFrame((state) => {
     const p = progressRef.current
     const box = boxGroup.current
     if (!box) return
+    // cinematic breathing: a barely-perceptible handheld drift
+    const t = state.clock.elapsedTime
+    const bx = Math.sin(t * 0.31) * 0.035
+    const by = Math.cos(t * 0.23) * 0.028
 
     if (mode === 'film') {
       // — box state
@@ -504,7 +560,7 @@ function Choreography({
       const ty = lerp(lift * 0.85 + 0.25, 1.2, macro)
       const tz = lerp(0, 2.2, macro)
 
-      camera.position.set(camX, camY, lerp(camZ, 3.35, macro))
+      camera.position.set(camX + bx, camY + by, lerp(camZ, 3.35, macro))
       target.set(tx, ty, tz)
       camera.lookAt(target)
     } else {
@@ -517,8 +573,8 @@ function Choreography({
 
       const camPull = sseg(p, 0.0, 0.6)
       camera.position.set(
-        lerp(0.6, 0.85, camPull),
-        lerp(1.6, 0.35, camPull),
+        lerp(0.6, 0.85, camPull) + bx,
+        lerp(1.6, 0.35, camPull) + by,
         lerp(3.2, 5.6, camPull),
       )
       target.set(0, lerp(1.1, 0.15, camPull), 0)
