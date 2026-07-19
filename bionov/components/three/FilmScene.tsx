@@ -11,6 +11,7 @@
 import { useMemo, useRef, useEffect, type MutableRefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
@@ -91,20 +92,27 @@ function ProductBox({
   side.colorSpace = THREE.SRGBColorSpace
 
   const materials = useMemo(() => {
-    const white = new THREE.MeshStandardMaterial({
+    // clearcoated physical materials: premium printed-carton sheen
+    const white = new THREE.MeshPhysicalMaterial({
       color: '#f4f6fa',
-      roughness: 0.55,
-      metalness: 0.02,
-    })
-    const frontMat = new THREE.MeshStandardMaterial({
-      map: front,
       roughness: 0.5,
       metalness: 0.02,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.35,
     })
-    const sideMat = new THREE.MeshStandardMaterial({
-      map: side,
-      roughness: 0.55,
+    const frontMat = new THREE.MeshPhysicalMaterial({
+      map: front,
+      roughness: 0.42,
       metalness: 0.02,
+      clearcoat: 0.65,
+      clearcoatRoughness: 0.3,
+    })
+    const sideMat = new THREE.MeshPhysicalMaterial({
+      map: side,
+      roughness: 0.5,
+      metalness: 0.02,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.35,
     })
     // order: +x, -x, +y, -y, +z, -z — top uses white (flaps cover it)
     return [sideMat, sideMat.clone(), white, white.clone(), frontMat, frontMat.clone()]
@@ -146,7 +154,28 @@ function ProductBox({
       {/* soft contact shadow */}
       <mesh position={[0, -BOX_H / 2 - 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[1.15, 48]} />
-        <meshBasicMaterial color="#0e2a6e" transparent opacity={0.16} />
+        <meshBasicMaterial color="#020614" transparent opacity={0.45} />
+      </mesh>
+      {/* glowing stage ring — echoes the hero film's energy rings */}
+      <mesh position={[0, -BOX_H / 2 - 0.015, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.28, 1.36, 96]} />
+        <meshBasicMaterial
+          color="#2fd0ff"
+          transparent
+          opacity={0.55}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh position={[0, -BOX_H / 2 - 0.018, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.55, 1.58, 96]} />
+        <meshBasicMaterial
+          color="#7f7ce8"
+          transparent
+          opacity={0.3}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
       </mesh>
     </group>
   )
@@ -377,7 +406,15 @@ function Particles({ quality }: { quality: 'high' | 'low' }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.035} color="#7fc9f7" transparent opacity={0.55} sizeAttenuation depthWrite={false} />
+      <pointsMaterial
+        size={0.04}
+        color="#3fd4ff"
+        transparent
+        opacity={0.75}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
     </points>
   )
 }
@@ -510,17 +547,25 @@ function SceneContent(props: SceneProps) {
   return (
     <>
       <StudioEnvironment />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[4, 6, 5]} intensity={1.6} color="#ffffff" />
-      <directionalLight position={[-5, 2, -3]} intensity={0.5} color="#bfe4ff" />
-      <pointLight position={[0, -2, 4]} intensity={0.4} color="#f2a8d8" />
-      <fog attach="fog" args={['#dcebfb', 9, 18]} />
+      {/* cinematic dark-stage lighting: warm key, cyan rim, magenta fill */}
+      <ambientLight intensity={0.32} />
+      <directionalLight position={[4, 6, 5]} intensity={2.1} color="#fff4e8" />
+      <directionalLight position={[-5, 3, -4]} intensity={1.7} color="#29c4f0" />
+      <directionalLight position={[5, 1, -3]} intensity={0.9} color="#8b7be8" />
+      <pointLight position={[0, -2, 4]} intensity={0.5} color="#f272b6" />
+      <fog attach="fog" args={['#0a1030', 8, 20]} />
       <ProductBox {...props} group={boxGroup} />
       <Blisters {...props} />
       <Tablets {...props} />
       <LightTrails {...props} />
       <Particles quality={props.quality} />
       <Choreography {...props} boxGroup={boxGroup} />
+      {props.quality === 'high' && (
+        <EffectComposer>
+          <Bloom intensity={0.38} luminanceThreshold={0.88} luminanceSmoothing={0.25} mipmapBlur />
+          <Vignette eskil={false} offset={0.18} darkness={0.72} />
+        </EffectComposer>
+      )}
     </>
   )
 }
@@ -549,6 +594,11 @@ export default function FilmCanvas({
       dpr={quality === 'high' ? [1, 2] : [1, 1.35]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       style={{ background: 'transparent' }}
+      onCreated={({ gl }) => {
+        // filmic response curve — the single biggest "cinematic" lever
+        gl.toneMapping = THREE.ACESFilmicToneMapping
+        gl.toneMappingExposure = 1.05
+      }}
     >
       <SceneContent progressRef={progressRef} mode={mode} quality={quality} />
     </Canvas>

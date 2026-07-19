@@ -23,14 +23,9 @@ const ReassemblyFinale = dynamic(
   () => import('@/components/hero/ReassemblyFinale'),
   { ssr: false },
 )
-const KlingTransition = dynamic(
-  () => import('@/components/hero/KlingTransition'),
-  { ssr: false },
-)
-const ChainedHeroFilm = dynamic(
-  () => import('@/components/hero/ChainedHeroFilm'),
-  { ssr: false },
-)
+const VideoHero = dynamic(() => import('@/components/hero/VideoHero'), {
+  ssr: false,
+})
 
 export default function Home() {
   useLenis()
@@ -38,8 +33,8 @@ export default function Home() {
     <>
       <Nav />
       <main id="main">
-        {/* Cinematic hero: chained Kling first→last frame film of the real product */}
-        <ChainedHeroFilm />
+        {/* Cinematic hero: Ryan's own BIO N:OV film, self-hosted */}
+        <VideoHero />
         {/* Chapters 1–7: pinned interactive 3D product film */}
         <ScrollFilm />
         {/* Chapter 8 */}
@@ -62,15 +57,6 @@ export default function Home() {
         <ProductShowcase />
         <TechnologyRoadmap />
         <FeaturedIngredients />
-        {/* Kling cinematic transition into the finale */}
-        <KlingTransition
-          clipId="kling-bionov-levitation"
-          poster="/assets/product/references/cover-hero.png"
-          kicker="Chapter 17"
-          title="Everything returns to the box."
-          body="Scroll on — the journey reassembles itself."
-          heightVh={220}
-        />
         {/* Chapters 17–18: reassembly + closing CTA */}
         <ReassemblyFinale />
         <Faq />

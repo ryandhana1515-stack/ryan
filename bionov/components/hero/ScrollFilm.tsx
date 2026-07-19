@@ -122,13 +122,13 @@ export default function ScrollFilm() {
       {/* tall scroll track: total film length */}
       <div ref={trackRef} style={{ height: '1500vh' }} className="relative">
         <div ref={stageRef} className="film-viewport">
-          {/* gradient environment behind the transparent canvas */}
+          {/* dark cinematic stage behind the transparent canvas */}
           <div
             aria-hidden
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(118deg, #35c7f2 0%, #2f7de2 30%, #7f7ce8 62%, #f077b4 100%)',
+                'radial-gradient(95% 75% at 50% 32%, #1b3a8f 0%, #0c1740 48%, #060b26 100%)',
             }}
           />
           <div
@@ -136,7 +136,7 @@ export default function ScrollFilm() {
             className="absolute inset-0"
             style={{
               background:
-                'radial-gradient(120% 65% at 50% 100%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 55%)',
+                'radial-gradient(75% 42% at 50% 100%, rgba(47,208,255,0.22) 0%, rgba(47,208,255,0) 60%)',
             }}
           />
 
