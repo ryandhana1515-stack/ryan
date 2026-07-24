@@ -26,6 +26,9 @@ const ReassemblyFinale = dynamic(
 const VideoHero = dynamic(() => import('@/components/hero/VideoHero'), {
   ssr: false,
 })
+const ScrollMorph = dynamic(() => import('@/components/hero/ScrollMorph'), {
+  ssr: false,
+})
 
 export default function Home() {
   useLenis()
@@ -37,6 +40,8 @@ export default function Home() {
         <VideoHero />
         {/* Chapters 1–7: pinned interactive 3D product film */}
         <ScrollFilm />
+        {/* Scroll-morph: box dissolves → fermentation → molecule network */}
+        <ScrollMorph />
         {/* Chapter 8 */}
         <WhyBioNov />
         {/* Chapter 9 */}
