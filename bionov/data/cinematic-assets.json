@@ -60,6 +60,20 @@
       "local": "public/assets/videos/final/hero-chain-5.mp4",
       "firstFrame": "blister-flatlay",
       "lastFrame": "usage-glass"
+    },
+    "morph-box-to-ferment": {
+      "id": "morph-box-to-ferment",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa390a2/8hEQ5Vnb3uDHxmuAAHqBV_output.mp4",
+      "model": "fal-ai/kling-video/v3/pro/image-to-video",
+      "local": "public/assets/videos/final/morph-box-to-ferment.mp4"
+    },
+    "morph-ferment-to-molecule": {
+      "id": "morph-ferment-to-molecule",
+      "kind": "video",
+      "remoteUrl": "https://v3b.fal.media/files/b/0aa390ac/QqdsNehWGfQ68FrIM8SLN_output.mp4",
+      "model": "fal-ai/kling-video/v3/pro/image-to-video",
+      "local": "public/assets/videos/final/morph-ferment-to-molecule.mp4"
     }
   },
   "stills": {

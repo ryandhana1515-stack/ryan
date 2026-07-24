@@ -1,6 +1,6 @@
 {
   "budgetUsd": 100,
-  "totalEstimatedUsd": 5.999999999999999,
+  "totalEstimatedUsd": 7.199999999999998,
   "records": [
     {
       "assetId": "fermentation-world",
@@ -85,6 +85,18 @@
       "model": "fal-ai/kling-video/v3/pro/image-to-video",
       "estimatedCostUsd": 0.6,
       "timestamp": "2026-07-18T20:25:22.038Z"
+    },
+    {
+      "assetId": "morph-box-to-ferment",
+      "model": "fal-ai/kling-video/v3/pro/image-to-video",
+      "estimatedCostUsd": 0.6,
+      "timestamp": "2026-07-24T17:52:29.074Z"
+    },
+    {
+      "assetId": "morph-ferment-to-molecule",
+      "model": "fal-ai/kling-video/v3/pro/image-to-video",
+      "estimatedCostUsd": 0.6,
+      "timestamp": "2026-07-24T17:54:08.245Z"
     }
   ]
 }
