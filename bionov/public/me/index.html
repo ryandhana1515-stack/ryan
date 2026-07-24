@@ -4,58 +4,50 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>RYAN — Building brands that connect</title>
-<meta name="description" content="Ryan Dhana — founder of Bio Green Elixirs. An interactive particle portrait." />
+<meta name="description" content="Ryan Dhana — founder of Bio Green Elixirs. An interactive strand-portrait experience." />
 <style>
   :root {
-    --cream: #efe9dc;
-    --cream-deep: #e7dfcf;
+    --cream: #f0ece3;
     --ink: #23221e;
-    --ink-soft: rgba(35, 34, 30, 0.62);
-    --accent: #b98a4a;
+    --ink-soft: rgba(35, 34, 30, 0.6);
+    --accent: #c08a3e;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: auto; }
   body {
     background: var(--cream);
     color: var(--ink);
     font-family: 'Helvetica Neue', Inter, Arial, sans-serif;
     overflow-x: hidden;
   }
-  ::selection { background: rgba(185, 138, 74, 0.25); }
+  ::selection { background: rgba(192, 138, 62, 0.25); }
 
-  /* fixed nav */
   nav {
     position: fixed; inset: 0 0 auto 0; z-index: 50;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 34px;
-    mix-blend-mode: multiply;
+    padding: 22px 34px; mix-blend-mode: multiply;
   }
   nav .logo { font-weight: 700; letter-spacing: 0.28em; font-size: 13px; }
   nav .links { display: flex; gap: 26px; font-size: 12px; letter-spacing: 0.14em; }
   nav a { color: var(--ink-soft); text-decoration: none; text-transform: uppercase; }
   nav a:hover { color: var(--ink); }
 
-  /* scroll track + pinned stage */
-  #track { height: 640vh; position: relative; }
-  #stage {
-    position: sticky; top: 0; height: 100vh; height: 100svh;
-    overflow: hidden;
-  }
+  #track { height: 760vh; position: relative; }
+  #stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
   #stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
   .portrait {
     position: absolute; inset: 0;
     display: flex; align-items: flex-end; justify-content: center;
-    pointer-events: none;
+    pointer-events: none; will-change: opacity, transform;
   }
-  .portrait img {
-    height: 86vh; max-width: 92vw; object-fit: contain; object-position: bottom;
-  }
+  .portrait img { height: 86vh; max-width: 92vw; object-fit: contain; object-position: bottom; }
+  #portrait-ring { align-items: center; }
+  #portrait-ring img { height: 64vh; filter: drop-shadow(0 30px 60px rgba(192,138,62,0.35)); }
 
-  /* text layers */
   .layer {
     position: absolute; inset: 0; z-index: 20;
     display: flex; flex-direction: column; justify-content: center;
-    padding: 0 8vw; pointer-events: none;
+    padding: 0 8vw; pointer-events: none; will-change: opacity, transform;
   }
   .layer .kicker {
     font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase;
@@ -63,13 +55,9 @@
   }
   .layer h1, .layer h2 {
     font-size: clamp(44px, 7.2vw, 108px);
-    line-height: 0.98; font-weight: 700; letter-spacing: -0.02em;
-    white-space: pre-line;
+    line-height: 0.98; font-weight: 700; letter-spacing: -0.02em; white-space: pre-line;
   }
-  .layer p {
-    margin-top: 22px; max-width: 380px;
-    font-size: 15px; line-height: 1.65; color: var(--ink-soft);
-  }
+  .layer p { margin-top: 22px; max-width: 380px; font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
   .layer.right { align-items: flex-end; text-align: right; }
   .layer.center { align-items: center; text-align: center; }
 
@@ -78,27 +66,24 @@
     z-index: 20; font-size: 10px; letter-spacing: 0.34em; text-transform: uppercase;
     color: var(--ink-soft);
   }
-
   .cta {
-    pointer-events: auto;
-    display: inline-block; margin-top: 30px;
-    padding: 15px 34px; border: 1px solid var(--ink);
-    border-radius: 999px; color: var(--ink); text-decoration: none;
-    font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+    pointer-events: auto; display: inline-block; margin-top: 30px;
+    padding: 15px 34px; border: 1px solid var(--ink); border-radius: 999px;
+    color: var(--ink); text-decoration: none; font-size: 12px;
+    letter-spacing: 0.22em; text-transform: uppercase;
     transition: background 0.25s, color 0.25s;
   }
   .cta:hover { background: var(--ink); color: var(--cream); }
 
   footer {
     padding: 46px 34px; display: flex; justify-content: space-between;
-    font-size: 11px; letter-spacing: 0.14em; color: var(--ink-soft);
-    text-transform: uppercase;
+    font-size: 11px; letter-spacing: 0.14em; color: var(--ink-soft); text-transform: uppercase;
   }
-
   @media (max-width: 640px) {
     .layer { padding: 0 7vw; }
     .layer p { max-width: 300px; font-size: 14px; }
     nav { padding: 18px 20px; }
+    #portrait-ring img { height: 46vh; }
   }
   @media (prefers-reduced-motion: reduce) {
     #track { height: auto; }
@@ -124,6 +109,9 @@
     <div class="portrait" id="portrait-front">
       <img src="assets/front-cut.png" alt="Sculptural porcelain portrait facing forward" />
     </div>
+    <div class="portrait" id="portrait-ring" style="opacity:0">
+      <img src="assets/ring-cut.png" alt="Circular ridged sculpture with a glowing amber core" />
+    </div>
     <div class="portrait" id="portrait-profile" style="opacity:0">
       <img src="assets/profile-cut.png" alt="Sculptural porcelain portrait in side profile" />
     </div>
@@ -138,13 +126,20 @@ that connect.</h1>
     <div class="layer right" id="t-dissolve" style="opacity:0">
       <h2>Ideas take
 shape…</h2>
-      <p>Every brand starts as a cloud of possibilities.</p>
+      <p>Every brand starts as a thousand loose threads.</p>
     </div>
 
-    <div class="layer" id="t-profile" style="opacity:0">
+    <div class="layer" id="t-ring" style="opacity:0">
+      <div class="kicker">The Core</div>
+      <h2>…find their
+centre…</h2>
+      <p>Strategy, story and product — pulled into one glowing focus.</p>
+    </div>
+
+    <div class="layer right" id="t-profile" style="opacity:0">
       <div class="kicker">Perspective</div>
-      <h2>…then find
-their angle.</h2>
+      <h2>…and their
+angle.</h2>
       <p>BIO N:OV — a fermentation-science supplement brand, built from zero and taken global.</p>
     </div>
 
@@ -168,7 +163,7 @@ something.</h2>
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = innerWidth < 700;
 
-// ————————————————————————————— smooth scroll progress (rAF lerp — no libs)
+// ————————————————————————————— smooth scroll progress
 let target = 0, prog = 0;
 const track = document.getElementById('track');
 function measure() {
@@ -179,100 +174,122 @@ function measure() {
 addEventListener('scroll', measure, { passive: true });
 addEventListener('resize', measure);
 
-// ————————————————————————————— helpers
 const clamp01 = v => Math.min(1, Math.max(0, v));
 const seg = (p, a, b) => clamp01((p - a) / (b - a));
 const smooth = t => t * t * (3 - 2 * t);
 
-// ————————————————————————————— sample particle targets from the cutouts
-async function samplePoints(src, n) {
+// ————————————————————————————— sample strand anchor points from cutouts
+async function samplePoints(src, n, box) {
   const img = new Image();
   img.src = src;
   await img.decode();
-  const W = 460, H = Math.round(W * img.naturalHeight / img.naturalWidth);
+  const W = 420, H = Math.round(W * img.naturalHeight / img.naturalWidth);
   const c = new OffscreenCanvas(W, H);
   const ctx = c.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0, W, H);
   const data = ctx.getImageData(0, 0, W, H).data;
   const pts = [];
-  for (let y = 0; y < H; y += 2) {
-    for (let x = 0; x < W; x += 2) {
+  for (let y = 0; y < H; y += 2)
+    for (let x = 0; x < W; x += 2)
       if (data[(y * W + x) * 4 + 3] > 140) pts.push([x / W, y / H]);
-    }
-  }
-  // shuffle deterministically-ish and cap
   for (let i = pts.length - 1; i > 0; i--) {
     const j = (i * 2654435761) % (i + 1);
     [pts[i], pts[j]] = [pts[j], pts[i]];
   }
-  while (pts.length < n) pts.push(pts[(pts.length * 7919) % Math.max(1, pts.length)] || [0.5, 0.5]);
-  return pts.slice(0, n);
+  while (pts.length < n && pts.length) pts.push(pts[(pts.length * 7919) % pts.length]);
+  const out = pts.slice(0, n);
+  // optional remap into a sub-box {cx, cy, w, h} of image space
+  if (box) for (const p of out) {
+    p[0] = box.cx + (p[0] - 0.5) * box.w;
+    p[1] = box.cy + (p[1] - 0.5) * box.h;
+  }
+  return out;
 }
 
-// ————————————————————————————— WebGL particle field
-async function initParticles() {
-  const N = isMobile ? 14000 : 30000;
-  const [front, profile] = await Promise.all([
+// ————————————————————————————— WebGL strand field (fine white strings)
+async function initStrands() {
+  const N = isMobile ? 2600 : 5200;   // strands
+  const SEGS = 6;                     // segments per strand
+  const [front, profile, ring] = await Promise.all([
     samplePoints('assets/front-cut.png', N),
     samplePoints('assets/profile-cut.png', N),
+    samplePoints('assets/ring-cut.png', N, { cx: 0.5, cy: 0.44, w: 0.5, h: 0.88 }),
   ]);
 
   const canvas = document.getElementById('gl');
-  const gl = canvas.getContext('webgl', { alpha: true, antialias: false });
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
   if (!gl) return () => {};
 
   const vs = `
     attribute vec2 aFront;
     attribute vec2 aProfile;
+    attribute vec2 aRing;
     attribute vec3 aSeed;
+    attribute float aT;      // 0..1 along the strand
     uniform float uP;
-    uniform vec2 uScale;   // image plane scale in clip space
-    uniform vec2 uOffset;  // image plane offset
-    uniform float uSize;
+    uniform float uTime;
+    uniform vec2 uScale;
+    uniform vec2 uOffset;
     varying float vAlpha;
+    varying float vTip;
 
     float clamp01(float v){ return clamp(v, 0.0, 1.0); }
     float seg(float p, float a, float b){ return clamp01((p - a) / (b - a)); }
     float ss(float t){ return t * t * (3.0 - 2.0 * t); }
 
     void main() {
-      float delay = aSeed.x * 0.12;
+      float delay = aSeed.x * 0.08;
+      vec2 dir = normalize(vec2(aSeed.y - 0.5, aSeed.z - 0.5) + 0.001);
 
-      // phase windows of the global scroll
-      float dissolve1 = ss(seg(uP, 0.12 + delay, 0.34 + delay)); // front -> cloud
-      float converge  = ss(seg(uP, 0.36 + delay * 0.6, 0.52 + delay * 0.6)); // cloud -> profile
-      float dissolve2 = ss(seg(uP, 0.62 + delay, 0.82 + delay)); // profile -> sky
+      // phase timeline
+      float d1  = ss(seg(uP, 0.13 + delay, 0.28 + delay));   // front -> threads
+      float toR = ss(seg(uP, 0.30 + delay * 0.5, 0.40 + delay * 0.5)); // threads -> ring
+      float d2  = ss(seg(uP, 0.52 + delay, 0.62 + delay));   // ring -> threads
+      float toP = ss(seg(uP, 0.62 + delay * 0.5, 0.72 + delay * 0.5)); // threads -> profile
+      float d3  = ss(seg(uP, 0.80 + delay, 0.90 + delay));   // profile -> sky
 
-      // scatter direction per particle
-      vec2 dir = vec2(aSeed.y - 0.5, aSeed.z - 0.5) * 2.0;
-      vec2 cloud1 = aFront + dir * (0.55 + aSeed.x * 0.5);
-      cloud1.y -= 0.18; // drift up slightly (image space y-down)
+      vec2 cloud1 = aFront + dir * (0.5 + aSeed.x * 0.45) + vec2(0.0, -0.15);
+      vec2 pos = mix(aFront, cloud1, d1);
+      pos = mix(pos, aRing, toR);
+      vec2 cloud2 = aRing + dir * (0.45 + aSeed.y * 0.4);
+      pos = mix(pos, cloud2, d2);
+      pos = mix(pos, aProfile, toP);
+      vec2 sky = aProfile + vec2(dir.x * 0.7, -1.1 - aSeed.x * 0.5);
+      pos = mix(pos, sky, d3);
 
-      vec2 p1 = mix(aFront, cloud1, dissolve1);
-      vec2 p2 = mix(p1, aProfile, converge);
-      vec2 cloud2 = aProfile + vec2(dir.x * 0.8, -0.9 - aSeed.x * 0.6);
-      vec2 pos = mix(p2, cloud2, dissolve2);
+      // strand body: flow along a curled direction + gentle time waving
+      float freedom = max(max(d1 * (1.0 - toR), d2 * (1.0 - toP)), 0.25);
+      float len = (0.035 + aSeed.y * 0.075) * (0.35 + freedom);
+      vec2 curl = vec2(
+        dir.x + 0.5 * sin(uTime * 0.6 + aSeed.x * 20.0 + aT * 3.0),
+        dir.y + 0.5 * cos(uTime * 0.5 + aSeed.z * 18.0 + aT * 3.0)
+      );
+      pos += normalize(curl) * aT * len;
 
-      // image space (0..1, y down) -> clip space
       vec2 clip = vec2(pos.x * 2.0 - 1.0, 1.0 - pos.y * 2.0) * uScale + uOffset;
       gl_Position = vec4(clip, 0.0, 1.0);
 
-      float presence = seg(uP, 0.10, 0.16) * (1.0 - seg(uP, 0.86, 0.98));
-      // hide while the crisp images are fully shown
-      float hideFront = 1.0 - seg(uP, 0.16, 0.19);
-      float hideProf  = seg(uP, 0.50, 0.53) * (1.0 - seg(uP, 0.60, 0.63));
-      float vis = presence * (1.0 - max(hideFront * (1.0 - dissolve1), hideProf * converge * (1.0 - dissolve2)) * 0.85);
-      vAlpha = vis * (0.5 + aSeed.y * 0.5);
-      gl_PointSize = uSize * (0.7 + aSeed.z * 0.9);
+      float presence = seg(uP, 0.11, 0.16) * (1.0 - seg(uP, 0.9, 0.985));
+      // recede while a crisp image is fully on
+      float hideFront = (1.0 - seg(uP, 0.155, 0.185)) ;
+      float hideRing  = seg(uP, 0.40, 0.435) * (1.0 - seg(uP, 0.50, 0.53));
+      float hideProf  = seg(uP, 0.70, 0.735) * (1.0 - seg(uP, 0.78, 0.81));
+      float hidden = max(hideFront, max(hideRing, hideProf));
+      vAlpha = presence * (1.0 - hidden * 0.9) * (0.45 + aSeed.z * 0.55);
+      vTip = aT;
     }
   `;
   const fsrc = `
     precision mediump float;
     varying float vAlpha;
+    varying float vTip;
+    uniform vec3 uColor;
+    uniform vec3 uTipColor;
+    uniform float uAlphaMul;
     void main() {
-      vec2 d = gl_PointCoord - 0.5;
-      float m = smoothstep(0.5, 0.12, length(d));
-      gl_FragColor = vec4(0.16, 0.15, 0.13, m * vAlpha * 0.85);
+      vec3 col = mix(uColor, uTipColor, smoothstep(0.55, 1.0, vTip));
+      float fade = 1.0 - smoothstep(0.75, 1.0, vTip) * 0.4;
+      gl_FragColor = vec4(col, vAlpha * fade * uAlphaMul);
     }
   `;
   function sh(type, src) {
@@ -287,16 +304,27 @@ async function initParticles() {
   gl.linkProgram(prg);
   gl.useProgram(prg);
 
-  const fa = new Float32Array(N * 2), pa = new Float32Array(N * 2), sa = new Float32Array(N * 3);
+  // build line-segment vertices: per strand, SEGS segments -> SEGS*2 vertices
+  const V = N * SEGS * 2;
+  const fa = new Float32Array(V * 2), pa = new Float32Array(V * 2), ra = new Float32Array(V * 2);
+  const sa = new Float32Array(V * 3), ta = new Float32Array(V);
+  let vi = 0;
   for (let i = 0; i < N; i++) {
-    fa[i * 2] = front[i][0]; fa[i * 2 + 1] = front[i][1];
-    pa[i * 2] = profile[i][0]; pa[i * 2 + 1] = profile[i][1];
-    const r1 = Math.sin(i * 12.9898) * 43758.5453;
-    const r2 = Math.sin(i * 78.233) * 12543.123;
-    const r3 = Math.sin(i * 39.425) * 26251.712;
-    sa[i * 3] = r1 - Math.floor(r1);
-    sa[i * 3 + 1] = r2 - Math.floor(r2);
-    sa[i * 3 + 2] = r3 - Math.floor(r3);
+    const r1 = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+    const r2 = (Math.sin(i * 78.233) * 12543.123) % 1;
+    const r3 = (Math.sin(i * 39.425) * 26251.712) % 1;
+    const s1 = Math.abs(r1), s2 = Math.abs(r2), s3 = Math.abs(r3);
+    for (let j = 0; j < SEGS; j++) {
+      for (let k = 0; k < 2; k++) {
+        const t = (j + k) / SEGS;
+        fa[vi * 2] = front[i][0];   fa[vi * 2 + 1] = front[i][1];
+        pa[vi * 2] = profile[i][0]; pa[vi * 2 + 1] = profile[i][1];
+        ra[vi * 2] = ring[i][0];    ra[vi * 2 + 1] = ring[i][1];
+        sa[vi * 3] = s1; sa[vi * 3 + 1] = s2; sa[vi * 3 + 2] = s3;
+        ta[vi] = t;
+        vi++;
+      }
+    }
   }
   function attrib(name, arr, size) {
     const b = gl.createBuffer();
@@ -308,40 +336,50 @@ async function initParticles() {
   }
   attrib('aFront', fa, 2);
   attrib('aProfile', pa, 2);
+  attrib('aRing', ra, 2);
   attrib('aSeed', sa, 3);
+  attrib('aT', ta, 1);
 
-  const uP = gl.getUniformLocation(prg, 'uP');
-  const uScale = gl.getUniformLocation(prg, 'uScale');
-  const uOffset = gl.getUniformLocation(prg, 'uOffset');
-  const uSize = gl.getUniformLocation(prg, 'uSize');
+  const U = n => gl.getUniformLocation(prg, n);
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  const imgAspect = 16 / 9; // generated portraits are 16:9 frames
+  const imgAspect = 16 / 9;
   function resize() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     canvas.width = innerWidth * dpr;
     canvas.height = innerHeight * dpr;
     gl.viewport(0, 0, canvas.width, canvas.height);
-    // fit the image plane like the CSS portrait (86vh tall, centered, bottom-ish)
-    const planeH = 1.86; // clip-space height of image plane
+    const planeH = 1.86;
     const planeW = planeH * imgAspect * (innerHeight / innerWidth);
-    gl.uniform2f(uScale, planeW / 2, planeH / 2);
-    gl.uniform2f(uOffset, 0, -0.06);
-    gl.uniform1f(uSize, (isMobile ? 2.1 : 2.6) * dpr);
+    gl.uniform2f(U('uScale'), planeW / 2, planeH / 2);
+    gl.uniform2f(U('uOffset'), 0, -0.06);
   }
   resize();
   addEventListener('resize', resize);
 
-  return function draw(p) {
+  const px = 2 / (innerWidth || 1);
+  return function draw(p, t) {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.uniform1f(uP, p);
-    gl.drawArrays(gl.POINTS, 0, N);
+    gl.uniform1f(U('uP'), p);
+    gl.uniform1f(U('uTime'), t);
+    // pass 1: soft warm shadow, slightly offset — gives the strands relief
+    gl.uniform3f(U('uColor'), 0.62, 0.55, 0.45);
+    gl.uniform3f(U('uTipColor'), 0.72, 0.55, 0.32);
+    gl.uniform1f(U('uAlphaMul'), 0.35);
+    gl.uniform2f(U('uOffset'), 0 + px * 2.2, -0.06 - px * 2.2);
+    gl.drawArrays(gl.LINES, 0, V);
+    // pass 2: bright white strands with glowing amber tips
+    gl.uniform3f(U('uColor'), 1.0, 1.0, 0.99);
+    gl.uniform3f(U('uTipColor'), 0.98, 0.72, 0.35);
+    gl.uniform1f(U('uAlphaMul'), 0.95);
+    gl.uniform2f(U('uOffset'), 0, -0.06);
+    gl.drawArrays(gl.LINES, 0, V);
   };
 }
 
-// ————————————————————————————— flowing lines finale (2D canvas)
+// ————————————————————————————— flowing white fiber finale (2D canvas)
 function initLines() {
   const c = document.getElementById('lines');
   const ctx = c.getContext('2d');
@@ -354,53 +392,88 @@ function initLines() {
   }
   resize();
   addEventListener('resize', resize);
-  const streams = Array.from({ length: 34 }, (_, i) => ({
-    y: 0.18 + (i / 34) * 0.6,
-    amp: 26 + (i % 7) * 9,
-    phase: i * 0.7,
-    speed: 0.25 + (i % 5) * 0.09,
-    w: 0.7 + (i % 3) * 0.5,
+  const streams = Array.from({ length: 42 }, (_, i) => ({
+    y: 0.2 + (i / 42) * 0.55,
+    amp: 24 + (i % 7) * 8,
+    phase: i * 0.63,
+    speed: 0.3 + (i % 5) * 0.1,
+    w: 1.0 + (i % 3) * 0.6,
   }));
+  function path(s, t) {
+    ctx.beginPath();
+    for (let x = -40; x <= W + 40; x += 12) {
+      const k = x / W;
+      const y = s.y * H
+        + Math.sin(k * 4.2 + t * s.speed + s.phase) * s.amp
+        + Math.sin(k * 8.6 - t * s.speed * 0.7 + s.phase * 2.0) * s.amp * 0.45
+        - k * 110 * ((s.phase * 0.77) % 1.0);
+      x === -40 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+  }
   return function draw(vis, t) {
     ctx.clearRect(0, 0, W, H);
     if (vis <= 0.01) return;
     for (const s of streams) {
-      ctx.beginPath();
-      for (let x = -40; x <= W + 40; x += 14) {
-        const k = x / W;
-        const y = s.y * H
-          + Math.sin(k * 4.2 + t * s.speed + s.phase) * s.amp
-          + Math.sin(k * 9.1 - t * s.speed * 0.7 + s.phase * 2.0) * s.amp * 0.4
-          - k * 90 * (s.phase % 1.0);
-        x === -40 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = `rgba(150, 122, 78, ${0.16 * vis})`;
+      // warm shadow pass
+      ctx.save();
+      ctx.translate(1.6, 2.2);
+      path(s, t);
+      ctx.strokeStyle = `rgba(140, 116, 82, ${0.18 * vis})`;
+      ctx.lineWidth = s.w + 0.6;
+      ctx.stroke();
+      ctx.restore();
+      // white fiber pass
+      path(s, t);
+      ctx.strokeStyle = `rgba(255, 255, 253, ${0.75 * vis})`;
       ctx.lineWidth = s.w;
       ctx.stroke();
+      // glowing amber leading tip
+      const k = ((t * s.speed * 0.12 + s.phase * 0.31) % 1 + 1) % 1;
+      const x = k * W;
+      const y = s.y * H
+        + Math.sin(k * 4.2 + t * s.speed + s.phase) * s.amp
+        + Math.sin(k * 8.6 - t * s.speed * 0.7 + s.phase * 2.0) * s.amp * 0.45
+        - k * 110 * ((s.phase * 0.77) % 1.0);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 7);
+      g.addColorStop(0, `rgba(255, 196, 110, ${0.9 * vis})`);
+      g.addColorStop(1, 'rgba(255, 196, 110, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, 7, 0, Math.PI * 2);
+      ctx.fill();
     }
   };
 }
 
-// ————————————————————————————— text + image choreography
+// ————————————————————————————— choreography
 const el = id => document.getElementById(id);
-const layers = {
-  hero: el('t-hero'), dissolve: el('t-dissolve'),
+const L = {
+  hero: el('t-hero'), dissolve: el('t-dissolve'), ring: el('t-ring'),
   profile: el('t-profile'), final: el('t-final'),
-  pf: el('portrait-front'), pp: el('portrait-profile'), cue: el('cue'),
+  pf: el('portrait-front'), pr: el('portrait-ring'), pp: el('portrait-profile'),
+  cue: el('cue'),
 };
 function setL(elm, o, y = 0) {
   elm.style.opacity = o.toFixed(3);
   elm.style.transform = `translateY(${y}px)`;
 }
 function choreo(p) {
-  setL(layers.hero, 1 - seg(p, 0.06, 0.14), -seg(p, 0.06, 0.14) * 40);
-  layers.pf.style.opacity = String(1 - seg(p, 0.16, 0.2));
-  setL(layers.dissolve, seg(p, 0.2, 0.26) * (1 - seg(p, 0.32, 0.38)), (1 - seg(p, 0.2, 0.26)) * 30);
-  layers.pp.style.opacity = String(seg(p, 0.5, 0.53) * (1 - seg(p, 0.6, 0.63)));
-  setL(layers.profile, seg(p, 0.52, 0.58) * (1 - seg(p, 0.62, 0.68)), (1 - seg(p, 0.52, 0.58)) * 30);
-  setL(layers.final, seg(p, 0.86, 0.94), (1 - seg(p, 0.86, 0.94)) * 30);
-  layers.final.style.pointerEvents = p > 0.9 ? 'auto' : 'none';
-  layers.cue.style.opacity = String(1 - seg(p, 0.05, 0.1));
+  setL(L.hero, 1 - seg(p, 0.06, 0.13), -seg(p, 0.06, 0.13) * 40);
+  L.pf.style.opacity = String(1 - seg(p, 0.155, 0.185));
+  setL(L.dissolve, seg(p, 0.18, 0.24) * (1 - seg(p, 0.28, 0.33)), (1 - seg(p, 0.18, 0.24)) * 30);
+
+  // the sci-fi ring: fades in over the converged strands, slowly turning
+  const ringIn = seg(p, 0.40, 0.435) * (1 - seg(p, 0.50, 0.53));
+  L.pr.style.opacity = String(ringIn);
+  L.pr.style.transform = `rotate(${(p - 0.4) * 60}deg) scale(${0.92 + seg(p, 0.4, 0.53) * 0.12})`;
+  setL(L.ring, seg(p, 0.42, 0.47) * (1 - seg(p, 0.5, 0.55)), (1 - seg(p, 0.42, 0.47)) * 30);
+
+  L.pp.style.opacity = String(seg(p, 0.70, 0.735) * (1 - seg(p, 0.78, 0.81)));
+  setL(L.profile, seg(p, 0.71, 0.76) * (1 - seg(p, 0.79, 0.84)), (1 - seg(p, 0.71, 0.76)) * 30);
+
+  setL(L.final, seg(p, 0.88, 0.95), (1 - seg(p, 0.88, 0.95)) * 30);
+  L.final.style.pointerEvents = p > 0.92 ? 'auto' : 'none';
+  L.cue.style.opacity = String(1 - seg(p, 0.05, 0.1));
 }
 
 // ————————————————————————————— main loop
@@ -408,17 +481,17 @@ function choreo(p) {
   measure();
   if (reduced) {
     choreo(0);
-    layers.pf.style.opacity = '1';
+    L.pf.style.opacity = '1';
     return;
   }
-  const drawParticles = await initParticles();
+  const drawStrands = await initStrands();
   const drawLines = initLines();
-  let t0 = performance.now();
+  const t0 = performance.now();
   function frame(now) {
-    prog += (target - prog) * 0.09; // buttery smoothing
+    prog += (target - prog) * 0.09;
     const t = (now - t0) / 1000;
-    drawParticles(prog);
-    drawLines(smooth(seg(prog, 0.8, 0.92)), t);
+    drawStrands(prog, t);
+    drawLines(smooth(seg(prog, 0.86, 0.95)), t);
     choreo(prog);
     requestAnimationFrame(frame);
   }
