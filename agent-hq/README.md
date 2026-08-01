@@ -1,46 +1,40 @@
-# BIOGREEN // AGENT OPERATIONS HQ
+# BIOGREEN // AGENT OPERATIONS HQ — 3D
 
-A live, pixel-art "AI agent environment" for the Bio Green Elixirs agent team —
-inspired by the viral *AI Agent Environment Tour* TikTok format. A top-down neon
-facility where every one of your **real n8n agents** lives in its own room as an
-animated pixel worker: they walk to desks, type, and stream what they're doing
-to a terminal ops feed.
+A fully immersive 3D spaceship deck where the Bio Green Elixirs AI agent team
+**lives, moves, and actually works** — every agent is wired to its real n8n
+workflow on `ryan1515.app.n8n.cloud`. Click any agent and you're chatting with
+the live workflow behind it.
 
-## The agents on the floor (mapped to the live n8n instance)
+## What's real (linked to n8n)
 
-| Sprite | Room | Real n8n workflow(s) |
+| Agent | Chat backend | What happens when you message it |
 |---|---|---|
-| **MANAGER** | AI Manager Core | AI Manager — Company Orchestrator · Daily Summary · Weekly Report |
-| **NOVA** | Content Studio | Content Agent — Daily Social Content (daily 09:00) |
-| **PULSE** | Ads Lab | Ads Agent — Weekly Ad Drafts (Mon 10:00) |
-| **ECHO** | Support Desk | Customer Service Agent — 24/7 Chat |
-| **LEDGER** | Research Bay | Research Agent — Weekly Market Scan (Mon 08:00) |
-| **ORBIT** | Affiliate Hub | Affiliate Agent — Welcome New Affiliates (`/affiliate-signup`) |
-| **WAVE** | Inbox Hub | WhatsApp Agent — Sandbox (`/whatsapp-in`) + WABA utility |
-| **RELAY** | Inbox Hub | Omnichannel AI Hub — Universal Inbox (`/inbound-message`) |
-| **VOX** | Voice Ops | Voice Agent — Call Me Now + Call Logger |
-| **FORGE** | Web Forge | Website Agent — Immersive 3D Site Designer |
+| **MANAGER** | AI Manager chat trigger | The real orchestrator answers, delegating to its specialist sub-agents |
+| **NOVA / PULSE / LEDGER** | AI Manager chat trigger | Routed to the Manager's real Content / Copy&Ads / Research specialists |
+| **ECHO** | Customer Service chat trigger | The live 24/7 support agent with conversation memory |
+| **FORGE** | Website Agent chat trigger | Describe a site → returns a build-ready package (3D plan, Kling prompts, Lovable brief) — "build websites" from inside the HQ |
+| **RELAY / WAVE** | Omnichannel `/inbound-message` webhook | Claude answers from your Business Profile; the lead is logged to Leads CRM in n8n |
+| **VOX** | Omnichannel webhook + `☎ REQUEST CALL` button | The call button POSTs `/call-me` and triggers a real ElevenLabs outbound phone call |
+| **ORBIT** | Affiliate `/affiliate-signup` webhook | Type `name, email@x.com, followers` → runs a REAL signup, logs to Affiliate Outreach, returns the AI welcome message |
 
-HUD numbers are seeded from the real instance at build time: 14 workflows,
-83 executions, 96.4% success rate. FORGE shows an amber `2 ERR` status because
-its last runs actually errored in n8n.
+**📊 n8n ANALYTICS** (top bar) opens the grid dashboard: all 14 workflows with
+run counts, error highlights and links into the n8n editor. Data is a snapshot
+of the live instance (see `data/snapshot.js` — regenerate any time by asking
+your AI CTO to "refresh the HQ analytics snapshot").
 
-## Features
+## The 3D deck
 
-- **Working pixel agents**: 8×10 pixel-art workers with walk/type animations,
-  per-agent colors, glow, name tags — they wander, sit at desks, and "work"
-  whenever their workflow fires in the ops feed
-- Facility map (canvas, 60fps): 9 glowing rooms, desks with flickering
-  monitors, blinking server racks, task packets flying to the Manager core,
-  animated corridors, CRT scanlines
-- Live ops feed with per-agent activity based on each workflow's real job,
-  💰 sale pings, and a BIO N:OV stock ticker
-- Click a room (or roster card) to focus an agent and filter the feed —
-  clicking Inbox Hub cycles between WAVE and RELAY
+- Nine glowing rooms on a starship deck: hull walls with window strips,
+  starfield, CRT scanlines, central AI Manager reactor core with orbiting rings
+- **Voxel agents that genuinely move**: A* pathfinding on a nav grid — they
+  wander their rooms, walk through door gaps and corridors to visit the core
+  and other departments, sit at desks and type (screens flicker while they work)
+- Task packets arc through the air to the core whenever a workflow fires
+- Free camera: drag to orbit, scroll to zoom, click an agent to fly to it,
+  `RESET CAM` to pull back to the overview
+- Live ops feed + sales pings + BIO N:OV stock ticker, as before
 
 ## Run it
-
-No build step — plain HTML/CSS/JS:
 
 ```bash
 cd agent-hq
@@ -48,10 +42,22 @@ python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
+No build step. Three.js is vendored locally (`vendor/three.module.min.js`).
+
+## If chat says "[offline sim]"
+
+The page couldn't reach `ryan1515.app.n8n.cloud` — usually CORS:
+
+1. Open the workflow in n8n → the trigger node (Chat Trigger / Webhook)
+2. Options → **Allowed Origins (CORS)** → set to `*` (or your site's origin)
+3. Save + keep the workflow active, then retry
+
+The VOX call button additionally needs the ElevenLabs credential + phone-number
+ID filled in the "Make Outbound Call" node (currently a placeholder in n8n).
+
 ## Film it for TikTok
 
-1. Open fullscreen (F11), let it run ~30s so the feed fills up.
-2. Screen-record, then film the monitor with your phone (the phone-filming-a-
-   screen look is part of the viral format — moiré and room lighting included).
-3. Caption idea: *"My 10 AI employees run my supplement brand while I sleep 🤖🌿
-   #aiagents #n8n #BioGreenElixirs #BIONOV"*
+Fullscreen it, let the deck run, slowly orbit with the mouse, open a chat with
+FORGE and ask for a website live on camera. Caption: *"I built a 3D command
+deck for my AI employees — and I can talk to every one of them 🤖🚀
+#aiagents #n8n #BioGreenElixirs"*
