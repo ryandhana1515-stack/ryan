@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIOGREEN // AGENT OPERATIONS HQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top HUD bar -->
+    <header id="hud-top">
+      <div class="hud-left">
+        <span class="hud-logo">◈ BIOGREEN</span>
+        <span class="hud-sub">// AGENT OPERATIONS HQ</span>
+        <span class="hud-version">v3.0.1 — NITRIC CORE ONLINE</span>
+      </div>
+      <div class="hud-right">
+        <div class="hud-stat"><span class="stat-label">TASKS TODAY</span><span class="stat-value" id="stat-tasks">0</span></div>
+        <div class="hud-stat"><span class="stat-label">SALES SIGNALS</span><span class="stat-value" id="stat-sales">0</span></div>
+        <div class="hud-stat"><span class="stat-label">AGENTS ACTIVE</span><span class="stat-value" id="stat-agents">6/6</span></div>
+        <div class="hud-stat"><span class="stat-label">UPTIME</span><span class="stat-value" id="stat-uptime">00:00:00</span></div>
+      </div>
+    </header>
+
+    <div id="main">
+      <!-- Agent roster + live ops log -->
+      <aside id="sidebar">
+        <div class="sidebar-header">
+          <span>ACTIVE AGENTS</span>
+          <span class="blink">▮</span>
+        </div>
+        <div id="roster"></div>
+        <div class="sidebar-header log-header">
+          <span>LIVE OPS FEED</span>
+          <button id="log-filter-clear" class="hidden">SHOW ALL</button>
+        </div>
+        <div id="ops-log"></div>
+      </aside>
+
+      <!-- Facility map -->
+      <div id="map-wrap">
+        <canvas id="map"></canvas>
+        <div id="crt"></div>
+        <div id="map-hint">CLICK A ROOM TO FOCUS AN AGENT</div>
+      </div>
+    </div>
+
+    <!-- Bottom toolbar -->
+    <footer id="hud-bottom">
+      <div class="tool">⚙ SYSTEMS</div>
+      <div class="tool">🛰 NETWORK</div>
+      <div class="tool">📦 SHOPIFY LINK</div>
+      <div class="tool">🎬 TIKTOK FEED</div>
+      <div class="tool">💳 PAYMENTS</div>
+      <div class="tool">🌿 BIO N:OV STOCK: <span id="stat-stock">1,240</span></div>
+      <div class="tool right" id="clock">--:--:--</div>
+    </footer>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
