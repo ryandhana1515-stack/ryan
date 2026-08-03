@@ -1,64 +1,119 @@
-/* BIOGREEN // AGENT OPERATIONS HQ — 3D immersive deck
-   Voxel agents living on a spaceship deck, pathfinding through corridors,
-   with live chat wired to the real n8n instance (see config.js). */
+/* BIOGREEN // AGENT OPERATIONS HQ — pixel tower edition
+   Side-view neon office tower. Agents walk floors, ride the elevator,
+   talk to each other, hold standups in the Meeting Bay and gather for
+   town-hall speeches — with live chat wired to the real n8n instance. */
 
-import * as THREE from "./vendor/three.module.min.js";
+"use strict";
 
 const CFG = window.HQ_CONFIG;
 const SNAP = window.N8N_SNAPSHOT;
 
-// ---------------------------------------------------------------- rooms
+// ---------------------------------------------------------------- palette
 
-// World units: x → starboard, z → aft. Deck is ~170 x 100.
+const PAL = {
+  bgTop: "#1c0b33", bgBot: "#0a0518",
+  slab: "#241f3d", slabEdge: "#2ee6c8",
+  shaft: "#141126", cab: "#3a2f5e",
+  neonPink: "#ff4fd8", neonTeal: "#2ee6c8", neonAmber: "#ffb84d",
+  tag: "rgba(10,8,20,0.88)",
+};
+
+// ---------------------------------------------------------------- tower layout
+
+const FLOOR_H = 150, SLAB = 12, GROUND_Y = 1140, TOWER_X0 = 90, TOWER_X1 = 1110;
+const SHAFT_X0 = 565, SHAFT_X1 = 635, SHAFT_MID = 600;
+const floorY = (f) => GROUND_Y - f * FLOOR_H;           // y of the floor's walking surface
+
+// Rooms: [floor, side] — left room spans TOWER_X0+18..SHAFT_X0-8, right SHAFT_X1+8..TOWER_X1-18
+const LX0 = TOWER_X0 + 18, LX1 = SHAFT_X0 - 8, RX0 = SHAFT_X1 + 8, RX1 = TOWER_X1 - 18;
+
 const ROOMS = {
-  core:      { name: "AI MANAGER CORE", x: 0,   z: 0,   w: 34, d: 22, doors: ["N", "S", "E", "W"] },
-  content:   { name: "CONTENT STUDIO",  x: -55, z: -33, w: 42, d: 24, doors: ["S", "E"] },
-  inbox:     { name: "INBOX HUB",       x: 0,   z: -33, w: 42, d: 24, doors: ["S"] },
-  ads:       { name: "ADS LAB",         x: 55,  z: -33, w: 42, d: 24, doors: ["S", "W"] },
-  support:   { name: "SUPPORT DESK",    x: -55, z: 0,   w: 42, d: 24, doors: ["E", "N", "S"] },
-  research:  { name: "RESEARCH BAY",    x: 55,  z: 0,   w: 42, d: 24, doors: ["W", "N", "S"] },
-  affiliate: { name: "AFFILIATE HUB",   x: -55, z: 33,  w: 42, d: 24, doors: ["N", "E"] },
-  voice:     { name: "VOICE OPS",       x: 0,   z: 33,  w: 42, d: 24, doors: ["N"] },
-  web:       { name: "WEB FORGE",       x: 55,  z: 33,  w: 42, d: 24, doors: ["N", "W"] },
+  townhall:  { name: "TOWN HALL",      floor: 0, x0: LX0, x1: LX1, wall: "#2a1440", sign: PAL.neonAmber, kit: "hall" },
+  factory:   { name: "FACTORY",        floor: 0, x0: RX0, x1: RX1, wall: "#16283d", sign: PAL.neonTeal, kit: "factory" },
+  voice:     { name: "VOICE OPS",      floor: 1, x0: LX0, x1: LX1, wall: "#3d1f2a", sign: "#ff8c42",    kit: "office" },
+  affiliate: { name: "AFFILIATE HUB",  floor: 1, x0: RX0, x1: RX1, wall: "#162f4a", sign: "#4dd2ff",    kit: "lounge" },
+  research:  { name: "RESEARCH BAY",   floor: 2, x0: LX0, x1: LX1, wall: "#2c1f4a", sign: "#b18cff",    kit: "lab" },
+  web:       { name: "WEB FORGE",      floor: 2, x0: RX0, x1: RX1, wall: "#1f2647", sign: "#8c9eff",    kit: "lab" },
+  inbox:     { name: "INBOX HUB",      floor: 3, x0: LX0, x1: LX1, wall: "#143d33", sign: "#25d366",    kit: "office" },
+  support:   { name: "SUPPORT DESK",   floor: 3, x0: RX0, x1: RX1, wall: "#3d2f14", sign: PAL.neonAmber, kit: "office" },
+  content:   { name: "CONTENT STUDIO", floor: 4, x0: LX0, x1: LX1, wall: "#14332a", sign: "#3cff9e",    kit: "studio" },
+  ads:       { name: "ADS LAB",        floor: 4, x0: RX0, x1: RX1, wall: "#3d1430", sign: "#ff5c8a",    kit: "lab" },
+  manager:   { name: "MANAGER OFFICE", floor: 5, x0: LX0, x1: LX1, wall: "#0f2d40", sign: "#00dcff",    kit: "exec" },
+  meeting:   { name: "MEETING BAY",    floor: 5, x0: RX0, x1: RX1, wall: "#231b45", sign: PAL.neonPink, kit: "meeting" },
 };
 Object.values(ROOMS).forEach((r) => {
-  r.desks = [
-    { x: r.x - r.w * 0.24, z: r.z + r.d * 0.16 },
-    { x: r.x + r.w * 0.24, z: r.z + r.d * 0.28 },
-  ];
+  r.cx = (r.x0 + r.x1) / 2;
+  r.desks = [r.x0 + (r.x1 - r.x0) * 0.3, r.x0 + (r.x1 - r.x0) * 0.68];
 });
 
+// ---------------------------------------------------------------- agents
+
 const AGENTS = [
-  { id: "manager",  name: "MANAGER", room: "core",      color: 0x00dcff, status: "ACTIVE",
+  { id: "manager",  name: "MANAGER", room: "manager",  color: "#00dcff", status: "ACTIVE",
     role: "AI Manager — Company Orchestrator",
-    tasks: ["delegated brief to specialist sub-agents", "18:00 daily summary → Manager Reports", "Mon 07:00 weekly report compiled", "routed build request to the AI CTO"] },
-  { id: "content",  name: "NOVA",    room: "content",   color: 0x3cff9e, status: "ACTIVE",
+    tasks: ["delegated brief to specialist sub-agents", "daily summary → Manager Reports", "weekly report compiled", "routed build to the AI CTO"] },
+  { id: "content",  name: "NOVA",    room: "content",  color: "#3cff9e", status: "ACTIVE",
     role: "Content Agent — Daily Social Content",
-    tasks: ["09:00 run: 3 TikTok captions → Content Queue", "drafted 1 FB ad + 1 IG caption", "#BIONOV caption batch queued"] },
-  { id: "ads",      name: "PULSE",   room: "ads",       color: 0xff5c8a, status: "ACTIVE",
+    tasks: ["3 TikTok captions → Content Queue", "drafted 1 FB ad + 1 IG caption", "#BIONOV caption batch queued"] },
+  { id: "ads",      name: "PULSE",   room: "ads",      color: "#ff5c8a", status: "ACTIVE",
     role: "Ads Agent — Weekly Ad Drafts",
-    tasks: ["Mon 10:00: 2 FB ads + 2 TikTok scripts", "5 hook ideas → Ad Drafts", "health-ad compliance pass ✓"] },
-  { id: "support",  name: "ECHO",    room: "support",   color: 0xffb84d, status: "ACTIVE",
+    tasks: ["2 FB ads + 2 TikTok scripts drafted", "5 hook ideas → Ad Drafts", "health-ad compliance pass ✓"] },
+  { id: "support",  name: "ECHO",    room: "support",  color: "#ffb84d", status: "ACTIVE",
     role: "Customer Service Agent — 24/7 Chat",
-    tasks: ["answered dosage question: 3x daily", "shipping query resolved", "guardrailed affiliate answer sent"] },
-  { id: "research", name: "LEDGER",  room: "research",  color: 0xb18cff, status: "ACTIVE",
+    tasks: ["answered dosage question: 3x daily", "shipping query resolved", "guardrailed affiliate answer"] },
+  { id: "research", name: "LEDGER",  room: "research", color: "#b18cff", status: "ACTIVE",
     role: "Research Agent — Weekly Market Scan",
-    tasks: ["Mon 08:00 market scan → report", "flagged: 'nitric oxide over 40' rising", "competitor gap logged"] },
-  { id: "affiliate", name: "ORBIT",  room: "affiliate", color: 0x4dd2ff, status: "ACTIVE",
+    tasks: ["market scan → Research Reports", "'nitric oxide over 40' rising", "competitor gap logged"] },
+  { id: "affiliate", name: "ORBIT",  room: "affiliate", color: "#4dd2ff", status: "ACTIVE",
     role: "Affiliate Agent — Welcome New Affiliates",
     tasks: ["/affiliate-signup: welcome sent", "new creator → Affiliate Outreach", "commission terms delivered"] },
-  { id: "whatsapp", name: "WAVE",    room: "inbox",     color: 0x25d366, status: "ACTIVE",
+  { id: "whatsapp", name: "WAVE",    room: "inbox",    color: "#25d366", status: "ACTIVE",
     role: "WhatsApp Agent — Cloud API",
-    tasks: ["/whatsapp-in: reply sent via Graph API", "lead captured → Leads CRM", "webhook handshake verified"] },
-  { id: "omni",     name: "RELAY",   room: "inbox",     color: 0x2ee6c8, status: "ACTIVE",
+    tasks: ["/whatsapp-in: reply via Graph API", "lead captured → Leads CRM", "webhook handshake verified"] },
+  { id: "omni",     name: "RELAY",   room: "inbox",    color: "#2ee6c8", status: "ACTIVE",
     role: "Omnichannel AI Hub — Universal Inbox",
-    tasks: ["/inbound-message answered from profile", "cross-channel lead logged", "call request routed to VOX"] },
-  { id: "voice",    name: "VOX",     room: "voice",     color: 0xff8c42, status: "ACTIVE",
+    tasks: ["/inbound-message answered", "cross-channel lead logged", "call request routed to VOX"] },
+  { id: "voice",    name: "VOX",     room: "voice",    color: "#ff8c42", status: "ACTIVE",
     role: "Voice Agent — Calls + Call Logger",
     tasks: ["ElevenLabs outbound call placed", "transcript → Call Log", "standing by for callbacks"] },
-  { id: "web",      name: "FORGE",   room: "web",       color: 0x8c9eff, status: "2 ERR", statusColor: "#ffb84d",
+  { id: "web",      name: "FORGE",   room: "web",      color: "#8c9eff", status: "2 ERR", statusColor: "#ffb84d",
     role: "Website Agent — Immersive 3D Site Designer",
-    tasks: ["3D scene plan + Kling prompts packaged", "Lovable build brief handed off", "retrying render pipeline"] },
+    tasks: ["3D scene plan + Kling prompts packaged", "Lovable brief handed off", "retrying render pipeline"] },
+];
+const byId = (id) => AGENTS.find((a) => a.id === id);
+
+// ---------------------------------------------------------------- dialogue
+
+const LINES = {
+  manager:  { open: ["Status check — how's your queue?", "Revenue review at 18:00. Be ready.", "Any blockers I should clear?"],
+              reply: ["Good. Keep shipping.", "Log it in the report table.", "I'll route that to the AI CTO."] },
+  content:  { open: ["Wrote 3 hooks that might go viral 👀", "Caption batch queued for 09:00.", "Need B-roll ideas for the next ad."],
+              reply: ["I'll storyboard that today.", "Drafting now, give me 10 min.", "Adding it to the Content Queue."] },
+  ads:      { open: ["CPA dropped 18% on variant B 📉", "Killing two weak adsets tonight.", "Smart+ is eating the budget well."],
+              reply: ["Send me the winning hook.", "I'll scale it on TikTok Smart+.", "Compliance pass first, then ship."] },
+  support:  { open: ["Customer asked about meds again.", "12 tickets closed, zero escalations.", "Someone wants wholesale pricing."],
+              reply: ["I'll add it to the FAQ.", "Forwarding to your queue.", "Route that one to Ryan."] },
+  research: { open: ["'Nitric oxide over 40' searches up 3x 📈", "Competitor dropped SG prices 12%.", "Green-screen ads trending again."],
+              reply: ["Interesting — send the report.", "That matches my data.", "I'll flag it for the ads team."] },
+  affiliate:{ open: ["Signed 3 wellness creators today 🤝", "Top affiliate just hit 22 sales.", "Free samples shipped to two creators."],
+              reply: ["I'll prep the welcome kits.", "Commission run is scheduled.", "Loox reviews are syncing."] },
+  whatsapp: { open: ["WhatsApp inbox is buzzing today.", "54 messages routed to the brain.", "New lead from KL just landed."],
+              reply: ["Leads are logging clean.", "Webhook is verified ✓", "I'll tag it in the CRM."] },
+  omni:     { open: ["New lead from the website chat.", "Routed a call request to VOX.", "Three channels active right now."],
+              reply: ["Logged to Leads CRM.", "Channel's open, on it.", "Reply sent from the profile."] },
+  voice:    { open: ["Placed 2 calls, both booked ☎", "Call transcripts are synced.", "ElevenLabs voice sounds sharp today."],
+              reply: ["Patch them through anytime.", "Logs are in the Call table.", "I'll dial the next lead."] },
+  web:      { open: ["Render pipeline is fixed... maybe 😅", "New landing page brief is in.", "Kling prompts are packaged."],
+              reply: ["Ship it to Lovable.", "I'll generate the 3D scene.", "Deploying after the fix."] },
+};
+const ACKS = ["👍", "Nice.", "Let's go.", "Copy that.", "🔥"];
+
+const SPEECHES = [
+  () => `Team — ${runs} workflow runs and counting. 🔥`,
+  () => `BIO N:OV is moving: ${sales} sales signals today.`,
+  () => "FORGE — I need that render pipeline green this week.",
+  () => "Next: Facebook, Instagram, TikTok, YouTube. Full auto.",
+  () => "One command from Ryan — the whole company moves. Dismissed! 🚀",
 ];
 
 const SALE_EVENTS = [
@@ -69,385 +124,458 @@ const SALE_EVENTS = [
   "💰 SALE — BIO N:OV x1 → London",
 ];
 
-// ---------------------------------------------------------------- nav grid + A*
-
-const CELL = 2, GW = 88, GD = 56; // 176 x 112 world units
-const OX = -GW * CELL / 2, OZ = -GD * CELL / 2;
-const blocked = new Uint8Array(GW * GD);
-
-const w2cx = (x) => Math.max(0, Math.min(GW - 1, Math.round((x - OX) / CELL)));
-const w2cz = (z) => Math.max(0, Math.min(GD - 1, Math.round((z - OZ) / CELL)));
-const c2wx = (cx) => OX + cx * CELL;
-const c2wz = (cz) => OZ + cz * CELL;
-
-function blockRect(x0, z0, x1, z1) {
-  for (let cx = w2cx(x0); cx <= w2cx(x1); cx++)
-    for (let cz = w2cz(z0); cz <= w2cz(z1); cz++) blocked[cz * GW + cx] = 1;
-}
-function clearRect(x0, z0, x1, z1) {
-  for (let cx = w2cx(x0); cx <= w2cx(x1); cx++)
-    for (let cz = w2cz(z0); cz <= w2cz(z1); cz++) blocked[cz * GW + cx] = 0;
-}
-
-// walls into nav grid: perimeter blocked, doors cleared
-const DOOR_W = 8;
-Object.values(ROOMS).forEach((r) => {
-  const hw = r.w / 2, hd = r.d / 2;
-  blockRect(r.x - hw, r.z - hd, r.x + hw, r.z - hd); // N
-  blockRect(r.x - hw, r.z + hd, r.x + hw, r.z + hd); // S
-  blockRect(r.x - hw, r.z - hd, r.x - hw, r.z + hd); // W
-  blockRect(r.x + hw, r.z - hd, r.x + hw, r.z + hd); // E
-  r.doors.forEach((side) => {
-    if (side === "N") clearRect(r.x - DOOR_W / 2, r.z - hd - CELL, r.x + DOOR_W / 2, r.z - hd + CELL);
-    if (side === "S") clearRect(r.x - DOOR_W / 2, r.z + hd - CELL, r.x + DOOR_W / 2, r.z + hd + CELL);
-    if (side === "W") clearRect(r.x - hw - CELL, r.z - DOOR_W / 2, r.x - hw + CELL, r.z + DOOR_W / 2);
-    if (side === "E") clearRect(r.x + hw - CELL, r.z - DOOR_W / 2, r.x + hw + CELL, r.z + DOOR_W / 2);
-  });
-  r.desks.forEach((d) => blockRect(d.x - 2, d.z - 1, d.x + 2, d.z + 1));
-});
-// deck boundary
-blockRect(OX, OZ, OX + (GW - 1) * CELL, OZ);
-blockRect(OX, OZ + (GD - 1) * CELL, OX + (GW - 1) * CELL, OZ + (GD - 1) * CELL);
-blockRect(OX, OZ, OX, OZ + (GD - 1) * CELL);
-blockRect(OX + (GW - 1) * CELL, OZ, OX + (GW - 1) * CELL, OZ + (GD - 1) * CELL);
-
-function nearestFree(cx, cz) {
-  if (!blocked[cz * GW + cx]) return [cx, cz];
-  for (let ring = 1; ring < 8; ring++)
-    for (let dx = -ring; dx <= ring; dx++)
-      for (let dz = -ring; dz <= ring; dz++) {
-        const nx = cx + dx, nz = cz + dz;
-        if (nx >= 0 && nx < GW && nz >= 0 && nz < GD && !blocked[nz * GW + nx]) return [nx, nz];
-      }
-  return [cx, cz];
-}
-
-function findPath(x0, z0, x1, z1) {
-  let [sx, sz] = nearestFree(w2cx(x0), w2cz(z0));
-  let [tx, tz] = nearestFree(w2cx(x1), w2cz(z1));
-  const start = sz * GW + sx, goal = tz * GW + tx;
-  if (start === goal) return [{ x: x1, z: z1 }];
-  const open = [start];
-  const came = new Int32Array(GW * GD).fill(-1);
-  const g = new Float32Array(GW * GD).fill(Infinity);
-  const f = new Float32Array(GW * GD).fill(Infinity);
-  g[start] = 0;
-  f[start] = Math.abs(tx - sx) + Math.abs(tz - sz);
-  const inOpen = new Uint8Array(GW * GD);
-  inOpen[start] = 1;
-  while (open.length) {
-    let bi = 0;
-    for (let i = 1; i < open.length; i++) if (f[open[i]] < f[open[bi]]) bi = i;
-    const cur = open.splice(bi, 1)[0];
-    inOpen[cur] = 0;
-    if (cur === goal) {
-      const path = [];
-      let n = cur;
-      while (n !== start) { path.push({ x: c2wx(n % GW), z: c2wz(Math.floor(n / GW)) }); n = came[n]; }
-      path.reverse();
-      path.push({ x: x1, z: z1 });
-      return path;
-    }
-    const cx = cur % GW, cz = Math.floor(cur / GW);
-    const neigh = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-    for (const [dx, dz] of neigh) {
-      const nx = cx + dx, nz = cz + dz;
-      if (nx < 0 || nx >= GW || nz < 0 || nz >= GD) continue;
-      const ni = nz * GW + nx;
-      if (blocked[ni]) continue;
-      const ng = g[cur] + 1;
-      if (ng < g[ni]) {
-        came[ni] = cur;
-        g[ni] = ng;
-        f[ni] = ng + Math.abs(tx - nx) + Math.abs(tz - nz);
-        if (!inOpen[ni]) { open.push(ni); inOpen[ni] = 1; }
-      }
-    }
-  }
-  return [{ x: x1, z: z1 }];
-}
-
-// ---------------------------------------------------------------- three setup
+// ---------------------------------------------------------------- canvas + camera
 
 const canvas = document.getElementById("scene");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const ctx = canvas.getContext("2d");
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020409);
-scene.fog = new THREE.Fog(0x020409, 160, 420);
+const cam = { x: 600, y: 620, zoom: 0.8 };
+const camGoal = { x: 600, y: 620, zoom: 0.8 };
+let userCamUntil = 0; // timestamp until which auto-follow is suppressed
 
-const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 800);
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas._w = rect.width; canvas._h = rect.height; canvas._dpr = dpr;
+  fitDefault();
+}
+function fitDefault() {
+  camGoal.zoom = Math.min(canvas._w / 1180, canvas._h / 1150) * 0.98;
+  camGoal.x = 600; camGoal.y = 600;
+}
+window.addEventListener("resize", resize);
 
-// orbit state
-const cam = { target: new THREE.Vector3(0, 0, 0), yaw: 0, pitch: 0.86, radius: 118, autoSpin: true };
-const camGoal = { target: new THREE.Vector3(0, 0, 0), radius: 118 };
-
-scene.add(new THREE.AmbientLight(0x223344, 1.6));
-const keyLight = new THREE.DirectionalLight(0x88bbff, 0.7);
-keyLight.position.set(60, 120, 40);
-scene.add(keyLight);
-const coreLight = new THREE.PointLight(0x00dcff, 260, 120, 1.8);
-coreLight.position.set(0, 10, 0);
-scene.add(coreLight);
-
-// starfield
-{
-  const N = 1600, pos = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) {
-    const v = new THREE.Vector3().randomDirection().multiplyScalar(380 + Math.random() * 60);
-    pos.set([v.x, Math.abs(v.y) * 0.9 + 4, v.z], i * 3);
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({ color: 0x9fd8ff, size: 0.9, sizeAttenuation: true, transparent: true, opacity: 0.8 })));
+function worldToScreen(wx, wy) {
+  return [(wx - cam.x) * cam.zoom + canvas._w / 2, (wy - cam.y) * cam.zoom + canvas._h / 2];
+}
+function screenToWorld(sx, sy) {
+  return [(sx - canvas._w / 2) / cam.zoom + cam.x, (sy - canvas._h / 2) / cam.zoom + cam.y];
 }
 
-// deck floor with grid texture
-function makeFloorTexture() {
-  const c = document.createElement("canvas");
-  c.width = c.height = 1024;
-  const g = c.getContext("2d");
-  g.fillStyle = "#050b13";
-  g.fillRect(0, 0, 1024, 1024);
-  g.strokeStyle = "rgba(0,220,255,0.10)";
-  g.lineWidth = 2;
-  for (let i = 0; i <= 32; i++) {
-    g.beginPath(); g.moveTo(i * 32, 0); g.lineTo(i * 32, 1024); g.stroke();
-    g.beginPath(); g.moveTo(0, i * 32); g.lineTo(1024, i * 32); g.stroke();
-  }
-  g.strokeStyle = "rgba(0,220,255,0.22)";
-  g.lineWidth = 4;
-  for (let i = 0; i <= 8; i++) {
-    g.beginPath(); g.moveTo(i * 128, 0); g.lineTo(i * 128, 1024); g.stroke();
-    g.beginPath(); g.moveTo(0, i * 128); g.lineTo(1024, i * 128); g.stroke();
-  }
-  const t = new THREE.CanvasTexture(c);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(4, 3);
-  return t;
-}
-{
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(GW * CELL, GD * CELL),
-    new THREE.MeshStandardMaterial({ map: makeFloorTexture(), roughness: 0.85, metalness: 0.4 })
-  );
-  floor.rotation.x = -Math.PI / 2;
-  scene.add(floor);
+// ---------------------------------------------------------------- pixel sprites
+
+const FRAMES = {
+  stand: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", ".a.bb.a.", "..bbbb..", "..l..l..", "..l..l.."],
+  walk1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", ".a.bb.a.", "..bbbb..", ".l....l.", "l......l"],
+  walk2: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", ".a.bb.a.", "..bbbb..", "...ll...", "..l.l..."],
+  work1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", "aa.bb.aa", "..bbbb..", "..l..l..", "..l..l.."],
+  talk1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
+  cheer: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "a.bbbb.a", "aabbbbaa", "...bb...", "..bbbb..", "..l..l..", "..l..l.."],
+};
+const PXS = 3.4; // world px per sprite pixel; sprite ~27x34
+
+function mixHex(hex, other, t) {
+  const h = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
+  const a = h(hex), b = h(other);
+  const c = a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
 }
 
-// outer hull walls with window strips
-{
-  const hullMat = new THREE.MeshStandardMaterial({ color: 0x0a1522, roughness: 0.6, metalness: 0.7 });
-  const winMat = new THREE.MeshBasicMaterial({ color: 0x2a6f8a });
-  const mkHull = (w, d, x, z) => {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, 10, d), hullMat);
-    m.position.set(x, 5, z);
-    scene.add(m);
-    const strip = new THREE.Mesh(new THREE.BoxGeometry(w > d ? w * 0.9 : 0.4, 1.6, d > w ? d * 0.9 : 0.4), winMat);
-    strip.position.set(x, 6.4, z);
-    scene.add(strip);
+function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
+  // x = center, y = feet
+  const colors = {
+    h: mixHex(a.color, "#0a0818", 0.7),
+    v: talking && Math.floor(tGlobal / 200) % 2 ? "#ffffff" : "#d5fcff",
+    b: a.color,
+    a: mixHex(a.color, "#ffffff", 0.4),
+    l: "#181430",
   };
-  const HX = GW * CELL / 2, HZ = GD * CELL / 2;
-  mkHull(GW * CELL, 2, 0, -HZ);
-  mkHull(GW * CELL, 2, 0, HZ);
-  mkHull(2, GD * CELL, -HX, 0);
-  mkHull(2, GD * CELL, HX, 0);
+  const rows = frame.length, cols = frame[0].length;
+  const w = cols * PXS, h = rows * PXS;
+  // glow puddle
+  ctx.fillStyle = a.color + "26";
+  ctx.beginPath();
+  ctx.ellipse(x, y + 2, 15, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  for (let r = 0; r < rows; r++) {
+    const row = frame[r];
+    for (let c = 0; c < cols; c++) {
+      const ch = row[flip ? cols - 1 - c : c];
+      if (ch === ".") continue;
+      ctx.fillStyle = colors[ch];
+      ctx.fillRect(x - w / 2 + c * PXS, y - h + r * PXS, PXS + 0.5, PXS + 0.5);
+    }
+  }
+  // name tag (reference style: dark pill, white text)
+  ctx.font = "bold 11px 'Share Tech Mono', monospace";
+  const tw = ctx.measureText(a.name).width + 10;
+  ctx.fillStyle = PAL.tag;
+  ctx.fillRect(x - tw / 2, y - h - 18, tw, 14);
+  ctx.strokeStyle = a.color;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x - tw / 2, y - h - 18, tw, 14);
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.fillText(a.name, x, y - h - 7);
+  ctx.textAlign = "left";
 }
 
-// text label sprite
-function makeLabel(text, colorCss, scale = 1) {
-  const c = document.createElement("canvas");
-  c.width = 512; c.height = 128;
-  const g = c.getContext("2d");
-  g.font = "bold 56px 'Share Tech Mono', monospace";
-  g.textAlign = "center";
-  g.shadowColor = colorCss; g.shadowBlur = 18;
-  g.fillStyle = colorCss;
-  g.fillText(text, 256, 78);
-  const t = new THREE.CanvasTexture(c);
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
-  s.scale.set(16 * scale, 4 * scale, 1);
-  return s;
+// ---------------------------------------------------------------- speech bubbles
+
+const bubbles = []; // {agentId?, x,y follow, text, until, color}
+function say(sprite, text, secs = 2.8) {
+  bubbles.push({ s: sprite, text, until: performance.now() + secs * 1000 });
 }
 
-// rooms: walls with door gaps, trim, labels, desks
-const wallMat = new THREE.MeshStandardMaterial({ color: 0x0c1c2c, roughness: 0.5, metalness: 0.6, transparent: true, opacity: 0.92 });
-const deskGroupByRoom = {};
-
-function buildWallRun(x0, z0, x1, z1, doors) {
-  // doors: array of {c, half} along run (c = center coordinate along axis)
-  const horiz = Math.abs(x1 - x0) > Math.abs(z1 - z0);
-  const lo = horiz ? Math.min(x0, x1) : Math.min(z0, z1);
-  const hi = horiz ? Math.max(x0, x1) : Math.max(z0, z1);
-  let segs = [[lo, hi]];
-  doors.forEach((d) => {
-    const out = [];
-    segs.forEach(([a, b]) => {
-      if (d.c - d.half > a) out.push([a, Math.min(b, d.c - d.half)]);
-      if (d.c + d.half < b) out.push([Math.max(a, d.c + d.half), b]);
+function drawBubbles(now) {
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    const b = bubbles[i];
+    if (now > b.until) { bubbles.splice(i, 1); continue; }
+    const x = b.s.x, y = b.s.y - 62;
+    ctx.font = "12px 'Share Tech Mono', monospace";
+    const maxW = 190;
+    // wrap
+    const words = b.text.split(" ");
+    const lines = [];
+    let cur = "";
+    words.forEach((w) => {
+      if (ctx.measureText(cur + " " + w).width > maxW && cur) { lines.push(cur); cur = w; }
+      else cur = cur ? cur + " " + w : w;
     });
-    segs = out.filter(([a, b]) => b - a > 0.5);
-  });
-  segs.forEach(([a, b]) => {
-    const len = b - a, mid = (a + b) / 2;
-    const m = new THREE.Mesh(new THREE.BoxGeometry(horiz ? len : 1, 3.6, horiz ? 1 : len), wallMat);
-    m.position.set(horiz ? mid : x0, 1.8, horiz ? z0 : mid);
-    scene.add(m);
-    const trim = new THREE.Mesh(
-      new THREE.BoxGeometry(horiz ? len : 1.1, 0.22, horiz ? 1.1 : len),
-      new THREE.MeshBasicMaterial({ color: 0x00dcff })
-    );
-    trim.position.set(horiz ? mid : x0, 3.7, horiz ? z0 : mid);
-    scene.add(trim);
-  });
-}
-
-Object.entries(ROOMS).forEach(([id, r]) => {
-  const hw = r.w / 2, hd = r.d / 2;
-  const dh = DOOR_W / 2;
-  const doorOn = (s) => r.doors.includes(s) ? [{ c: s === "N" || s === "S" ? r.x : r.z, half: dh }] : [];
-  buildWallRun(r.x - hw, r.z - hd, r.x + hw, r.z - hd, doorOn("N"));
-  buildWallRun(r.x - hw, r.z + hd, r.x + hw, r.z + hd, doorOn("S"));
-  buildWallRun(r.x - hw, r.z - hd, r.x - hw, r.z + hd, doorOn("W"));
-  buildWallRun(r.x + hw, r.z - hd, r.x + hw, r.z + hd, doorOn("E"));
-
-  const label = makeLabel(r.name, "#00dcff", 1.15);
-  label.position.set(r.x, 7.6, r.z);
-  scene.add(label);
-
-  // desks + holo screens
-  deskGroupByRoom[id] = [];
-  r.desks.forEach((d) => {
-    const desk = new THREE.Mesh(new THREE.BoxGeometry(4.6, 1.5, 2.2),
-      new THREE.MeshStandardMaterial({ color: 0x0a1826, roughness: 0.4, metalness: 0.7 }));
-    desk.position.set(d.x, 0.75, d.z);
-    scene.add(desk);
-    const screen = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 1.9),
-      new THREE.MeshBasicMaterial({ color: 0x00dcff, transparent: true, opacity: 0.16, side: THREE.DoubleSide }));
-    screen.position.set(d.x, 2.7, d.z - 0.6);
-    scene.add(screen);
-    deskGroupByRoom[id].push({ pos: d, screen });
-  });
-});
-
-// core reactor
-{
-  const col = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 3, 9, 24),
-    new THREE.MeshStandardMaterial({ color: 0x0c2433, emissive: 0x00dcff, emissiveIntensity: 0.55, roughness: 0.3, metalness: 0.6 }));
-  col.position.set(0, 4.5, 0);
-  scene.add(col);
-  window._coreRings = [];
-  for (let i = 0; i < 3; i++) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(4 + i * 1.4, 0.14, 10, 60),
-      new THREE.MeshBasicMaterial({ color: 0x00dcff, transparent: true, opacity: 0.7 - i * 0.16 }));
-    ring.position.set(0, 4.5, 0);
-    ring.rotation.x = Math.PI / 2;
-    scene.add(ring);
-    window._coreRings.push(ring);
+    lines.push(cur);
+    const bw = Math.min(maxW, Math.max(...lines.map((l) => ctx.measureText(l).width))) + 16;
+    const bh = lines.length * 15 + 10;
+    const bx = Math.max(TOWER_X0, Math.min(TOWER_X1 - bw, x - bw / 2));
+    const by = y - bh;
+    ctx.fillStyle = "rgba(250,252,255,0.96)";
+    ctx.strokeStyle = b.s.agent.color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, bw, bh, 4);
+    ctx.fill(); ctx.stroke();
+    // tail
+    ctx.beginPath();
+    ctx.moveTo(x - 5, by + bh); ctx.lineTo(x + 5, by + bh); ctx.lineTo(x, by + bh + 7);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(250,252,255,0.96)";
+    ctx.fill();
+    ctx.fillStyle = "#141126";
+    lines.forEach((l, li) => ctx.fillText(l, bx + 8, by + 16 + li * 15));
   }
 }
 
-// ---------------------------------------------------------------- voxel agents
-
-function buildAgentMesh(a) {
-  const grp = new THREE.Group();
-  const col = new THREE.Color(a.color);
-  const dark = col.clone().multiplyScalar(0.35);
-  const bodyMat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.5, metalness: 0.3, emissive: col, emissiveIntensity: 0.16 });
-  const darkMat = new THREE.MeshStandardMaterial({ color: dark, roughness: 0.7 });
-  const visorMat = new THREE.MeshBasicMaterial({ color: 0xcffcff });
-
-  const legL = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.9, 0.34), darkMat);
-  const legR = legL.clone();
-  legL.position.set(-0.24, 0.45, 0);
-  legR.position.set(0.24, 0.45, 0);
-
-  const body = new THREE.Mesh(new THREE.BoxGeometry(1.05, 1.1, 0.6), bodyMat);
-  body.position.y = 1.45;
-
-  const armL = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.95, 0.3), bodyMat);
-  const armR = armL.clone();
-  armL.position.set(-0.72, 1.45, 0);
-  armR.position.set(0.72, 1.45, 0);
-
-  const head = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.72, 0.72), darkMat);
-  head.position.y = 2.42;
-  const visor = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.24, 0.1), visorMat);
-  visor.position.set(0, 2.48, 0.38);
-
-  const glow = new THREE.PointLight(a.color, 8, 9, 2);
-  glow.position.y = 2;
-
-  grp.add(legL, legR, body, armL, armR, head, visor, glow);
-
-  const label = makeLabel(a.name, "#" + col.getHexString(), 0.55);
-  label.position.y = 3.7;
-  grp.add(label);
-
-  grp.userData = { agent: a, legL, legR, armL, armR, visor, body };
-  return grp;
+// floaters (👏 🚀 during speeches)
+const floaters = [];
+function drawFloaters(dt, now) {
+  for (let i = floaters.length - 1; i >= 0; i--) {
+    const f = floaters[i];
+    f.y -= 26 * dt; f.life -= dt;
+    if (f.life <= 0) { floaters.splice(i, 1); continue; }
+    ctx.globalAlpha = Math.min(1, f.life);
+    ctx.font = "16px sans-serif";
+    ctx.fillText(f.emoji, f.x, f.y);
+    ctx.globalAlpha = 1;
+  }
 }
+
+// ---------------------------------------------------------------- elevator
+
+const elevator = { f: 5, target: null, riders: [], waiting: [] };
+function requestRide(sprite, toFloor) {
+  sprite.state = "waitLift";
+  sprite.liftTo = toFloor;
+  elevator.waiting.push(sprite);
+}
+function updateElevator(dt) {
+  const SPEED = 1.4; // floors per second
+  if (elevator.target === null) {
+    if (elevator.riders.length) elevator.target = elevator.riders[0].liftTo;
+    else if (elevator.waiting.length) elevator.target = elevator.waiting[0].floor;
+  }
+  if (elevator.target !== null) {
+    const d = elevator.target - elevator.f;
+    if (Math.abs(d) < 0.03) {
+      elevator.f = elevator.target;
+      elevator.target = null;
+      // unload
+      for (let i = elevator.riders.length - 1; i >= 0; i--) {
+        const r = elevator.riders[i];
+        if (r.liftTo === elevator.f) {
+          elevator.riders.splice(i, 1);
+          r.floor = elevator.f;
+          r.x = SHAFT_MID;
+          r.hidden = false;
+          r.state = "walk";
+        }
+      }
+      // load anyone waiting here
+      for (let i = elevator.waiting.length - 1; i >= 0; i--) {
+        const w = elevator.waiting[i];
+        if (w.floor === elevator.f && Math.abs(w.x - SHAFT_MID) < 30) {
+          elevator.waiting.splice(i, 1);
+          w.hidden = true;
+          elevator.riders.push(w);
+        }
+      }
+    } else {
+      elevator.f += Math.sign(d) * Math.min(Math.abs(d), SPEED * dt);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- sprites (state machines)
 
 const sprites = AGENTS.map((a, i) => {
   const r = ROOMS[a.room];
-  const mesh = buildAgentMesh(a);
-  const x = r.x + (i % 2 ? 5 : -5), z = r.z + 3;
-  mesh.position.set(x, 0, z);
-  scene.add(mesh);
   return {
-    agent: a, mesh,
-    x, z, path: [], speed: 6.5 + Math.random() * 2,
+    agent: a, room: a.room,
+    floor: r.floor, x: r.cx + (i % 2 ? 30 : -30), y: floorY(r.floor),
+    tx: null, speed: 55 + Math.random() * 20,
     state: "pause", pause: 1 + Math.random() * 3,
-    workT: 0, walkPhase: Math.random() * 10,
-    heading: 0, travelCooldown: 10 + Math.random() * 25,
-    deskIdx: i % 2, chatting: false,
+    walkPhase: Math.random() * 10, flip: false,
+    workT: 0, deskX: 0, hidden: false,
+    convoUntil: 0, convoCooldown: performance.now() + 8000 + Math.random() * 15000,
+    chatting: false, meetingSeat: null, mode: "free", // free | meeting | townhall
+    afterArrive: null, liftTo: 0,
   };
 });
+const spriteOf = (id) => sprites.find((s) => s.agent.id === id);
 
-function setPath(s, tx, tz, nextState) {
-  s.path = findPath(s.x, s.z, tx, tz);
-  s.state = "walk";
-  s.afterWalk = nextState || "pause";
+function walkTo(s, floor, x, after) {
+  s.afterArrive = after || null;
+  if (floor === s.floor) { s.tx = x; s.state = "walk"; }
+  else {
+    s.tx = SHAFT_MID;
+    s.state = "walk";
+    s.pendingLift = { floor, x };
+  }
 }
 
-function wanderInRoom(s, roomId) {
-  const r = ROOMS[roomId || s.agent.room];
-  const tx = r.x + (Math.random() - 0.5) * (r.w - 8);
-  const tz = r.z + (Math.random() - 0.5) * (r.d - 8);
-  setPath(s, tx, tz, "pause");
+function updateSprite(s, dt, now) {
+  s.y = floorY(s.floor);
+  if (s.hidden) return; // riding elevator
+  if (s.state === "walk") {
+    const dx = s.tx - s.x;
+    if (Math.abs(dx) < 3) {
+      s.x = s.tx;
+      if (s.pendingLift) {
+        const p = s.pendingLift; s.pendingLift = null;
+        requestRide(s, p.floor);
+        s.tx = p.x;
+        s.afterLiftX = p.x;
+        return;
+      }
+      const after = s.afterArrive; s.afterArrive = null;
+      if (after === "work") { s.state = "work"; s.workT = 4 + Math.random() * 3; }
+      else if (after === "seat") { s.state = "seated"; }
+      else if (after === "crowd") { s.state = "crowd"; }
+      else if (after === "podium") { s.state = "podium"; }
+      else { s.state = "pause"; s.pause = 1.5 + Math.random() * 3.5; }
+    } else {
+      s.flip = dx < 0;
+      s.x += Math.sign(dx) * s.speed * dt;
+      s.walkPhase += dt * 10;
+    }
+  } else if (s.state === "waitLift") {
+    // handled by elevator; if it never comes (safety), teleport after 12s
+    s.liftWait = (s.liftWait || 0) + dt;
+    if (s.liftWait > 12) {
+      s.liftWait = 0;
+      s.floor = s.liftTo;
+      s.state = "walk";
+      s.tx = s.afterLiftX ?? ROOMS[s.room].cx;
+    }
+  } else if (s.state === "work") {
+    s.workT -= dt;
+    if (s.workT <= 0) { s.state = "pause"; s.pause = 1 + Math.random() * 2; }
+  } else if (s.state === "pause") {
+    if (s.mode !== "free" || s.chatting) return;
+    s.pause -= dt;
+    if (s.pause <= 0) {
+      // wander within own room, occasionally visit a random other room
+      if (Math.random() < 0.18) {
+        const keys = Object.keys(ROOMS).filter((k) => k !== "townhall");
+        const dest = ROOMS[keys[Math.floor(Math.random() * keys.length)]];
+        walkTo(s, dest.floor, dest.x0 + 30 + Math.random() * (dest.x1 - dest.x0 - 60));
+      } else {
+        const r = ROOMS[s.room];
+        walkTo(s, r.floor, r.x0 + 25 + Math.random() * (r.x1 - r.x0 - 50));
+      }
+    }
+  }
 }
 
-function goWork(s, seconds) {
-  const r = ROOMS[s.agent.room];
-  s.deskIdx = (s.deskIdx + 1) % r.desks.length;
-  const d = r.desks[s.deskIdx];
-  s.workT = seconds;
-  setPath(s, d.x, d.z + 2.4, "work");
+function frameFor(s, now) {
+  if (s.state === "walk") return Math.floor(s.walkPhase) % 2 ? FRAMES.walk1 : FRAMES.walk2;
+  if (s.state === "work") return FRAMES.work1;
+  if (s.state === "crowd" && meetingCtl.cheer) return FRAMES.cheer;
+  if (bubbles.some((b) => b.s === s)) return FRAMES.talk1;
+  return FRAMES.stand;
 }
 
-// ---------------------------------------------------------------- packets
+// ---------------------------------------------------------------- conversations
 
-const packets = [];
-function spawnPacket(a) {
-  const r = ROOMS[a.room];
-  const m = new THREE.Mesh(new THREE.SphereGeometry(0.42, 10, 10),
-    new THREE.MeshBasicMaterial({ color: a.color }));
-  m.position.set(r.x, 3, r.z);
-  scene.add(m);
-  packets.push({ mesh: m, t: 0, from: { x: r.x, z: r.z }, color: a.color });
+function tryConversations(now) {
+  for (let i = 0; i < sprites.length; i++) {
+    const A = sprites[i];
+    if (A.mode !== "free" || A.state !== "pause" || A.chatting || now < A.convoCooldown) continue;
+    for (let j = i + 1; j < sprites.length; j++) {
+      const B = sprites[j];
+      if (B.mode !== "free" || B.state !== "pause" || B.chatting || now < B.convoCooldown) continue;
+      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 70 || A.hidden || B.hidden) continue;
+      // start a conversation
+      A.flip = A.x > B.x; B.flip = B.x > A.x;
+      const la = LINES[A.agent.id], lb = LINES[B.agent.id];
+      const open = la.open[Math.floor(Math.random() * la.open.length)];
+      const reply = lb.reply[Math.floor(Math.random() * lb.reply.length)];
+      const ack = ACKS[Math.floor(Math.random() * ACKS.length)];
+      say(A, open, 3);
+      setTimeout(() => say(B, reply, 3), 3100);
+      setTimeout(() => say(A, ack, 1.6), 6300);
+      const hold = 8500;
+      A.pause = B.pause = hold / 1000;
+      A.convoCooldown = B.convoCooldown = now + 25000 + Math.random() * 30000;
+      pushLog(A.agent, `💬 chatting with ${B.agent.name}: "${open}"`);
+      return; // one new convo per tick
+    }
+  }
+}
+
+// ---------------------------------------------------------------- meetings + town hall
+
+const meetingCtl = { phase: "idle", attendees: [], step: 0, timer: 0, cheer: false, kind: null };
+
+function startMeeting() {
+  const mgr = spriteOf("manager");
+  const pool = sprites.filter((s) => s.agent.id !== "manager" && !s.chatting);
+  const attendees = pool.sort(() => Math.random() - 0.5).slice(0, 4);
+  meetingCtl.kind = "standup";
+  meetingCtl.phase = "gather";
+  meetingCtl.attendees = [mgr, ...attendees];
+  meetingCtl.timer = 22;
+  meetingCtl.step = 0;
+  say(mgr, "📢 Standup in the MEETING BAY — now!", 3);
+  pushLog(byId("manager"), "📢 called a standup in MEETING BAY");
+  const m = ROOMS.meeting;
+  const seats = [m.x0 + 40, m.x0 + 105, m.x0 + 170, m.x0 + 235, m.x0 + 300];
+  meetingCtl.attendees.forEach((s, i) => {
+    s.mode = "meeting";
+    walkTo(s, m.floor, seats[i] ?? m.cx, "seat");
+  });
+  focusCamera(m.cx, floorY(m.floor) - 60, 1.6);
+}
+
+function startTownhall() {
+  meetingCtl.kind = "townhall";
+  meetingCtl.phase = "gather";
+  meetingCtl.timer = 26;
+  meetingCtl.step = 0;
+  meetingCtl.attendees = [...sprites];
+  const t = ROOMS.townhall;
+  const mgr = spriteOf("manager");
+  pushLog(byId("manager"), "🎤 ALL HANDS — town hall on the ground floor!");
+  say(mgr, "🎤 ALL HANDS in the TOWN HALL. Everyone down!", 3);
+  sprites.forEach((s, i) => {
+    s.mode = "townhall";
+    if (s.agent.id === "manager") walkTo(s, t.floor, t.x0 + 55, "podium");
+    else walkTo(s, t.floor, t.x0 + 140 + (i % 5) * 55 + Math.floor(i / 5) * 22, "crowd");
+  });
+  focusCamera(t.cx, floorY(t.floor) - 60, 1.5);
+}
+
+function updateMeetings(dt, now) {
+  const mgr = spriteOf("manager");
+  if (meetingCtl.phase === "idle") return;
+
+  if (meetingCtl.phase === "gather") {
+    meetingCtl.timer -= dt;
+    const settled = meetingCtl.attendees.every((s) =>
+      ["seated", "crowd", "podium", "pause"].includes(s.state));
+    if (settled || meetingCtl.timer <= 0) {
+      meetingCtl.phase = "talk";
+      meetingCtl.timer = 0;
+      meetingCtl.step = 0;
+    }
+    return;
+  }
+
+  if (meetingCtl.phase === "talk") {
+    meetingCtl.timer -= dt;
+    if (meetingCtl.timer > 0) return;
+    if (meetingCtl.kind === "standup") {
+      const order = meetingCtl.attendees;
+      if (meetingCtl.step === 0) {
+        say(mgr, `Numbers: ${runs} runs, ${sales} sales signals. Reports — go.`, 3.4);
+        pushLog(byId("manager"), `standup: "${runs} runs, ${sales} sales — reports, go"`);
+      } else if (meetingCtl.step <= order.length - 1) {
+        const s = order[meetingCtl.step];
+        const line = LINES[s.agent.id].open[Math.floor(Math.random() * LINES[s.agent.id].open.length)];
+        say(s, line, 3.2);
+        pushLog(s.agent, `standup report: "${line}"`);
+      } else if (meetingCtl.step === order.length) {
+        say(mgr, "Good. Ship it. Back to stations 🚀", 3);
+        meetingCtl.phase = "end";
+        meetingCtl.timer = 3;
+        return;
+      }
+      meetingCtl.step++;
+      meetingCtl.timer = 3.6;
+    } else {
+      // townhall speech
+      if (meetingCtl.step < SPEECHES.length) {
+        const text = SPEECHES[meetingCtl.step]();
+        say(mgr, text, 3.6);
+        pushLog(byId("manager"), `🎤 "${text}"`);
+        meetingCtl.cheer = true;
+        setTimeout(() => (meetingCtl.cheer = false), 1800);
+        sprites.forEach((s) => {
+          if (s.agent.id !== "manager" && Math.random() < 0.6)
+            floaters.push({ x: s.x + (Math.random() * 20 - 10), y: s.y - 45, emoji: ["👏", "🚀", "💯", "🔥"][Math.floor(Math.random() * 4)], life: 1.6 });
+        });
+        meetingCtl.step++;
+        meetingCtl.timer = 4.2;
+      } else {
+        say(mgr, "Dismissed!", 1.8);
+        meetingCtl.phase = "end";
+        meetingCtl.timer = 2.2;
+      }
+      return;
+    }
+    return;
+  }
+
+  if (meetingCtl.phase === "end") {
+    meetingCtl.timer -= dt;
+    if (meetingCtl.timer <= 0) {
+      meetingCtl.attendees.forEach((s) => {
+        s.mode = "free";
+        s.meetingSeat = null;
+        const r = ROOMS[s.room];
+        walkTo(s, r.floor, r.cx + (Math.random() * 60 - 30));
+      });
+      meetingCtl.attendees = [];
+      meetingCtl.phase = "idle";
+      if (now > userCamUntil) fitDefault();
+    }
+  }
+}
+
+// schedule meetings + townhalls
+setTimeout(function meetLoop() {
+  if (meetingCtl.phase === "idle") startMeeting();
+  setTimeout(meetLoop, 100000 + Math.random() * 50000);
+}, 35000);
+setTimeout(function hallLoop() {
+  if (meetingCtl.phase === "idle") startTownhall();
+  setTimeout(hallLoop, 210000 + Math.random() * 60000);
+}, 140000);
+
+function focusCamera(x, y, zoom) {
+  if (performance.now() < userCamUntil) return;
+  camGoal.x = x; camGoal.y = y; camGoal.zoom = zoom;
 }
 
 // ---------------------------------------------------------------- DOM: roster + log
 
 const rosterEl = document.getElementById("roster");
 AGENTS.forEach((a) => {
-  const colorCss = "#" + new THREE.Color(a.color).getHexString();
   const card = document.createElement("div");
   card.className = "agent-card";
   card.dataset.id = a.id;
   card.innerHTML = `
-    <div class="agent-dot" style="color:${colorCss};background:${colorCss}"></div>
+    <div class="agent-dot" style="color:${a.color};background:${a.color}"></div>
     <div class="agent-info">
       <div class="agent-name">${a.name}</div>
       <div class="agent-role">${a.role}</div>
@@ -466,7 +594,7 @@ function pushLog(agent, msg, cls) {
   line.className = "log-line" + (cls ? " " + cls : "");
   line.dataset.id = agent ? agent.id : "sys";
   const who = agent ? agent.name : "SYSTEM";
-  const color = agent ? "#" + new THREE.Color(agent.color).getHexString() : "#00dcff";
+  const color = agent ? agent.color : "#00dcff";
   line.innerHTML = `<span class="log-time">${timestamp()}</span>` +
     `<span class="log-agent" style="color:${color}">[${who}]</span>` +
     `<span class="log-msg">${msg}</span>`;
@@ -475,8 +603,8 @@ function pushLog(agent, msg, cls) {
   logEl.scrollTop = logEl.scrollHeight;
 }
 
-pushLog(null, `DECK ONLINE — linked to ${SNAP.instance} (${SNAP.totals.workflows} workflows, ${SNAP.totals.executions} runs)`);
-pushLog(null, "Click any agent to open a REAL chat with its n8n workflow 💬");
+pushLog(null, `TOWER ONLINE — linked to ${SNAP.instance} (${SNAP.totals.workflows} workflows, ${SNAP.totals.executions} runs)`);
+pushLog(null, "Agents talk, meet and hold town halls. Click anyone to chat via n8n 💬");
 
 let runs = SNAP.totals.executions, sales = 0, stock = 1240;
 const startTime = performance.now();
@@ -500,9 +628,12 @@ function scheduleEvent() {
     const a = AGENTS[Math.floor(Math.random() * AGENTS.length)];
     pushLog(a, a.tasks[Math.floor(Math.random() * a.tasks.length)]);
     runs++;
-    const s = sprites.find((sp) => sp.agent === a);
-    if (!s.chatting && s.state !== "walk") goWork(s, 4 + Math.random() * 3);
-    if (a.id !== "manager") spawnPacket(a);
+    const s = spriteOf(a.id);
+    if (s.mode === "free" && !s.chatting && s.state === "pause") {
+      const r = ROOMS[s.room];
+      s.deskX = r.desks[Math.floor(Math.random() * r.desks.length)];
+      walkTo(s, r.floor, s.deskX, "work");
+    }
     if (Math.random() < 0.15) {
       sales++;
       stock = Math.max(0, stock - (1 + Math.floor(Math.random() * 3)));
@@ -510,7 +641,7 @@ function scheduleEvent() {
     }
     updateStats();
     scheduleEvent();
-  }, 1600 + Math.random() * 3000);
+  }, 1800 + Math.random() * 3200);
 }
 scheduleEvent();
 
@@ -533,6 +664,8 @@ function sessionOf(id) {
   return sessions[id];
 }
 
+const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
 function addChatMsg(kind, who, text, colorCss) {
   const el = document.createElement("div");
   el.className = "chat-msg " + kind;
@@ -542,14 +675,12 @@ function addChatMsg(kind, who, text, colorCss) {
   chatMsgs.scrollTop = chatMsgs.scrollHeight;
   return el;
 }
-const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 function openChat(a) {
   chatAgent = a;
   const cfg = CFG.agents[a.id] || {};
-  const colorCss = "#" + new THREE.Color(a.color).getHexString();
   document.getElementById("chat-agent-name").textContent = a.name;
-  document.getElementById("chat-agent-name").style.color = colorCss;
+  document.getElementById("chat-agent-name").style.color = a.color;
   document.getElementById("chat-agent-role").textContent = a.role;
   document.getElementById("chat-hint").textContent = cfg.hint || "";
   document.getElementById("chat-n8n-link").href = cfg.workflowId
@@ -560,13 +691,11 @@ function openChat(a) {
   dock.classList.remove("hidden");
   document.querySelectorAll(".agent-card").forEach((c) =>
     c.classList.toggle("selected", c.dataset.id === a.id));
-  // camera focus + agent attends
-  const s = sprites.find((sp) => sp.agent === a);
+  const s = spriteOf(a.id);
   sprites.forEach((sp) => (sp.chatting = false));
   s.chatting = true;
-  camGoal.target.set(s.x, 2, s.z);
-  camGoal.radius = 34;
-  cam.autoSpin = false;
+  say(s, "💬 On a call with Ryan", 2.4);
+  focusCamera(s.x, s.y - 60, 1.7);
   chatInput.focus();
 }
 
@@ -575,12 +704,12 @@ document.getElementById("chat-close").addEventListener("click", () => {
   sprites.forEach((sp) => (sp.chatting = false));
   document.querySelectorAll(".agent-card").forEach((c) => c.classList.remove("selected"));
   chatAgent = null;
+  fitDefault();
 });
 
 document.getElementById("btn-reset-cam").addEventListener("click", () => {
-  camGoal.target.set(0, 0, 0);
-  camGoal.radius = 118;
-  cam.autoSpin = true;
+  userCamUntil = 0;
+  fitDefault();
 });
 
 btnCall.addEventListener("click", async () => {
@@ -595,7 +724,7 @@ btnCall.addEventListener("click", async () => {
       body: JSON.stringify({ to_number: num }),
     });
     const j = await res.json();
-    addChatMsg("agent", chatAgent.name, "Call requested: " + (j.status || JSON.stringify(j)));
+    addChatMsg("agent", chatAgent.name, "Call requested: " + (j.status || JSON.stringify(j)), chatAgent.color);
     pushLog(chatAgent, "☎ outbound call requested via /call-me");
   } catch (e) {
     addChatMsg("meta", "", "Call request failed (" + e.message + ") — check the ElevenLabs credential in n8n.");
@@ -604,7 +733,6 @@ btnCall.addEventListener("click", async () => {
 
 async function parseChatResponse(res) {
   const text = await res.text();
-  // n8n chat triggers stream line-delimited JSON chunks; plain webhooks return JSON
   try {
     const j = JSON.parse(text);
     return j.output ?? j.text ?? j.reply ?? j.message ?? j.welcome_message ?? text;
@@ -647,7 +775,6 @@ async function sendToAgent(a, text) {
     return parseChatResponse(res);
   }
   if (cfg.kind === "affiliate") {
-    // "name, email, followers" → real signup; anything else → universal inbox
     const parts = text.split(",").map((s) => s.trim());
     if (parts.length >= 2 && parts[1].includes("@")) {
       const res = await fetch(CFG.n8nBase + cfg.path, {
@@ -672,19 +799,20 @@ chatForm.addEventListener("submit", async (e) => {
   if (!text) return;
   chatInput.value = "";
   const a = chatAgent;
-  const colorCss = "#" + new THREE.Color(a.color).getHexString();
   addChatMsg("user", "YOU", text);
   pushLog(a, "💬 message received from Ryan");
-  const thinking = addChatMsg("agent thinking", a.name, "processing via n8n...", colorCss);
+  const thinking = addChatMsg("agent thinking", a.name, "processing via n8n...", a.color);
   try {
     const reply = await sendToAgent(a, text);
     thinking.remove();
-    addChatMsg("agent", a.name, reply, colorCss);
+    addChatMsg("agent", a.name, reply, a.color);
+    const s = spriteOf(a.id);
+    say(s, reply.length > 60 ? reply.slice(0, 57) + "..." : reply, 4);
     pushLog(a, "💬 replied via n8n workflow");
     runs++; updateStats();
   } catch (err) {
     thinking.remove();
-    addChatMsg("agent", a.name, simReply(a, text), colorCss);
+    addChatMsg("agent", a.name, simReply(a, text), a.color);
   }
 });
 
@@ -718,14 +846,9 @@ function renderAnalytics() {
     </div>`).join("");
 }
 
-document.getElementById("log-filter-clear")?.classList.add("hidden");
+// ---------------------------------------------------------------- input: pan/zoom/click
 
-// ---------------------------------------------------------------- picking + camera
-
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
 let dragging = false, moved = false, px = 0, py = 0;
-
 canvas.addEventListener("pointerdown", (e) => {
   dragging = true; moved = false; px = e.clientX; py = e.clientY;
   canvas.classList.add("dragging");
@@ -733,162 +856,338 @@ canvas.addEventListener("pointerdown", (e) => {
 window.addEventListener("pointermove", (e) => {
   if (!dragging) return;
   const dx = e.clientX - px, dy = e.clientY - py;
-  if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
-  cam.yaw -= dx * 0.005;
-  cam.pitch = Math.max(0.25, Math.min(1.35, cam.pitch + dy * 0.004));
-  cam.autoSpin = false;
+  if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+  cam.x -= dx / cam.zoom; cam.y -= dy / cam.zoom;
+  camGoal.x = cam.x; camGoal.y = cam.y;
+  userCamUntil = performance.now() + 30000;
   px = e.clientX; py = e.clientY;
 });
 window.addEventListener("pointerup", (e) => {
   canvas.classList.remove("dragging");
   if (dragging && !moved) {
     const rect = canvas.getBoundingClientRect();
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(sprites.map((s) => s.mesh), true);
-    if (hits.length) {
-      let obj = hits[0].object;
-      while (obj && !obj.userData?.agent) obj = obj.parent;
-      if (obj) openChat(obj.userData.agent);
-    }
+    const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
+    // hit test agents (bounding box ~34x40 above feet)
+    const hit = sprites.find((s) => !s.hidden &&
+      Math.abs(wx - s.x) < 20 && wy < s.y + 6 && wy > s.y - 44);
+    if (hit) openChat(hit.agent);
   }
   dragging = false;
 });
 canvas.addEventListener("wheel", (e) => {
   e.preventDefault();
-  camGoal.radius = Math.max(18, Math.min(200, camGoal.radius + e.deltaY * 0.12));
+  const rect = canvas.getBoundingClientRect();
+  const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
+  const nz = Math.max(0.35, Math.min(3.2, cam.zoom * (e.deltaY < 0 ? 1.12 : 0.9)));
+  cam.x = wx - (wx - cam.x) * (cam.zoom / nz);
+  cam.y = wy - (wy - cam.y) * (cam.zoom / nz);
+  cam.zoom = nz;
+  camGoal.x = cam.x; camGoal.y = cam.y; camGoal.zoom = nz;
+  userCamUntil = performance.now() + 30000;
 }, { passive: false });
+
+// ---------------------------------------------------------------- drawing the tower
+
+function px_(v) { return Math.round(v); } // crisper pixels
+
+function drawNeonSign(x, y, text, color, now) {
+  ctx.font = "bold 13px 'Share Tech Mono', monospace";
+  const w = ctx.measureText(text).width + 14;
+  const flicker = Math.sin(now / 90 + x) > -0.92 ? 1 : 0.35;
+  ctx.fillStyle = "rgba(8,6,18,0.9)";
+  ctx.fillRect(x - w / 2, y - 14, w, 18);
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = flicker;
+  ctx.strokeRect(x - w / 2, y - 14, w, 18);
+  ctx.shadowColor = color; ctx.shadowBlur = 10 * flicker;
+  ctx.fillStyle = color;
+  ctx.textAlign = "center";
+  ctx.fillText(text, x, y);
+  ctx.textAlign = "left";
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 1;
+}
+
+function drawDesk(x, y, accent, busy, now) {
+  ctx.fillStyle = "#191536";
+  ctx.fillRect(x - 22, y - 26, 44, 6);       // tabletop
+  ctx.fillRect(x - 18, y - 20, 5, 20);       // legs
+  ctx.fillRect(x + 13, y - 20, 5, 20);
+  // monitor
+  ctx.fillStyle = "#0c0a1e";
+  ctx.fillRect(x - 10, y - 44, 22, 17);
+  ctx.fillStyle = busy ? accent : mixHex(accent, "#0c0a1e", 0.7);
+  if (busy && Math.floor(now / 160) % 2) ctx.fillStyle = mixHex(accent, "#ffffff", 0.3);
+  ctx.fillRect(x - 8, y - 42, 18, 13);
+  ctx.fillStyle = "#191536";
+  ctx.fillRect(x - 2, y - 27, 6, 3);
+}
+
+function drawServer(x, y, now) {
+  ctx.fillStyle = "#12102a";
+  ctx.fillRect(x, y - 52, 26, 52);
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = "#0a0820";
+    ctx.fillRect(x + 3, y - 47 + i * 10, 20, 7);
+    const on = Math.sin(now / 260 + x + i * 5) > 0;
+    ctx.fillStyle = on ? (i % 2 ? "#3cff9e" : "#00dcff") : "#231f45";
+    ctx.fillRect(x + 17, y - 45 + i * 10, 4, 3);
+  }
+}
+
+function drawPlant(x, y) {
+  ctx.fillStyle = "#5a2d1a";
+  ctx.fillRect(x - 6, y - 10, 12, 10);
+  ctx.fillStyle = "#2ea35c";
+  ctx.fillRect(x - 9, y - 24, 6, 14);
+  ctx.fillRect(x - 2, y - 30, 5, 20);
+  ctx.fillRect(x + 5, y - 22, 6, 12);
+}
+
+function drawCouch(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x - 28, y - 18, 56, 12);
+  ctx.fillRect(x - 28, y - 30, 8, 14);
+  ctx.fillRect(x + 20, y - 30, 8, 14);
+  ctx.fillStyle = mixHex(color, "#000000", 0.35);
+  ctx.fillRect(x - 24, y - 6, 6, 6);
+  ctx.fillRect(x + 18, y - 6, 6, 6);
+}
+
+function drawWhiteboard(x, y, accent) {
+  ctx.fillStyle = "#e8ecf5";
+  ctx.fillRect(x - 24, y - 58, 48, 30);
+  ctx.strokeStyle = "#454a63";
+  ctx.strokeRect(x - 24, y - 58, 48, 30);
+  ctx.strokeStyle = accent;
+  ctx.beginPath();
+  ctx.moveTo(x - 18, y - 40); ctx.lineTo(x - 6, y - 50); ctx.lineTo(x + 4, y - 44); ctx.lineTo(x + 16, y - 52);
+  ctx.stroke();
+  ctx.fillStyle = "#12102a";
+  ctx.fillRect(x - 2, y - 28, 4, 28);
+}
+
+function drawMeetingTable(x, y) {
+  ctx.fillStyle = "#241f45";
+  ctx.fillRect(x - 110, y - 24, 220, 8);
+  ctx.fillStyle = "#191536";
+  ctx.fillRect(x - 100, y - 16, 6, 16);
+  ctx.fillRect(x + 94, y - 16, 6, 16);
+  // big screen on wall
+  ctx.fillStyle = "#0c0a1e";
+  ctx.fillRect(x + 118, y - 92, 52, 34);
+  ctx.fillStyle = "rgba(255,79,216,0.5)";
+  ctx.fillRect(x + 121, y - 89, 46, 28);
+}
+
+function drawPodium(x, y) {
+  ctx.fillStyle = "#241f45";
+  ctx.fillRect(x - 14, y - 30, 28, 30);
+  ctx.fillStyle = PAL.neonAmber;
+  ctx.fillRect(x - 16, y - 32, 32, 4);
+  // mic
+  ctx.strokeStyle = "#666";
+  ctx.beginPath(); ctx.moveTo(x + 8, y - 32); ctx.lineTo(x + 12, y - 44); ctx.stroke();
+  ctx.fillStyle = "#ddd";
+  ctx.fillRect(x + 10, y - 48, 5, 5);
+}
+
+function drawCrates(x, y) {
+  const crate = (cx, cy) => {
+    ctx.fillStyle = "#0f2d40";
+    ctx.fillRect(cx, cy - 20, 26, 20);
+    ctx.strokeStyle = "#00dcff";
+    ctx.strokeRect(cx, cy - 20, 26, 20);
+    ctx.fillStyle = "#00dcff";
+    ctx.font = "8px 'Share Tech Mono', monospace";
+    ctx.fillText("N:OV", cx + 3, cy - 8);
+  };
+  crate(x, y); crate(x + 30, y); crate(x + 15, y - 22);
+}
+
+function drawRoomKit(r, y, now) {
+  const accent = r.sign;
+  if (r.kit === "office" || r.kit === "studio" || r.kit === "lab" || r.kit === "exec") {
+    drawDesk(r.desks[0], y, accent, deskBusy(r, 0), now);
+    drawDesk(r.desks[1], y, accent, deskBusy(r, 1), now);
+    if (r.kit === "lab") drawServer(r.x1 - 42, y, now);
+    if (r.kit === "studio") drawWhiteboard(r.x1 - 50, y, accent);
+    if (r.kit === "exec") { drawWhiteboard(r.x1 - 50, y, accent); drawPlant(r.x0 + 18, y); }
+    if (r.kit === "office") drawPlant(r.x1 - 24, y);
+  } else if (r.kit === "lounge") {
+    drawCouch(r.cx - 60, y, "#1d3a5e");
+    drawDesk(r.desks[1], y, accent, deskBusy(r, 1), now);
+    drawPlant(r.x0 + 18, y);
+  } else if (r.kit === "meeting") {
+    drawMeetingTable(r.cx - 20, y);
+  } else if (r.kit === "hall") {
+    drawPodium(r.x0 + 55, y);
+    ctx.fillStyle = "rgba(255,184,77,0.12)";
+    ctx.fillRect(r.x0 + 20, y - 90, 90, 90);   // podium spotlight
+  } else if (r.kit === "factory") {
+    drawCrates(r.x0 + 30, y);
+    drawCrates(r.x1 - 100, y);
+    drawServer(r.cx, y, now);
+  }
+}
+
+function deskBusy(r, i) {
+  return sprites.some((s) => s.state === "work" && ROOMS[s.room] === r && Math.abs(s.x - r.desks[i]) < 26);
+}
+
+// pre-generated background stars + skyline
+const stars = Array.from({ length: 140 }, () => ({
+  x: Math.random() * 2400 - 600, y: Math.random() * 900 - 500, r: Math.random() * 1.5 + 0.4,
+}));
+
+function draw(now, dt) {
+  const W = canvas._w, H = canvas._h, dpr = canvas._dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+
+  // sky
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, PAL.bgTop);
+  grad.addColorStop(1, PAL.bgBot);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // camera transform
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.scale(cam.zoom, cam.zoom);
+  ctx.translate(-cam.x, -cam.y);
+
+  // stars
+  ctx.fillStyle = "#c9b8ff";
+  stars.forEach((s) => {
+    ctx.globalAlpha = 0.4 + 0.4 * Math.sin(now / 900 + s.x);
+    ctx.fillRect(s.x, s.y, s.r, s.r);
+  });
+  ctx.globalAlpha = 1;
+
+  // magenta horizon beam behind tower
+  ctx.fillStyle = "rgba(255,79,216,0.14)";
+  ctx.fillRect(-600, GROUND_Y + 8, 2400, 26);
+  ctx.fillStyle = "rgba(255,79,216,0.5)";
+  ctx.fillRect(-600, GROUND_Y + 14, 2400, 3);
+
+  // tower body
+  ctx.fillStyle = "#161227";
+  ctx.fillRect(TOWER_X0 - 14, floorY(5) - FLOOR_H - 20, (TOWER_X1 - TOWER_X0) + 28, GROUND_Y - (floorY(5) - FLOOR_H) + 40);
+
+  // rooms + floors
+  Object.values(ROOMS).forEach((r) => {
+    const yF = floorY(r.floor);
+    const yTop = yF - FLOOR_H + SLAB;
+    // wallpaper
+    ctx.fillStyle = r.wall;
+    ctx.fillRect(r.x0, yTop, r.x1 - r.x0, FLOOR_H - SLAB);
+    // subtle wall panels
+    ctx.fillStyle = "rgba(255,255,255,0.03)";
+    for (let wx = r.x0 + 20; wx < r.x1 - 20; wx += 46) ctx.fillRect(wx, yTop + 12, 30, FLOOR_H - SLAB - 40);
+    // window glow strip at ceiling
+    ctx.fillStyle = "rgba(46,230,200,0.10)";
+    ctx.fillRect(r.x0, yTop, r.x1 - r.x0, 8);
+    // furniture
+    drawRoomKit(r, yF, now);
+    // neon sign
+    drawNeonSign(r.cx, yTop + 26, r.name, r.sign, now);
+  });
+
+  // floor slabs
+  for (let f = 0; f <= 5; f++) {
+    const y = floorY(f);
+    ctx.fillStyle = PAL.slab;
+    ctx.fillRect(TOWER_X0 - 14, y, (TOWER_X1 - TOWER_X0) + 28, SLAB);
+    ctx.fillStyle = "rgba(46,230,200,0.55)";
+    ctx.fillRect(TOWER_X0 - 14, y, (TOWER_X1 - TOWER_X0) + 28, 2);
+  }
+  // roof + sign
+  const roofY = floorY(5) - FLOOR_H;
+  ctx.fillStyle = PAL.slab;
+  ctx.fillRect(TOWER_X0 - 14, roofY - 8, (TOWER_X1 - TOWER_X0) + 28, 20);
+  drawNeonSign(600, roofY - 24, "◈ BIOGREEN AGENT TOWER", PAL.neonPink, now);
+  // antenna
+  ctx.strokeStyle = "#454a63";
+  ctx.beginPath(); ctx.moveTo(980, roofY - 8); ctx.lineTo(980, roofY - 70); ctx.stroke();
+  ctx.fillStyle = Math.floor(now / 500) % 2 ? "#ff4f4f" : "#5a1020";
+  ctx.fillRect(977, roofY - 76, 7, 7);
+
+  // elevator shaft
+  ctx.fillStyle = PAL.shaft;
+  ctx.fillRect(SHAFT_X0, roofY + 12, SHAFT_X1 - SHAFT_X0, GROUND_Y - roofY - 12 + SLAB);
+  ctx.strokeStyle = "rgba(46,230,200,0.35)";
+  ctx.strokeRect(SHAFT_X0, roofY + 12, SHAFT_X1 - SHAFT_X0, GROUND_Y - roofY - 12 + SLAB);
+  // rails
+  ctx.fillStyle = "rgba(255,255,255,0.05)";
+  ctx.fillRect(SHAFT_X0 + 6, roofY + 12, 2, GROUND_Y - roofY);
+  ctx.fillRect(SHAFT_X1 - 8, roofY + 12, 2, GROUND_Y - roofY);
+  // cab
+  const cabY = floorY(elevator.f);
+  ctx.fillStyle = PAL.cab;
+  ctx.fillRect(SHAFT_X0 + 8, cabY - 54, SHAFT_X1 - SHAFT_X0 - 16, 54);
+  ctx.strokeStyle = PAL.neonTeal;
+  ctx.strokeRect(SHAFT_X0 + 8, cabY - 54, SHAFT_X1 - SHAFT_X0 - 16, 54);
+  ctx.fillStyle = "rgba(46,230,200,0.25)";
+  ctx.fillRect(SHAFT_X0 + 12, cabY - 48, SHAFT_X1 - SHAFT_X0 - 24, 20);
+  if (elevator.riders.length) {
+    ctx.fillStyle = "#fff";
+    ctx.font = "11px 'Share Tech Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("👥" + elevator.riders.length, SHAFT_MID, cabY - 20);
+    ctx.textAlign = "left";
+  }
+
+  // agents (sorted so lower floors draw later = in front? same plane; sort by y)
+  sprites.slice().sort((a, b) => a.y - b.y).forEach((s) => {
+    if (s.hidden) return;
+    drawSprite(s.agent, s.x, s.y, frameFor(s, now), s.flip, bubbles.some((b) => b.s === s), now);
+    if (s.chatting) {
+      ctx.strokeStyle = s.agent.color;
+      ctx.setLineDash([4, 4]);
+      ctx.lineDashOffset = -(now / 60);
+      ctx.strokeRect(s.x - 22, s.y - 46, 44, 50);
+      ctx.setLineDash([]);
+    }
+  });
+
+  drawBubbles(now);
+  drawFloaters(dt, now);
+
+  ctx.restore();
+
+  // vignette
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.85);
+  vg.addColorStop(0, "rgba(0,0,0,0)");
+  vg.addColorStop(1, "rgba(2,1,8,0.55)");
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, W, H);
+}
 
 // ---------------------------------------------------------------- main loop
 
-function resize() {
-  const rect = canvas.parentElement.getBoundingClientRect();
-  renderer.setSize(rect.width, rect.height, false);
-  camera.aspect = rect.width / rect.height;
-  camera.updateProjectionMatrix();
-}
-window.addEventListener("resize", resize);
-resize();
+let last = performance.now();
+function tick(now) {
+  const dt = Math.min((now - last) / 1000, 0.05);
+  last = now;
 
-const clock = new THREE.Clock();
+  updateElevator(dt);
+  sprites.forEach((s) => updateSprite(s, dt, now));
+  tryConversations(now);
+  updateMeetings(dt, now);
 
-function animate() {
-  const dt = Math.min(clock.getDelta(), 0.05);
-  const t = clock.elapsedTime;
-
-  // agents
-  sprites.forEach((s) => {
-    const u = s.mesh.userData;
-    if (s.chatting) {
-      // stand still, face the camera, visor pulse
-      s.state = "attend";
-      const camDir = Math.atan2(camera.position.x - s.x, camera.position.z - s.z);
-      s.heading += (camDir - s.heading) * 0.1;
-      u.visor.material.color.setHSL(0.5, 1, 0.6 + 0.35 * Math.sin(t * 6));
-      u.armL.rotation.x = u.armR.rotation.x = 0;
-      u.legL.rotation.x = u.legR.rotation.x = 0;
-    } else if (s.state === "pause" || s.state === "attend") {
-      s.state = "pause";
-      s.pause -= dt;
-      s.travelCooldown -= dt;
-      u.visor.material.color.set(0xcffcff);
-      u.legL.rotation.x = u.legR.rotation.x = 0;
-      u.armL.rotation.x = u.armR.rotation.x = Math.sin(t * 1.6 + s.walkPhase) * 0.05;
-      if (s.pause <= 0) {
-        if (s.travelCooldown <= 0) {
-          // walk the corridors to another room, then come home
-          const others = Object.keys(ROOMS).filter((id) => id !== s.agent.room);
-          const dest = Math.random() < 0.5 ? "core" : others[Math.floor(Math.random() * others.length)];
-          const r = ROOMS[dest];
-          setPath(s, r.x + (Math.random() - 0.5) * (r.w - 10), r.z + (Math.random() - 0.5) * (r.d - 10), "visit");
-          s.travelCooldown = 30 + Math.random() * 40;
-        } else {
-          wanderInRoom(s);
-        }
-      }
-    } else if (s.state === "walk") {
-      const wp = s.path[0];
-      if (!wp) {
-        if (s.afterWalk === "work") { s.state = "work"; }
-        else if (s.afterWalk === "visit") { s.state = "pause"; s.pause = 2 + Math.random() * 3; }
-        else { s.state = "pause"; s.pause = 1 + Math.random() * 3; }
-      } else {
-        const dx = wp.x - s.x, dz = wp.z - s.z;
-        const d = Math.hypot(dx, dz);
-        if (d < 0.4) s.path.shift();
-        else {
-          s.x += (dx / d) * s.speed * dt;
-          s.z += (dz / d) * s.speed * dt;
-          const target = Math.atan2(dx, dz);
-          let diff = target - s.heading;
-          while (diff > Math.PI) diff -= Math.PI * 2;
-          while (diff < -Math.PI) diff += Math.PI * 2;
-          s.heading += diff * 0.18;
-        }
-        s.walkPhase += dt * 11;
-        const sw = Math.sin(s.walkPhase);
-        u.legL.rotation.x = sw * 0.7;
-        u.legR.rotation.x = -sw * 0.7;
-        u.armL.rotation.x = -sw * 0.5;
-        u.armR.rotation.x = sw * 0.5;
-        s.mesh.position.y = Math.abs(Math.sin(s.walkPhase)) * 0.09;
-      }
-    } else if (s.state === "work") {
-      s.workT -= dt;
-      const r = ROOMS[s.agent.room];
-      const d = r.desks[s.deskIdx];
-      const target = Math.atan2(d.x - s.x, d.z - s.z);
-      s.heading += (target - s.heading) * 0.15;
-      u.armL.rotation.x = -0.9 + Math.sin(t * 14) * 0.12;
-      u.armR.rotation.x = -0.9 + Math.cos(t * 13) * 0.12;
-      u.legL.rotation.x = u.legR.rotation.x = 0;
-      u.visor.material.color.setHSL(0.5, 1, 0.6 + 0.3 * Math.sin(t * 9));
-      const desk = deskGroupByRoom[s.agent.room]?.[s.deskIdx];
-      if (desk) desk.screen.material.opacity = 0.35 + 0.25 * Math.sin(t * 10);
-      if (s.workT <= 0) {
-        if (desk) desk.screen.material.opacity = 0.16;
-        s.state = "pause";
-        s.pause = 1 + Math.random() * 2;
-      }
-    }
-    s.mesh.position.x = s.x;
-    s.mesh.position.z = s.z;
-    if (s.state !== "walk") s.mesh.position.y = 0;
-    s.mesh.rotation.y = s.heading;
-  });
-
-  // packets glide to the core
-  for (let i = packets.length - 1; i >= 0; i--) {
-    const p = packets[i];
-    p.t += dt / 1.7;
-    if (p.t >= 1) { scene.remove(p.mesh); packets.splice(i, 1); continue; }
-    p.mesh.position.set(
-      p.from.x + (0 - p.from.x) * p.t,
-      3 + Math.sin(p.t * Math.PI) * 4,
-      p.from.z + (0 - p.from.z) * p.t
-    );
+  // camera easing
+  if (now > userCamUntil) {
+    cam.x += (camGoal.x - cam.x) * 0.05;
+    cam.y += (camGoal.y - cam.y) * 0.05;
+    cam.zoom += (camGoal.zoom - cam.zoom) * 0.05;
   }
 
-  // core rings
-  window._coreRings?.forEach((ring, i) => {
-    ring.rotation.z = t * (0.5 + i * 0.3);
-    ring.position.y = 4.5 + Math.sin(t * 1.4 + i) * 0.5;
-  });
-  coreLight.intensity = 230 + Math.sin(t * 2.2) * 50;
-
-  // camera
-  if (cam.autoSpin) cam.yaw += dt * 0.05;
-  cam.target.lerp(camGoal.target, 0.06);
-  cam.radius += (camGoal.radius - cam.radius) * 0.06;
-  camera.position.set(
-    cam.target.x + Math.sin(cam.yaw) * Math.cos(cam.pitch) * cam.radius,
-    cam.target.y + Math.sin(cam.pitch) * cam.radius,
-    cam.target.z + Math.cos(cam.yaw) * Math.cos(cam.pitch) * cam.radius
-  );
-  camera.lookAt(cam.target);
-
-  renderer.render(scene, camera);
-  requestAnimationFrame(animate);
+  draw(now, dt);
+  requestAnimationFrame(tick);
 }
-animate();
+
+resize();
+cam.x = camGoal.x; cam.y = camGoal.y; cam.zoom = camGoal.zoom;
+requestAnimationFrame(tick);
