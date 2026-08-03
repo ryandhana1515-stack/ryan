@@ -1,50 +1,43 @@
 /* BIOGREEN // AGENT OPERATIONS HQ — pixel tower edition
-   Side-view neon office tower. Agents walk floors, ride the elevator,
-   talk to each other, hold standups in the Meeting Bay and gather for
-   town-hall speeches — with live chat wired to the real n8n instance. */
+   AI-painted neon office tower (assets/tower-bg.jpg, generated with Kling).
+   Agents walk the painted floors, ride the elevator shaft, talk with
+   speech bubbles, hold standups in the Meeting Bay and town halls on the
+   stage — with live chat wired to the real n8n instance. */
 
 "use strict";
 
 const CFG = window.HQ_CONFIG;
 const SNAP = window.N8N_SNAPSHOT;
 
-// ---------------------------------------------------------------- palette
+// ---------------------------------------------------------------- artwork layout
+// World units = background image pixels (1400 x 1400).
 
-const PAL = {
-  bgTop: "#1c0b33", bgBot: "#0a0518",
-  slab: "#241f3d", slabEdge: "#2ee6c8",
-  shaft: "#141126", cab: "#3a2f5e",
-  neonPink: "#ff4fd8", neonTeal: "#2ee6c8", neonAmber: "#ffb84d",
-  tag: "rgba(10,8,20,0.88)",
-};
-
-// ---------------------------------------------------------------- tower layout
-
-const FLOOR_H = 150, SLAB = 12, GROUND_Y = 1140, TOWER_X0 = 90, TOWER_X1 = 1110;
-const SHAFT_X0 = 565, SHAFT_X1 = 635, SHAFT_MID = 600;
-const floorY = (f) => GROUND_Y - f * FLOOR_H;           // y of the floor's walking surface
-
-// Rooms: [floor, side] — left room spans TOWER_X0+18..SHAFT_X0-8, right SHAFT_X1+8..TOWER_X1-18
-const LX0 = TOWER_X0 + 18, LX1 = SHAFT_X0 - 8, RX0 = SHAFT_X1 + 8, RX1 = TOWER_X1 - 18;
+const ART_W = 1400, ART_H = 1400;
+// Walkable floor line per storey, ground (0) to top (5) — measured on the art.
+const FEET_Y = [1385, 1178, 985, 788, 594, 398];
+const SHAFT_MID = 697;
+const LX0 = 70, LX1 = 595, RX0 = 790, RX1 = 1340;
+const floorY = (f) => FEET_Y[f];
 
 const ROOMS = {
-  townhall:  { name: "TOWN HALL",      floor: 0, x0: LX0, x1: LX1, wall: "#2a1440", sign: PAL.neonAmber, kit: "hall" },
-  factory:   { name: "FACTORY",        floor: 0, x0: RX0, x1: RX1, wall: "#16283d", sign: PAL.neonTeal, kit: "factory" },
-  voice:     { name: "VOICE OPS",      floor: 1, x0: LX0, x1: LX1, wall: "#3d1f2a", sign: "#ff8c42",    kit: "office" },
-  affiliate: { name: "AFFILIATE HUB",  floor: 1, x0: RX0, x1: RX1, wall: "#162f4a", sign: "#4dd2ff",    kit: "lounge" },
-  research:  { name: "RESEARCH BAY",   floor: 2, x0: LX0, x1: LX1, wall: "#2c1f4a", sign: "#b18cff",    kit: "lab" },
-  web:       { name: "WEB FORGE",      floor: 2, x0: RX0, x1: RX1, wall: "#1f2647", sign: "#8c9eff",    kit: "lab" },
-  inbox:     { name: "INBOX HUB",      floor: 3, x0: LX0, x1: LX1, wall: "#143d33", sign: "#25d366",    kit: "office" },
-  support:   { name: "SUPPORT DESK",   floor: 3, x0: RX0, x1: RX1, wall: "#3d2f14", sign: PAL.neonAmber, kit: "office" },
-  content:   { name: "CONTENT STUDIO", floor: 4, x0: LX0, x1: LX1, wall: "#14332a", sign: "#3cff9e",    kit: "studio" },
-  ads:       { name: "ADS LAB",        floor: 4, x0: RX0, x1: RX1, wall: "#3d1430", sign: "#ff5c8a",    kit: "lab" },
-  manager:   { name: "MANAGER OFFICE", floor: 5, x0: LX0, x1: LX1, wall: "#0f2d40", sign: "#00dcff",    kit: "exec" },
-  meeting:   { name: "MEETING BAY",    floor: 5, x0: RX0, x1: RX1, wall: "#231b45", sign: PAL.neonPink, kit: "meeting" },
+  manager:   { name: "MANAGER OFFICE", floor: 5, x0: LX0, x1: LX1, sign: "#00dcff", desks: [255, 360] },
+  meeting:   { name: "MEETING BAY",    floor: 5, x0: RX0, x1: RX1, sign: "#ff4fd8", desks: [1000, 1150] },
+  content:   { name: "CONTENT STUDIO", floor: 4, x0: LX0, x1: LX1, sign: "#3cff9e", desks: [150, 300, 470] },
+  ads:       { name: "ADS LAB",        floor: 4, x0: RX0, x1: RX1, sign: "#ff5c8a", desks: [900, 1040, 1200] },
+  inbox:     { name: "INBOX HUB",      floor: 3, x0: LX0, x1: LX1, sign: "#25d366", desks: [150, 290, 480] },
+  support:   { name: "SUPPORT DESK",   floor: 3, x0: RX0, x1: RX1, sign: "#ffb84d", desks: [880, 1010, 1150, 1270] },
+  research:  { name: "RESEARCH BAY",   floor: 2, x0: LX0, x1: LX1, sign: "#b18cff", desks: [300, 430] },
+  web:       { name: "WEB FORGE",      floor: 2, x0: RX0, x1: RX1, sign: "#8c9eff", desks: [890, 1040, 1250] },
+  voice:     { name: "VOICE OPS",      floor: 1, x0: LX0, x1: LX1, sign: "#ff8c42", desks: [145, 255, 365, 475] },
+  affiliate: { name: "AFFILIATE HUB",  floor: 1, x0: RX0, x1: RX1, sign: "#4dd2ff", desks: [880, 1010, 1230] },
+  townhall:  { name: "TOWN HALL",      floor: 0, x0: LX0, x1: LX1, sign: "#ffb84d", desks: [] },
+  factory:   { name: "FACTORY",        floor: 0, x0: RX0, x1: RX1, sign: "#2ee6c8", desks: [880, 1010, 1130] },
 };
-Object.values(ROOMS).forEach((r) => {
-  r.cx = (r.x0 + r.x1) / 2;
-  r.desks = [r.x0 + (r.x1 - r.x0) * 0.3, r.x0 + (r.x1 - r.x0) * 0.68];
-});
+Object.values(ROOMS).forEach((r) => { r.cx = (r.x0 + r.x1) / 2; });
+
+const PODIUM_X = 240;
+const CROWD_X0 = 330, CROWD_STEP = 44;
+const MEET_HEAD_X = 830, MEET_SEATS = [950, 1045, 1140, 1235, 1310];
 
 // ---------------------------------------------------------------- agents
 
@@ -129,9 +122,12 @@ const SALE_EVENTS = [
 const canvas = document.getElementById("scene");
 const ctx = canvas.getContext("2d");
 
-const cam = { x: 600, y: 620, zoom: 0.8 };
-const camGoal = { x: 600, y: 620, zoom: 0.8 };
-let userCamUntil = 0; // timestamp until which auto-follow is suppressed
+const bg = new Image();
+bg.src = "assets/tower-bg.jpg";
+
+const cam = { x: 700, y: 700, zoom: 0.75 };
+const camGoal = { x: 700, y: 700, zoom: 0.75 };
+let userCamUntil = 0;
 
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -142,14 +138,11 @@ function resize() {
   fitDefault();
 }
 function fitDefault() {
-  camGoal.zoom = Math.min(canvas._w / 1180, canvas._h / 1150) * 0.98;
-  camGoal.x = 600; camGoal.y = 600;
+  camGoal.zoom = Math.min(canvas._w / (ART_W + 40), canvas._h / (ART_H + 40));
+  camGoal.x = ART_W / 2; camGoal.y = ART_H / 2;
 }
 window.addEventListener("resize", resize);
 
-function worldToScreen(wx, wy) {
-  return [(wx - cam.x) * cam.zoom + canvas._w / 2, (wy - cam.y) * cam.zoom + canvas._h / 2];
-}
 function screenToWorld(sx, sy) {
   return [(sx - canvas._w / 2) / cam.zoom + cam.x, (sy - canvas._h / 2) / cam.zoom + cam.y];
 }
@@ -164,7 +157,7 @@ const FRAMES = {
   talk1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
   cheer: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "a.bbbb.a", "aabbbbaa", "...bb...", "..bbbb..", "..l..l..", "..l..l.."],
 };
-const PXS = 3.4; // world px per sprite pixel; sprite ~27x34
+const PXS = 5; // sprite ~40 x 50 world px
 
 function mixHex(hex, other, t) {
   const h = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
@@ -174,7 +167,6 @@ function mixHex(hex, other, t) {
 }
 
 function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
-  // x = center, y = feet
   const colors = {
     h: mixHex(a.color, "#0a0818", 0.7),
     v: talking && Math.floor(tGlobal / 200) % 2 ? "#ffffff" : "#d5fcff",
@@ -184,11 +176,21 @@ function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
   };
   const rows = frame.length, cols = frame[0].length;
   const w = cols * PXS, h = rows * PXS;
-  // glow puddle
-  ctx.fillStyle = a.color + "26";
+  // shadow
+  ctx.fillStyle = "rgba(0,0,0,0.4)";
   ctx.beginPath();
-  ctx.ellipse(x, y + 2, 15, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y + 2, 18, 5, 0, 0, Math.PI * 2);
   ctx.fill();
+  // dark outline for readability against the busy art
+  ctx.fillStyle = "rgba(5,3,12,0.55)";
+  for (let r = 0; r < rows; r++) {
+    const row = frame[r];
+    for (let c = 0; c < cols; c++) {
+      const ch = row[flip ? cols - 1 - c : c];
+      if (ch === ".") continue;
+      ctx.fillRect(x - w / 2 + c * PXS - 1.5, y - h + r * PXS - 1.5, PXS + 3, PXS + 3);
+    }
+  }
   for (let r = 0; r < rows; r++) {
     const row = frame[r];
     for (let c = 0; c < cols; c++) {
@@ -198,23 +200,23 @@ function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
       ctx.fillRect(x - w / 2 + c * PXS, y - h + r * PXS, PXS + 0.5, PXS + 0.5);
     }
   }
-  // name tag (reference style: dark pill, white text)
-  ctx.font = "bold 11px 'Share Tech Mono', monospace";
-  const tw = ctx.measureText(a.name).width + 10;
-  ctx.fillStyle = PAL.tag;
-  ctx.fillRect(x - tw / 2, y - h - 18, tw, 14);
+  // name tag
+  ctx.font = "bold 15px 'Share Tech Mono', monospace";
+  const tw = ctx.measureText(a.name).width + 12;
+  ctx.fillStyle = "rgba(10,8,20,0.9)";
+  ctx.fillRect(x - tw / 2, y - h - 24, tw, 18);
   ctx.strokeStyle = a.color;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(x - tw / 2, y - h - 18, tw, 14);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(x - tw / 2, y - h - 24, tw, 18);
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
-  ctx.fillText(a.name, x, y - h - 7);
+  ctx.fillText(a.name, x, y - h - 10);
   ctx.textAlign = "left";
 }
 
 // ---------------------------------------------------------------- speech bubbles
 
-const bubbles = []; // {agentId?, x,y follow, text, until, color}
+const bubbles = [];
 function say(sprite, text, secs = 2.8) {
   bubbles.push({ s: sprite, text, until: performance.now() + secs * 1000 });
 }
@@ -223,10 +225,9 @@ function drawBubbles(now) {
   for (let i = bubbles.length - 1; i >= 0; i--) {
     const b = bubbles[i];
     if (now > b.until) { bubbles.splice(i, 1); continue; }
-    const x = b.s.x, y = b.s.y - 62;
-    ctx.font = "12px 'Share Tech Mono', monospace";
-    const maxW = 190;
-    // wrap
+    const x = b.s.x, y = b.s.y - 80;
+    ctx.font = "15px 'Share Tech Mono', monospace";
+    const maxW = 240;
     const words = b.text.split(" ");
     const lines = [];
     let cur = "";
@@ -235,36 +236,34 @@ function drawBubbles(now) {
       else cur = cur ? cur + " " + w : w;
     });
     lines.push(cur);
-    const bw = Math.min(maxW, Math.max(...lines.map((l) => ctx.measureText(l).width))) + 16;
-    const bh = lines.length * 15 + 10;
-    const bx = Math.max(TOWER_X0, Math.min(TOWER_X1 - bw, x - bw / 2));
+    const bw = Math.min(maxW, Math.max(...lines.map((l) => ctx.measureText(l).width))) + 20;
+    const bh = lines.length * 19 + 12;
+    const bx = Math.max(20, Math.min(ART_W - 20 - bw, x - bw / 2));
     const by = y - bh;
-    ctx.fillStyle = "rgba(250,252,255,0.96)";
+    ctx.fillStyle = "rgba(250,252,255,0.97)";
     ctx.strokeStyle = b.s.agent.color;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(bx, by, bw, bh, 4);
+    ctx.roundRect(bx, by, bw, bh, 5);
     ctx.fill(); ctx.stroke();
-    // tail
     ctx.beginPath();
-    ctx.moveTo(x - 5, by + bh); ctx.lineTo(x + 5, by + bh); ctx.lineTo(x, by + bh + 7);
+    ctx.moveTo(x - 6, by + bh); ctx.lineTo(x + 6, by + bh); ctx.lineTo(x, by + bh + 9);
     ctx.closePath();
-    ctx.fillStyle = "rgba(250,252,255,0.96)";
+    ctx.fillStyle = "rgba(250,252,255,0.97)";
     ctx.fill();
     ctx.fillStyle = "#141126";
-    lines.forEach((l, li) => ctx.fillText(l, bx + 8, by + 16 + li * 15));
+    lines.forEach((l, li) => ctx.fillText(l, bx + 10, by + 20 + li * 19));
   }
 }
 
-// floaters (👏 🚀 during speeches)
 const floaters = [];
-function drawFloaters(dt, now) {
+function drawFloaters(dt) {
   for (let i = floaters.length - 1; i >= 0; i--) {
     const f = floaters[i];
-    f.y -= 26 * dt; f.life -= dt;
+    f.y -= 30 * dt; f.life -= dt;
     if (f.life <= 0) { floaters.splice(i, 1); continue; }
     ctx.globalAlpha = Math.min(1, f.life);
-    ctx.font = "16px sans-serif";
+    ctx.font = "22px sans-serif";
     ctx.fillText(f.emoji, f.x, f.y);
     ctx.globalAlpha = 1;
   }
@@ -279,7 +278,7 @@ function requestRide(sprite, toFloor) {
   elevator.waiting.push(sprite);
 }
 function updateElevator(dt) {
-  const SPEED = 1.4; // floors per second
+  const SPEED = 1.4;
   if (elevator.target === null) {
     if (elevator.riders.length) elevator.target = elevator.riders[0].liftTo;
     else if (elevator.waiting.length) elevator.target = elevator.waiting[0].floor;
@@ -289,7 +288,6 @@ function updateElevator(dt) {
     if (Math.abs(d) < 0.03) {
       elevator.f = elevator.target;
       elevator.target = null;
-      // unload
       for (let i = elevator.riders.length - 1; i >= 0; i--) {
         const r = elevator.riders[i];
         if (r.liftTo === elevator.f) {
@@ -300,10 +298,9 @@ function updateElevator(dt) {
           r.state = "walk";
         }
       }
-      // load anyone waiting here
       for (let i = elevator.waiting.length - 1; i >= 0; i--) {
         const w = elevator.waiting[i];
-        if (w.floor === elevator.f && Math.abs(w.x - SHAFT_MID) < 30) {
+        if (w.floor === elevator.f && Math.abs(w.x - SHAFT_MID) < 40) {
           elevator.waiting.splice(i, 1);
           w.hidden = true;
           elevator.riders.push(w);
@@ -315,19 +312,19 @@ function updateElevator(dt) {
   }
 }
 
-// ---------------------------------------------------------------- sprites (state machines)
+// ---------------------------------------------------------------- sprites
 
 const sprites = AGENTS.map((a, i) => {
   const r = ROOMS[a.room];
   return {
     agent: a, room: a.room,
-    floor: r.floor, x: r.cx + (i % 2 ? 30 : -30), y: floorY(r.floor),
-    tx: null, speed: 55 + Math.random() * 20,
+    floor: r.floor, x: r.cx + (i % 2 ? 40 : -40), y: floorY(r.floor),
+    tx: null, speed: 70 + Math.random() * 25,
     state: "pause", pause: 1 + Math.random() * 3,
     walkPhase: Math.random() * 10, flip: false,
-    workT: 0, deskX: 0, hidden: false,
-    convoUntil: 0, convoCooldown: performance.now() + 8000 + Math.random() * 15000,
-    chatting: false, meetingSeat: null, mode: "free", // free | meeting | townhall
+    workT: 0, hidden: false,
+    convoCooldown: performance.now() + 8000 + Math.random() * 15000,
+    chatting: false, mode: "free",
     afterArrive: null, liftTo: 0,
   };
 });
@@ -345,10 +342,10 @@ function walkTo(s, floor, x, after) {
 
 function updateSprite(s, dt, now) {
   s.y = floorY(s.floor);
-  if (s.hidden) return; // riding elevator
+  if (s.hidden) return;
   if (s.state === "walk") {
     const dx = s.tx - s.x;
-    if (Math.abs(dx) < 3) {
+    if (Math.abs(dx) < 4) {
       s.x = s.tx;
       if (s.pendingLift) {
         const p = s.pendingLift; s.pendingLift = null;
@@ -369,7 +366,6 @@ function updateSprite(s, dt, now) {
       s.walkPhase += dt * 10;
     }
   } else if (s.state === "waitLift") {
-    // handled by elevator; if it never comes (safety), teleport after 12s
     s.liftWait = (s.liftWait || 0) + dt;
     if (s.liftWait > 12) {
       s.liftWait = 0;
@@ -384,20 +380,19 @@ function updateSprite(s, dt, now) {
     if (s.mode !== "free" || s.chatting) return;
     s.pause -= dt;
     if (s.pause <= 0) {
-      // wander within own room, occasionally visit a random other room
       if (Math.random() < 0.18) {
         const keys = Object.keys(ROOMS).filter((k) => k !== "townhall");
         const dest = ROOMS[keys[Math.floor(Math.random() * keys.length)]];
-        walkTo(s, dest.floor, dest.x0 + 30 + Math.random() * (dest.x1 - dest.x0 - 60));
+        walkTo(s, dest.floor, dest.x0 + 40 + Math.random() * (dest.x1 - dest.x0 - 80));
       } else {
         const r = ROOMS[s.room];
-        walkTo(s, r.floor, r.x0 + 25 + Math.random() * (r.x1 - r.x0 - 50));
+        walkTo(s, r.floor, r.x0 + 35 + Math.random() * (r.x1 - r.x0 - 70));
       }
     }
   }
 }
 
-function frameFor(s, now) {
+function frameFor(s) {
   if (s.state === "walk") return Math.floor(s.walkPhase) % 2 ? FRAMES.walk1 : FRAMES.walk2;
   if (s.state === "work") return FRAMES.work1;
   if (s.state === "crowd" && meetingCtl.cheer) return FRAMES.cheer;
@@ -414,8 +409,7 @@ function tryConversations(now) {
     for (let j = i + 1; j < sprites.length; j++) {
       const B = sprites[j];
       if (B.mode !== "free" || B.state !== "pause" || B.chatting || now < B.convoCooldown) continue;
-      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 70 || A.hidden || B.hidden) continue;
-      // start a conversation
+      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 90 || A.hidden || B.hidden) continue;
       A.flip = A.x > B.x; B.flip = B.x > A.x;
       const la = LINES[A.agent.id], lb = LINES[B.agent.id];
       const open = la.open[Math.floor(Math.random() * la.open.length)];
@@ -424,11 +418,10 @@ function tryConversations(now) {
       say(A, open, 3);
       setTimeout(() => say(B, reply, 3), 3100);
       setTimeout(() => say(A, ack, 1.6), 6300);
-      const hold = 8500;
-      A.pause = B.pause = hold / 1000;
+      A.pause = B.pause = 8.5;
       A.convoCooldown = B.convoCooldown = now + 25000 + Math.random() * 30000;
       pushLog(A.agent, `💬 chatting with ${B.agent.name}: "${open}"`);
-      return; // one new convo per tick
+      return;
     }
   }
 }
@@ -444,23 +437,22 @@ function startMeeting() {
   meetingCtl.kind = "standup";
   meetingCtl.phase = "gather";
   meetingCtl.attendees = [mgr, ...attendees];
-  meetingCtl.timer = 22;
+  meetingCtl.timer = 24;
   meetingCtl.step = 0;
   say(mgr, "📢 Standup in the MEETING BAY — now!", 3);
   pushLog(byId("manager"), "📢 called a standup in MEETING BAY");
   const m = ROOMS.meeting;
-  const seats = [m.x0 + 40, m.x0 + 105, m.x0 + 170, m.x0 + 235, m.x0 + 300];
   meetingCtl.attendees.forEach((s, i) => {
     s.mode = "meeting";
-    walkTo(s, m.floor, seats[i] ?? m.cx, "seat");
+    walkTo(s, m.floor, i === 0 ? MEET_HEAD_X : MEET_SEATS[i - 1] ?? m.cx, "seat");
   });
-  focusCamera(m.cx, floorY(m.floor) - 60, 1.6);
+  focusCamera(1060, floorY(5) - 90, Math.min(canvas._w / 640, 1.7));
 }
 
 function startTownhall() {
   meetingCtl.kind = "townhall";
   meetingCtl.phase = "gather";
-  meetingCtl.timer = 26;
+  meetingCtl.timer = 30;
   meetingCtl.step = 0;
   meetingCtl.attendees = [...sprites];
   const t = ROOMS.townhall;
@@ -469,10 +461,10 @@ function startTownhall() {
   say(mgr, "🎤 ALL HANDS in the TOWN HALL. Everyone down!", 3);
   sprites.forEach((s, i) => {
     s.mode = "townhall";
-    if (s.agent.id === "manager") walkTo(s, t.floor, t.x0 + 55, "podium");
-    else walkTo(s, t.floor, t.x0 + 140 + (i % 5) * 55 + Math.floor(i / 5) * 22, "crowd");
+    if (s.agent.id === "manager") walkTo(s, t.floor, PODIUM_X, "podium");
+    else walkTo(s, t.floor, CROWD_X0 + (i % 6) * CROWD_STEP + Math.floor(i / 6) * 20, "crowd");
   });
-  focusCamera(t.cx, floorY(t.floor) - 60, 1.5);
+  focusCamera(t.cx + 60, floorY(0) - 90, Math.min(canvas._w / 700, 1.5));
 }
 
 function updateMeetings(dt, now) {
@@ -513,7 +505,6 @@ function updateMeetings(dt, now) {
       meetingCtl.step++;
       meetingCtl.timer = 3.6;
     } else {
-      // townhall speech
       if (meetingCtl.step < SPEECHES.length) {
         const text = SPEECHES[meetingCtl.step]();
         say(mgr, text, 3.6);
@@ -522,7 +513,7 @@ function updateMeetings(dt, now) {
         setTimeout(() => (meetingCtl.cheer = false), 1800);
         sprites.forEach((s) => {
           if (s.agent.id !== "manager" && Math.random() < 0.6)
-            floaters.push({ x: s.x + (Math.random() * 20 - 10), y: s.y - 45, emoji: ["👏", "🚀", "💯", "🔥"][Math.floor(Math.random() * 4)], life: 1.6 });
+            floaters.push({ x: s.x + (Math.random() * 24 - 12), y: s.y - 60, emoji: ["👏", "🚀", "💯", "🔥"][Math.floor(Math.random() * 4)], life: 1.6 });
         });
         meetingCtl.step++;
         meetingCtl.timer = 4.2;
@@ -541,9 +532,8 @@ function updateMeetings(dt, now) {
     if (meetingCtl.timer <= 0) {
       meetingCtl.attendees.forEach((s) => {
         s.mode = "free";
-        s.meetingSeat = null;
         const r = ROOMS[s.room];
-        walkTo(s, r.floor, r.cx + (Math.random() * 60 - 30));
+        walkTo(s, r.floor, r.cx + (Math.random() * 80 - 40));
       });
       meetingCtl.attendees = [];
       meetingCtl.phase = "idle";
@@ -552,7 +542,6 @@ function updateMeetings(dt, now) {
   }
 }
 
-// schedule meetings + townhalls
 setTimeout(function meetLoop() {
   if (meetingCtl.phase === "idle") startMeeting();
   setTimeout(meetLoop, 100000 + Math.random() * 50000);
@@ -629,10 +618,9 @@ function scheduleEvent() {
     pushLog(a, a.tasks[Math.floor(Math.random() * a.tasks.length)]);
     runs++;
     const s = spriteOf(a.id);
-    if (s.mode === "free" && !s.chatting && s.state === "pause") {
-      const r = ROOMS[s.room];
-      s.deskX = r.desks[Math.floor(Math.random() * r.desks.length)];
-      walkTo(s, r.floor, s.deskX, "work");
+    const r = ROOMS[s.room];
+    if (s.mode === "free" && !s.chatting && s.state === "pause" && r.desks.length) {
+      walkTo(s, r.floor, r.desks[Math.floor(Math.random() * r.desks.length)], "work");
     }
     if (Math.random() < 0.15) {
       sales++;
@@ -695,7 +683,7 @@ function openChat(a) {
   sprites.forEach((sp) => (sp.chatting = false));
   s.chatting = true;
   say(s, "💬 On a call with Ryan", 2.4);
-  focusCamera(s.x, s.y - 60, 1.7);
+  focusCamera(s.x, s.y - 70, Math.min(canvas._w / 620, 1.8));
   chatInput.focus();
 }
 
@@ -846,7 +834,7 @@ function renderAnalytics() {
     </div>`).join("");
 }
 
-// ---------------------------------------------------------------- input: pan/zoom/click
+// ---------------------------------------------------------------- input
 
 let dragging = false, moved = false, px = 0, py = 0;
 canvas.addEventListener("pointerdown", (e) => {
@@ -867,9 +855,8 @@ window.addEventListener("pointerup", (e) => {
   if (dragging && !moved) {
     const rect = canvas.getBoundingClientRect();
     const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
-    // hit test agents (bounding box ~34x40 above feet)
     const hit = sprites.find((s) => !s.hidden &&
-      Math.abs(wx - s.x) < 20 && wy < s.y + 6 && wy > s.y - 44);
+      Math.abs(wx - s.x) < 28 && wy < s.y + 8 && wy > s.y - 62);
     if (hit) openChat(hit.agent);
   }
   dragging = false;
@@ -878,7 +865,7 @@ canvas.addEventListener("wheel", (e) => {
   e.preventDefault();
   const rect = canvas.getBoundingClientRect();
   const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
-  const nz = Math.max(0.35, Math.min(3.2, cam.zoom * (e.deltaY < 0 ? 1.12 : 0.9)));
+  const nz = Math.max(0.3, Math.min(3, cam.zoom * (e.deltaY < 0 ? 1.12 : 0.9)));
   cam.x = wx - (wx - cam.x) * (cam.zoom / nz);
   cam.y = wy - (wy - cam.y) * (cam.zoom / nz);
   cam.zoom = nz;
@@ -886,281 +873,78 @@ canvas.addEventListener("wheel", (e) => {
   userCamUntil = performance.now() + 30000;
 }, { passive: false });
 
-// ---------------------------------------------------------------- drawing the tower
+// ---------------------------------------------------------------- drawing
 
-function px_(v) { return Math.round(v); } // crisper pixels
+const stars = Array.from({ length: 160 }, () => ({
+  x: Math.random() * 3000 - 800, y: Math.random() * 2200 - 400, r: Math.random() * 2 + 0.6,
+}));
 
-function drawNeonSign(x, y, text, color, now) {
+function drawRoomLabel(r, now) {
+  const yTop = floorY(r.floor) - 172;
   ctx.font = "bold 13px 'Share Tech Mono', monospace";
-  const w = ctx.measureText(text).width + 14;
-  const flicker = Math.sin(now / 90 + x) > -0.92 ? 1 : 0.35;
-  ctx.fillStyle = "rgba(8,6,18,0.9)";
-  ctx.fillRect(x - w / 2, y - 14, w, 18);
-  ctx.strokeStyle = color;
-  ctx.globalAlpha = flicker;
-  ctx.strokeRect(x - w / 2, y - 14, w, 18);
-  ctx.shadowColor = color; ctx.shadowBlur = 10 * flicker;
-  ctx.fillStyle = color;
-  ctx.textAlign = "center";
-  ctx.fillText(text, x, y);
-  ctx.textAlign = "left";
-  ctx.shadowBlur = 0;
+  const tw = ctx.measureText(r.name).width + 12;
+  const x = r.x0 + 8, y = yTop;
+  const flicker = Math.sin(now / 100 + r.x0) > -0.94 ? 1 : 0.4;
+  ctx.globalAlpha = 0.92 * flicker;
+  ctx.fillStyle = "rgba(8,6,18,0.85)";
+  ctx.fillRect(x, y, tw, 17);
+  ctx.strokeStyle = r.sign;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, tw, 17);
+  ctx.fillStyle = r.sign;
+  ctx.fillText(r.name, x + 6, y + 13);
   ctx.globalAlpha = 1;
 }
-
-function drawDesk(x, y, accent, busy, now) {
-  ctx.fillStyle = "#191536";
-  ctx.fillRect(x - 22, y - 26, 44, 6);       // tabletop
-  ctx.fillRect(x - 18, y - 20, 5, 20);       // legs
-  ctx.fillRect(x + 13, y - 20, 5, 20);
-  // monitor
-  ctx.fillStyle = "#0c0a1e";
-  ctx.fillRect(x - 10, y - 44, 22, 17);
-  ctx.fillStyle = busy ? accent : mixHex(accent, "#0c0a1e", 0.7);
-  if (busy && Math.floor(now / 160) % 2) ctx.fillStyle = mixHex(accent, "#ffffff", 0.3);
-  ctx.fillRect(x - 8, y - 42, 18, 13);
-  ctx.fillStyle = "#191536";
-  ctx.fillRect(x - 2, y - 27, 6, 3);
-}
-
-function drawServer(x, y, now) {
-  ctx.fillStyle = "#12102a";
-  ctx.fillRect(x, y - 52, 26, 52);
-  for (let i = 0; i < 5; i++) {
-    ctx.fillStyle = "#0a0820";
-    ctx.fillRect(x + 3, y - 47 + i * 10, 20, 7);
-    const on = Math.sin(now / 260 + x + i * 5) > 0;
-    ctx.fillStyle = on ? (i % 2 ? "#3cff9e" : "#00dcff") : "#231f45";
-    ctx.fillRect(x + 17, y - 45 + i * 10, 4, 3);
-  }
-}
-
-function drawPlant(x, y) {
-  ctx.fillStyle = "#5a2d1a";
-  ctx.fillRect(x - 6, y - 10, 12, 10);
-  ctx.fillStyle = "#2ea35c";
-  ctx.fillRect(x - 9, y - 24, 6, 14);
-  ctx.fillRect(x - 2, y - 30, 5, 20);
-  ctx.fillRect(x + 5, y - 22, 6, 12);
-}
-
-function drawCouch(x, y, color) {
-  ctx.fillStyle = color;
-  ctx.fillRect(x - 28, y - 18, 56, 12);
-  ctx.fillRect(x - 28, y - 30, 8, 14);
-  ctx.fillRect(x + 20, y - 30, 8, 14);
-  ctx.fillStyle = mixHex(color, "#000000", 0.35);
-  ctx.fillRect(x - 24, y - 6, 6, 6);
-  ctx.fillRect(x + 18, y - 6, 6, 6);
-}
-
-function drawWhiteboard(x, y, accent) {
-  ctx.fillStyle = "#e8ecf5";
-  ctx.fillRect(x - 24, y - 58, 48, 30);
-  ctx.strokeStyle = "#454a63";
-  ctx.strokeRect(x - 24, y - 58, 48, 30);
-  ctx.strokeStyle = accent;
-  ctx.beginPath();
-  ctx.moveTo(x - 18, y - 40); ctx.lineTo(x - 6, y - 50); ctx.lineTo(x + 4, y - 44); ctx.lineTo(x + 16, y - 52);
-  ctx.stroke();
-  ctx.fillStyle = "#12102a";
-  ctx.fillRect(x - 2, y - 28, 4, 28);
-}
-
-function drawMeetingTable(x, y) {
-  ctx.fillStyle = "#241f45";
-  ctx.fillRect(x - 110, y - 24, 220, 8);
-  ctx.fillStyle = "#191536";
-  ctx.fillRect(x - 100, y - 16, 6, 16);
-  ctx.fillRect(x + 94, y - 16, 6, 16);
-  // big screen on wall
-  ctx.fillStyle = "#0c0a1e";
-  ctx.fillRect(x + 118, y - 92, 52, 34);
-  ctx.fillStyle = "rgba(255,79,216,0.5)";
-  ctx.fillRect(x + 121, y - 89, 46, 28);
-}
-
-function drawPodium(x, y) {
-  ctx.fillStyle = "#241f45";
-  ctx.fillRect(x - 14, y - 30, 28, 30);
-  ctx.fillStyle = PAL.neonAmber;
-  ctx.fillRect(x - 16, y - 32, 32, 4);
-  // mic
-  ctx.strokeStyle = "#666";
-  ctx.beginPath(); ctx.moveTo(x + 8, y - 32); ctx.lineTo(x + 12, y - 44); ctx.stroke();
-  ctx.fillStyle = "#ddd";
-  ctx.fillRect(x + 10, y - 48, 5, 5);
-}
-
-function drawCrates(x, y) {
-  const crate = (cx, cy) => {
-    ctx.fillStyle = "#0f2d40";
-    ctx.fillRect(cx, cy - 20, 26, 20);
-    ctx.strokeStyle = "#00dcff";
-    ctx.strokeRect(cx, cy - 20, 26, 20);
-    ctx.fillStyle = "#00dcff";
-    ctx.font = "8px 'Share Tech Mono', monospace";
-    ctx.fillText("N:OV", cx + 3, cy - 8);
-  };
-  crate(x, y); crate(x + 30, y); crate(x + 15, y - 22);
-}
-
-function drawRoomKit(r, y, now) {
-  const accent = r.sign;
-  if (r.kit === "office" || r.kit === "studio" || r.kit === "lab" || r.kit === "exec") {
-    drawDesk(r.desks[0], y, accent, deskBusy(r, 0), now);
-    drawDesk(r.desks[1], y, accent, deskBusy(r, 1), now);
-    if (r.kit === "lab") drawServer(r.x1 - 42, y, now);
-    if (r.kit === "studio") drawWhiteboard(r.x1 - 50, y, accent);
-    if (r.kit === "exec") { drawWhiteboard(r.x1 - 50, y, accent); drawPlant(r.x0 + 18, y); }
-    if (r.kit === "office") drawPlant(r.x1 - 24, y);
-  } else if (r.kit === "lounge") {
-    drawCouch(r.cx - 60, y, "#1d3a5e");
-    drawDesk(r.desks[1], y, accent, deskBusy(r, 1), now);
-    drawPlant(r.x0 + 18, y);
-  } else if (r.kit === "meeting") {
-    drawMeetingTable(r.cx - 20, y);
-  } else if (r.kit === "hall") {
-    drawPodium(r.x0 + 55, y);
-    ctx.fillStyle = "rgba(255,184,77,0.12)";
-    ctx.fillRect(r.x0 + 20, y - 90, 90, 90);   // podium spotlight
-  } else if (r.kit === "factory") {
-    drawCrates(r.x0 + 30, y);
-    drawCrates(r.x1 - 100, y);
-    drawServer(r.cx, y, now);
-  }
-}
-
-function deskBusy(r, i) {
-  return sprites.some((s) => s.state === "work" && ROOMS[s.room] === r && Math.abs(s.x - r.desks[i]) < 26);
-}
-
-// pre-generated background stars + skyline
-const stars = Array.from({ length: 140 }, () => ({
-  x: Math.random() * 2400 - 600, y: Math.random() * 900 - 500, r: Math.random() * 1.5 + 0.4,
-}));
 
 function draw(now, dt) {
   const W = canvas._w, H = canvas._h, dpr = canvas._dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.imageSmoothingEnabled = false;
 
-  // sky
   const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, PAL.bgTop);
-  grad.addColorStop(1, PAL.bgBot);
+  grad.addColorStop(0, "#1c0b33");
+  grad.addColorStop(1, "#0a0518");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // camera transform
   ctx.save();
   ctx.translate(W / 2, H / 2);
   ctx.scale(cam.zoom, cam.zoom);
   ctx.translate(-cam.x, -cam.y);
 
-  // stars
+  // stars beyond the artwork
   ctx.fillStyle = "#c9b8ff";
   stars.forEach((s) => {
-    ctx.globalAlpha = 0.4 + 0.4 * Math.sin(now / 900 + s.x);
+    ctx.globalAlpha = 0.35 + 0.35 * Math.sin(now / 900 + s.x);
     ctx.fillRect(s.x, s.y, s.r, s.r);
   });
   ctx.globalAlpha = 1;
 
-  // magenta horizon beam behind tower
-  ctx.fillStyle = "rgba(255,79,216,0.14)";
-  ctx.fillRect(-600, GROUND_Y + 8, 2400, 26);
-  ctx.fillStyle = "rgba(255,79,216,0.5)";
-  ctx.fillRect(-600, GROUND_Y + 14, 2400, 3);
+  // the AI-painted tower
+  if (bg.complete && bg.naturalWidth) ctx.drawImage(bg, 0, 0, ART_W, ART_H);
 
-  // tower body
-  ctx.fillStyle = "#161227";
-  ctx.fillRect(TOWER_X0 - 14, floorY(5) - FLOOR_H - 20, (TOWER_X1 - TOWER_X0) + 28, GROUND_Y - (floorY(5) - FLOOR_H) + 40);
+  Object.values(ROOMS).forEach((r) => drawRoomLabel(r, now));
 
-  // rooms + floors
-  Object.values(ROOMS).forEach((r) => {
-    const yF = floorY(r.floor);
-    const yTop = yF - FLOOR_H + SLAB;
-    // wallpaper
-    ctx.fillStyle = r.wall;
-    ctx.fillRect(r.x0, yTop, r.x1 - r.x0, FLOOR_H - SLAB);
-    // subtle wall panels
-    ctx.fillStyle = "rgba(255,255,255,0.03)";
-    for (let wx = r.x0 + 20; wx < r.x1 - 20; wx += 46) ctx.fillRect(wx, yTop + 12, 30, FLOOR_H - SLAB - 40);
-    // window glow strip at ceiling
-    ctx.fillStyle = "rgba(46,230,200,0.10)";
-    ctx.fillRect(r.x0, yTop, r.x1 - r.x0, 8);
-    // furniture
-    drawRoomKit(r, yF, now);
-    // neon sign
-    drawNeonSign(r.cx, yTop + 26, r.name, r.sign, now);
-  });
-
-  // floor slabs
-  for (let f = 0; f <= 5; f++) {
-    const y = floorY(f);
-    ctx.fillStyle = PAL.slab;
-    ctx.fillRect(TOWER_X0 - 14, y, (TOWER_X1 - TOWER_X0) + 28, SLAB);
-    ctx.fillStyle = "rgba(46,230,200,0.55)";
-    ctx.fillRect(TOWER_X0 - 14, y, (TOWER_X1 - TOWER_X0) + 28, 2);
-  }
-  // roof + sign
-  const roofY = floorY(5) - FLOOR_H;
-  ctx.fillStyle = PAL.slab;
-  ctx.fillRect(TOWER_X0 - 14, roofY - 8, (TOWER_X1 - TOWER_X0) + 28, 20);
-  drawNeonSign(600, roofY - 24, "◈ BIOGREEN AGENT TOWER", PAL.neonPink, now);
-  // antenna
-  ctx.strokeStyle = "#454a63";
-  ctx.beginPath(); ctx.moveTo(980, roofY - 8); ctx.lineTo(980, roofY - 70); ctx.stroke();
-  ctx.fillStyle = Math.floor(now / 500) % 2 ? "#ff4f4f" : "#5a1020";
-  ctx.fillRect(977, roofY - 76, 7, 7);
-
-  // elevator shaft
-  ctx.fillStyle = PAL.shaft;
-  ctx.fillRect(SHAFT_X0, roofY + 12, SHAFT_X1 - SHAFT_X0, GROUND_Y - roofY - 12 + SLAB);
-  ctx.strokeStyle = "rgba(46,230,200,0.35)";
-  ctx.strokeRect(SHAFT_X0, roofY + 12, SHAFT_X1 - SHAFT_X0, GROUND_Y - roofY - 12 + SLAB);
-  // rails
-  ctx.fillStyle = "rgba(255,255,255,0.05)";
-  ctx.fillRect(SHAFT_X0 + 6, roofY + 12, 2, GROUND_Y - roofY);
-  ctx.fillRect(SHAFT_X1 - 8, roofY + 12, 2, GROUND_Y - roofY);
-  // cab
-  const cabY = floorY(elevator.f);
-  ctx.fillStyle = PAL.cab;
-  ctx.fillRect(SHAFT_X0 + 8, cabY - 54, SHAFT_X1 - SHAFT_X0 - 16, 54);
-  ctx.strokeStyle = PAL.neonTeal;
-  ctx.strokeRect(SHAFT_X0 + 8, cabY - 54, SHAFT_X1 - SHAFT_X0 - 16, 54);
-  ctx.fillStyle = "rgba(46,230,200,0.25)";
-  ctx.fillRect(SHAFT_X0 + 12, cabY - 48, SHAFT_X1 - SHAFT_X0 - 24, 20);
-  if (elevator.riders.length) {
-    ctx.fillStyle = "#fff";
-    ctx.font = "11px 'Share Tech Mono', monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("👥" + elevator.riders.length, SHAFT_MID, cabY - 20);
-    ctx.textAlign = "left";
-  }
-
-  // agents (sorted so lower floors draw later = in front? same plane; sort by y)
   sprites.slice().sort((a, b) => a.y - b.y).forEach((s) => {
     if (s.hidden) return;
-    drawSprite(s.agent, s.x, s.y, frameFor(s, now), s.flip, bubbles.some((b) => b.s === s), now);
+    drawSprite(s.agent, s.x, s.y, frameFor(s), s.flip, bubbles.some((b) => b.s === s), now);
     if (s.chatting) {
       ctx.strokeStyle = s.agent.color;
-      ctx.setLineDash([4, 4]);
+      ctx.setLineDash([5, 5]);
       ctx.lineDashOffset = -(now / 60);
-      ctx.strokeRect(s.x - 22, s.y - 46, 44, 50);
+      ctx.strokeRect(s.x - 26, s.y - 56, 52, 62);
       ctx.setLineDash([]);
     }
   });
 
   drawBubbles(now);
-  drawFloaters(dt, now);
+  drawFloaters(dt);
 
   ctx.restore();
 
-  // vignette
   const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.85);
   vg.addColorStop(0, "rgba(0,0,0,0)");
-  vg.addColorStop(1, "rgba(2,1,8,0.55)");
+  vg.addColorStop(1, "rgba(2,1,8,0.5)");
   ctx.fillStyle = vg;
   ctx.fillRect(0, 0, W, H);
 }
@@ -1177,7 +961,6 @@ function tick(now) {
   tryConversations(now);
   updateMeetings(dt, now);
 
-  // camera easing
   if (now > userCamUntil) {
     cam.x += (camGoal.x - cam.x) * 0.05;
     cam.y += (camGoal.y - cam.y) * 0.05;
