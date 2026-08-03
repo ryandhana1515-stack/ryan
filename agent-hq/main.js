@@ -138,7 +138,8 @@ function resize() {
   fitDefault();
 }
 function fitDefault() {
-  camGoal.zoom = Math.min(canvas._w / (ART_W + 40), canvas._h / (ART_H + 40));
+  // Fill the full viewport height with the tower; pan sideways if it overflows.
+  camGoal.zoom = canvas._h / ART_H;
   camGoal.x = ART_W / 2; camGoal.y = ART_H / 2;
 }
 window.addEventListener("resize", resize);
@@ -698,6 +699,11 @@ document.getElementById("chat-close").addEventListener("click", () => {
 document.getElementById("btn-reset-cam").addEventListener("click", () => {
   userCamUntil = 0;
   fitDefault();
+});
+
+document.getElementById("btn-fullscreen").addEventListener("click", () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen();
 });
 
 btnCall.addEventListener("click", async () => {

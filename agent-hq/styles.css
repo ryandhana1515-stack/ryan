@@ -70,7 +70,7 @@ body {
 
 /* ---------- Sidebar ---------- */
 #sidebar {
-  width: 340px;
+  width: 232px;
   flex-shrink: 0;
   border-right: 1px solid var(--line);
   background: var(--panel);
@@ -139,9 +139,9 @@ body {
 
 .agent-name { font-size: 13px; color: #e6f9ff; letter-spacing: 1px; }
 
-.agent-role { font-size: 10px; color: var(--text-dim); }
+.agent-role { font-size: 9px; color: var(--text-dim); }
 
-.agent-wf { font-size: 9px; color: var(--cyan-dim); letter-spacing: 1px; }
+.agent-wf { display: none; }
 
 .agent-status {
   font-size: 9px;
@@ -197,7 +197,7 @@ body {
 
 /* ---------- Chat dock ---------- */
 #chat-dock {
-  width: 360px;
+  width: 320px;
   flex-shrink: 0;
   border-left: 1px solid var(--line);
   background: var(--panel);
