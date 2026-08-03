@@ -137,11 +137,33 @@ function resize() {
   canvas._w = rect.width; canvas._h = rect.height; canvas._dpr = dpr;
   fitDefault();
 }
-function fitDefault() {
-  // Fill the full viewport height with the tower; pan sideways if it overflows.
-  camGoal.zoom = canvas._h / ART_H;
-  camGoal.x = ART_W / 2; camGoal.y = ART_H / 2;
+// Cinematic close-up like the reference video: 2-3 floors fill the screen.
+function cineZoom() { return Math.max(canvas._w / 900, canvas._h / 640); }
+
+function clampCam(goal) {
+  const hw = canvas._w / (2 * goal.zoom), hh = canvas._h / (2 * goal.zoom);
+  goal.x = Math.max(Math.min(goal.x, ART_W - hw + 60), hw - 60);
+  goal.y = Math.max(Math.min(goal.y, ART_H - hh + 30), hh - 260);
 }
+
+function fitDefault() {
+  camGoal.zoom = cineZoom();
+  camGoal.x = ART_W / 2;
+  camGoal.y = floorY(3) - 60;
+  clampCam(camGoal);
+}
+
+// Auto-tour: when idle, glide between rooms where agents actually are.
+setInterval(() => {
+  if (performance.now() < userCamUntil || meetingCtl.phase !== "idle" || chatAgent) return;
+  const candidates = sprites.filter((s) => !s.hidden);
+  const s = candidates[Math.floor(Math.random() * candidates.length)];
+  if (!s) return;
+  camGoal.x = s.x;
+  camGoal.y = s.y - 90;
+  camGoal.zoom = cineZoom();
+  clampCam(camGoal);
+}, 9000);
 window.addEventListener("resize", resize);
 
 function screenToWorld(sx, sy) {
@@ -555,6 +577,7 @@ setTimeout(function hallLoop() {
 function focusCamera(x, y, zoom) {
   if (performance.now() < userCamUntil) return;
   camGoal.x = x; camGoal.y = y; camGoal.zoom = zoom;
+  clampCam(camGoal);
 }
 
 // ---------------------------------------------------------------- DOM: roster + log
