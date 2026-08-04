@@ -138,7 +138,8 @@ function resize() {
   fitDefault();
 }
 // Cinematic close-up like the reference video: 2-3 floors fill the screen.
-function cineZoom() { return Math.max(canvas._w / 900, canvas._h / 640); }
+// Landscape frames ~2 rooms + shaft; portrait frames one full room width.
+function cineZoom() { return canvas._w / (canvas._w > canvas._h ? 900 : 660); }
 
 function clampCam(goal) {
   const hw = canvas._w / (2 * goal.zoom), hh = canvas._h / (2 * goal.zoom);
@@ -869,7 +870,30 @@ let dragging = false, moved = false, px = 0, py = 0;
 canvas.addEventListener("pointerdown", (e) => {
   dragging = true; moved = false; px = e.clientX; py = e.clientY;
   canvas.classList.add("dragging");
+  document.getElementById("sidebar").classList.remove("open");
 });
+
+document.getElementById("btn-roster").addEventListener("click", () =>
+  document.getElementById("sidebar").classList.toggle("open"));
+
+// pinch zoom on touch devices
+let pinchDist = 0;
+canvas.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    dragging = false;
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY);
+    if (pinchDist) {
+      const nz = Math.max(0.3, Math.min(3, cam.zoom * (d / pinchDist)));
+      cam.zoom = nz;
+      camGoal.zoom = nz; camGoal.x = cam.x; camGoal.y = cam.y;
+      userCamUntil = performance.now() + 30000;
+    }
+    pinchDist = d;
+  }
+}, { passive: false });
+canvas.addEventListener("touchend", () => (pinchDist = 0));
 window.addEventListener("pointermove", (e) => {
   if (!dragging) return;
   const dx = e.clientX - px, dy = e.clientY - py;
