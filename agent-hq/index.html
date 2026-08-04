@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BIOGREEN // AGENT OPERATIONS HQ — 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top HUD bar -->
+    <header id="hud-top">
+      <div class="hud-left">
+        <button class="hud-btn" id="btn-roster">👥</button>
+        <span class="hud-logo">◈ BIOGREEN</span>
+        <span class="hud-sub">// AGENT OPERATIONS HQ</span>
+        <span class="hud-version">v6.0 — PIXEL TOWER · LIVE MEETINGS · n8n</span>
+      </div>
+      <div class="hud-right">
+        <div class="hud-stat"><span class="stat-label">WF RUNS</span><span class="stat-value" id="stat-tasks">83</span></div>
+        <div class="hud-stat"><span class="stat-label">SALES SIGNALS</span><span class="stat-value" id="stat-sales">0</span></div>
+        <div class="hud-stat"><span class="stat-label">AGENTS ACTIVE</span><span class="stat-value" id="stat-agents">10/10</span></div>
+        <div class="hud-stat"><span class="stat-label">UPTIME</span><span class="stat-value" id="stat-uptime">00:00:00</span></div>
+        <button class="hud-btn" id="btn-analytics">📊 n8n ANALYTICS</button>
+        <button class="hud-btn" id="btn-reset-cam">🎥 RESET CAM</button>
+        <button class="hud-btn" id="btn-fullscreen">⛶ FULLSCREEN</button>
+      </div>
+    </header>
+
+    <div id="main">
+      <!-- Agent roster + live ops log -->
+      <aside id="sidebar">
+        <div class="sidebar-header">
+          <span>ACTIVE AGENTS</span>
+          <span class="blink">▮</span>
+        </div>
+        <div id="roster"></div>
+        <div class="sidebar-header log-header">
+          <span>LIVE OPS FEED</span>
+          <button id="log-filter-clear" class="hidden">SHOW ALL</button>
+        </div>
+        <div id="ops-log"></div>
+      </aside>
+
+      <!-- 3D deck -->
+      <div id="scene-wrap">
+        <canvas id="scene"></canvas>
+        <div id="crt"></div>
+        <div id="map-hint">DRAG TO PAN · SCROLL TO ZOOM · CLICK AN AGENT TO CHAT</div>
+      </div>
+
+      <!-- Chat dock -->
+      <aside id="chat-dock" class="hidden">
+        <div id="chat-head">
+          <div>
+            <div id="chat-agent-name">—</div>
+            <div id="chat-agent-role">—</div>
+          </div>
+          <div class="chat-head-btns">
+            <button id="btn-call" class="hud-btn hidden">☎ REQUEST CALL</button>
+            <a id="chat-n8n-link" class="hud-btn" href="#" target="_blank" rel="noopener">⚙ n8n</a>
+            <button id="chat-close" class="hud-btn">✕</button>
+          </div>
+        </div>
+        <div id="chat-hint"></div>
+        <div id="chat-messages"></div>
+        <form id="chat-form">
+          <input id="chat-input" type="text" autocomplete="off" placeholder="Message this agent..." />
+          <button type="submit" class="hud-btn">SEND ▸</button>
+        </form>
+      </aside>
+    </div>
+
+    <!-- Bottom toolbar -->
+    <footer id="hud-bottom">
+      <div class="tool">⚙ n8n GRID</div>
+      <div class="tool">🛰 WEBHOOKS: 6 LIVE</div>
+      <div class="tool">✅ SUCCESS 96.4%</div>
+      <div class="tool">📦 SHOPIFY LINK</div>
+      <div class="tool">🌿 BIO N:OV STOCK: <span id="stat-stock">1,240</span></div>
+      <div class="tool right" id="clock">--:--:--</div>
+    </footer>
+  </div>
+
+  <!-- n8n analytics modal -->
+  <div id="analytics-modal" class="hidden">
+    <div id="analytics-panel">
+      <div id="analytics-head">
+        <span>📊 n8n GRID ANALYTICS — <span id="analytics-instance"></span></span>
+        <button id="analytics-close" class="hud-btn">✕</button>
+      </div>
+      <div id="analytics-totals"></div>
+      <div id="analytics-table"></div>
+      <div id="analytics-foot">Snapshot <span id="analytics-time"></span> · <a id="analytics-link" href="#" target="_blank" rel="noopener">Open n8n editor ↗</a></div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="data/snapshot.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
