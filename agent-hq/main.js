@@ -1,8 +1,8 @@
-/* BIOGREEN // AGENT OPERATIONS HQ — pixel tower edition
-   AI-painted neon office tower (assets/tower-bg.jpg, generated with Kling).
-   Agents walk the painted floors, ride the elevator shaft, talk with
-   speech bubbles, hold standups in the Meeting Bay and town halls on the
-   stage — with live chat wired to the real n8n instance. */
+/* BIOGREEN // AGENT OPERATIONS HQ — station edition
+   Dark top-down sci-fi facility (assets/facility-bg.jpg, AI-generated).
+   Agents walk the corridors between rooms, talk with speech bubbles,
+   hold standups at the war table and all-hands around the reactor core —
+   with live chat wired to the real n8n instance. */
 
 "use strict";
 
@@ -10,72 +10,68 @@ const CFG = window.HQ_CONFIG;
 const SNAP = window.N8N_SNAPSHOT;
 
 // ---------------------------------------------------------------- artwork layout
-// World units = background image pixels (1400 x 1400).
+// World units = background image pixels (1024 x 1024).
 
-const ART_W = 1400, ART_H = 1400;
-// Walkable floor line per storey, ground (0) to top (5) — measured on the art.
-const FEET_Y = [1385, 1178, 985, 788, 594, 398];
-const floorYF = (f) => {          // walkable y for a fractional floor (elevator cab)
-  const lo = Math.max(0, Math.min(5, Math.floor(f)));
-  const hi = Math.min(5, lo + 1);
-  return FEET_Y[lo] + (FEET_Y[hi] - FEET_Y[lo]) * (f - lo);
-};
-const SHAFT_MID = 697;
-const LIFT_WAIT_X = 588;          // where agents stand while calling the lift
-const LX0 = 70, LX1 = 595, RX0 = 790, RX1 = 1340;
-const floorY = (f) => FEET_Y[f];
+const ART_W = 1024, ART_H = 1024;
+
+// 3x3 room grid measured on the art. Walls sit in the ~25px bands between.
+const COLS = [[145, 372], [402, 630], [658, 882]];
+const ROWSY = [[142, 372], [402, 630], [658, 872]];
 
 const ROOMS = {
-  manager:   { name: "MANAGER OFFICE", floor: 5, x0: LX0, x1: LX1, sign: "#00dcff", desks: [255, 360] },
-  meeting:   { name: "MEETING BAY",    floor: 5, x0: RX0, x1: RX1, sign: "#ff4fd8", desks: [1000, 1150] },
-  content:   { name: "CONTENT STUDIO", floor: 4, x0: LX0, x1: LX1, sign: "#3cff9e", desks: [150, 300, 470] },
-  ads:       { name: "ADS LAB",        floor: 4, x0: RX0, x1: RX1, sign: "#ff5c8a", desks: [900, 1040, 1200] },
-  inbox:     { name: "INBOX HUB",      floor: 3, x0: LX0, x1: LX1, sign: "#25d366", desks: [150, 290, 480] },
-  support:   { name: "SUPPORT DESK",   floor: 3, x0: RX0, x1: RX1, sign: "#ffb84d", desks: [880, 1010, 1150, 1270] },
-  research:  { name: "RESEARCH BAY",   floor: 2, x0: LX0, x1: LX1, sign: "#b18cff", desks: [300, 430] },
-  web:       { name: "WEB FORGE",      floor: 2, x0: RX0, x1: RX1, sign: "#8c9eff", desks: [890, 1040, 1250] },
-  voice:     { name: "VOICE OPS",      floor: 1, x0: LX0, x1: LX1, sign: "#ff8c42", desks: [145, 255, 365, 475] },
-  affiliate: { name: "AFFILIATE HUB",  floor: 1, x0: RX0, x1: RX1, sign: "#4dd2ff", desks: [880, 1010, 1230] },
-  townhall:  { name: "TOWN HALL",      floor: 0, x0: LX0, x1: LX1, sign: "#ffb84d", desks: [] },
-  factory:   { name: "FACTORY",        floor: 0, x0: RX0, x1: RX1, sign: "#2ee6c8", desks: [880, 1010, 1130] },
+  content:   { name: "CONTENT STUDIO", col: 0, row: 0, sign: "#ff5cd6", desks: [{ x: 215, y: 215 }, { x: 320, y: 330 }] },
+  inbox:     { name: "INBOX HUB",      col: 1, row: 0, sign: "#3cff9e", desks: [{ x: 455, y: 215 }, { x: 580, y: 215 }, { x: 515, y: 300 }] },
+  ads:       { name: "ADS LAB",        col: 2, row: 0, sign: "#ff5c8a", desks: [{ x: 725, y: 215 }, { x: 815, y: 300 }] },
+  support:   { name: "SUPPORT DESK",   col: 0, row: 1, sign: "#ffb84d", desks: [{ x: 245, y: 430 }, { x: 190, y: 515 }, { x: 260, y: 590 }] },
+  core:      { name: "COMMAND CORE",   col: 1, row: 1, sign: "#00dcff", desks: [{ x: 590, y: 560 }] },
+  research:  { name: "RESEARCH BAY",   col: 2, row: 1, sign: "#b18cff", desks: [{ x: 780, y: 430 }, { x: 845, y: 520 }, { x: 770, y: 590 }] },
+  voice:     { name: "VOICE OPS",      col: 0, row: 2, sign: "#ff8c42", desks: [{ x: 210, y: 705 }, { x: 235, y: 810 }] },
+  affiliate: { name: "AFFILIATE HUB",  col: 1, row: 2, sign: "#4dd2ff", desks: [{ x: 465, y: 745 }, { x: 555, y: 790 }] },
+  web:       { name: "WEB FORGE",      col: 2, row: 2, sign: "#8c9eff", desks: [{ x: 740, y: 705 }, { x: 835, y: 760 }] },
 };
-Object.values(ROOMS).forEach((r) => { r.cx = (r.x0 + r.x1) / 2; });
+Object.values(ROOMS).forEach((r) => {
+  r.x0 = COLS[r.col][0]; r.x1 = COLS[r.col][1];
+  r.y0 = ROWSY[r.row][0]; r.y1 = ROWSY[r.row][1];
+  r.cx = (r.x0 + r.x1) / 2; r.cy = (r.y0 + r.y1) / 2;
+});
 
-const PODIUM_X = 240;
-const CROWD_X0 = 330, CROWD_STEP = 44;
-const MEET_HEAD_X = 830, MEET_SEATS = [950, 1045, 1140, 1235, 1310];
+// war table beside the reactor (standups) + reactor ring (all-hands)
+const WAR = { x: 592, y: 548 };
+const WAR_HEAD = { x: 592, y: 478 };
+const WAR_SEATS = [{ x: 532, y: 548 }, { x: 652, y: 548 }, { x: 556, y: 612 }, { x: 628, y: 612 }];
+const REACTOR = { x: 512, y: 512 };
 
 // ---------------------------------------------------------------- agents
 
 const AGENTS = [
-  { id: "manager",  name: "MANAGER", room: "manager",  color: "#00dcff", status: "ACTIVE",
+  { id: "manager",  name: "MANAGER", room: "core",      color: "#00dcff", status: "ACTIVE",
     role: "AI Manager — Company Orchestrator",
     tasks: ["delegated brief to specialist sub-agents", "daily summary → Manager Reports", "weekly report compiled", "routed build to the AI CTO"] },
-  { id: "content",  name: "NOVA",    room: "content",  color: "#3cff9e", status: "ACTIVE",
+  { id: "content",  name: "NOVA",    room: "content",   color: "#3cff9e", status: "ACTIVE",
     role: "Content Agent — Daily Social Content",
     tasks: ["3 TikTok captions → Content Queue", "drafted 1 FB ad + 1 IG caption", "#BIONOV caption batch queued"] },
-  { id: "ads",      name: "PULSE",   room: "ads",      color: "#ff5c8a", status: "ACTIVE",
+  { id: "ads",      name: "PULSE",   room: "ads",       color: "#ff5c8a", status: "ACTIVE",
     role: "Ads Agent — Weekly Ad Drafts",
     tasks: ["2 FB ads + 2 TikTok scripts drafted", "5 hook ideas → Ad Drafts", "health-ad compliance pass ✓"] },
-  { id: "support",  name: "ECHO",    room: "support",  color: "#ffb84d", status: "ACTIVE",
+  { id: "support",  name: "ECHO",    room: "support",   color: "#ffb84d", status: "ACTIVE",
     role: "Customer Service Agent — 24/7 Chat",
     tasks: ["answered dosage question: 3x daily", "shipping query resolved", "guardrailed affiliate answer"] },
-  { id: "research", name: "LEDGER",  room: "research", color: "#b18cff", status: "ACTIVE",
+  { id: "research", name: "LEDGER",  room: "research",  color: "#b18cff", status: "ACTIVE",
     role: "Research Agent — Weekly Market Scan",
     tasks: ["market scan → Research Reports", "'nitric oxide over 40' rising", "competitor gap logged"] },
   { id: "affiliate", name: "ORBIT",  room: "affiliate", color: "#4dd2ff", status: "ACTIVE",
     role: "Affiliate Agent — Welcome New Affiliates",
     tasks: ["/affiliate-signup: welcome sent", "new creator → Affiliate Outreach", "commission terms delivered"] },
-  { id: "whatsapp", name: "WAVE",    room: "inbox",    color: "#25d366", status: "ACTIVE",
+  { id: "whatsapp", name: "WAVE",    room: "inbox",     color: "#25d366", status: "ACTIVE",
     role: "WhatsApp Agent — Cloud API",
     tasks: ["/whatsapp-in: reply via Graph API", "lead captured → Leads CRM", "webhook handshake verified"] },
-  { id: "omni",     name: "RELAY",   room: "inbox",    color: "#2ee6c8", status: "ACTIVE",
+  { id: "omni",     name: "RELAY",   room: "inbox",     color: "#2ee6c8", status: "ACTIVE",
     role: "Omnichannel AI Hub — Universal Inbox",
     tasks: ["/inbound-message answered", "cross-channel lead logged", "call request routed to VOX"] },
-  { id: "voice",    name: "VOX",     room: "voice",    color: "#ff8c42", status: "ACTIVE",
+  { id: "voice",    name: "VOX",     room: "voice",     color: "#ff8c42", status: "ACTIVE",
     role: "Voice Agent — Calls + Call Logger",
     tasks: ["ElevenLabs outbound call placed", "transcript → Call Log", "standing by for callbacks"] },
-  { id: "web",      name: "FORGE",   room: "web",      color: "#8c9eff", status: "2 ERR", statusColor: "#ffb84d",
+  { id: "web",      name: "FORGE",   room: "web",       color: "#8c9eff", status: "2 ERR", statusColor: "#ffb84d",
     role: "Website Agent — Immersive 3D Site Designer",
     tasks: ["3D scene plan + Kling prompts packaged", "Lovable brief handed off", "retrying render pipeline"] },
 ];
@@ -112,7 +108,7 @@ const SPEECHES = [
   () => `BIO N:OV is moving: ${sales} sales signals today.`,
   () => "FORGE — I need that render pipeline green this week.",
   () => "Next: Facebook, Instagram, TikTok, YouTube. Full auto.",
-  () => "One command from Ryan — the whole company moves. Dismissed! 🚀",
+  () => "One command from Ryan — the whole station moves. Dismissed! 🚀",
 ];
 
 const SALE_EVENTS = [
@@ -123,81 +119,108 @@ const SALE_EVENTS = [
   "💰 SALE — BIO N:OV x1 → London",
 ];
 
+// ---------------------------------------------------------------- nav grid + A*
+
+const CELL = 8, GW = 128, GD = 128;
+const blocked = new Uint8Array(GW * GD);
+const w2c = (v) => Math.max(0, Math.min(127, Math.round(v / CELL)));
+const c2w = (c) => c * CELL;
+
+function blockRect(x0, y0, x1, y1) {
+  for (let cx = w2c(x0); cx <= w2c(x1); cx++)
+    for (let cy = w2c(y0); cy <= w2c(y1); cy++) blocked[cy * GW + cx] = 1;
+}
+function clearRect(x0, y0, x1, y1) {
+  for (let cx = w2c(x0); cx <= w2c(x1); cx++)
+    for (let cy = w2c(y0); cy <= w2c(y1); cy++) blocked[cy * GW + cx] = 0;
+}
+
+// hull: everything blocked, then carve rooms + door gaps
+blockRect(0, 0, ART_W, ART_H);
+Object.values(ROOMS).forEach((r) => clearRect(r.x0 + 8, r.y0 + 8, r.x1 - 8, r.y1 - 8));
+// doors between horizontally adjacent rooms (gap at row center)
+for (let row = 0; row < 3; row++) {
+  const cy = (ROWSY[row][0] + ROWSY[row][1]) / 2;
+  clearRect(COLS[0][1] - 10, cy - 26, COLS[1][0] + 10, cy + 26);
+  clearRect(COLS[1][1] - 10, cy - 26, COLS[2][0] + 10, cy + 26);
+}
+// doors between vertically adjacent rooms (gap at column center)
+for (let col = 0; col < 3; col++) {
+  const cx = (COLS[col][0] + COLS[col][1]) / 2;
+  clearRect(cx - 26, ROWSY[0][1] - 10, cx + 26, ROWSY[1][0] + 10);
+  clearRect(cx - 26, ROWSY[1][1] - 10, cx + 26, ROWSY[2][0] + 10);
+}
+// keep the reactor itself un-walkable so nobody stands in the core
+blockRect(REACTOR.x - 58, REACTOR.y - 58, REACTOR.x + 58, REACTOR.y + 58);
+
+function nearestFree(cx, cy) {
+  if (!blocked[cy * GW + cx]) return [cx, cy];
+  for (let ring = 1; ring < 12; ring++)
+    for (let dx = -ring; dx <= ring; dx++)
+      for (let dy = -ring; dy <= ring; dy++) {
+        const nx = cx + dx, ny = cy + dy;
+        if (nx >= 0 && nx < GW && ny >= 0 && ny < GD && !blocked[ny * GW + nx]) return [nx, ny];
+      }
+  return [cx, cy];
+}
+
+const NEIGH = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.4], [1, -1, 1.4], [-1, 1, 1.4], [-1, -1, 1.4]];
+
+function findPath(x0, y0, x1, y1) {
+  const [sx, sy] = nearestFree(w2c(x0), w2c(y0));
+  const [tx, ty] = nearestFree(w2c(x1), w2c(y1));
+  const start = sy * GW + sx, goal = ty * GW + tx;
+  if (start === goal) return [{ x: x1, y: y1 }];
+  const open = [start];
+  const came = new Int32Array(GW * GD).fill(-1);
+  const g = new Float32Array(GW * GD).fill(Infinity);
+  const f = new Float32Array(GW * GD).fill(Infinity);
+  g[start] = 0;
+  f[start] = Math.hypot(tx - sx, ty - sy);
+  const inOpen = new Uint8Array(GW * GD);
+  inOpen[start] = 1;
+  while (open.length) {
+    let bi = 0;
+    for (let i = 1; i < open.length; i++) if (f[open[i]] < f[open[bi]]) bi = i;
+    const cur = open.splice(bi, 1)[0];
+    inOpen[cur] = 0;
+    if (cur === goal) {
+      const path = [];
+      let n = cur;
+      while (n !== start) { path.push({ x: c2w(n % GW), y: c2w(Math.floor(n / GW)) }); n = came[n]; }
+      path.reverse();
+      path.push({ x: x1, y: y1 });
+      // light smoothing: drop every other waypoint
+      return path.filter((_, i) => i % 2 === 0 || i === path.length - 1);
+    }
+    const cx = cur % GW, cy = Math.floor(cur / GW);
+    for (const [dx, dy, cost] of NEIGH) {
+      const nx = cx + dx, ny = cy + dy;
+      if (nx < 0 || nx >= GW || ny < 0 || ny >= GD) continue;
+      const ni = ny * GW + nx;
+      if (blocked[ni]) continue;
+      const ng = g[cur] + cost;
+      if (ng < g[ni]) {
+        came[ni] = cur;
+        g[ni] = ng;
+        f[ni] = ng + Math.hypot(tx - nx, ty - ny);
+        if (!inOpen[ni]) { open.push(ni); inOpen[ni] = 1; }
+      }
+    }
+  }
+  return [{ x: x1, y: y1 }];
+}
+
 // ---------------------------------------------------------------- canvas + camera
 
 const canvas = document.getElementById("scene");
 const ctx = canvas.getContext("2d");
 
 const bg = new Image();
-bg.src = "assets/tower-bg.jpg";
+bg.src = "assets/facility-bg.jpg";
 
-// The artwork has two static elevator cabs painted in. Find them (bright
-// teal glass in the shaft column), cut one out as the moving-cab sprite,
-// and remember their rects so we can paint shaft over them each frame.
-let cabInfo = null;
-function analyzeArt() {
-  try {
-    const oc = document.createElement("canvas");
-    oc.width = ART_W; oc.height = ART_H;
-    const c2 = oc.getContext("2d");
-    c2.drawImage(bg, 0, 0, ART_W, ART_H);
-    const X0 = 612, X1 = 782, W = X1 - X0;
-    const d = c2.getImageData(X0, 0, W, ART_H).data;
-    const bands = [];
-    let start = -1;
-    for (let y = 0; y < ART_H; y++) {
-      let cnt = 0;
-      for (let x = 0; x < W; x += 2) {
-        const i = (y * W + x) * 4;
-        const r = d[i], g = d[i + 1], b = d[i + 2];
-        if (g > 140 && b > 150 && g + b > r * 1.9) cnt++;
-      }
-      const hit = cnt > W / 6;
-      if (hit && start < 0) start = y;
-      if (!hit && start >= 0) {
-        if (y - start > 60) bands.push([start, y]);
-        start = -1;
-      }
-    }
-    if (start >= 0 && ART_H - start > 60) bands.push([start, ART_H]);
-    if (!bands.length) return;
-    const pad = 14;
-    const [a, b] = bands[0];
-    const H = (b - a) + pad * 2;
-    const sprite = document.createElement("canvas");
-    sprite.width = W; sprite.height = H;
-    sprite.getContext("2d").drawImage(oc, X0, a - pad, W, H, 0, 0, W, H);
-    cabInfo = {
-      X0, W, H, sprite,
-      covers: bands.map(([s, e]) => [Math.max(0, s - pad), Math.min(ART_H, e + pad)]),
-    };
-  } catch (e) { /* canvas tainted or decode issue — cab overlay disabled */ }
-}
-if (bg.complete && bg.naturalWidth) analyzeArt();
-else bg.onload = analyzeArt;
-
-function drawShaftCover(y0, y1) {
-  const { X0, W } = cabInfo;
-  ctx.fillStyle = "#191430";
-  ctx.fillRect(X0, y0, W, y1 - y0);
-  ctx.fillStyle = "#0e0b1e";                    // cables
-  ctx.fillRect(X0 + W / 2 - 4, y0, 3, y1 - y0);
-  ctx.fillRect(X0 + W / 2 + 3, y0, 3, y1 - y0);
-  ctx.fillStyle = "#38305c";                    // rails
-  ctx.fillRect(X0 + 5, y0, 5, y1 - y0);
-  ctx.fillRect(X0 + W - 10, y0, 5, y1 - y0);
-  FEET_Y.forEach((fy) => {                      // crossing beams at slab lines
-    if (fy > y0 - 16 && fy < y1 + 4) {
-      ctx.fillStyle = "#2a2350";
-      ctx.fillRect(X0, fy - 4, W, 18);
-      ctx.fillStyle = "rgba(46,230,200,0.35)";
-      ctx.fillRect(X0, fy - 4, W, 2);
-    }
-  });
-}
-
-const cam = { x: 700, y: 700, zoom: 0.75 };
-const camGoal = { x: 700, y: 700, zoom: 0.75 };
+const cam = { x: 512, y: 512, zoom: 1 };
+const camGoal = { x: 512, y: 512, zoom: 1 };
 let userCamUntil = 0;
 
 function resize() {
@@ -208,39 +231,38 @@ function resize() {
   canvas._w = rect.width; canvas._h = rect.height; canvas._dpr = dpr;
   fitDefault();
 }
-// Cinematic close-up like the reference video: 2-3 floors fill the screen.
-// Landscape frames ~2 rooms + shaft; portrait frames one full room width.
-function cineZoom() { return canvas._w / (canvas._w > canvas._h ? 900 : 660); }
+
+// Cinematic close-up like the reference: ~2 rooms fill the screen.
+function cineZoom() { return canvas._w / (canvas._w > canvas._h ? 620 : 420); }
 
 function clampCam(goal) {
   const hw = canvas._w / (2 * goal.zoom), hh = canvas._h / (2 * goal.zoom);
-  goal.x = Math.max(Math.min(goal.x, ART_W - hw + 60), hw - 60);
-  goal.y = Math.max(Math.min(goal.y, ART_H - hh + 30), hh - 260);
+  goal.x = Math.max(Math.min(goal.x, ART_W - hw + 80), hw - 80);
+  goal.y = Math.max(Math.min(goal.y, ART_H - hh + 80), hh - 80);
 }
 
 function fitDefault() {
   camGoal.zoom = cineZoom();
-  camGoal.x = ART_W / 2;
-  camGoal.y = floorY(3) - 60;
+  camGoal.x = REACTOR.x;
+  camGoal.y = REACTOR.y;
   clampCam(camGoal);
 }
-
-// Auto-tour: when idle, glide between rooms where agents actually are.
-setInterval(() => {
-  if (performance.now() < userCamUntil || meetingCtl.phase !== "idle" || chatAgent) return;
-  const candidates = sprites.filter((s) => !s.riding);
-  const s = candidates[Math.floor(Math.random() * candidates.length)];
-  if (!s) return;
-  camGoal.x = s.x;
-  camGoal.y = s.y - 90;
-  camGoal.zoom = cineZoom();
-  clampCam(camGoal);
-}, 9000);
 window.addEventListener("resize", resize);
 
 function screenToWorld(sx, sy) {
   return [(sx - canvas._w / 2) / cam.zoom + cam.x, (sy - canvas._h / 2) / cam.zoom + cam.y];
 }
+
+// idle auto-tour between rooms with agents
+setInterval(() => {
+  if (performance.now() < userCamUntil || meetingCtl.phase !== "idle" || chatAgent) return;
+  const s = sprites[Math.floor(Math.random() * sprites.length)];
+  if (!s) return;
+  camGoal.x = s.x;
+  camGoal.y = s.y;
+  camGoal.zoom = cineZoom();
+  clampCam(camGoal);
+}, 9000);
 
 // ---------------------------------------------------------------- pixel sprites
 
@@ -252,9 +274,8 @@ const FRAMES = {
   talk1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
   cheer: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "a.bbbb.a", "aabbbbaa", "...bb...", "..bbbb..", "..l..l..", "..l..l.."],
   sit:   ["........", "..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", "..bbbb..", "..llll..", "..l..l.."],
-  press: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
 };
-const PXS = 5; // sprite ~40 x 50 world px
+const PXS = 4; // sprite ~32 x 40 world px
 
 function mixHex(hex, other, t) {
   const h = (s) => [parseInt(s.slice(1, 3), 16), parseInt(s.slice(3, 5), 16), parseInt(s.slice(5, 7), 16)];
@@ -273,19 +294,22 @@ function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
   };
   const rows = frame.length, cols = frame[0].length;
   const w = cols * PXS, h = rows * PXS;
-  // shadow
-  ctx.fillStyle = "rgba(0,0,0,0.4)";
+  // glow pool on the deck (reads well on the dark art)
+  const grad = ctx.createRadialGradient(x, y, 2, x, y, 26);
+  grad.addColorStop(0, a.color + "55");
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.ellipse(x, y + 2, 18, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(x, y, 26, 12, 0, 0, Math.PI * 2);
   ctx.fill();
-  // dark outline for readability against the busy art
-  ctx.fillStyle = "rgba(5,3,12,0.55)";
+  // outline
+  ctx.fillStyle = "rgba(0,0,0,0.7)";
   for (let r = 0; r < rows; r++) {
     const row = frame[r];
     for (let c = 0; c < cols; c++) {
       const ch = row[flip ? cols - 1 - c : c];
       if (ch === ".") continue;
-      ctx.fillRect(x - w / 2 + c * PXS - 1.5, y - h + r * PXS - 1.5, PXS + 3, PXS + 3);
+      ctx.fillRect(x - w / 2 + c * PXS - 1.2, y - h + r * PXS - 1.2, PXS + 2.4, PXS + 2.4);
     }
   }
   for (let r = 0; r < rows; r++) {
@@ -298,20 +322,20 @@ function drawSprite(a, x, y, frame, flip, talking, tGlobal) {
     }
   }
   // name tag
-  ctx.font = "bold 15px 'Share Tech Mono', monospace";
-  const tw = ctx.measureText(a.name).width + 12;
-  ctx.fillStyle = "rgba(10,8,20,0.9)";
-  ctx.fillRect(x - tw / 2, y - h - 24, tw, 18);
+  ctx.font = "bold 12px 'Share Tech Mono', monospace";
+  const tw = ctx.measureText(a.name).width + 10;
+  ctx.fillStyle = "rgba(4,8,12,0.85)";
+  ctx.fillRect(x - tw / 2, y - h - 20, tw, 15);
   ctx.strokeStyle = a.color;
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(x - tw / 2, y - h - 24, tw, 18);
-  ctx.fillStyle = "#fff";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x - tw / 2, y - h - 20, tw, 15);
+  ctx.fillStyle = "#e8fbff";
   ctx.textAlign = "center";
-  ctx.fillText(a.name, x, y - h - 10);
+  ctx.fillText(a.name, x, y - h - 8);
   ctx.textAlign = "left";
 }
 
-// ---------------------------------------------------------------- speech bubbles
+// ---------------------------------------------------------------- speech bubbles + floaters
 
 const bubbles = [];
 function say(sprite, text, secs = 2.8) {
@@ -322,9 +346,9 @@ function drawBubbles(now) {
   for (let i = bubbles.length - 1; i >= 0; i--) {
     const b = bubbles[i];
     if (now > b.until) { bubbles.splice(i, 1); continue; }
-    const x = b.s.x, y = b.s.y - 80;
-    ctx.font = "15px 'Share Tech Mono', monospace";
-    const maxW = 240;
+    const x = b.s.x, y = b.s.y - 60;
+    ctx.font = "13px 'Share Tech Mono', monospace";
+    const maxW = 200;
     const words = b.text.split(" ");
     const lines = [];
     let cur = "";
@@ -333,23 +357,23 @@ function drawBubbles(now) {
       else cur = cur ? cur + " " + w : w;
     });
     lines.push(cur);
-    const bw = Math.min(maxW, Math.max(...lines.map((l) => ctx.measureText(l).width))) + 20;
-    const bh = lines.length * 19 + 12;
-    const bx = Math.max(20, Math.min(ART_W - 20 - bw, x - bw / 2));
+    const bw = Math.min(maxW, Math.max(...lines.map((l) => ctx.measureText(l).width))) + 18;
+    const bh = lines.length * 17 + 10;
+    const bx = Math.max(10, Math.min(ART_W - 10 - bw, x - bw / 2));
     const by = y - bh;
-    ctx.fillStyle = "rgba(250,252,255,0.97)";
+    ctx.fillStyle = "rgba(235,250,252,0.95)";
     ctx.strokeStyle = b.s.agent.color;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.roundRect(bx, by, bw, bh, 5);
+    ctx.roundRect(bx, by, bw, bh, 4);
     ctx.fill(); ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(x - 6, by + bh); ctx.lineTo(x + 6, by + bh); ctx.lineTo(x, by + bh + 9);
+    ctx.moveTo(x - 5, by + bh); ctx.lineTo(x + 5, by + bh); ctx.lineTo(x, by + bh + 8);
     ctx.closePath();
-    ctx.fillStyle = "rgba(250,252,255,0.97)";
+    ctx.fillStyle = "rgba(235,250,252,0.95)";
     ctx.fill();
-    ctx.fillStyle = "#141126";
-    lines.forEach((l, li) => ctx.fillText(l, bx + 10, by + 20 + li * 19));
+    ctx.fillStyle = "#0c1418";
+    lines.forEach((l, li) => ctx.fillText(l, bx + 9, by + 17 + li * 17));
   }
 }
 
@@ -357,93 +381,12 @@ const floaters = [];
 function drawFloaters(dt) {
   for (let i = floaters.length - 1; i >= 0; i--) {
     const f = floaters[i];
-    f.y -= 30 * dt; f.life -= dt;
+    f.y -= 26 * dt; f.life -= dt;
     if (f.life <= 0) { floaters.splice(i, 1); continue; }
     ctx.globalAlpha = Math.min(1, f.life);
-    ctx.font = "22px sans-serif";
+    ctx.font = "18px sans-serif";
     ctx.fillText(f.emoji, f.x, f.y);
     ctx.globalAlpha = 1;
-  }
-}
-
-// ---------------------------------------------------------------- elevator
-// Full door choreography: agents press the call button and wait beside the
-// shaft, doors slide open, they walk in, ride visibly behind the glass,
-// doors open at the destination and they walk out.
-
-const elevator = { f: 5, target: null, state: "idle", doorT: 0, dwell: 0, riders: [], waiting: [] };
-
-function requestRide(sprite, toFloor) {
-  sprite.state = "waitLift";
-  sprite.liftTo = toFloor;
-  sprite.liftWait = 0;
-  elevator.waiting.push(sprite);
-  floaters.push({ x: sprite.x + 22, y: sprite.y - 55, emoji: "🔼", life: 1.6 });
-}
-
-function cabBottom() { return floorYF(elevator.f) + 4; }
-
-function updateElevator(dt) {
-  const SPEED = 1.05;
-  const e = elevator;
-
-  // keep riders glued inside the cab
-  e.riders.forEach((r, i) => {
-    r.x = SHAFT_MID + (i - (e.riders.length - 1) / 2) * 32;
-    r.cabY = cabBottom() - 4;
-  });
-
-  if (e.state === "idle") {
-    if (e.riders.length) { e.target = e.riders[0].liftTo; e.state = "moving"; }
-    else if (e.waiting.length) {
-      e.target = e.waiting[0].floor;
-      e.state = Math.abs(e.target - e.f) < 0.03 ? "opening" : "moving";
-    }
-  } else if (e.state === "moving") {
-    const d = e.target - e.f;
-    if (Math.abs(d) < 0.03) { e.f = e.target; e.state = "opening"; }
-    else e.f += Math.sign(d) * Math.min(Math.abs(d), SPEED * dt);
-  } else if (e.state === "opening") {
-    e.doorT = Math.min(1, e.doorT + dt / 0.5);
-    if (e.doorT >= 1) {
-      e.state = "open";
-      e.dwell = 1.6;
-      // arrivals step out
-      for (let i = e.riders.length - 1; i >= 0; i--) {
-        const r = e.riders[i];
-        if (r.liftTo === e.f) {
-          e.riders.splice(i, 1);
-          r.riding = false;
-          r.floor = e.f;
-          r.x = SHAFT_MID;
-          r.state = "walk";
-          r.tx = r.afterLiftX ?? ROOMS[r.room].cx;
-        }
-      }
-      // boarders start walking in (they finish in updateSprite)
-      let slots = 3 - e.riders.length;
-      e.waiting.forEach((w) => {
-        if (slots > 0 && w.floor === e.f && w.state === "waitLift") {
-          w.state = "walk";
-          w.boarding = true;
-          w.tx = SHAFT_MID;
-          slots--;
-        }
-      });
-    }
-  } else if (e.state === "open") {
-    e.dwell -= dt;
-    const boardingNow = sprites.some((s) => s.boarding && s.floor === e.f);
-    if (e.dwell <= 0 && !boardingNow) e.state = "closing";
-  } else if (e.state === "closing") {
-    e.doorT = Math.max(0, e.doorT - dt / 0.5);
-    if (e.doorT <= 0) {
-      if (e.riders.length) { e.target = e.riders[0].liftTo; e.state = "moving"; }
-      else if (e.waiting.length) {
-        e.target = e.waiting[0].floor;
-        e.state = Math.abs(e.target - e.f) < 0.03 ? "opening" : "moving";
-      } else e.state = "idle";
-    }
   }
 }
 
@@ -453,75 +396,50 @@ const sprites = AGENTS.map((a, i) => {
   const r = ROOMS[a.room];
   return {
     agent: a, room: a.room,
-    floor: r.floor, x: r.cx + (i % 2 ? 40 : -40), y: floorY(r.floor),
-    tx: null, speed: 70 + Math.random() * 25,
+    x: r.cx + (i % 2 ? 30 : -30), y: r.cy + 20,
+    path: [], speed: 55 + Math.random() * 20,
     state: "pause", pause: 1 + Math.random() * 3,
     walkPhase: Math.random() * 10, flip: false,
-    workT: 0, riding: false, boarding: false,
+    workT: 0,
     convoCooldown: performance.now() + 8000 + Math.random() * 15000,
     chatting: false, mode: "free",
-    afterArrive: null, liftTo: 0,
+    afterArrive: null,
   };
 });
 const spriteOf = (id) => sprites.find((s) => s.agent.id === id);
 
-function walkTo(s, floor, x, after) {
+function walkTo(s, x, y, after) {
   s.afterArrive = after || null;
-  if (floor === s.floor) { s.tx = x; s.state = "walk"; }
-  else {
-    s.tx = LIFT_WAIT_X - (elevator.waiting.length % 3) * 30;
-    s.state = "walk";
-    s.pendingLift = { floor, x };
-  }
+  s.path = findPath(s.x, s.y, x, y);
+  s.state = "walk";
+}
+
+function roomAnchor(r) {
+  return {
+    x: r.x0 + 30 + Math.random() * (r.x1 - r.x0 - 60),
+    y: r.y0 + 40 + Math.random() * (r.y1 - r.y0 - 60),
+  };
 }
 
 function updateSprite(s, dt, now) {
-  if (s.riding) { s.y = s.cabY ?? cabBottom() - 4; return; }
-  s.y = floorY(s.floor);
   if (s.state === "walk") {
-    const dx = s.tx - s.x;
-    if (Math.abs(dx) < 4) {
-      s.x = s.tx;
-      if (s.boarding) {
-        // stepped inside the cab — become a rider
-        s.boarding = false;
-        s.riding = true;
-        s.state = "riding";
-        const wi = elevator.waiting.indexOf(s);
-        if (wi >= 0) elevator.waiting.splice(wi, 1);
-        elevator.riders.push(s);
-        elevator.dwell = Math.max(elevator.dwell, 0.6);
-        return;
-      }
-      if (s.pendingLift) {
-        const p = s.pendingLift; s.pendingLift = null;
-        requestRide(s, p.floor);
-        s.afterLiftX = p.x;
-        return;
-      }
+    const wp = s.path[0];
+    if (!wp) {
       const after = s.afterArrive; s.afterArrive = null;
       if (after === "work") { s.state = "work"; s.workT = 4 + Math.random() * 3; }
       else if (after === "seat") { s.state = "seated"; }
       else if (after === "crowd") { s.state = "crowd"; }
       else if (after === "podium") { s.state = "podium"; }
       else { s.state = "pause"; s.pause = 1.5 + Math.random() * 3.5; }
-    } else {
-      s.flip = dx < 0;
-      s.x += Math.sign(dx) * s.speed * dt;
-      s.walkPhase += dt * 10;
+      return;
     }
-  } else if (s.state === "waitLift") {
-    s.flip = false; // face the shaft
-    s.liftWait = (s.liftWait || 0) + dt;
-    if (s.liftWait > 25) {
-      // lift never came (shouldn't happen) — give up and take the stairs
-      const wi = elevator.waiting.indexOf(s);
-      if (wi >= 0) elevator.waiting.splice(wi, 1);
-      s.liftWait = 0;
-      s.floor = s.liftTo;
-      s.state = "walk";
-      s.tx = s.afterLiftX ?? ROOMS[s.room].cx;
-    }
+    const dx = wp.x - s.x, dy = wp.y - s.y;
+    const d = Math.hypot(dx, dy);
+    if (d < 4) { s.path.shift(); return; }
+    if (Math.abs(dx) > 2) s.flip = dx < 0;
+    s.x += (dx / d) * s.speed * dt;
+    s.y += (dy / d) * s.speed * dt;
+    s.walkPhase += dt * 10;
   } else if (s.state === "work") {
     s.workT -= dt;
     if (s.workT <= 0) { s.state = "pause"; s.pause = 1 + Math.random() * 2; }
@@ -529,13 +447,14 @@ function updateSprite(s, dt, now) {
     if (s.mode !== "free" || s.chatting) return;
     s.pause -= dt;
     if (s.pause <= 0) {
-      if (Math.random() < 0.18) {
-        const keys = Object.keys(ROOMS).filter((k) => k !== "townhall");
+      if (Math.random() < 0.2) {
+        const keys = Object.keys(ROOMS);
         const dest = ROOMS[keys[Math.floor(Math.random() * keys.length)]];
-        walkTo(s, dest.floor, dest.x0 + 40 + Math.random() * (dest.x1 - dest.x0 - 80));
+        const p = roomAnchor(dest);
+        walkTo(s, p.x, p.y);
       } else {
-        const r = ROOMS[s.room];
-        walkTo(s, r.floor, r.x0 + 35 + Math.random() * (r.x1 - r.x0 - 70));
+        const p = roomAnchor(ROOMS[s.room]);
+        walkTo(s, p.x, p.y);
       }
     }
   }
@@ -544,7 +463,6 @@ function updateSprite(s, dt, now) {
 function frameFor(s) {
   if (s.state === "walk") return Math.floor(s.walkPhase) % 2 ? FRAMES.walk1 : FRAMES.walk2;
   if (s.state === "work") return FRAMES.work1;
-  if (s.state === "waitLift") return FRAMES.press;
   if (s.state === "crowd" && meetingCtl.cheer) return FRAMES.cheer;
   if (s.state === "seated") return bubbles.some((b) => b.s === s) ? FRAMES.talk1 : FRAMES.sit;
   if (bubbles.some((b) => b.s === s)) return FRAMES.talk1;
@@ -560,7 +478,7 @@ function tryConversations(now) {
     for (let j = i + 1; j < sprites.length; j++) {
       const B = sprites[j];
       if (B.mode !== "free" || B.state !== "pause" || B.chatting || now < B.convoCooldown) continue;
-      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 90 || A.riding || B.riding) continue;
+      if (Math.hypot(A.x - B.x, A.y - B.y) > 90) continue;
       A.flip = A.x > B.x; B.flip = B.x > A.x;
       const la = LINES[A.agent.id], lb = LINES[B.agent.id];
       const open = la.open[Math.floor(Math.random() * la.open.length)];
@@ -577,7 +495,7 @@ function tryConversations(now) {
   }
 }
 
-// ---------------------------------------------------------------- meetings + town hall
+// ---------------------------------------------------------------- meetings + all-hands
 
 const meetingCtl = { phase: "idle", attendees: [], step: 0, timer: 0, cheer: false, kind: null };
 
@@ -588,34 +506,37 @@ function startMeeting() {
   meetingCtl.kind = "standup";
   meetingCtl.phase = "gather";
   meetingCtl.attendees = [mgr, ...attendees];
-  meetingCtl.timer = 24;
+  meetingCtl.timer = 26;
   meetingCtl.step = 0;
-  say(mgr, "📢 Standup in the MEETING BAY — now!", 3);
-  pushLog(byId("manager"), "📢 called a standup in MEETING BAY");
-  const m = ROOMS.meeting;
+  say(mgr, "📢 Standup at the WAR TABLE — now!", 3);
+  pushLog(byId("manager"), "📢 called a standup at the war table");
   meetingCtl.attendees.forEach((s, i) => {
     s.mode = "meeting";
-    walkTo(s, m.floor, i === 0 ? MEET_HEAD_X : MEET_SEATS[i - 1] ?? m.cx, "seat");
+    const p = i === 0 ? WAR_HEAD : WAR_SEATS[i - 1];
+    walkTo(s, p.x, p.y, "seat");
   });
-  focusCamera(1060, floorY(5) - 90, Math.min(canvas._w / 640, 1.7));
+  focusCamera(WAR.x, WAR.y, cineZoom() * 1.15);
 }
 
 function startTownhall() {
   meetingCtl.kind = "townhall";
   meetingCtl.phase = "gather";
-  meetingCtl.timer = 30;
+  meetingCtl.timer = 32;
   meetingCtl.step = 0;
   meetingCtl.attendees = [...sprites];
-  const t = ROOMS.townhall;
   const mgr = spriteOf("manager");
-  pushLog(byId("manager"), "🎤 ALL HANDS — town hall on the ground floor!");
-  say(mgr, "🎤 ALL HANDS in the TOWN HALL. Everyone down!", 3);
+  pushLog(byId("manager"), "🎤 ALL HANDS — gather at the reactor core!");
+  say(mgr, "🎤 ALL HANDS at the CORE. Everyone in!", 3);
   sprites.forEach((s, i) => {
     s.mode = "townhall";
-    if (s.agent.id === "manager") walkTo(s, t.floor, PODIUM_X, "podium");
-    else walkTo(s, t.floor, CROWD_X0 + (i % 6) * CROWD_STEP + Math.floor(i / 6) * 20, "crowd");
+    if (s.agent.id === "manager") {
+      walkTo(s, REACTOR.x, REACTOR.y - 92, "podium");
+    } else {
+      const ang = Math.PI * 0.15 + (i / 10) * Math.PI * 1.1; // arc below the core
+      walkTo(s, REACTOR.x + Math.cos(ang) * 120, REACTOR.y + 70 + Math.sin(ang) * 46, "crowd");
+    }
   });
-  focusCamera(t.cx + 60, floorY(0) - 90, Math.min(canvas._w / 700, 1.5));
+  focusCamera(REACTOR.x, REACTOR.y + 10, cineZoom() * 1.05);
 }
 
 function updateMeetings(dt, now) {
@@ -664,7 +585,7 @@ function updateMeetings(dt, now) {
         setTimeout(() => (meetingCtl.cheer = false), 1800);
         sprites.forEach((s) => {
           if (s.agent.id !== "manager" && Math.random() < 0.6)
-            floaters.push({ x: s.x + (Math.random() * 24 - 12), y: s.y - 60, emoji: ["👏", "🚀", "💯", "🔥"][Math.floor(Math.random() * 4)], life: 1.6 });
+            floaters.push({ x: s.x + (Math.random() * 20 - 10), y: s.y - 48, emoji: ["👏", "🚀", "💯", "🔥"][Math.floor(Math.random() * 4)], life: 1.6 });
         });
         meetingCtl.step++;
         meetingCtl.timer = 4.2;
@@ -683,8 +604,8 @@ function updateMeetings(dt, now) {
     if (meetingCtl.timer <= 0) {
       meetingCtl.attendees.forEach((s) => {
         s.mode = "free";
-        const r = ROOMS[s.room];
-        walkTo(s, r.floor, r.cx + (Math.random() * 80 - 40));
+        const p = roomAnchor(ROOMS[s.room]);
+        walkTo(s, p.x, p.y);
       });
       meetingCtl.attendees = [];
       meetingCtl.phase = "idle";
@@ -720,7 +641,6 @@ AGENTS.forEach((a) => {
     <div class="agent-info">
       <div class="agent-name">${a.name}</div>
       <div class="agent-role">${a.role}</div>
-      <div class="agent-wf">💬 click to chat via n8n</div>
     </div>
     <div class="agent-status" style="color:${a.statusColor || ""}">● ${a.status}</div>`;
   card.addEventListener("click", () => openChat(a));
@@ -744,8 +664,8 @@ function pushLog(agent, msg, cls) {
   logEl.scrollTop = logEl.scrollHeight;
 }
 
-pushLog(null, `TOWER ONLINE — linked to ${SNAP.instance} (${SNAP.totals.workflows} workflows, ${SNAP.totals.executions} runs)`);
-pushLog(null, "Agents talk, meet and hold town halls. Click anyone to chat via n8n 💬");
+pushLog(null, `STATION ONLINE — linked to ${SNAP.instance} (${SNAP.totals.workflows} workflows, ${SNAP.totals.executions} runs)`);
+pushLog(null, "Agents patrol the corridors, meet at the war table and rally at the core. Click anyone to chat via n8n 💬");
 
 let runs = SNAP.totals.executions, sales = 0, stock = 1240;
 const startTime = performance.now();
@@ -772,11 +692,10 @@ function scheduleEvent() {
     const s = spriteOf(a.id);
     const r = ROOMS[s.room];
     if (s.mode === "free" && !s.chatting && s.state === "pause" && r.desks.length) {
-      walkTo(s, r.floor, r.desks[Math.floor(Math.random() * r.desks.length)], "work");
+      const d = r.desks[Math.floor(Math.random() * r.desks.length)];
+      walkTo(s, d.x, d.y, "work");
     }
-    if (!s.riding) {
-      floaters.push({ x: s.x, y: s.y - 62, emoji: ["⚙️", "✉️", "📊", "✅"][Math.floor(Math.random() * 4)], life: 1.5 });
-    }
+    floaters.push({ x: s.x, y: s.y - 50, emoji: ["⚙️", "✉️", "📊", "✅"][Math.floor(Math.random() * 4)], life: 1.5 });
     if (Math.random() < 0.15) {
       sales++;
       stock = Math.max(0, stock - (1 + Math.floor(Math.random() * 3)));
@@ -838,7 +757,7 @@ function openChat(a) {
   sprites.forEach((sp) => (sp.chatting = false));
   s.chatting = true;
   say(s, "💬 On a call with Ryan", 2.4);
-  focusCamera(s.x, s.y - 70, Math.min(canvas._w / 620, 1.8));
+  focusCamera(s.x, s.y, cineZoom() * 1.2);
   chatInput.focus();
 }
 
@@ -1002,28 +921,6 @@ canvas.addEventListener("pointerdown", (e) => {
   canvas.classList.add("dragging");
   document.getElementById("sidebar").classList.remove("open");
 });
-
-document.getElementById("btn-roster").addEventListener("click", () =>
-  document.getElementById("sidebar").classList.toggle("open"));
-
-// pinch zoom on touch devices
-let pinchDist = 0;
-canvas.addEventListener("touchmove", (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    dragging = false;
-    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
-      e.touches[0].clientY - e.touches[1].clientY);
-    if (pinchDist) {
-      const nz = Math.max(0.3, Math.min(3, cam.zoom * (d / pinchDist)));
-      cam.zoom = nz;
-      camGoal.zoom = nz; camGoal.x = cam.x; camGoal.y = cam.y;
-      userCamUntil = performance.now() + 30000;
-    }
-    pinchDist = d;
-  }
-}, { passive: false });
-canvas.addEventListener("touchend", () => (pinchDist = 0));
 window.addEventListener("pointermove", (e) => {
   if (!dragging) return;
   const dx = e.clientX - px, dy = e.clientY - py;
@@ -1038,8 +935,8 @@ window.addEventListener("pointerup", (e) => {
   if (dragging && !moved) {
     const rect = canvas.getBoundingClientRect();
     const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
-    const hit = sprites.find((s) => !s.riding &&
-      Math.abs(wx - s.x) < 28 && wy < s.y + 8 && wy > s.y - 62);
+    const hit = sprites.find((s) =>
+      Math.abs(wx - s.x) < 24 && wy < s.y + 8 && wy > s.y - 52);
     if (hit) openChat(hit.agent);
   }
   dragging = false;
@@ -1048,7 +945,7 @@ canvas.addEventListener("wheel", (e) => {
   e.preventDefault();
   const rect = canvas.getBoundingClientRect();
   const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
-  const nz = Math.max(0.3, Math.min(3, cam.zoom * (e.deltaY < 0 ? 1.12 : 0.9)));
+  const nz = Math.max(0.4, Math.min(4, cam.zoom * (e.deltaY < 0 ? 1.12 : 0.9)));
   cam.x = wx - (wx - cam.x) * (cam.zoom / nz);
   cam.y = wy - (wy - cam.y) * (cam.zoom / nz);
   cam.zoom = nz;
@@ -1056,38 +953,55 @@ canvas.addEventListener("wheel", (e) => {
   userCamUntil = performance.now() + 30000;
 }, { passive: false });
 
+document.getElementById("btn-roster").addEventListener("click", () =>
+  document.getElementById("sidebar").classList.toggle("open"));
+
+let pinchDist = 0;
+canvas.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    dragging = false;
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY);
+    if (pinchDist) {
+      const nz = Math.max(0.4, Math.min(4, cam.zoom * (d / pinchDist)));
+      cam.zoom = nz;
+      camGoal.zoom = nz; camGoal.x = cam.x; camGoal.y = cam.y;
+      userCamUntil = performance.now() + 30000;
+    }
+    pinchDist = d;
+  }
+}, { passive: false });
+canvas.addEventListener("touchend", () => (pinchDist = 0));
+
 // ---------------------------------------------------------------- drawing
 
-const stars = Array.from({ length: 160 }, () => ({
-  x: Math.random() * 3000 - 800, y: Math.random() * 2200 - 400, r: Math.random() * 2 + 0.6,
+const stars = Array.from({ length: 140 }, () => ({
+  x: Math.random() * 2200 - 600, y: Math.random() * 2200 - 600, r: Math.random() * 1.8 + 0.5,
 }));
 
 function drawRoomLabel(r, now) {
-  const yTop = floorY(r.floor) - 172;
-  ctx.font = "bold 13px 'Share Tech Mono', monospace";
+  ctx.font = "bold 12px 'Share Tech Mono', monospace";
   const tw = ctx.measureText(r.name).width + 12;
-  const x = r.x0 + 8, y = yTop;
+  const x = r.x0 + 8, y = r.y0 + 10;
   const flicker = Math.sin(now / 100 + r.x0) > -0.94 ? 1 : 0.4;
-  ctx.globalAlpha = 0.92 * flicker;
-  ctx.fillStyle = "rgba(8,6,18,0.85)";
-  ctx.fillRect(x, y, tw, 17);
+  ctx.globalAlpha = 0.9 * flicker;
+  ctx.fillStyle = "rgba(4,8,12,0.8)";
+  ctx.fillRect(x, y, tw, 16);
   ctx.strokeStyle = r.sign;
   ctx.lineWidth = 1;
-  ctx.strokeRect(x, y, tw, 17);
+  ctx.strokeRect(x, y, tw, 16);
   ctx.fillStyle = r.sign;
-  ctx.fillText(r.name, x + 6, y + 13);
+  ctx.fillText(r.name, x + 6, y + 12);
   ctx.globalAlpha = 1;
 }
 
 function draw(now, dt) {
   const W = canvas._w, H = canvas._h, dpr = canvas._dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = true; // painterly art, smooth scaling
 
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, "#1c0b33");
-  grad.addColorStop(1, "#0a0518");
-  ctx.fillStyle = grad;
+  ctx.fillStyle = "#020308";
   ctx.fillRect(0, 0, W, H);
 
   ctx.save();
@@ -1095,54 +1009,26 @@ function draw(now, dt) {
   ctx.scale(cam.zoom, cam.zoom);
   ctx.translate(-cam.x, -cam.y);
 
-  // stars beyond the artwork
-  ctx.fillStyle = "#c9b8ff";
+  ctx.fillStyle = "#9fb8d8";
   stars.forEach((s) => {
-    ctx.globalAlpha = 0.35 + 0.35 * Math.sin(now / 900 + s.x);
+    ctx.globalAlpha = 0.25 + 0.3 * Math.sin(now / 900 + s.x);
     ctx.fillRect(s.x, s.y, s.r, s.r);
   });
   ctx.globalAlpha = 1;
 
-  // the AI-painted tower
   if (bg.complete && bg.naturalWidth) ctx.drawImage(bg, 0, 0, ART_W, ART_H);
-
-  // animated elevator: hide the painted cabs, draw the live one + riders
-  if (cabInfo) {
-    cabInfo.covers.forEach(([y0, y1]) => drawShaftCover(y0, y1));
-    const bot = cabBottom();
-    const top = bot - cabInfo.H + 10;
-    ctx.drawImage(cabInfo.sprite, cabInfo.X0, top);
-    // riders visible inside
-    elevator.riders.forEach((r) => {
-      drawSprite(r.agent, r.x, bot - 6, FRAMES.stand, false, false, now);
-    });
-    // glass shine over riders
-    ctx.fillStyle = "rgba(160,235,240,0.10)";
-    ctx.fillRect(cabInfo.X0 + 14, top + 16, cabInfo.W - 28, cabInfo.H - 34);
-    // sliding doors (doorT: 0 closed .. 1 open)
-    const panelW = (cabInfo.W / 2 - 14) * (1 - elevator.doorT);
-    if (panelW > 1) {
-      ctx.fillStyle = "rgba(105,205,215,0.78)";
-      ctx.fillRect(cabInfo.X0 + 12, top + 14, panelW, cabInfo.H - 30);
-      ctx.fillRect(cabInfo.X0 + cabInfo.W - 12 - panelW, top + 14, panelW, cabInfo.H - 30);
-      ctx.strokeStyle = "rgba(20,60,70,0.6)";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(cabInfo.X0 + 12, top + 14, panelW, cabInfo.H - 30);
-      ctx.strokeRect(cabInfo.X0 + cabInfo.W - 12 - panelW, top + 14, panelW, cabInfo.H - 30);
-    }
-  }
 
   Object.values(ROOMS).forEach((r) => drawRoomLabel(r, now));
 
+  ctx.imageSmoothingEnabled = false; // crisp pixel sprites
   sprites.slice().sort((a, b) => a.y - b.y).forEach((s) => {
-    if (s.riding) return; // drawn inside the cab above
     const seated = s.state === "seated";
-    drawSprite(s.agent, s.x, s.y + (seated ? 4 : 0), frameFor(s), s.flip, bubbles.some((b) => b.s === s), now);
+    drawSprite(s.agent, s.x, s.y + (seated ? 3 : 0), frameFor(s), s.flip, bubbles.some((b) => b.s === s), now);
     if (s.chatting) {
       ctx.strokeStyle = s.agent.color;
-      ctx.setLineDash([5, 5]);
+      ctx.setLineDash([4, 4]);
       ctx.lineDashOffset = -(now / 60);
-      ctx.strokeRect(s.x - 26, s.y - 56, 52, 62);
+      ctx.strokeRect(s.x - 22, s.y - 46, 44, 52);
       ctx.setLineDash([]);
     }
   });
@@ -1154,7 +1040,7 @@ function draw(now, dt) {
 
   const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, H * 0.85);
   vg.addColorStop(0, "rgba(0,0,0,0)");
-  vg.addColorStop(1, "rgba(2,1,8,0.5)");
+  vg.addColorStop(1, "rgba(0,0,4,0.55)");
   ctx.fillStyle = vg;
   ctx.fillRect(0, 0, W, H);
 }
@@ -1166,7 +1052,6 @@ function tick(now) {
   const dt = Math.min((now - last) / 1000, 0.05);
   last = now;
 
-  updateElevator(dt);
   sprites.forEach((s) => updateSprite(s, dt, now));
   tryConversations(now);
   updateMeetings(dt, now);
