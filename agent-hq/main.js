@@ -15,7 +15,13 @@ const SNAP = window.N8N_SNAPSHOT;
 const ART_W = 1400, ART_H = 1400;
 // Walkable floor line per storey, ground (0) to top (5) — measured on the art.
 const FEET_Y = [1385, 1178, 985, 788, 594, 398];
+const floorYF = (f) => {          // walkable y for a fractional floor (elevator cab)
+  const lo = Math.max(0, Math.min(5, Math.floor(f)));
+  const hi = Math.min(5, lo + 1);
+  return FEET_Y[lo] + (FEET_Y[hi] - FEET_Y[lo]) * (f - lo);
+};
 const SHAFT_MID = 697;
+const LIFT_WAIT_X = 588;          // where agents stand while calling the lift
 const LX0 = 70, LX1 = 595, RX0 = 790, RX1 = 1340;
 const floorY = (f) => FEET_Y[f];
 
@@ -125,6 +131,71 @@ const ctx = canvas.getContext("2d");
 const bg = new Image();
 bg.src = "assets/tower-bg.jpg";
 
+// The artwork has two static elevator cabs painted in. Find them (bright
+// teal glass in the shaft column), cut one out as the moving-cab sprite,
+// and remember their rects so we can paint shaft over them each frame.
+let cabInfo = null;
+function analyzeArt() {
+  try {
+    const oc = document.createElement("canvas");
+    oc.width = ART_W; oc.height = ART_H;
+    const c2 = oc.getContext("2d");
+    c2.drawImage(bg, 0, 0, ART_W, ART_H);
+    const X0 = 612, X1 = 782, W = X1 - X0;
+    const d = c2.getImageData(X0, 0, W, ART_H).data;
+    const bands = [];
+    let start = -1;
+    for (let y = 0; y < ART_H; y++) {
+      let cnt = 0;
+      for (let x = 0; x < W; x += 2) {
+        const i = (y * W + x) * 4;
+        const r = d[i], g = d[i + 1], b = d[i + 2];
+        if (g > 140 && b > 150 && g + b > r * 1.9) cnt++;
+      }
+      const hit = cnt > W / 6;
+      if (hit && start < 0) start = y;
+      if (!hit && start >= 0) {
+        if (y - start > 60) bands.push([start, y]);
+        start = -1;
+      }
+    }
+    if (start >= 0 && ART_H - start > 60) bands.push([start, ART_H]);
+    if (!bands.length) return;
+    const pad = 14;
+    const [a, b] = bands[0];
+    const H = (b - a) + pad * 2;
+    const sprite = document.createElement("canvas");
+    sprite.width = W; sprite.height = H;
+    sprite.getContext("2d").drawImage(oc, X0, a - pad, W, H, 0, 0, W, H);
+    cabInfo = {
+      X0, W, H, sprite,
+      covers: bands.map(([s, e]) => [Math.max(0, s - pad), Math.min(ART_H, e + pad)]),
+    };
+  } catch (e) { /* canvas tainted or decode issue — cab overlay disabled */ }
+}
+if (bg.complete && bg.naturalWidth) analyzeArt();
+else bg.onload = analyzeArt;
+
+function drawShaftCover(y0, y1) {
+  const { X0, W } = cabInfo;
+  ctx.fillStyle = "#191430";
+  ctx.fillRect(X0, y0, W, y1 - y0);
+  ctx.fillStyle = "#0e0b1e";                    // cables
+  ctx.fillRect(X0 + W / 2 - 4, y0, 3, y1 - y0);
+  ctx.fillRect(X0 + W / 2 + 3, y0, 3, y1 - y0);
+  ctx.fillStyle = "#38305c";                    // rails
+  ctx.fillRect(X0 + 5, y0, 5, y1 - y0);
+  ctx.fillRect(X0 + W - 10, y0, 5, y1 - y0);
+  FEET_Y.forEach((fy) => {                      // crossing beams at slab lines
+    if (fy > y0 - 16 && fy < y1 + 4) {
+      ctx.fillStyle = "#2a2350";
+      ctx.fillRect(X0, fy - 4, W, 18);
+      ctx.fillStyle = "rgba(46,230,200,0.35)";
+      ctx.fillRect(X0, fy - 4, W, 2);
+    }
+  });
+}
+
 const cam = { x: 700, y: 700, zoom: 0.75 };
 const camGoal = { x: 700, y: 700, zoom: 0.75 };
 let userCamUntil = 0;
@@ -157,7 +228,7 @@ function fitDefault() {
 // Auto-tour: when idle, glide between rooms where agents actually are.
 setInterval(() => {
   if (performance.now() < userCamUntil || meetingCtl.phase !== "idle" || chatAgent) return;
-  const candidates = sprites.filter((s) => !s.hidden);
+  const candidates = sprites.filter((s) => !s.riding);
   const s = candidates[Math.floor(Math.random() * candidates.length)];
   if (!s) return;
   camGoal.x = s.x;
@@ -180,6 +251,8 @@ const FRAMES = {
   work1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", "aa.bb.aa", "..bbbb..", "..l..l..", "..l..l.."],
   talk1: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
   cheer: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "a.bbbb.a", "aabbbbaa", "...bb...", "..bbbb..", "..l..l..", "..l..l.."],
+  sit:   ["........", "..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbba.", "..bbbb..", "..llll..", "..l..l.."],
+  press: ["..hhhh..", ".hhhhhh.", ".hvvvvh.", ".hhhhhh.", "..bbbb..", ".abbbbaa", ".a.bb...", "..bbbb..", "..l..l..", "..l..l.."],
 };
 const PXS = 5; // sprite ~40 x 50 world px
 
@@ -294,44 +367,82 @@ function drawFloaters(dt) {
 }
 
 // ---------------------------------------------------------------- elevator
+// Full door choreography: agents press the call button and wait beside the
+// shaft, doors slide open, they walk in, ride visibly behind the glass,
+// doors open at the destination and they walk out.
 
-const elevator = { f: 5, target: null, riders: [], waiting: [] };
+const elevator = { f: 5, target: null, state: "idle", doorT: 0, dwell: 0, riders: [], waiting: [] };
+
 function requestRide(sprite, toFloor) {
   sprite.state = "waitLift";
   sprite.liftTo = toFloor;
+  sprite.liftWait = 0;
   elevator.waiting.push(sprite);
+  floaters.push({ x: sprite.x + 22, y: sprite.y - 55, emoji: "🔼", life: 1.6 });
 }
+
+function cabBottom() { return floorYF(elevator.f) + 4; }
+
 function updateElevator(dt) {
-  const SPEED = 1.4;
-  if (elevator.target === null) {
-    if (elevator.riders.length) elevator.target = elevator.riders[0].liftTo;
-    else if (elevator.waiting.length) elevator.target = elevator.waiting[0].floor;
-  }
-  if (elevator.target !== null) {
-    const d = elevator.target - elevator.f;
-    if (Math.abs(d) < 0.03) {
-      elevator.f = elevator.target;
-      elevator.target = null;
-      for (let i = elevator.riders.length - 1; i >= 0; i--) {
-        const r = elevator.riders[i];
-        if (r.liftTo === elevator.f) {
-          elevator.riders.splice(i, 1);
-          r.floor = elevator.f;
+  const SPEED = 1.05;
+  const e = elevator;
+
+  // keep riders glued inside the cab
+  e.riders.forEach((r, i) => {
+    r.x = SHAFT_MID + (i - (e.riders.length - 1) / 2) * 32;
+    r.cabY = cabBottom() - 4;
+  });
+
+  if (e.state === "idle") {
+    if (e.riders.length) { e.target = e.riders[0].liftTo; e.state = "moving"; }
+    else if (e.waiting.length) {
+      e.target = e.waiting[0].floor;
+      e.state = Math.abs(e.target - e.f) < 0.03 ? "opening" : "moving";
+    }
+  } else if (e.state === "moving") {
+    const d = e.target - e.f;
+    if (Math.abs(d) < 0.03) { e.f = e.target; e.state = "opening"; }
+    else e.f += Math.sign(d) * Math.min(Math.abs(d), SPEED * dt);
+  } else if (e.state === "opening") {
+    e.doorT = Math.min(1, e.doorT + dt / 0.5);
+    if (e.doorT >= 1) {
+      e.state = "open";
+      e.dwell = 1.6;
+      // arrivals step out
+      for (let i = e.riders.length - 1; i >= 0; i--) {
+        const r = e.riders[i];
+        if (r.liftTo === e.f) {
+          e.riders.splice(i, 1);
+          r.riding = false;
+          r.floor = e.f;
           r.x = SHAFT_MID;
-          r.hidden = false;
           r.state = "walk";
+          r.tx = r.afterLiftX ?? ROOMS[r.room].cx;
         }
       }
-      for (let i = elevator.waiting.length - 1; i >= 0; i--) {
-        const w = elevator.waiting[i];
-        if (w.floor === elevator.f && Math.abs(w.x - SHAFT_MID) < 40) {
-          elevator.waiting.splice(i, 1);
-          w.hidden = true;
-          elevator.riders.push(w);
+      // boarders start walking in (they finish in updateSprite)
+      let slots = 3 - e.riders.length;
+      e.waiting.forEach((w) => {
+        if (slots > 0 && w.floor === e.f && w.state === "waitLift") {
+          w.state = "walk";
+          w.boarding = true;
+          w.tx = SHAFT_MID;
+          slots--;
         }
-      }
-    } else {
-      elevator.f += Math.sign(d) * Math.min(Math.abs(d), SPEED * dt);
+      });
+    }
+  } else if (e.state === "open") {
+    e.dwell -= dt;
+    const boardingNow = sprites.some((s) => s.boarding && s.floor === e.f);
+    if (e.dwell <= 0 && !boardingNow) e.state = "closing";
+  } else if (e.state === "closing") {
+    e.doorT = Math.max(0, e.doorT - dt / 0.5);
+    if (e.doorT <= 0) {
+      if (e.riders.length) { e.target = e.riders[0].liftTo; e.state = "moving"; }
+      else if (e.waiting.length) {
+        e.target = e.waiting[0].floor;
+        e.state = Math.abs(e.target - e.f) < 0.03 ? "opening" : "moving";
+      } else e.state = "idle";
     }
   }
 }
@@ -346,7 +457,7 @@ const sprites = AGENTS.map((a, i) => {
     tx: null, speed: 70 + Math.random() * 25,
     state: "pause", pause: 1 + Math.random() * 3,
     walkPhase: Math.random() * 10, flip: false,
-    workT: 0, hidden: false,
+    workT: 0, riding: false, boarding: false,
     convoCooldown: performance.now() + 8000 + Math.random() * 15000,
     chatting: false, mode: "free",
     afterArrive: null, liftTo: 0,
@@ -358,23 +469,33 @@ function walkTo(s, floor, x, after) {
   s.afterArrive = after || null;
   if (floor === s.floor) { s.tx = x; s.state = "walk"; }
   else {
-    s.tx = SHAFT_MID;
+    s.tx = LIFT_WAIT_X - (elevator.waiting.length % 3) * 30;
     s.state = "walk";
     s.pendingLift = { floor, x };
   }
 }
 
 function updateSprite(s, dt, now) {
+  if (s.riding) { s.y = s.cabY ?? cabBottom() - 4; return; }
   s.y = floorY(s.floor);
-  if (s.hidden) return;
   if (s.state === "walk") {
     const dx = s.tx - s.x;
     if (Math.abs(dx) < 4) {
       s.x = s.tx;
+      if (s.boarding) {
+        // stepped inside the cab — become a rider
+        s.boarding = false;
+        s.riding = true;
+        s.state = "riding";
+        const wi = elevator.waiting.indexOf(s);
+        if (wi >= 0) elevator.waiting.splice(wi, 1);
+        elevator.riders.push(s);
+        elevator.dwell = Math.max(elevator.dwell, 0.6);
+        return;
+      }
       if (s.pendingLift) {
         const p = s.pendingLift; s.pendingLift = null;
         requestRide(s, p.floor);
-        s.tx = p.x;
         s.afterLiftX = p.x;
         return;
       }
@@ -390,8 +511,12 @@ function updateSprite(s, dt, now) {
       s.walkPhase += dt * 10;
     }
   } else if (s.state === "waitLift") {
+    s.flip = false; // face the shaft
     s.liftWait = (s.liftWait || 0) + dt;
-    if (s.liftWait > 12) {
+    if (s.liftWait > 25) {
+      // lift never came (shouldn't happen) — give up and take the stairs
+      const wi = elevator.waiting.indexOf(s);
+      if (wi >= 0) elevator.waiting.splice(wi, 1);
       s.liftWait = 0;
       s.floor = s.liftTo;
       s.state = "walk";
@@ -419,7 +544,9 @@ function updateSprite(s, dt, now) {
 function frameFor(s) {
   if (s.state === "walk") return Math.floor(s.walkPhase) % 2 ? FRAMES.walk1 : FRAMES.walk2;
   if (s.state === "work") return FRAMES.work1;
+  if (s.state === "waitLift") return FRAMES.press;
   if (s.state === "crowd" && meetingCtl.cheer) return FRAMES.cheer;
+  if (s.state === "seated") return bubbles.some((b) => b.s === s) ? FRAMES.talk1 : FRAMES.sit;
   if (bubbles.some((b) => b.s === s)) return FRAMES.talk1;
   return FRAMES.stand;
 }
@@ -433,7 +560,7 @@ function tryConversations(now) {
     for (let j = i + 1; j < sprites.length; j++) {
       const B = sprites[j];
       if (B.mode !== "free" || B.state !== "pause" || B.chatting || now < B.convoCooldown) continue;
-      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 90 || A.hidden || B.hidden) continue;
+      if (A.floor !== B.floor || Math.abs(A.x - B.x) > 90 || A.riding || B.riding) continue;
       A.flip = A.x > B.x; B.flip = B.x > A.x;
       const la = LINES[A.agent.id], lb = LINES[B.agent.id];
       const open = la.open[Math.floor(Math.random() * la.open.length)];
@@ -646,6 +773,9 @@ function scheduleEvent() {
     const r = ROOMS[s.room];
     if (s.mode === "free" && !s.chatting && s.state === "pause" && r.desks.length) {
       walkTo(s, r.floor, r.desks[Math.floor(Math.random() * r.desks.length)], "work");
+    }
+    if (!s.riding) {
+      floaters.push({ x: s.x, y: s.y - 62, emoji: ["⚙️", "✉️", "📊", "✅"][Math.floor(Math.random() * 4)], life: 1.5 });
     }
     if (Math.random() < 0.15) {
       sales++;
@@ -908,7 +1038,7 @@ window.addEventListener("pointerup", (e) => {
   if (dragging && !moved) {
     const rect = canvas.getBoundingClientRect();
     const [wx, wy] = screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
-    const hit = sprites.find((s) => !s.hidden &&
+    const hit = sprites.find((s) => !s.riding &&
       Math.abs(wx - s.x) < 28 && wy < s.y + 8 && wy > s.y - 62);
     if (hit) openChat(hit.agent);
   }
@@ -976,11 +1106,38 @@ function draw(now, dt) {
   // the AI-painted tower
   if (bg.complete && bg.naturalWidth) ctx.drawImage(bg, 0, 0, ART_W, ART_H);
 
+  // animated elevator: hide the painted cabs, draw the live one + riders
+  if (cabInfo) {
+    cabInfo.covers.forEach(([y0, y1]) => drawShaftCover(y0, y1));
+    const bot = cabBottom();
+    const top = bot - cabInfo.H + 10;
+    ctx.drawImage(cabInfo.sprite, cabInfo.X0, top);
+    // riders visible inside
+    elevator.riders.forEach((r) => {
+      drawSprite(r.agent, r.x, bot - 6, FRAMES.stand, false, false, now);
+    });
+    // glass shine over riders
+    ctx.fillStyle = "rgba(160,235,240,0.10)";
+    ctx.fillRect(cabInfo.X0 + 14, top + 16, cabInfo.W - 28, cabInfo.H - 34);
+    // sliding doors (doorT: 0 closed .. 1 open)
+    const panelW = (cabInfo.W / 2 - 14) * (1 - elevator.doorT);
+    if (panelW > 1) {
+      ctx.fillStyle = "rgba(105,205,215,0.78)";
+      ctx.fillRect(cabInfo.X0 + 12, top + 14, panelW, cabInfo.H - 30);
+      ctx.fillRect(cabInfo.X0 + cabInfo.W - 12 - panelW, top + 14, panelW, cabInfo.H - 30);
+      ctx.strokeStyle = "rgba(20,60,70,0.6)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cabInfo.X0 + 12, top + 14, panelW, cabInfo.H - 30);
+      ctx.strokeRect(cabInfo.X0 + cabInfo.W - 12 - panelW, top + 14, panelW, cabInfo.H - 30);
+    }
+  }
+
   Object.values(ROOMS).forEach((r) => drawRoomLabel(r, now));
 
   sprites.slice().sort((a, b) => a.y - b.y).forEach((s) => {
-    if (s.hidden) return;
-    drawSprite(s.agent, s.x, s.y, frameFor(s), s.flip, bubbles.some((b) => b.s === s), now);
+    if (s.riding) return; // drawn inside the cab above
+    const seated = s.state === "seated";
+    drawSprite(s.agent, s.x, s.y + (seated ? 4 : 0), frameFor(s), s.flip, bubbles.some((b) => b.s === s), now);
     if (s.chatting) {
       ctx.strokeStyle = s.agent.color;
       ctx.setLineDash([5, 5]);
