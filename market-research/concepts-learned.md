@@ -21,3 +21,20 @@ be a giant if trillions of units exist.
 One subtlety: market cap is the price of the *equity* only. It ignores
 debt. For heavy borrowers like utilities and REITs, analysts often use
 *enterprise value* (market cap + debt − cash) instead — a future concept.
+
+## 2. P/E ratio — 2026-08-05
+
+**P/E = share price ÷ earnings per share.** It answers: *how many dollars
+am I paying for each dollar of the company's annual profit?*
+
+If a company earns $10 per share each year and the stock trades at $200,
+the P/E is 20 — you're paying 20 years' worth of *current* profits. A high
+P/E (say 50+) usually means the market expects profits to grow fast; a low
+P/E (under ~12) often signals slow growth or trouble the market has already
+spotted. Neither is automatically "good" — a cheap-looking P/E can be a
+trap if earnings are about to fall, and an expensive one can be justified
+if earnings double.
+
+Two cautions: P/E is meaningless for loss-makers (no E), and always check
+whether the "E" is trailing (last 12 months, real) or forward (next 12
+months, a forecast).

@@ -105,3 +105,4 @@ PWR → ECL → COHR → ETH → NRG → CIEN → FN → SMR — then restart.
 | Date | Company covered |
 |---|---|
 | 2026-08-03 | NVDA |
+| 2026-08-05 | TSM |
