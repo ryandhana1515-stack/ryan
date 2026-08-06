@@ -1,0 +1,438 @@
+{
+  "name": "Viral Content Engine",
+  "nodes": [
+    {
+      "id": "n01",
+      "name": "01 Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [0, 0],
+      "parameters": {
+        "formTitle": "Viral Content Engine",
+        "formFields": {
+          "values": [
+            {"fieldLabel": "reference_url", "requiredField": true},
+            {"fieldLabel": "my_topic", "requiredField": true},
+            {"fieldLabel": "my_proof_asset", "requiredField": true}
+          ]
+        },
+        "responseMode": "lastNode"
+      }
+    },
+    {
+      "id": "n02",
+      "name": "02 Apify Download",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/clockworks~tiktok-scraper/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {"parameters": [{"name": "token", "value": "={{ $env.APIFY_TOKEN }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ postURLs: [$json.reference_url], shouldDownloadVideos: true }) }}",
+        "options": {"timeout": 300000}
+      }
+    },
+    {
+      "id": "n02b",
+      "name": "02b Fetch MP4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 0],
+      "parameters": {
+        "url": "={{ $json.videoMeta?.downloadAddr || $json.mediaUrls?.[0] }}",
+        "options": {"response": {"response": {"responseFormat": "file"}}}
+      }
+    },
+    {
+      "id": "n03",
+      "name": "03 Whisper Transcribe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [580, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/transcriptions",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"}]},
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {"parameterType": "formBinaryData", "name": "file", "inputDataFieldName": "data"},
+            {"name": "model", "value": "whisper-1"}
+          ]
+        },
+        "options": {"timeout": 300000}
+      }
+    },
+    {
+      "id": "n04",
+      "name": "04 Claude Agent A",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [760, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+            {"name": "anthropic-version", "value": "2023-06-01"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, thinking: { type: 'adaptive' }, messages: [{ role: 'user', content: $('Load Prompts').first().json.agent_a + '\\n\\nTRANSCRIPT:\\n' + $json.text }] }) }}",
+        "options": {"timeout": 120000}
+      }
+    },
+    {
+      "id": "n05",
+      "name": "05 Validate format_dna",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [940, 0],
+      "parameters": {
+        "jsCode": "const text = $json.content.filter(b => b.type === 'text').map(b => b.text).join('');\nconst clean = text.replace(/^```[a-z]*\\n?/, '').replace(/\\n?```$/, '').trim();\nlet dna;\ntry { dna = JSON.parse(clean); } catch (e) { throw new Error('format_dna parse failed — wire an error branch back to node 04: ' + e.message); }\nif (!dna.hook_type || !dna.beat_map) throw new Error('format_dna missing required keys');\nreturn [{ json: { format_dna: dna } }];"
+      }
+    },
+    {
+      "id": "n06",
+      "name": "06 Claude Agent B",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+            {"name": "anthropic-version", "value": "2023-06-01"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, thinking: { type: 'adaptive' }, messages: [{ role: 'user', content: $('Load Prompts').first().json.agent_b.replace('{{FORMAT_DNA}}', JSON.stringify($json.format_dna)).replace('{{TOPIC}}', $('01 Form Trigger').first().json.my_topic).replace('{{PROOF_ASSET}}', $('01 Form Trigger').first().json.my_proof_asset) }] }) }}",
+        "options": {"timeout": 120000}
+      }
+    },
+    {
+      "id": "n06b",
+      "name": "06b Parse Script",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 0],
+      "parameters": {
+        "jsCode": "const text = $json.content.filter(b => b.type === 'text').map(b => b.text).join('');\nconst clean = text.replace(/^```[a-z]*\\n?/, '').replace(/\\n?```$/, '').trim();\nconst script = JSON.parse(clean);\nreturn [{ json: { script } }];"
+      }
+    },
+    {
+      "id": "n07",
+      "name": "07 APPROVAL GATE (Telegram)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1480, 0],
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "message": "=NEW SCRIPT — approve?\n\nHOOK: {{ $json.script.hook }}\n\n{{ $json.script.script_lines.map(l => l.text).join('\\n') }}\n\nCTA: {{ $json.script.cta }}",
+        "approvalOptions": {"values": {"approvalType": "double"}}
+      }
+    },
+    {
+      "id": "n08",
+      "name": "08 Claude Agent C",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1660, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+            {"name": "anthropic-version", "value": "2023-06-01"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 8000, thinking: { type: 'adaptive' }, messages: [{ role: 'user', content: $('Load Prompts').first().json.agent_c.replace('{{SCRIPT_LINES}}', JSON.stringify($('06b Parse Script').first().json.script.script_lines)) }] }) }}",
+        "options": {"timeout": 120000}
+      }
+    },
+    {
+      "id": "n08b",
+      "name": "08b Split B-roll Map",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1840, 0],
+      "parameters": {
+        "jsCode": "const text = $json.content.filter(b => b.type === 'text').map(b => b.text).join('');\nconst clean = text.replace(/^```[a-z]*\\n?/, '').replace(/\\n?```$/, '').trim();\nconst map = JSON.parse(clean);\nreturn map.map(entry => ({ json: entry }));"
+      }
+    },
+    {
+      "id": "n09",
+      "name": "09 Switch source_class",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [2020, 0],
+      "parameters": {
+        "rules": {
+          "values": [
+            {"outputKey": "pexels", "conditions": {"conditions": [{"leftValue": "={{ $json.source_class }}", "rightValue": "generic_business", "operator": {"type": "string", "operation": "equals"}}]}},
+            {"outputKey": "pexels", "conditions": {"conditions": [{"leftValue": "={{ $json.source_class }}", "rightValue": "cinematic_hero", "operator": {"type": "string", "operation": "equals"}}]}},
+            {"outputKey": "pixabay", "conditions": {"conditions": [{"leftValue": "={{ $json.source_class }}", "rightValue": "tech_abstract", "operator": {"type": "string", "operation": "equals"}}]}},
+            {"outputKey": "kling", "conditions": {"conditions": [{"leftValue": "={{ $json.source_class }}", "rightValue": "impossible", "operator": {"type": "string", "operation": "equals"}}]}},
+            {"outputKey": "library", "conditions": {"conditions": [{"leftValue": "={{ $json.source_class }}", "rightValue": "screen_recording", "operator": {"type": "string", "operation": "equals"}}]}}
+          ]
+        }
+      }
+    },
+    {
+      "id": "n09a",
+      "name": "09a Pexels Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2240, -200],
+      "parameters": {
+        "url": "https://api.pexels.com/videos/search",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "={{ $env.PEXELS_API_KEY }}"}]},
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "query", "value": "={{ $json.primary_keyword }}"},
+            {"name": "orientation", "value": "portrait"},
+            {"name": "per_page", "value": "1"}
+          ]
+        }
+      }
+    },
+    {
+      "id": "n09b",
+      "name": "09b Pixabay Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2240, -60],
+      "parameters": {
+        "url": "https://pixabay.com/api/videos/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "key", "value": "={{ $env.PIXABAY_API_KEY }}"},
+            {"name": "q", "value": "={{ $json.primary_keyword }}"},
+            {"name": "per_page", "value": "3"}
+          ]
+        }
+      }
+    },
+    {
+      "id": "n09c",
+      "name": "09c Kling text2video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2240, 80],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api-singapore.klingai.com/v1/videos/text2video",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "=Bearer {{ $env.KLING_API_TOKEN }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model_name: 'kling-v1-6', prompt: $json.kling_prompt, duration: '5', aspect_ratio: '9:16' }) }}",
+        "options": {"timeout": 60000}
+      }
+    },
+    {
+      "id": "n09d",
+      "name": "09d Library Lookup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2240, 220],
+      "parameters": {
+        "jsCode": "// Look up your local B-roll library index (mount library/index.json into n8n,\n// or serve it over HTTP). Emits the matched clip path or flags a gap.\nreturn [{ json: { ...$json, library_status: 'lookup index.json for: ' + $json.primary_keyword } }];"
+      }
+    },
+    {
+      "id": "n10",
+      "name": "10 ElevenLabs TTS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2460, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.elevenlabs.io/v1/text-to-speech/{{ $env.ELEVENLABS_VOICE_ID }}",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "xi-api-key", "value": "={{ $env.ELEVENLABS_API_KEY }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $('06b Parse Script').first().json.script.script_lines.map(l => l.text).join(' ') + ' ' + $('06b Parse Script').first().json.script.cta, model_id: 'eleven_multilingual_v2' }) }}",
+        "options": {"response": {"response": {"responseFormat": "file"}}, "timeout": 300000}
+      }
+    },
+    {
+      "id": "n11",
+      "name": "11 Build Render Timeline",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 0],
+      "parameters": {
+        "jsCode": "// Assemble the JSON2Video movie spec from the B-roll search results.\n// Mirrors viral_engine/engine/timeline_builder.py build_movie().\nconst items = $('09a Pexels Search').all().concat($('09b Pixabay Search').all());\nconst scenes = items.map(item => {\n  const j = item.json;\n  const src = j.videos?.[0]?.video_files?.find(f => f.height >= 1080)?.link\n           || j.hits?.[0]?.videos?.large?.url;\n  return { elements: [{ type: 'video', src, resize: 'cover', muted: true, duration: 3 }] };\n});\nreturn [{ json: { resolution: 'instagram-story', quality: 'high', scenes, elements: [{ type: 'subtitles', settings: { style: 'boxed-word', 'font-family': 'Oswald Bold' } }] } }];"
+      }
+    },
+    {
+      "id": "n12",
+      "name": "12 JSON2Video Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2820, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.json2video.com/v2/movies",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "x-api-key", "value": "={{ $env.JSON2VIDEO_API_KEY }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      }
+    },
+    {
+      "id": "n12b",
+      "name": "12b Wait for Render",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [3000, 0],
+      "parameters": {"amount": 60, "unit": "seconds"}
+    },
+    {
+      "id": "n12c",
+      "name": "12c Poll Render Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3180, 0],
+      "parameters": {
+        "url": "https://api.json2video.com/v2/movies",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "x-api-key", "value": "={{ $env.JSON2VIDEO_API_KEY }}"}]},
+        "sendQuery": true,
+        "queryParameters": {"parameters": [{"name": "project", "value": "={{ $('12 JSON2Video Render').first().json.project }}"}]}
+      }
+    },
+    {
+      "id": "n12d",
+      "name": "12d Render Done?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3360, 0],
+      "parameters": {
+        "conditions": {
+          "conditions": [{"leftValue": "={{ $json.movie.status }}", "rightValue": "done", "operator": {"type": "string", "operation": "equals"}}]
+        }
+      }
+    },
+    {
+      "id": "n13",
+      "name": "13 Metricool Schedule",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3540, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://app.metricool.com/api/v2/scheduler/posts",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "X-Mc-Auth", "value": "={{ $env.METRICOOL_USER_TOKEN }}"}]},
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "blogId", "value": "={{ $env.METRICOOL_BLOG_ID }}"},
+            {"name": "userId", "value": "={{ $env.METRICOOL_USER_ID }}"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $('06b Parse Script').first().json.script.caption, providers: [{ network: 'tiktok' }, { network: 'instagram' }, { network: 'youtube' }, { network: 'facebook' }], media: [$json.movie.url], autoPublish: true, publicationDate: { dateTime: $now.plus({ hours: 2 }).toISO() } }) }}"
+      }
+    },
+    {
+      "id": "n14",
+      "name": "14 Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [3720, 0],
+      "parameters": {
+        "operation": "append",
+        "documentId": {"__rl": true, "mode": "id", "value": "YOUR_SHEET_ID"},
+        "sheetName": {"__rl": true, "mode": "name", "value": "runs"},
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $now.toISO() }}",
+            "topic": "={{ $('01 Form Trigger').first().json.my_topic }}",
+            "hook": "={{ $('06b Parse Script').first().json.script.hook }}",
+            "hook_type": "={{ $('05 Validate format_dna').first().json.format_dna.hook_type }}",
+            "video_url": "={{ $('12c Poll Render Status').first().json.movie.url }}"
+          }
+        }
+      }
+    },
+    {
+      "id": "nprompts",
+      "name": "Load Prompts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [110, -180],
+      "parameters": {
+        "jsCode": "// Paste the three prompt files from viral_engine/prompts/ here after import,\n// or read them from disk if your n8n instance has filesystem access.\nreturn [{ json: { agent_a: 'PASTE agent_a_deconstruct.txt', agent_b: 'PASTE agent_b_regenerate.txt', agent_c: 'PASTE agent_c_broll.txt' } }];"
+      }
+    }
+  ],
+  "connections": {
+    "01 Form Trigger": {"main": [[{"node": "Load Prompts", "type": "main", "index": 0}]]},
+    "Load Prompts": {"main": [[{"node": "02 Apify Download", "type": "main", "index": 0}]]},
+    "02 Apify Download": {"main": [[{"node": "02b Fetch MP4", "type": "main", "index": 0}]]},
+    "02b Fetch MP4": {"main": [[{"node": "03 Whisper Transcribe", "type": "main", "index": 0}]]},
+    "03 Whisper Transcribe": {"main": [[{"node": "04 Claude Agent A", "type": "main", "index": 0}]]},
+    "04 Claude Agent A": {"main": [[{"node": "05 Validate format_dna", "type": "main", "index": 0}]]},
+    "05 Validate format_dna": {"main": [[{"node": "06 Claude Agent B", "type": "main", "index": 0}]]},
+    "06 Claude Agent B": {"main": [[{"node": "06b Parse Script", "type": "main", "index": 0}]]},
+    "06b Parse Script": {"main": [[{"node": "07 APPROVAL GATE (Telegram)", "type": "main", "index": 0}]]},
+    "07 APPROVAL GATE (Telegram)": {"main": [[{"node": "08 Claude Agent C", "type": "main", "index": 0}]]},
+    "08 Claude Agent C": {"main": [[{"node": "08b Split B-roll Map", "type": "main", "index": 0}]]},
+    "08b Split B-roll Map": {"main": [[{"node": "09 Switch source_class", "type": "main", "index": 0}]]},
+    "09 Switch source_class": {
+      "main": [
+        [{"node": "09a Pexels Search", "type": "main", "index": 0}],
+        [{"node": "09a Pexels Search", "type": "main", "index": 0}],
+        [{"node": "09b Pixabay Search", "type": "main", "index": 0}],
+        [{"node": "09c Kling text2video", "type": "main", "index": 0}],
+        [{"node": "09d Library Lookup", "type": "main", "index": 0}]
+      ]
+    },
+    "09a Pexels Search": {"main": [[{"node": "10 ElevenLabs TTS", "type": "main", "index": 0}]]},
+    "09b Pixabay Search": {"main": [[{"node": "10 ElevenLabs TTS", "type": "main", "index": 0}]]},
+    "09c Kling text2video": {"main": [[{"node": "10 ElevenLabs TTS", "type": "main", "index": 0}]]},
+    "09d Library Lookup": {"main": [[{"node": "10 ElevenLabs TTS", "type": "main", "index": 0}]]},
+    "10 ElevenLabs TTS": {"main": [[{"node": "11 Build Render Timeline", "type": "main", "index": 0}]]},
+    "11 Build Render Timeline": {"main": [[{"node": "12 JSON2Video Render", "type": "main", "index": 0}]]},
+    "12 JSON2Video Render": {"main": [[{"node": "12b Wait for Render", "type": "main", "index": 0}]]},
+    "12b Wait for Render": {"main": [[{"node": "12c Poll Render Status", "type": "main", "index": 0}]]},
+    "12c Poll Render Status": {"main": [[{"node": "12d Render Done?", "type": "main", "index": 0}]]},
+    "12d Render Done?": {
+      "main": [
+        [{"node": "13 Metricool Schedule", "type": "main", "index": 0}],
+        [{"node": "12b Wait for Render", "type": "main", "index": 0}]
+      ]
+    },
+    "13 Metricool Schedule": {"main": [[{"node": "14 Log to Sheets", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1"},
+  "pinData": {}
+}
