@@ -82,17 +82,38 @@ Cloud render instead of ffmpeg: host `voiceover.mp3` somewhere public, then
 python engine/timeline_builder.py runs/<run-dir> --render --voiceover-url https://...
 ```
 
-## Automation lane (Weeks 2–4 — n8n)
+## Automation lane — DEPLOYED AND LIVE
 
-Import `n8n/viral-content-engine.json`, then:
+The workflow is **built and active** in the n8n cloud instance
+(`ryan1515.app.n8n.cloud`, workflow ID `FYNbtG0oHGWiDI2g`), deployed from
+`n8n/viral-content-engine.sdk.js` (the source of truth; `viral-content-engine.json`
+is the older raw-JSON reference template).
 
-1. Paste the three prompt files into the **Load Prompts** code node (or read
-   them from disk if your instance allows it).
-2. Set env vars on the n8n instance (same names as `.env`) and attach a
-   Telegram credential for the approval gate.
-3. Nodes are a working template, not gospel — test each stage with pinned
-   data before switching on the whole chain. Build order: ship nodes 01–07
-   first, use it for a week, then extend to 08–14.
+Live layout:
+
+- Form intake → Apify → Whisper → Agent A → Agent B → **Gmail approval gate**
+  (Approve/Reject buttons in your inbox, 24 h window) → Agent C → source
+  routing → Pexels pull → JSON2Video render (built-in voice + boxed-word
+  captions) → **Metricool draft** for the `biogreenelixirs` brand at the next
+  10:00 SGT slot (the measured TikTok engagement peak) → result email → log.
+- Claude (Sonnet 4.6) + Whisper run on **n8n managed credentials** — no keys needed.
+- `impossible` / `screen_recording` shots insert into the `kling_queue` data
+  table and render as placeholder cards, so a missing clip never blocks the video.
+- Runs log to the `viral_engine_runs` data table (hook_type per row = your
+  iteration dataset).
+
+Remaining one-time setup (4 keys, in the n8n credential picker on each node):
+
+| Node | Credential | Where the key goes |
+|---|---|---|
+| Apify Download Reference | Query auth | param name `token` |
+| Pexels Search | Header auth | header name `Authorization` |
+| Submit/Poll Render (×3) | Header auth | header name `x-api-key` |
+| Schedule On Metricool | Header auth | header name `X-Mc-Auth` |
+
+To use the cloned ElevenLabs voice instead of the default JSON2Video voice
+(`en-US-AndrewNeural`): add the ElevenLabs key in the JSON2Video dashboard,
+then change the `voice` value in the **Assemble Movie** node.
 
 ## The 100-variant engine
 
