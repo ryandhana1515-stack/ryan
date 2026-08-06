@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Archivo Black'; src: url('fonts/archivo-latin.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 800; src: url('fonts/inter-latin-800.woff2') format('woff2'); }
+  :root { --acc: #ff5e1c; --acc2: #ffaa00; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0a0c; }
+  #stage { position: absolute; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(ellipse 900px 700px at 50% 30%, #141419 0%, #0a0a0c 65%); }
+  .grid { position: absolute; inset: 0; opacity: 0.5;
+    background-image: radial-gradient(circle, #26262e 1.6px, transparent 1.6px);
+    background-size: 54px 54px; }
+  .glow { position: absolute; width: 1400px; height: 1400px; border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--acc) 24%, transparent) 0%, color-mix(in srgb, var(--acc) 0%, transparent) 60%);
+    left: -160px; top: 200px; }
+  .glow2 { position: absolute; width: 1000px; height: 1000px; border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--acc2) 12%, transparent) 0%, color-mix(in srgb, var(--acc2) 0%, transparent) 60%);
+    right: -300px; bottom: 100px; }
+  .af { font-family: 'Archivo Black', sans-serif; color: #fff; }
+  .in { font-family: 'Inter', sans-serif; font-weight: 800; color: #fff; }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+
+  #sc-title .kicker { position: absolute; top: 480px; width: 100%; text-align: center;
+    font-size: 58px; letter-spacing: 14px; color: #9a9aa4; }
+  #sc-title .big { position: absolute; top: 620px; width: 100%; text-align: center;
+    font-size: 210px; line-height: 1; color: #fff; text-shadow: 0 0 90px color-mix(in srgb, var(--acc) 55%, transparent); }
+  #sc-title .sub { position: absolute; top: 950px; width: 100%; text-align: center;
+    font-size: 70px; color: var(--acc); letter-spacing: 4px; }
+  #sc-title .ring { position: absolute; left: 50%; top: 740px; width: 760px; height: 760px;
+    margin-left: -380px; margin-top: -380px; border: 3px solid color-mix(in srgb, var(--acc) 50%, transparent); border-radius: 50%; }
+
+  #sc-avatar .frame { position: absolute; left: 110px; top: 330px; width: 860px; height: 1060px;
+    border-radius: 48px; overflow: hidden; background: linear-gradient(165deg, #1a1a21 0%, #101014 100%);
+    border: 2px solid #2e2e38; box-shadow: 0 60px 120px rgba(0,0,0,0.65), 0 0 90px color-mix(in srgb, var(--acc) 14%, transparent); }
+  #sc-avatar video { width: 100%; height: 100%; object-fit: cover; }
+  #sc-avatar .ph { position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 40px; }
+  #sc-avatar .ph .ring1, #sc-avatar .ph .ring2 { position: absolute; left: 50%; top: 46%;
+    border: 2px solid color-mix(in srgb, var(--acc) 40%, transparent); border-radius: 50%; }
+  #sc-avatar .ph .initials { width: 300px; height: 300px; border-radius: 50%;
+    background: linear-gradient(140deg, var(--acc), #ff9d00); display: flex; align-items: center;
+    justify-content: center; font-size: 120px; color: #0a0a0c; }
+  #sc-avatar .ph .lbl { font-size: 36px; letter-spacing: 8px; color: #6d6d78; }
+  #sc-avatar .wave { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 12px; align-items: flex-end; height: 90px; }
+  #sc-avatar .wave i { width: 14px; background: var(--acc); border-radius: 7px; display: block; }
+
+  #sc-flow .card { position: absolute; left: 90px; top: 400px; width: 900px; height: 940px;
+    background: linear-gradient(160deg, #17171d 0%, #101014 100%); border: 2px solid #2a2a33;
+    border-radius: 42px; box-shadow: 0 60px 120px rgba(0,0,0,0.6), 0 0 80px color-mix(in srgb, var(--acc) 12%, transparent); }
+  #sc-flow .cardtitle { position: absolute; top: 44px; width: 100%; text-align: center;
+    font-size: 40px; letter-spacing: 10px; color: #6d6d78; }
+  #sc-flow .step { position: absolute; top: 110px; width: 100%; text-align: center;
+    font-size: 54px; color: var(--acc); }
+  #sc-flow .node { position: absolute; width: 240px; height: 140px; border-radius: 24px;
+    background: #1d1d25; border: 2px solid #34343f; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; }
+  #sc-flow .node .nlabel { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 32px; color: #e8e8ee; }
+  #sc-flow .node .nsub { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 22px; color: #7a7a86; }
+  #sc-flow .node.hot { border-color: var(--acc); box-shadow: 0 0 44px color-mix(in srgb, var(--acc) 40%, transparent); }
+  #sc-flow svg { position: absolute; left: 0; top: 0; }
+  #sc-flow .pulse { position: absolute; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--acc2); box-shadow: 0 0 30px var(--acc); }
+
+  #sc-metric .was { position: absolute; top: 560px; width: 100%; text-align: center; font-size: 96px; color: #6d6d78; }
+  #sc-metric .was .strike { position: relative; }
+  #sc-metric .was .strike .line { position: absolute; left: -4%; top: 52%; height: 10px; width: 108%;
+    background: var(--acc); border-radius: 5px; transform-origin: left center; }
+  #sc-metric .now { position: absolute; top: 720px; width: 100%; text-align: center;
+    font-size: 250px; line-height: 1; color: #fff; text-shadow: 0 0 90px color-mix(in srgb, var(--acc2) 50%, transparent); }
+  #sc-metric .nowsub { position: absolute; top: 1010px; width: 100%; text-align: center;
+    font-size: 64px; color: var(--acc2); letter-spacing: 6px; }
+  #sc-metric .chip { position: absolute; top: 1160px; left: 50%; width: 680px; margin-left: -340px;
+    white-space: nowrap; height: 110px; border-radius: 26px; background: #16161c; border: 2px solid #2e2e38;
+    display: flex; align-items: center; justify-content: center; gap: 22px; font-size: 38px; color: #cfcfda; }
+  #sc-metric .chip b { color: #7CFC9A; }
+
+  #sc-cta .cta { position: absolute; top: 700px; width: 100%; text-align: center;
+    font-size: 126px; line-height: 1.12; color: #fff; }
+  #sc-cta .cta .hl { color: var(--acc); }
+  #sc-cta .under { position: absolute; top: 1030px; left: 50%; margin-left: -280px; width: 560px;
+    height: 14px; border-radius: 7px; background: var(--acc); transform-origin: left center; }
+  #sc-cta .fbtn { position: absolute; top: 1130px; left: 50%; margin-left: -190px; width: 380px; height: 120px;
+    border-radius: 60px; background: var(--acc); color: #0a0a0c; display: flex; align-items: center;
+    justify-content: center; font-size: 52px; box-shadow: 0 0 70px color-mix(in srgb, var(--acc) 55%, transparent); }
+
+
+  #sc-term .card { position: absolute; left: 90px; top: 430px; width: 900px; height: 900px;
+    background: #0d0d10; border: 2px solid #26262e; border-radius: 42px;
+    box-shadow: 0 60px 120px rgba(0,0,0,0.6), 0 0 80px color-mix(in srgb, var(--acc) 14%, transparent); }
+  #sc-term .tbar { position: absolute; top: 0; left: 0; right: 0; height: 90px;
+    border-bottom: 2px solid #1e1e24; display: flex; align-items: center; gap: 16px; padding-left: 44px; }
+  #sc-term .tbar i { width: 26px; height: 26px; border-radius: 50%; background: #2c2c34; display: block; }
+  #sc-term .cmd { position: absolute; top: 130px; left: 50px; right: 50px;
+    font-family: 'Courier New', monospace; font-weight: 700; font-size: 34px; color: #9effa9;
+    color: var(--acc2); word-break: break-all; line-height: 1.5; }
+  #sc-term .tbrand { position: absolute; top: 380px; width: 100%; text-align: center;
+    font-size: 150px; color: #fff; letter-spacing: 6px; text-shadow: 0 0 70px color-mix(in srgb, var(--acc) 50%, transparent); }
+  #sc-term .bar { position: absolute; top: 620px; left: 120px; right: 120px; height: 36px;
+    border-radius: 18px; background: #1a1a20; overflow: hidden; }
+  #sc-term .bar i { display: block; height: 100%; background: var(--acc); border-radius: 18px;
+    box-shadow: 0 0 30px var(--acc); }
+  #sc-term .pct { position: absolute; top: 690px; width: 100%; text-align: center;
+    font-size: 40px; color: #8a8a96; letter-spacing: 6px; }
+  #sc-pills .wrap { position: absolute; top: 520px; left: 0; width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 60px; }
+  #sc-pills .pill { padding: 34px 80px; border-radius: 70px; background: #0d0d10;
+    border: 4px solid var(--acc); font-size: 72px; color: #fff;
+    box-shadow: 0 0 60px color-mix(in srgb, var(--acc) 40%, transparent), inset 0 0 30px color-mix(in srgb, var(--acc) 12%, transparent); }
+
+  #cap { position: absolute; left: 0; width: 100%; top: 1460px; text-align: center; z-index: 50; }
+  #cap .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; padding: 0 70px; }
+  #cap .w { font-family: 'Archivo Black', sans-serif; font-size: 72px; color: #ffffff;
+    padding: 8px 20px; border-radius: 18px; text-shadow: 0 4px 24px rgba(0,0,0,0.8); }
+  #cap .w.on { background: var(--acc); color: #0c0c0e; text-shadow: none; }
+  .brand { position: absolute; top: 60px; width: 100%; text-align: center; z-index: 60;
+    font-size: 34px; letter-spacing: 12px; color: #55555f; font-family: 'Inter', sans-serif; font-weight: 800; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="grid"></div>
+  <div class="glow"></div>
+  <div class="glow2"></div>
+  <div class="brand" id="brand">RYAN &middot; AI AUTOMATION</div>
+
+  <div class="scene" id="sc-title">
+    <div class="ring" id="t-ring"></div>
+    <div class="kicker in" id="t-kicker"></div>
+    <div class="big af" id="t-big"></div>
+    <div class="sub af" id="t-sub"></div>
+  </div>
+
+  <div class="scene" id="sc-avatar">
+    <div class="frame" id="a-frame">
+      <video id="a-video" muted preload="auto" style="display:none"></video>
+      <div class="ph" id="a-ph">
+        <div class="ring1" id="a-r1"></div>
+        <div class="ring2" id="a-r2"></div>
+        <div class="initials af" id="a-init">RD</div>
+        <div class="lbl in">YOUR AVATAR CLIP</div>
+      </div>
+      <div class="wave" id="a-wave"></div>
+    </div>
+  </div>
+
+  <div class="scene" id="sc-flow">
+    <div class="card" id="f-card">
+      <div class="cardtitle in" id="f-title"></div>
+      <div class="step af" id="f-step"></div>
+      <svg width="900" height="940" viewBox="0 0 900 940">
+        <path id="fw0" d="M 300 400 C 390 400, 420 540, 480 540" stroke="#3c3c48" stroke-width="6" fill="none"/>
+        <path id="fw1" d="M 660 610 C 700 640, 690 700, 650 730" stroke="#3c3c48" stroke-width="6" fill="none"/>
+        <path id="fw2" d="M 400 800 C 370 800, 360 790, 350 780" stroke="#3c3c48" stroke-width="6" fill="none"/>
+      </svg>
+      <div class="node" id="fn0" style="left:70px; top:330px;"><div class="nlabel"></div><div class="nsub"></div></div>
+      <div class="node" id="fn1" style="left:480px; top:470px;"><div class="nlabel"></div><div class="nsub"></div></div>
+      <div class="node" id="fn2" style="left:420px; top:730px;"><div class="nlabel"></div><div class="nsub"></div></div>
+      <div class="node" id="fn3" style="left:100px; top:710px;"><div class="nlabel"></div><div class="nsub"></div></div>
+      <div class="pulse" id="f-pulse"></div>
+    </div>
+  </div>
+
+  <div class="scene" id="sc-metric">
+    <div class="was in"><span class="strike"><span id="m-was"></span><span class="line" id="m-line"></span></span></div>
+    <div class="now af" id="m-now"></div>
+    <div class="nowsub in" id="m-sub"></div>
+    <div class="chip in" id="m-chip"></div>
+  </div>
+
+  <div class="scene" id="sc-cta">
+    <div class="cta af" id="c-text"></div>
+    <div class="under" id="c-under"></div>
+    <div class="fbtn in" id="c-btn"></div>
+  </div>
+
+  <div class="scene" id="sc-term">
+    <div class="card">
+      <div class="tbar"><i></i><i></i><i></i></div>
+      <div class="cmd" id="tm-cmd"></div>
+      <div class="tbrand af" id="tm-brand"></div>
+      <div class="bar"><i id="tm-bar"></i></div>
+      <div class="pct in" id="tm-pct"></div>
+    </div>
+  </div>
+
+  <div class="scene" id="sc-pills">
+    <div class="wrap in" id="p-wrap"></div>
+  </div>
+
+  <div id="cap"></div>
+</div>
+
+<script>
+let DATA = null;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,t) => a + (b-a)*t;
+const easeOut = t => 1 - Math.pow(1-t, 3);
+const easeInOut = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+const seg01 = (t,a,b) => clamp((t-a)/(b-a), 0, 1);
+const el = id => document.getElementById(id);
+
+let wires = [];
+function initWires() {
+  wires = ['fw0','fw1','fw2'].map(id => {
+    const p = el(id); const L = p.getTotalLength(); p.style.strokeDasharray = L; return { p, L };
+  });
+}
+function pointOnWires(u) {
+  const total = wires.reduce((s,w) => s + w.L, 0);
+  let d = u * total;
+  for (const w of wires) { if (d <= w.L) return w.p.getPointAtLength(d); d -= w.L; }
+  return wires[wires.length-1].p.getPointAtLength(wires[wires.length-1].L);
+}
+
+function loadData(data) {
+  DATA = data;
+  if (data.accent) document.documentElement.style.setProperty('--acc', data.accent);
+  if (data.accent2) document.documentElement.style.setProperty('--acc2', data.accent2);
+  if (data.brand) el('brand').textContent = data.brand;
+  const wave = el('a-wave');
+  wave.innerHTML = Array.from({length: 12}, () => '<i></i>').join('');
+  if (data.avatar && data.avatar.src) {
+    el('a-video').src = data.avatar.src;
+    el('a-video').style.display = 'block';
+    el('a-ph').style.display = 'none';
+  }
+  initWires();
+  seek(0);
+}
+
+function setCaption(t) {
+  const cap = el('cap');
+  const segs = DATA.captions;
+  let html = '';
+  for (const s of segs) {
+    if (t >= s.words[0].t - 0.05 && t <= s.end + 0.15) {
+      let wi = 0;
+      for (let i = 0; i < s.words.length; i++) if (t >= s.words[i].t) wi = i;
+      html = '<div class="row">' + s.words.map((w, i) =>
+        `<span class="w ${i === wi ? 'on' : ''}"${i === wi ? ' style="transform:scale(1.08)"' : ''}>${w.w.toUpperCase()}</span>`
+      ).join('') + '</div>';
+      break;
+    }
+  }
+  cap.innerHTML = html;
+}
+
+function sceneOpacity(t, s) {
+  return seg01(t, s.start, s.start + 0.25) * (1 - seg01(t, s.end - 0.25, s.end));
+}
+
+function renderTitle(t, s) {
+  el('t-kicker').textContent = s.kicker || '';
+  el('t-big').textContent = s.big || '';
+  el('t-sub').textContent = s.sub || '';
+  const u = t - s.start;
+  const k = easeOut(seg01(u, 0.05, 0.5));
+  el('t-kicker').style.transform = `translateY(${lerp(-40,0,k)}px)`; el('t-kicker').style.opacity = k;
+  const m = seg01(u, 0.3, 0.7);
+  const shake = m >= 1 && u < 1.25 ? Math.sin(u*90) * 6 * (1 - seg01(u, 0.7, 1.25)) : 0;
+  el('t-big').style.transform = `scale(${lerp(2.6,1,easeOut(m))}) translateX(${shake}px)`;
+  el('t-big').style.opacity = m;
+  const sv = easeOut(seg01(u, 0.9, 1.4));
+  el('t-sub').style.transform = `translateY(${lerp(40,0,sv)}px)`; el('t-sub').style.opacity = sv;
+  const r = seg01(u, 0.3, 2.1);
+  el('t-ring').style.transform = `scale(${lerp(0.6,1.25,easeOut(r))})`;
+  el('t-ring').style.opacity = (1-r) * 0.9;
+}
+
+function renderAvatar(t, s) {
+  const u = t - s.start;
+  const c = easeOut(seg01(u, 0, 0.45));
+  el('a-frame').style.transform = `translateY(${lerp(120,0,c)}px) scale(${lerp(0.94,1,c)})`;
+  for (const [id, base, speed] of [['a-r1', 340, 2.4], ['a-r2', 430, 3.1]]) {
+    const ph = (u * speed) % 2;
+    const gr = ph / 2;
+    const sz = base + gr * 160;
+    const e = el(id);
+    e.style.width = sz + 'px'; e.style.height = sz + 'px';
+    e.style.marginLeft = (-sz/2) + 'px'; e.style.marginTop = (-sz/2) + 'px';
+    e.style.opacity = (1 - gr) * 0.6;
+  }
+  const bars = el('a-wave').children;
+  for (let i = 0; i < bars.length; i++) {
+    const h = 24 + Math.abs(Math.sin(u * 7 + i * 1.1)) * 60;
+    bars[i].style.height = h + 'px';
+  }
+  const v = el('a-video');
+  if (DATA.avatar && DATA.avatar.src) {
+    const vt = (s.offset !== undefined ? s.offset : (DATA.avatar.offset || 0)) + u;
+    if (Math.abs(v.currentTime - vt) > 0.02) v.currentTime = vt;
+  }
+}
+
+function renderFlow(t, s) {
+  el('f-title').textContent = s.title || 'WORKFLOW';
+  const u = t - s.start;
+  const c = easeOut(seg01(u, 0, 0.55));
+  const tilt = Math.sin(u * 0.9) * 1.3;
+  el('f-card').style.transform =
+    `perspective(1600px) translateY(${lerp(140,0,c)}px) rotateX(${6-6*c+tilt}deg) rotateY(${-tilt}deg) scale(${lerp(0.92,1,c)})`;
+  let stepText = '';
+  for (const st of (s.steps || [])) if (t >= st.at) stepText = st.text;
+  el('f-step').textContent = stepText;
+  (s.nodes || []).forEach((n, i) => {
+    if (i > 3) return;
+    const nd = el('fn' + i);
+    nd.children[0].textContent = n.label; nd.children[1].textContent = n.sub || '';
+    const a = easeOut(seg01(t, n.at, n.at + 0.4));
+    nd.style.opacity = a;
+    nd.style.transform = `scale(${lerp(0.6,1,a)})`;
+    nd.classList.toggle('hot', !!n.hot && t >= n.hot[0] && t <= n.hot[1]);
+  });
+  wires.forEach((w, i) => {
+    const n = (s.nodes || [])[i+1];
+    const at = n ? n.at + 0.15 : s.start + 1;
+    const d = seg01(t, at, at + 0.5);
+    w.p.style.strokeDashoffset = w.L * (1 - easeOut(d));
+  });
+  const pu = s.pulse ? seg01(t, s.pulse[0], s.pulse[1]) : 0;
+  const pt = pointOnWires(easeInOut(pu));
+  const pulse = el('f-pulse');
+  pulse.style.left = (pt.x-13) + 'px'; pulse.style.top = (pt.y-13) + 'px';
+  pulse.style.opacity = pu > 0 && pu < 1 ? 1 : 0;
+}
+
+function renderMetric(t, s) {
+  el('m-was').textContent = s.was;
+  el('m-sub').textContent = s.label || '';
+  el('m-chip').innerHTML = s.chip ? `<span>${s.chip[0]}</span><span>&rarr;</span><b>${s.chip[1]}</b>` : '';
+  const u = t - s.start;
+  const wv = easeOut(seg01(u, 0.05, 0.45));
+  el('m-was').parentElement.parentElement.style.opacity = wv;
+  el('m-line').style.transform = `scaleX(${easeOut(seg01(u, 0.55, 1.0))})`;
+  const nv = seg01(u, 0.85, 1.3);
+  const counter = lerp(s.from, s.to, easeOut(seg01(u, 0.85, 2.05)));
+  el('m-now').textContent = counter.toFixed(1) + (s.suffix || '');
+  el('m-now').style.opacity = nv;
+  el('m-now').style.transform = `scale(${lerp(1.8,1,easeOut(nv))})`;
+  el('m-sub').style.opacity = easeOut(seg01(u, 1.35, 1.75));
+  const cv = easeOut(seg01(u, 1.95, 2.45));
+  el('m-chip').style.opacity = cv;
+  el('m-chip').style.transform = `translateY(${lerp(50,0,cv)}px)`;
+}
+
+function renderCta(t, s) {
+  el('c-text').innerHTML = `${s.line1}<br><span class="hl">${s.line2}</span>`;
+  el('c-btn').textContent = s.btn || '+ FOLLOW';
+  const u = t - s.start;
+  const c = easeOut(seg01(u, 0.05, 0.6));
+  el('c-text').style.transform = `scale(${lerp(0.85,1,c)})`; el('c-text').style.opacity = c;
+  el('c-under').style.transform = `scaleX(${easeOut(seg01(u, 0.65, 1.15))})`;
+  const b = easeOut(seg01(u, 1.15, 1.6));
+  const beat = u > 1.6 ? 1 + Math.max(0, Math.sin((u-1.6)*6)) * 0.045 : 1;
+  el('c-btn').style.opacity = b;
+  el('c-btn').style.transform = `scale(${lerp(0.6,1,b) * beat})`;
+}
+
+
+function renderTerm(t, s) {
+  const u = t - s.start;
+  const dur = s.end - s.start;
+  el('tm-brand').textContent = s.brand || '';
+  const cmd = s.command || '';
+  const typed = Math.floor(clamp(u / (dur * 0.35), 0, 1) * cmd.length);
+  el('tm-cmd').textContent = '$ ' + cmd.slice(0, typed) + (typed < cmd.length ? '\u2588' : '');
+  const bp = seg01(u, dur * 0.3, dur * 0.85);
+  el('tm-bar').style.width = (bp * 100) + '%';
+  el('tm-pct').textContent = bp >= 1 ? (s.done || 'INSTALLED') : 'INSTALLING ' + Math.round(bp * 100) + '%';
+  const bv = seg01(u, dur * 0.25, dur * 0.45);
+  el('tm-brand').style.opacity = bv;
+  el('tm-brand').style.transform = 'scale(' + lerp(1.4, 1, easeOut(bv)) + ')';
+}
+
+function renderPills(t, s) {
+  const wrap = el('p-wrap');
+  const items = s.items || [];
+  if (wrap.children.length !== items.length) {
+    wrap.innerHTML = items.map(x => '<div class="pill">' + x + '</div>').join('');
+  }
+  const dur = s.end - s.start;
+  items.forEach((x, i) => {
+    const at = s.start + 0.2 + i * (dur * 0.7 / items.length);
+    const a = easeOut(seg01(t, at, at + 0.35));
+    const c = wrap.children[i];
+    c.style.opacity = a;
+    c.style.transform = 'scale(' + lerp(0.5, 1, a) + ')';
+  });
+}
+
+const RENDER = { title: renderTitle, avatar: renderAvatar, flow: renderFlow, metric: renderMetric, cta: renderCta, term: renderTerm, pills: renderPills };
+const IDS = { title: 'sc-title', avatar: 'sc-avatar', flow: 'sc-flow', metric: 'sc-metric', cta: 'sc-cta', term: 'sc-term', pills: 'sc-pills' };
+
+function seek(t) {
+  if (!DATA) return;
+  Object.values(IDS).forEach(id => el(id).style.opacity = 0);
+  for (const s of DATA.scenes) {
+    if (t >= s.start && t < s.end) {
+      el(IDS[s.type]).style.opacity = sceneOpacity(t, s);
+      RENDER[s.type](t, s);
+      break;
+    }
+  }
+  setCaption(t);
+}
+window.loadData = loadData;
+window.seek = seek;
+window.seekAsync = t => new Promise(res => {
+  seek(t);
+  const v = el('a-video');
+  if (DATA && DATA.avatar && DATA.avatar.src && v.seeking) {
+    v.addEventListener('seeked', () => res(), { once: true });
+    setTimeout(res, 500);
+  } else res();
+});
+</script>
+</body>
+</html>
