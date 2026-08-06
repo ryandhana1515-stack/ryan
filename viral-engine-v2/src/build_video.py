@@ -41,10 +41,18 @@ def run(args, cwd=None):
 def render_graphics(shots, fps, work: Path) -> dict[int, Path]:
     """Render every graphic/split shot to a PNG sequence via the component library."""
     from playwright.sync_api import sync_playwright
+    import hashlib
     out = {}
     gdir = work / "gfx"
     gdir.mkdir(parents=True, exist_ok=True)
-    page_url = (Path("src/graphics/components.html").resolve()).as_uri()
+    lib = Path("src/graphics/components.html")
+    page_url = lib.resolve().as_uri()
+    lib_hash = hashlib.sha256(lib.read_bytes()).hexdigest()[:12]
+
+    def stamp_of(s, n):
+        # a shot's frames depend only on the library and its own spec
+        key = json.dumps([lib_hash, s["component"], s.get("props", {}), n, fps], sort_keys=True)
+        return hashlib.sha256(key.encode()).hexdigest()[:16]
 
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path=CHROMIUM,
@@ -58,11 +66,21 @@ def render_graphics(shots, fps, work: Path) -> dict[int, Path]:
             d = gdir / f"s{i:02d}"
             d.mkdir(exist_ok=True)
             n = max(1, int(round((s["end"] - s["start"]) * fps)))
+            want = stamp_of(s, n)
+            cached = d / "stamp"
+            if cached.exists() and cached.read_text() == want \
+                    and len(list(d.glob("f*.png"))) == n:
+                out[i] = d
+                print(f"  gfx shot {i:02d} {s['component']:<14} {n:3d} frames (cached)", flush=True)
+                continue
+            for stale in d.glob("f*.png"):
+                stale.unlink()
             spec = {"component": s["component"], "props": s.get("props", {}),
                     "start": 0.0, "end": s["end"] - s["start"], "opaque": True}
             for k in range(n):
                 page.evaluate("([spec,t]) => renderShot(spec,t)", [spec, k / fps])
                 page.screenshot(path=str(d / f"f{k:04d}.png"))
+            cached.write_text(want)
             out[i] = d
             print(f"  gfx shot {i:02d} {s['component']:<14} {n:3d} frames", flush=True)
         browser.close()
@@ -184,8 +202,8 @@ def composite(plan: dict, dest: Path, work: Path):
     run([f, "-y", "-hide_banner", "-loglevel", "error",
          "-i", str(silent.resolve()), "-i", str(audio.resolve()),
          "-map", "0:v", "-map", "1:a", "-vf", vf,
-         "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p",
-         "-b:v", "10M", "-maxrate", "12M", "-bufsize", "20M",
+         "-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p",
+         "-b:v", "10M", "-minrate", "8M", "-maxrate", "12M", "-bufsize", "20M",
          "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(dest.resolve())],
         cwd=work)
     return dest

@@ -5,7 +5,8 @@
 <style>
   :root { --acc: #3AFF5F; --bg: #0a0a0c; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:1080px; height:1920px; overflow:hidden; background:transparent; }
+  /* opaque page — a transparent one composites to WHITE in the screenshot */
+  html, body { width:1080px; height:1920px; overflow:hidden; background:var(--bg); }
   #stage { position:absolute; inset:0; overflow:hidden; }
   #stage.opaque { background:
       radial-gradient(ellipse 1000px 800px at 50% 38%, #16161b 0%, var(--bg) 70%); }
@@ -119,11 +120,15 @@ function spring(t,{stiff=170,damp=16}={}){
 const el=(t,c,html)=>{const e=document.createElement(t); if(c)e.className=c;
   if(html!==undefined)e.innerHTML=html; return e;};
 
-function backdrop(stage,opaque){
+function backdrop(stage,opaque,t){
   if(!opaque) return;
   stage.classList.add('opaque');
-  stage.appendChild(el('div','grid'));
+  const g=el('div','grid');
+  // slow parallax drift — a static backdrop reads as a frozen frame
+  g.style.backgroundPosition=`${(t*7)%96}px ${(t*4)%96}px`;
+  stage.appendChild(g);
   const f=el('div','frond');
+  f.style.transform=`translate(${Math.sin(t*0.18)*26}px, ${Math.cos(t*0.13)*18}px) rotate(${Math.sin(t*0.09)*0.9}deg)`;
   for(let i=0;i<9;i++){
     const b=el('i'); const ln=520+i*90;
     b.style.width=ln+'px'; b.style.height=(46+i*5)+'px';
@@ -140,10 +145,13 @@ const C = {
     (s.lines||['WORD']).forEach((txt,i)=>{
       const a=spring(p01(u,i*0.10,i*0.10+0.42));
       const d=el('div','l af'+(s.accent_line===i?' acc':'')+(s.italic_line===i?' it':''),txt);
+      box.appendChild(d);
+      // shrink to fit the frame — the shot peaks at scale 1, so 980px is the budget
+      const nat=d.offsetWidth;
+      if(nat>980) d.style.fontSize=Math.floor(190*980/nat)+'px';
       const blur=(1-a)*26;
       d.style.transform=`scale(${lerp(2.05,1,a)}) translateY(${lerp(40,0,a)}px)`;
       d.style.filter=`blur(${blur}px)`; d.style.opacity=clamp(a*1.6,0,1);
-      box.appendChild(d);
     });
   },
   LogoOrbit(s,u,st){
@@ -278,15 +286,18 @@ const C = {
 // spec = { component, opaque, start, end, props }
 window.renderShot = function(spec, t){
   const st=document.getElementById('stage');
-  st.className=''; st.innerHTML='';
-  backdrop(st, spec.opaque !== false);
+  st.className=''; st.innerHTML=''; st.style.transform=''; st.style.transformOrigin='50% 50%';
+  backdrop(st, spec.opaque !== false, t);
   const u = clamp((t - spec.start) / Math.max(spec.end - spec.start, .001), 0, 1.2);
   const fn = C[spec.component];
   if(!fn) throw new Error('unknown component: '+spec.component);
   fn(spec.props||{}, u, st);
-  // whole-shot entrance/exit so cuts never pop
-  const io = Math.min(p01(t, spec.start, spec.start+0.10), 1-p01(t, spec.end-0.10, spec.end));
-  st.style.opacity = spec.hard_cut ? 1 : clamp(io,0,1);
+  // hard cuts, per blueprint — each component springs itself in, so a whole-stage
+  // fade would only dip the frame to black at every edit
+  st.style.opacity = 1;
+  // continuous slow push (Ken Burns) — guarantees motion on every frame
+  const uu = clamp((t - spec.start)/Math.max(spec.end-spec.start,.001), 0, 1);
+  st.style.transform = `scale(${1 + 0.045*uu}) translateY(${-10*uu}px)`;
 };
 window.COMPONENTS = Object.keys(C);
 </script>
