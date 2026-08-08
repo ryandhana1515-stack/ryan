@@ -113,6 +113,14 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   spoken to the face land in `jarvis_tasks` + Ryan's inbox for a Claude session to execute.
 - Older artifact prototype (tap-to-talk, local intent engine, no ElevenLabs cost):
   `zaphiel/face/index.html`.
+- **Push-to-deploy now works.** A root `vercel.json` (static build of `zaphiel/app`
+  with routes to its index) overrides the project's Python framework pin — every
+  git deploy before 2026-08-08 failed with PYTHON_ENTRYPOINT_NOT_FOUND. Pushes to a
+  feature branch build a PREVIEW at
+  `ryan-git-claude-ai-agent-bo-f4821d-ryandhana1515-6929s-projects.vercel.app`;
+  only a push to the DEFAULT branch (i.e. merging the PR) updates production
+  `ryan-rho.vercel.app`. The Vercel MCP deploy tool needs an interactive permission
+  grant Ryan must approve; merging is the credential-free path to production.
 
 ## 5. Decisions log
 
