@@ -14,8 +14,12 @@ Last updated: 2026-08-08 (session: Board of Advisors + Zaphiel brain build; rena
 - **Hero product:** BIO N:OV — 3rd-gen nitric-oxide supplement, 500mg × 60 tablets,
   Bzzworld Korea manufacture, GMP + patented fermentation (KACC91554P). Ryan is the
   **Singapore distributor** (via Bisu World International, KL) — not the manufacturer.
-- **Revenue:** $0 to date. **Shopify store: NOT yet live** (setup pending — this is the
-  bottleneck to first revenue).
+- **Revenue:** $0 to date. **Shopify store EXISTS** — "Bio Elixirs", `sz0gmr-cn.myshopify.com`,
+  Basic plan, SGD, Singapore, info@biogreenelixirs.com. Verified 2026-08-08: it had
+  **ZERO products**, which is why nothing downstream ever worked. First product created
+  that day as a DRAFT: BIO N:OV — Nitric Oxide Support Complex, SKU BIONOV-500-60,
+  `gid://shopify/Product/9365786624250`, provisional price S$89 (NOT a decided price —
+  needs landed cost). To go live it needs: real price, product photos, and status ACTIVE.
 - **Channels live:** biogreenelixirs.com domain (Namecheap, to 2029), Google Workspace
   (info@biogreenelixirs.com), Facebook page, IG @biogreenelixirs, TikTok
   @biogreenelixirs. TikTok Shop SG application in progress; Shopee SG and Amazon US/EU pending.
@@ -63,6 +67,26 @@ Active workflows (ID — what it does):
 n8n data tables: Business Profile, Leads CRM, Content Queue, Ad Drafts, Research
 Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGyONl0lhlyFB),
 `jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here; legacy name, see §2 note).
+
+## 2b. WHAT CAN ACTUALLY ACT (read this before promising automation)
+
+Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
+
+- **n8n holds only TWO credentials: Gmail and GitHub.** There is no Shopify, Meta, TikTok,
+  Metricool, Higgsfield or Kling credential in the instance. So every "agent" in §2 can
+  only think, write to a data table, and email. **None of them can touch the store or the
+  ad account.** That is the root cause of the queue-receipt problem — not prompt wording.
+- **Meta ads cannot be automated yet.** Ad account `767841886323870` (ACTIVE, SGD) returns
+  `is_ads_mcp_enabled: false` — Meta is still rolling Ads MCP out to this account, so
+  create/edit ad calls are refused by Meta, not by us. It also has
+  `has_payment_method: false`, so nothing could spend anyway. Read-only research
+  (ads_library_search, benchmarks) still works. Recheck the flag periodically.
+- **The only thing with real hands is a Claude session** (this one), whose MCP connectors
+  reach Shopify, Meta, Higgsfield, Kling, Metricool, Canva, Gmail, Drive, Calendar, Slack,
+  Vercel, Lovable, Figma and n8n. Anything that must *do* rather than *draft* has to run
+  in a session — either interactively, or on a schedule via a Routine/trigger.
+- Practical rule: before telling Ryan something is "automated", check whether the executor
+  actually holds a credential for that system. If it doesn't, say so.
 
 ## 3. Repos and sites
 
