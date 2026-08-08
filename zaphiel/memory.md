@@ -102,10 +102,23 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   Deploying: the team blocks creating NEW Vercel projects (403) — always deploy into the
   existing `ryan` project, and keep `vercel.json` in the upload (the project is pinned to
   the Python framework; the builds override is what makes static files serve).
-- Behavior: PWA (save to home screen = standalone app). First visit: tap INITIALIZE →
-  mic grant → straight into conversation. Return visits: auto-arms a standby sentinel —
-  a clap (sharp transient) or ~350ms of speech wakes it, no buttons. Audio-reactive
-  neural-cortex canvas mapped to the real agent-fleet clusters.
+- Behavior (v3, 2026-08-08): PWA (save to home screen = standalone app). Landing view is
+  the VOICE CORTEX — first visit taps JACK IN for the mic, return visits auto-arm a
+  standby sentinel that wakes on a clap (sharp transient) or ~350ms of speech. Behind a
+  sidebar sit EIGHT TEXT SPECIALISTS (UGC Director, Product Visuals, Content, Ads,
+  Web & 3D, Store & Pricing, Market Brief, Board Clerk), each its own chat with a copy
+  button on every answer. Look: terminal palette, scanlines, and a coiled dragon
+  ouroboros around the core that breathes with the voice.
+- **How the specialists work (important):** they are all the SAME ElevenLabs agent, run in
+  `textOnly` mode with a per-session `overrides.agent.prompt.prompt` — that is why there is
+  only one agent to pay for. This required enabling prompt + firstMessage + text_only in
+  the agent's `platform_settings.overrides`; if those get switched off, every sidebar chat
+  silently falls back to the chief-of-staff persona.
+- **Anti-queue rule, baked in:** every specialist prompt AND the voice prompt forbid saying
+  a request was filed, queued or emailed. They must produce the finished script/copy/plan
+  in the window. `dispatch_task` is a last step, only when Ryan asks to queue something.
+- Board Clerk never speaks for the four seats — it only sharpens the question, so the
+  citation-gated meeting remains the only place they are quoted.
 - Voice brain: **ElevenLabs conversational agent `agent_3001kzgz64emesm91398nx05c17e`**
   ("ZAPHIEL — Ryan's Chief of Staff", public auth, 10-min session cap, ElevenLabs-side
   usage billed to Ryan's ElevenLabs account). Its `dispatch_task` webhook tool POSTs
