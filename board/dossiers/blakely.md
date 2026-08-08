@@ -10,43 +10,43 @@ status: active
 
 ### D1. Bootstrap on savings, keep 100%, spend nothing you can substitute with effort
 **Source:** Forbes cover feature by Clare O'Connor, "Undercover Billionaire" / "American Booty," March 2012 billionaires issue (forbes.com, published 2012-03-07 and 2012-03-26); corroborated in NPR "How I Built This" with Guy Raz, "Spanx: Sara Blakely," Sept 12, 2016
-**Verification:** pending
+**Verification:** sourced
 
-Blakely started Spanx with $5,000 in savings from selling fax machines door to door and never took outside investment. Forbes' 2012 reporting documented that at the time she joined the billionaires list she owned 100% of the company, carried zero debt, and had not spent money on advertising. The doctrine is substitution of ingenuity for capital: when patent attorneys quoted $3,000-$5,000, she bought a patents-and-trademarks textbook at Barnes & Noble, drafted the application herself, and paid a lawyer roughly $750 to finish the claims. Ownership and cash discipline were not a phase to graduate out of but the operating model — she kept her day job selling fax machines while building Spanx nights and weekends so the business never had to fund her life.
+Blakely started Spanx with $5,000 in savings from selling fax machines door to door and never took outside investment. Forbes' 2012 reporting documented that at the time she joined the billionaires list she owned 100% of the company, carried zero debt, and had not spent money on advertising. The doctrine is substitution of ingenuity for capital: when patent attorneys quoted $3,000-$5,000, she bought a patents-and-trademarks textbook at Barnes & Noble, drafted the application herself, and paid a lawyer $700 to finish the claims. Ownership and cash discipline were not a phase to graduate out of but the operating model — she kept her day job selling fax machines while building Spanx nights and weekends so the business never had to fund her life.
 
 ### D2. Do not share a young idea — ideas are most vulnerable at the start
 **Source:** NPR "How I Built This" with Guy Raz, "Spanx: Sara Blakely," Sept 12, 2016 (NPR also published the clip "Spanx Founder Explains Why She Kept Her Idea Secret For A Year")
-**Verification:** pending
+**Verification:** sourced
 
 Blakely deliberately told no one — not friends, not family — about the Spanx idea for about a year while she worked on it nights and weekends. Her stated reasoning: the people who love you most will, out of love and protectiveness, talk you out of a risky idea before it has any evidence behind it, and a founder's resolve is weakest exactly when the idea is newest. She waited until she had invested enough sweat equity (prototype work, patent drafting, manufacturer outreach) that outside doubt could no longer kill it. The operational rule: spend the fragile early period gathering proof, not opinions.
 
 ### D3. Prototype cheap and test on real users, because incumbents test on mannequins
-**Source:** MasterClass, "Sara Blakely Teaches Self-Made Entrepreneurship" (2018), "Prototyping" chapter; origin story in NPR "How I Built This," Sept 12, 2016
-**Verification:** pending
+**Source:** MasterClass, "Sara Blakely Teaches Self-Made Entrepreneurship" (2019), "Prototyping" chapter; origin story in NPR "How I Built This," Sept 12, 2016
+**Verification:** sourced
 
 The first prototype was scissors and a pair of pantyhose — she cut the feet off to get the look she wanted under white pants, then cold-called North Carolina hosiery mills until one agreed to produce it. In her MasterClass she teaches the deeper lesson she found inside the hosiery industry: products were sized and tested on plastic forms rather than on the bodies of real women, which is why waistbands and fit were uncomfortable — incumbents had stopped asking the user how the product feels. Spanx tested prototypes on real women of different sizes and gave every size its own waistband. The doctrine: the cheapest prototype that lets a real user react beats a polished spec, and incumbent testing habits are where a bootstrapper finds the opening.
 
 ### D4. The founder sells in person — demo the product on yourself if you have to
 **Source:** NPR "How I Built This" with Guy Raz, "Spanx: Sara Blakely," Sept 12, 2016
-**Verification:** pending
+**Verification:** sourced
 
 Blakely cold-called the Neiman Marcus hosiery buyer, got ten minutes, and flew to Dallas with the prototype in her backpack. When she sensed the meeting slipping away, she asked the buyer to follow her to the ladies' room and showed her own before-and-after in cream pants — with and without the product. The buyer put Spanx into a trial in seven stores. The doctrine: at the earliest stage, distribution is won by the founder personally demonstrating the transformation the product makes, not by a deck describing it; a live demo converts skeptics that claims cannot.
 
 ### D5. Be your own PR department — one right influential fan beats an ad budget
 **Source:** NPR "How I Built This" with Guy Raz, Sept 12, 2016; zero-ad-spend record documented in Forbes cover feature by Clare O'Connor, March 2012
-**Verification:** pending
+**Verification:** sourced
 
 Blakely acted as Spanx's entire marketing and PR function in the early years: she sent a gift basket with the product and a personal note to Oprah Winfrey's camp (via her stylist), and in November 2000 Oprah named Spanx one of her "Favorite Things," which ignited demand nationally. She also stood in department stores personally selling the product to shoppers. Through at least 2012, per Forbes, the company had not spent on advertising — growth came from earned media, word of mouth, and the founder as the visible face and storyteller of the brand. The doctrine: before buying attention, exhaust the free channel of a founder with a genuinely demonstrable product and a specific list of people whose endorsement moves the market.
 
 ### D6. Hire your weaknesses as soon as you can afford to
-**Source:** MasterClass, "Sara Blakely Teaches Self-Made Entrepreneurship" (2018), "Building a Culture" chapter; also Stanford GSB View From The Top interview, April 2018 (published as "Sara Blakely: Share Your Failures," gsb.stanford.edu)
-**Verification:** pending
+**Source:** MasterClass, "Sara Blakely Teaches Self-Made Entrepreneurship" (2019), "Building a Culture" chapter; also Stanford GSB View From The Top interview, April 2018 (published as "Sara Blakely: Share Your Failures," gsb.stanford.edu)
+**Verification:** sourced
 
 Blakely teaches that the founder should identify what they are bad at or drained by — in her case, operational and back-office work — and hire for those weaknesses as early as the business can bear, rather than hiring more of themselves. In her MasterClass she notes her early hires often had no prior experience in the exact role; she hired for hunger and complementarity, reserving deep-experience hires for positions where it genuinely mattered. The founder's own time stays on the highest-leverage work only the founder can do (in her case product and selling the story), and delegation is a survival mechanism for a bootstrapped team, not a luxury.
 
 ### D7. Redefine failure as not trying, not the outcome
 **Source:** NPR "How I Built This" with Guy Raz, "Spanx: Sara Blakely," Sept 12, 2016; retold at Stanford GSB View From The Top, April 2018 ("Sara Blakely: Share Your Failures")
-**Verification:** pending
+**Verification:** sourced
 
 Blakely's father asked her and her brother at the dinner table, "What did you fail at this week?" — and was disappointed when they had nothing to report. He would then push them to name what benefit or lesson came out of the failure. She credits this with rewiring her definition of failure from a bad outcome to not trying, which is what let her cold-call mills after repeated rejection and start a hosiery company with no industry background. As doctrine: institutionalize the reframe — ask for the week's failures and the hidden lesson in each, so risk-taking stays cheap psychologically even when cash makes it expensive financially.
 
