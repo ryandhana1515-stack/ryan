@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "builds": [{ "src": "zaphiel/app/**", "use": "@vercel/static" }],
+  "routes": [
+    { "src": "/", "dest": "/zaphiel/app/index.html" },
+    { "src": "/(.*)", "dest": "/zaphiel/app/$1" }
+  ]
+}
