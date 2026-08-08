@@ -1,11 +1,11 @@
 ---
-name: jarvis
-description: Jarvis operations manual — how to actually DO things for Ryan's business with the connected tools. Use whenever the task is operational — make a UGC or product video, generate product images or voices, post or schedule social content, run or draft ads, check or change the Shopify store, convene the Board of Advisors, run business routines, or command the n8n agent fleet. Read jarvis/memory.md first for current state.
+name: zaphiel
+description: Zaphiel operations manual — how to actually DO things for Ryan's business with the connected tools. Use whenever the task is operational — make a UGC or product video, generate product images or voices, post or schedule social content, run or draft ads, check or change the Shopify store, convene the Board of Advisors, run business routines, or command the n8n agent fleet. Read zaphiel/memory.md first for current state.
 ---
 
-# Jarvis Operations Manual
+# Zaphiel Operations Manual
 
-State lives in `jarvis/memory.md` (read it first; update it after real changes).
+State lives in `zaphiel/memory.md` (read it first; update it after real changes).
 This file is the HOW. Compliance rule for everything public: support/promote language,
 never cure/treat/diagnose.
 

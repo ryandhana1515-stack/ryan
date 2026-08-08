@@ -1,4 +1,4 @@
-<title>JARVIS — Biogreen Cortex</title>
+<title>ZAPHIEL — Biogreen Cortex</title>
 <style>
   :root {
     --bg: #030612;
@@ -123,7 +123,7 @@
 
 <div class="hud">
   <header class="topbar">
-    <span class="wordmark">J.A.R.V.I.S<b>.</b></span>
+    <span class="wordmark">ZAPHIEL<b>.</b></span>
     <span class="linkstate">BIOGREEN LINK — LIVE</span>
     <span style="color:var(--faint)">CORTEX v2 · VOICE ONLINE</span>
     <span class="clock" id="clock">--:--:-- SGT</span>
@@ -158,10 +158,10 @@
     <div class="centercol">
       <div class="ticker"><span class="t" id="tick-time"></span><span class="msg" id="tick-msg"></span></div>
       <div class="cmdline">
-        <span class="ps">ryan@jarvis ▸</span>
-        <input id="askbox" type="text" placeholder="ask jarvis anything… (or use the mic)"
-          autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ask Jarvis">
-        <button class="micbtn" id="micbtn" aria-label="Talk to Jarvis">● MIC</button>
+        <span class="ps">ryan@zaphiel ▸</span>
+        <input id="askbox" type="text" placeholder="ask zaphiel anything… (or use the mic)"
+          autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ask Zaphiel">
+        <button class="micbtn" id="micbtn" aria-label="Talk to Zaphiel">● MIC</button>
       </div>
     </div>
 
@@ -184,7 +184,7 @@
     ["MARKET BRIEF 07:50", "live"], ["RESEARCH MON", "live"],
     ["CS CHAT 24/7", "live"], ["WHATSAPP", "live"],
     ["VOICE AGENT", "live"], ["AFFILIATE", "live"],
-    ["BOARD OF ADVISORS", "live"], ["JARVIS MEMORY", "live"],
+    ["BOARD OF ADVISORS", "live"], ["ZAPHIEL MEMORY", "live"],
     ["METRICOOL POST", "live"], ["HIGGSFIELD UGC", "live"],
     ["SHOPIFY STORE", "plan"], ["TIKTOK SHOP SG", "amber"]
   ];
@@ -208,7 +208,7 @@
   var events = [
     ["11:02", "board meeting stored + emailed — unanimous: hold the $2,000, launch the store first"],
     ["10:57", "godin dossier adversarially verified — 7 confirmed · 1 corrected · 0 rejected"],
-    ["10:49", "jarvis brain committed → PR #15 (merge to activate for all sessions)"],
+    ["10:49", "zaphiel brain committed → PR #15 (merge to activate for all sessions)"],
     ["09:00", "content agent queued 5 drafts → content queue"],
     ["07:50", "daily market brief emailed — 6 watchlist themes, cited"],
     ["--:--", "voice channel online — tap the core and speak"]
@@ -217,7 +217,7 @@
   function rotateTicker() { tickT.textContent = events[ti][0]; tickM.textContent = events[ti][1]; ti = (ti + 1) % events.length; }
   rotateTicker(); if (!reduced) setInterval(rotateTicker, 3800);
 
-  /* ================= JARVIS MIND (on-board knowledge, all real) ================= */
+  /* ================= ZAPHIEL MIND (on-board knowledge, all real) ================= */
   var MIND = [
     { k: /recap|status|how.?s (business|it going)|update|report|summary|everything/i, say: function () {
       return "Here's where we stand. Revenue is zero — the Shopify store still isn't live, and that is item one. The machine around it is ready: twenty-one agent workflows running, the content engine drafting daily, the market brief landing every morning at seven fifty. And your board of advisors held its first meeting — unanimous: hold the two thousand dollars of ad money until the store exists. My read: this week has one job. Ship the store."; } },
@@ -237,8 +237,8 @@
       return "Pricing for BIO N:OV is still undecided — and it blocks more than you'd think: no price means no margin, no customer-acquisition ceiling, no ad math. My advice: put landed cost and competitor prices in front of the board and let Hormozi and Munger fight it out. That's a meeting worth two dollars."; } },
     { k: /next|priorit|focus|what should|to.?do|plan/i, say: function () {
       return "Three priorities, in order. One: get the Shopify store live — nothing else pays until it does. Two: set the retail price, ideally through a board meeting with real cost data. Three: follow up the TikTok Shop Singapore application. Everything else — content, agents, briefs — is already running without you."; } },
-    { k: /who are you|what are you|jarvis|yourself/i, say: function () {
-      return "I'm Jarvis — the brain over Bio Green Elixirs, your venture studio, and the agent company that runs it. My memory lives in your repo, my hands are your connectors, and this cortex you're looking at is my face. Every node on screen is a real system of yours, firing."; } },
+    { k: /who are you|what are you|zaphiel|yourself/i, say: function () {
+      return "I'm Zaphiel — the brain over Bio Green Elixirs, your venture studio, and the agent company that runs it. My memory lives in your repo, my hands are your connectors, and this cortex you're looking at is my face. Every node on screen is a real system of yours, firing."; } },
     { k: /hello|hey|hi |good (morning|evening|afternoon)|yo\b/i, say: function () {
       var h = new Date(Date.now() + (8 * 60 + new Date().getTimezoneOffset()) * 60000).getHours();
       var g = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
@@ -283,7 +283,7 @@
     userline.textContent = text;
     replyline.textContent = reply;
     energyTarget = 1;
-    setState("speaking", "JARVIS · SPEAKING");
+    setState("speaking", "ZAPHIEL · SPEAKING");
     if (typeof speechSynthesis !== "undefined") {
       speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(reply);
@@ -373,7 +373,7 @@
     board:    { hue: "#f5b84b", angle: 2.75, r: 0.72 }
   };
   var NODES = [
-    ["JARVIS", "core", 3, 1],
+    ["ZAPHIEL", "core", 3, 1],
     ["memory.md", "core", 1.6, 1], ["skill map", "core", 1.3, 0],
     ["viral engine", "content", 1.7, 1], ["content agent", "content", 1.4, 1],
     ["ads agent", "content", 1.3, 0], ["higgsfield", "content", 1.2, 1],

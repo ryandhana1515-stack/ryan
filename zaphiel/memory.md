@@ -1,10 +1,10 @@
-# Jarvis Memory — persistent business state
+# Zaphiel Memory — persistent business state
 
 > Every session reads this first and appends real changes before it ends.
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-08-08 (session: Board of Advisors + Jarvis brain build)
+Last updated: 2026-08-08 (session: Board of Advisors + Zaphiel brain build; renamed Jarvis → Zaphiel)
 
 ---
 
@@ -45,9 +45,11 @@ Active workflows (ID — what it does):
 - `xDrtylIHseMy1vle` Voice Agent — Call Me Now (POST /call-me, ElevenLabs)
 - `ObQN64nUN4QgoO3N` Voice Agent — Call Logger (/voice-call-log → Call Log table)
 - `wWtVDcMhL0mXvmjf` Website Agent — Immersive 3D Site Designer (chat)
-- `eIgJT3NAuP7v9Hes` **Jarvis — Task Intake** (webhook POST
+- `eIgJT3NAuP7v9Hes` **Zaphiel — Task Intake** (webhook POST
   https://ryan1515.app.n8n.cloud/webhook/jarvis-task, body {task, category} →
-  `jarvis_tasks` table + email to Ryan; this is where the voice app's dispatch_task lands)
+  `jarvis_tasks` table + email to Ryan; this is where the voice app's dispatch_task lands.
+  Webhook path and table keep the old `jarvis` spelling on purpose — the live voice agent
+  calls that exact URL; renaming them breaks it.)
 - `FYNbtG0oHGWiDI2g` Viral Content Engine (URL in → original short video → Metricool draft;
   email approval gate) — built 2026-08-06, PR #14 in this repo
 - `mK8LuWxGITRr60GG` Email Daily Market Brief (weekdays 07:50 SGT — emails the brief the
@@ -60,16 +62,16 @@ Active workflows (ID — what it does):
 
 n8n data tables: Business Profile, Leads CRM, Content Queue, Ad Drafts, Research
 Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGyONl0lhlyFB),
-`jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here).
+`jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here; legacy name, see §2 note).
 
 ## 3. Repos and sites
 
-- `ryandhana1515-stack/ryan` — THIS repo: Jarvis brain, board/, bionov/ (BIO N:OV
+- `ryandhana1515-stack/ryan` — THIS repo: Zaphiel brain, board/, bionov/ (BIO N:OV
   three.js landing), vex/ (VEX React site), nano_banana.py (OpenRouter image gen).
   Default branch: `claude/setup-nano-banana-openrouter-u2JAQ`.
 - `ryandhana1515-stack/Bio-Nov-website` — Bio N:OV site experiments, luxury concept
   sites, n8n agent setup work.
-- Open PRs in `ryan`: #14 Viral Content Engine assets, #15 Board of Advisors + Jarvis brain.
+- Open PRs in `ryan`: #14 Viral Content Engine assets, #15 Board of Advisors + Zaphiel brain.
 
 ## 4. Board of Advisors (decision module)
 
@@ -92,11 +94,11 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   GitHub-fetch, gating and guards inside it are verified working.
 - Standing review: monthly unprompted meeting (see skill for the routine).
 
-## 4b. Jarvis voice app (the face)
+## 4b. Zaphiel voice app (the face)
 
 - **Live URL: https://ryan-rho.vercel.app** — Vercel project `ryan`
   (prj_Bqty7IxYVy3xFGmDJF0vpxPU1pOh, team ryandhana1515-6929s-projects). Source:
-  `jarvis/app/` in this repo (index.html + manifest.webmanifest + icon.svg + vercel.json).
+  `zaphiel/app/` in this repo (index.html + manifest.webmanifest + icon.svg + vercel.json).
   Deploying: the team blocks creating NEW Vercel projects (403) — always deploy into the
   existing `ryan` project, and keep `vercel.json` in the upload (the project is pinned to
   the Python framework; the builds override is what makes static files serve).
@@ -105,17 +107,17 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   a clap (sharp transient) or ~350ms of speech wakes it, no buttons. Audio-reactive
   neural-cortex canvas mapped to the real agent-fleet clusters.
 - Voice brain: **ElevenLabs conversational agent `agent_3001kzgz64emesm91398nx05c17e`**
-  ("JARVIS — Ryan's Chief of Staff", public auth, 10-min session cap, ElevenLabs-side
+  ("ZAPHIEL — Ryan's Chief of Staff", public auth, 10-min session cap, ElevenLabs-side
   usage billed to Ryan's ElevenLabs account). Its `dispatch_task` webhook tool POSTs
-  {task, category} to the Jarvis — Task Intake workflow (`eIgJT3NAuP7v9Hes`), so tasks
+  {task, category} to the Zaphiel — Task Intake workflow (`eIgJT3NAuP7v9Hes`), so tasks
   spoken to the face land in `jarvis_tasks` + Ryan's inbox for a Claude session to execute.
 - Older artifact prototype (tap-to-talk, local intent engine, no ElevenLabs cost):
-  `jarvis/face/index.html`.
+  `zaphiel/face/index.html`.
 
 ## 5. Decisions log
 
-- 2026-08-08 — Jarvis architecture: repo `ryan` is the brain (CLAUDE.md + jarvis/ +
-  .claude/skills/jarvis); n8n is the always-on body; connectors are the hands. One-off
+- 2026-08-08 — Zaphiel architecture: repo `ryan` is the brain (CLAUDE.md + zaphiel/ +
+  .claude/skills/zaphiel); n8n is the always-on body; connectors are the hands. One-off
   session builds are over — new capabilities get indexed here.
 - 2026-08-08 — Board roster fixed at Hormozi/Munger/Godin/Blakely; meetings via n8n with
   managed Anthropic credentials; chat + repo archive + email surfacing; monthly standing
@@ -127,14 +129,20 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
 
 ## 6. Change log
 
-- 2026-08-08: Jarvis brain created (CLAUDE.md, jarvis/memory.md, jarvis skill). Board of
+- 2026-08-08: brain created (CLAUDE.md, memory.md, ops skill). Board of
   Advisors built: parser+gate lib (38 tests), 4 researched dossiers, adversarial
   fact-check, n8n meeting workflow `NOb10f0yUA8i8saA`, `board_meetings` table, PR #15.
-- 2026-08-08 (later): Jarvis voice app shipped to https://ryan-rho.vercel.app (clap/voice
-  wake, ElevenLabs realtime voice, PWA). Jarvis — Task Intake workflow `eIgJT3NAuP7v9Hes`
+- 2026-08-08 (later): voice app shipped to https://ryan-rho.vercel.app (clap/voice
+  wake, ElevenLabs realtime voice, PWA). Task Intake workflow `eIgJT3NAuP7v9Hes`
   + `jarvis_tasks` table wired to the agent's dispatch_task tool. First real board
   meeting ran ("$2,000 ads before store live?" → unanimous NO with per-seat unlock
   conditions), stored + emailed via `6go4TpVkwmoO1tnd`.
+- 2026-08-08 (later still): **renamed Jarvis → ZAPHIEL** at Ryan's instruction. Renamed:
+  repo dirs (`jarvis/` → `zaphiel/`, skill dir + skill name), CLAUDE.md identity,
+  this file, the voice app UI, the ElevenLabs agent name and greeting, and the n8n
+  workflow display name. Deliberately NOT renamed (would break the live voice link):
+  webhook path `/webhook/jarvis-task`, data table `jarvis_tasks`, ElevenLabs
+  `agent_3001kzgz64emesm91398nx05c17e`, Vercel project `ryan` / URL ryan-rho.vercel.app.
 
 ## 7. Open loops / next actions
 
@@ -142,6 +150,6 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   dollar is premature (board meeting topic).
 - Decide BIO N:OV retail pricing (convene the board with live cost data).
 - TikTok Shop SG application — follow up.
-- Merge PR #15 to activate the Jarvis brain for all future sessions.
+- Merge PR #15 to activate the Zaphiel brain for all future sessions.
 - Wire the board's monthly standing review routine (first Monday of month).
 - Fusion AI / AI Business OS: design exists; decide build vs park.

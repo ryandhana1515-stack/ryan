@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="JARVIS">
+<meta name="apple-mobile-web-app-title" content="ZAPHIEL">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>J.A.R.V.I.S. — Biogreen Cortex</title>
+<title>ZAPHIEL — Biogreen Cortex</title>
 <style>
   :root {
     --bg: #01040c;
@@ -115,7 +115,7 @@
 <div class="hud">
   <div class="row">
     <div>
-      <div class="wordmark">J.A.R.V.I.S<b>.</b></div>
+      <div class="wordmark">ZAPHIEL<b>.</b></div>
       <div class="sub">BIOGREEN CORTEX // VOICE LINK v2.1</div>
     </div>
     <div class="statuschip">
@@ -135,7 +135,7 @@
 </div>
 
 <div class="boot" id="boot">
-  <div class="boot-title">J.A.R.V.I.S<b>.</b></div>
+  <div class="boot-title">ZAPHIEL<b>.</b></div>
   <div class="bootlog" id="bootlog"></div>
   <button class="initbtn" id="initbtn">◉ &nbsp;INITIALIZE</button>
   <div class="note">FIRST VISIT: ONE TAP GRANTS THE MIC. AFTER THAT HE WAKES ON A CLAP OR YOUR VOICE.</div>
@@ -150,7 +150,7 @@
   const bootlog = document.getElementById("bootlog");
   const lines = [
     ["biogreen cortex // waking", 0],
-    ["memory      .......... <span class='ok'>OK</span>  (jarvis/memory.md)", 260],
+    ["memory      .......... <span class='ok'>OK</span>  (zaphiel/memory.md)", 260],
     ["agent fleet .......... <span class='ok'>21 WORKFLOWS LINKED</span>", 520],
     ["board       .......... <span class='ok'>4 SEATS · DOCTRINE VERIFIED</span>", 800],
     ["voice link  .......... <span class='ok'>ELEVENLABS REALTIME</span>", 1080],
@@ -163,7 +163,7 @@
   setTimeout(() => document.getElementById("initbtn").classList.add("ready"), 1900);
 
   /* ---------------- visual + app state ---------------- */
-  let energy = 0;          // jarvis speaking intensity (audio-reactive)
+  let energy = 0;          // zaphiel speaking intensity (audio-reactive)
   let userEnergy = 0;      // ryan speaking intensity
   let mode = "offline";    // offline | armed | connecting | listening | speaking
 
@@ -173,7 +173,7 @@
       (mode === "speaking" ? "speak" : mode === "listening" ? "listen" :
        mode === "connecting" || mode === "armed" ? "live" : "");
     stateEl.textContent = extra ||
-      (mode === "speaking" ? "JARVIS · SPEAKING" :
+      (mode === "speaking" ? "ZAPHIEL · SPEAKING" :
        mode === "listening" ? "ALWAYS LISTENING — JUST SPEAK" :
        mode === "connecting" ? "ESTABLISHING LINK…" :
        mode === "armed" ? "STANDBY — CLAP OR TAP TO WAKE" : "OFFLINE");
@@ -201,7 +201,7 @@
       if (wakeCtx.state === "suspended") { try { await wakeCtx.resume(); } catch (e) {} }
       if (wakeCtx.state === "suspended") {
         /* iOS cold load: audio engine needs one gesture — whole screen is the button */
-        mode = "armed"; setStateLabel("TAP ANYWHERE TO ARM JARVIS");
+        mode = "armed"; setStateLabel("TAP ANYWHERE TO ARM ZAPHIEL");
         boot.classList.add("gone");
         return;
       }
