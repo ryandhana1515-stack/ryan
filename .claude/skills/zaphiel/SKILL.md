@@ -105,3 +105,31 @@ session-local scheduling; register it in memory §2 after creating it.
   chat-triggered agents (AI Manager, Website Designer) accept `{type:"chat", chatInput}`.
 - Leads: Leads CRM table. Customer questions: 24/7 CS agent. Voice callback: POST
   /call-me workflow. New affiliate: /affiliate-signup webhook.
+
+## 9. Cinematic "3D scroll" websites (a sellable product, not a one-off)
+
+Ryan's own playbook, executable: `zaphiel/playbooks/cinematic-3d-sites.md`.
+Reusable engine: `zaphiel/templates/cinematic-scroll/` (scroll-scrub, smooth scroll,
+pinned reveals, parallax — no dependencies).
+
+The formula, non-negotiable because it is what makes it look expensive:
+1. ONE named hero subject.
+2. Generate ONE hero image FIRST (Higgsfield `generate_image`), then pass it as the image
+   reference to every clip. This is the whole trick — it keeps the subject identical.
+3. Three clips, always ORBIT -> MACRO -> EXPLODED/ASSEMBLY. Seedance 2.0, std, 1080p,
+   16:9, no audio, ~8s. Batch with `generate_video_batch` + `jobs_wait`. Kling
+   `image_to_video` is the alternative for cinematic product motion (every job is
+   charged — confirm before submitting, never send trial jobs).
+4. ffmpeg the orbit into ~120 stills; the template scrubs them on scroll.
+5. Sections: hero -> story -> detail scrub -> specs -> scarcity/price -> private CTA.
+6. Dark ground, ONE accent, serif display + minimal sans, very few words.
+7. Open it and scroll it before saying it is done.
+
+Per client only four things change: accent colour, type pairing, specs/price, CTA.
+Five ready briefs (real estate, resort, automotive, airline, D2C retail) are in the
+playbook; build the retail one with the real BIO N:OV bottle first — it doubles as the
+demo for every retail pitch.
+
+**Compliance gate before any wellness build goes public** (learned on `bionov/`): no named
+diseases anywhere, no efficacy numbers on disease markers, lab data labelled as lab data,
+support/promote/help-maintain only, and carry the not-intended-to-diagnose line.

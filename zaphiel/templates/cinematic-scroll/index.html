@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07070a">
+<title>SUBJECT — Tagline</title>
+<meta name="description" content="One sentence. Quiet, expensive, very few words.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="loadbar" id="loadbar"></div>
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <span class="wordmark">SUBJECT</span>
+  <nav>
+    <a href="#story">Story</a>
+    <a href="#detail">Detail</a>
+    <a href="#specs">Specs</a>
+    <a href="#enquire">Enquire</a>
+  </nav>
+</header>
+
+<!-- ============ 1. HERO — scroll-scrubbed ORBIT ============ -->
+<section data-scrub="1" id="hero">
+  <div class="sticky">
+    <canvas></canvas>
+    <img class="poster" src="frames/orbit_001.jpg" alt="">
+    <div class="scrim"></div>
+    <div class="overlay">
+      <span class="eyebrow" data-reveal>Category · Edition</span>
+      <h1 data-reveal data-delay="1">SUBJECT</h1>
+      <p class="lead" data-reveal data-delay="2">
+        One line that says what it is and why it is rare. Nothing more.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. STORY ============ -->
+<section class="block" id="story">
+  <div class="two">
+    <div>
+      <span class="index" data-reveal>01 — The Story</span>
+      <h2 data-reveal data-delay="1">A headline<br>worth the silence</h2>
+    </div>
+    <div>
+      <p class="lead" data-reveal data-delay="2">
+        Two sentences of origin. Say where it comes from and what was refused along the
+        way. Resist explaining; let the scroll do the work.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. DETAIL — scrubbed MACRO (set frames2.count to enable) ============ -->
+<section data-scrub="2" id="detail">
+  <div class="sticky">
+    <canvas></canvas>
+    <img class="poster" src="frames/macro_001.jpg" alt="">
+    <div class="scrim"></div>
+    <div class="overlay bottom">
+      <span class="eyebrow" data-reveal>02 — In Detail</span>
+      <h2 data-reveal data-delay="1">Every surface, considered</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. SPECS (parallax subject) ============ -->
+<section class="block" id="specs">
+  <div class="two">
+    <div style="overflow:hidden">
+      <img data-parallax="0.14" src="frames/exploded_060.jpg" alt="" data-reveal>
+    </div>
+    <div>
+      <span class="index" data-reveal>03 — Specification</span>
+      <div class="specs">
+        <div class="spec" data-reveal><b>Value</b><span>Label</span></div>
+        <div class="spec" data-reveal data-delay="1"><b>Value</b><span>Label</span></div>
+        <div class="spec" data-reveal data-delay="2"><b>Value</b><span>Label</span></div>
+        <div class="spec" data-reveal data-delay="3"><b>Value</b><span>Label</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. SCARCITY + PRICE ============ -->
+<section class="scarcity" id="enquire">
+  <span class="eyebrow" data-reveal>Limited Release</span>
+  <p class="price" data-reveal data-delay="1">Edition of 000 — From $0,000</p>
+  <a class="btn" href="#" data-reveal data-delay="2">Private enquiry</a>
+</section>
+
+<footer>
+  <span>© 2026 SUBJECT</span>
+  <span>All imagery generated for demonstration</span>
+</footer>
+
+<script type="module">
+  import { init, CONFIG } from "./app.js";
+  // ---- the only lines you normally edit ----
+  CONFIG.frames.count  = 120;   // ORBIT frames in frames/
+  CONFIG.frames2.count = 0;     // MACRO frames; 0 disables that scrub section
+  init(CONFIG);
+</script>
+</body>
+</html>
