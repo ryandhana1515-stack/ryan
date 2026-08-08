@@ -48,10 +48,10 @@
     padding: max(14px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); }
   .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 
-  .wordmark { font-size: 17px; font-weight: 700; letter-spacing: 0.5em; color: #ecf7ff;
-    text-shadow: 0 0 22px rgba(0,220,255,0.6); position: relative; }
+  .wordmark { font-size: 16px; font-weight: 700; letter-spacing: 0.34em; color: #ecf7ff;
+    text-shadow: 0 0 22px rgba(0,220,255,0.6); position: relative; white-space: nowrap; }
   .wordmark b { color: var(--cyan); }
-  .sub { font-size: 8.5px; letter-spacing: 0.34em; color: var(--dim); margin-top: 5px; }
+  .sub { font-size: 8px; letter-spacing: 0.26em; color: var(--dim); margin-top: 5px; white-space: nowrap; }
 
   .statuschip { text-align: right; font-size: 9px; letter-spacing: 0.26em; }
   .statuschip .state { color: var(--dim); transition: color 0.3s; }
@@ -82,7 +82,8 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
     transition: opacity 0.9s; }
   .boot.gone { opacity: 0; pointer-events: none; }
-  .boot-title { font-size: clamp(26px, 7vw, 52px); font-weight: 700; letter-spacing: 0.42em;
+  .boot-title { font-size: clamp(21px, 5.4vw, 46px); font-weight: 700; letter-spacing: 0.3em;
+    white-space: nowrap;
     color: #ecf7ff; text-shadow: 0 0 34px rgba(0,220,255,0.65); animation: flicker 4s infinite; }
   .boot-title b { color: var(--cyan); }
   @keyframes flicker { 0%,93%,97%,100% { opacity: 1; } 94% { opacity: 0.55; } 96% { opacity: 0.8; } }
@@ -115,7 +116,7 @@
 <div class="hud">
   <div class="row">
     <div>
-      <div class="wordmark">ZAPHIEL<b>.</b></div>
+      <div class="wordmark">Z.A.P.H.I.E.L<b>.</b></div>
       <div class="sub">BIOGREEN CORTEX // VOICE LINK v2.1</div>
     </div>
     <div class="statuschip">
@@ -135,7 +136,7 @@
 </div>
 
 <div class="boot" id="boot">
-  <div class="boot-title">ZAPHIEL<b>.</b></div>
+  <div class="boot-title">Z.A.P.H.I.E.L<b>.</b></div>
   <div class="bootlog" id="bootlog"></div>
   <button class="initbtn" id="initbtn">◉ &nbsp;INITIALIZE</button>
   <div class="note">FIRST VISIT: ONE TAP GRANTS THE MIC. AFTER THAT HE WAKES ON A CLAP OR YOUR VOICE.</div>
