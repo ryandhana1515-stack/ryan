@@ -67,12 +67,25 @@ Convene when Ryan says "ask the board about X" or before big irreversible calls:
 1. Build the brief yourself from LIVE sources (Shopify analytics once live, Meta
    insights, Metricool analytics, memory §1). Never invent numbers; say "no data" when
    there is none. Short brief = 3-5 lines for seats; full brief = everything, chair-only.
-2. Run n8n workflow `NOb10f0yUA8i8saA` ("Board of Advisors — Meeting") with
-   {question, brief_short, brief_full, unprompted:false, ref:<branch with dossiers>,
-   budget_usd:0.5}.
-3. Relay the spoken_summary + verdict in chat (lead with the split, flag abstentions and
-   any owner-entered "user" citations); the meeting is auto-stored (board_meetings
-   table) and auto-emailed.
+2. Fan out ONE isolated subagent per seat (Agent tool, model sonnet). Each subagent may
+   read ONLY its own dossier (`board/dossiers/<id>.md`) — never another dossier, the
+   factcheck dir, or the web — and returns strict JSON
+   {abstain, position, reasoning, citations, confidence, would_change_mind}.
+   Never role-play multiple seats in one call; never let a seat see another's opinion.
+3. Gate deterministically: write the raw outputs to a scratch file as
+   [{seatId, raw}, ...] and run `node board/meeting.js opinions.json` — it strips
+   citations the seat wasn't shown, coerces every scalar, and snapshots cited sources.
+4. Chair it YOURSELF from the gated opinions + full brief + each seat's blind spots:
+   name the split before the agreement, discount via documented blind spots, treat
+   abstention as abstention, flag "user"-verified citations as Ryan's own assumption.
+   Write chair JSON, re-run `node board/meeting.js opinions.json chair.json` so the
+   unanimity + prose guards apply to YOUR summary too.
+5. Store + email: POST the meeting record to n8n webhook workflow `6go4TpVkwmoO1tnd`
+   (path `board-store`) via the n8n connector execute_workflow (webhook input) — it
+   inserts into board_meetings and emails Ryan. Then relay the summary in chat, leading
+   with the split.
+   (n8n workflow `NOb10f0yUA8i8saA` does all of this self-contained but needs n8n AI
+   credits/an Anthropic key — currently exhausted; see memory §4.)
 4. Monthly standing review: same workflow with unprompted:true and no question — the
    board sets its own agenda from the numbers.
 Seat editing: retire doctrine entries (add `**Status:** retired`), never delete or renumber;
