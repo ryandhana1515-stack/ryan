@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#01040c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JARVIS">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>J.A.R.V.I.S. — Biogreen Cortex</title>
 <style>
   :root {
@@ -131,7 +138,7 @@
   <div class="boot-title">J.A.R.V.I.S<b>.</b></div>
   <div class="bootlog" id="bootlog"></div>
   <button class="initbtn" id="initbtn">◉ &nbsp;INITIALIZE</button>
-  <div class="note">ONE TAP GRANTS THE MIC — THEN JUST SPEAK, ANYTIME. NO BUTTONS.</div>
+  <div class="note">FIRST VISIT: ONE TAP GRANTS THE MIC. AFTER THAT HE WAKES ON A CLAP OR YOUR VOICE.</div>
   <div class="err" id="booterr"></div>
 </div>
 
@@ -147,29 +154,31 @@
     ["agent fleet .......... <span class='ok'>21 WORKFLOWS LINKED</span>", 520],
     ["board       .......... <span class='ok'>4 SEATS · DOCTRINE VERIFIED</span>", 800],
     ["voice link  .......... <span class='ok'>ELEVENLABS REALTIME</span>", 1080],
-    ["directive   .......... ship the store. hold the ad money.", 1400]
+    ["dispatch    .......... <span class='ok'>TASK QUEUE ARMED</span>", 1360],
+    ["directive   .......... ship the store. hold the ad money.", 1650]
   ];
   lines.forEach(([html, t]) => setTimeout(() => {
     const d = document.createElement("div"); d.innerHTML = html; bootlog.appendChild(d);
   }, t));
-  setTimeout(() => document.getElementById("initbtn").classList.add("ready"), 1700);
+  setTimeout(() => document.getElementById("initbtn").classList.add("ready"), 1900);
 
-  /* ---------------- visual state ---------------- */
-  let energy = 0;          // 0..1 — jarvis speaking intensity (audio-reactive)
-  let userEnergy = 0;      // 0..1 — ryan speaking intensity
-  let mode = "offline";    // offline | connecting | listening | speaking
+  /* ---------------- visual + app state ---------------- */
+  let energy = 0;          // jarvis speaking intensity (audio-reactive)
+  let userEnergy = 0;      // ryan speaking intensity
+  let mode = "offline";    // offline | armed | connecting | listening | speaking
 
   const stateEl = document.getElementById("state");
-  function setStateLabel() {
+  function setStateLabel(extra) {
     stateEl.className = "state " +
-      (mode === "speaking" ? "speak" : mode === "listening" ? "listen" : mode === "connecting" ? "live" : "");
-    stateEl.textContent =
-      mode === "speaking" ? "JARVIS · SPEAKING" :
-      mode === "listening" ? "ALWAYS LISTENING — JUST SPEAK" :
-      mode === "connecting" ? "ESTABLISHING LINK…" : "OFFLINE";
+      (mode === "speaking" ? "speak" : mode === "listening" ? "listen" :
+       mode === "connecting" || mode === "armed" ? "live" : "");
+    stateEl.textContent = extra ||
+      (mode === "speaking" ? "JARVIS · SPEAKING" :
+       mode === "listening" ? "ALWAYS LISTENING — JUST SPEAK" :
+       mode === "connecting" ? "ESTABLISHING LINK…" :
+       mode === "armed" ? "STANDBY — CLAP OR TAP TO WAKE" : "OFFLINE");
   }
 
-  /* ---------------- conversation ---------------- */
   const boot = document.getElementById("boot");
   const bootErr = document.getElementById("booterr");
   const capUser = document.getElementById("cap-user");
@@ -179,22 +188,71 @@
   const timerEl = document.getElementById("timer");
   let conv = null, t0 = null, timerIv = null;
 
-  async function initialize() {
-    bootErr.textContent = "";
-    mode = "connecting"; setStateLabel();
+  /* ---------------- wake sentinel (clap / loud voice) ---------------- */
+  let wakeStream = null, wakeCtx = null, wakeAnalyser = null, wakeRaf = 0, voiceMs = 0;
+
+  async function armStandby(msg) {
+    if (conv) return;
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (e) {
-      bootErr.textContent = "MICROPHONE BLOCKED — allow mic access for this site in your browser settings, then tap INITIALIZE again.";
-      mode = "offline"; setStateLabel(); return;
-    }
+      wakeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) { showBoot("MICROPHONE BLOCKED — allow mic access for this site, then tap INITIALIZE."); return; }
+    try {
+      wakeCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (wakeCtx.state === "suspended") { try { await wakeCtx.resume(); } catch (e) {} }
+      if (wakeCtx.state === "suspended") {
+        /* iOS cold load: audio engine needs one gesture — whole screen is the button */
+        mode = "armed"; setStateLabel("TAP ANYWHERE TO ARM JARVIS");
+        boot.classList.add("gone");
+        return;
+      }
+      const src = wakeCtx.createMediaStreamSource(wakeStream);
+      wakeAnalyser = wakeCtx.createAnalyser();
+      wakeAnalyser.fftSize = 512;
+      src.connect(wakeAnalyser);
+      mode = "armed"; setStateLabel(msg);
+      boot.classList.add("gone");
+      hint.textContent = "SAVED TO HOME SCREEN, THIS OPENS LIKE AN APP";
+      const buf = new Uint8Array(wakeAnalyser.fftSize);
+      let lastT = performance.now();
+      const monitor = (ts) => {
+        if (!wakeAnalyser) return;
+        wakeAnalyser.getByteTimeDomainData(buf);
+        let peak = 0, sum = 0;
+        for (let i = 0; i < buf.length; i++) { const d = Math.abs(buf[i] - 128); if (d > peak) peak = d; sum += d; }
+        const rms = sum / buf.length / 128;
+        userEnergy += (Math.min(1, rms * 5) - userEnergy) * 0.2;
+        const dt = ts - lastT; lastT = ts;
+        if (peak > 96) { wake(); return; }                    /* clap / sharp transient */
+        if (rms > 0.09) { voiceMs += dt; if (voiceMs > 350) { wake(); return; } } /* spoken word */
+        else voiceMs = 0;
+        wakeRaf = requestAnimationFrame(monitor);
+      };
+      wakeRaf = requestAnimationFrame(monitor);
+    } catch (e) { console.error(e); mode = "armed"; setStateLabel("TAP ANYWHERE TO WAKE"); boot.classList.add("gone"); }
+  }
+
+  function disarmSentinel() {
+    cancelAnimationFrame(wakeRaf); voiceMs = 0;
+    if (wakeAnalyser) wakeAnalyser = null;
+    if (wakeCtx) { try { wakeCtx.close(); } catch (e) {} wakeCtx = null; }
+    if (wakeStream) { wakeStream.getTracks().forEach(t => t.stop()); wakeStream = null; }
+  }
+
+  function showBoot(err) {
+    mode = "offline"; setStateLabel();
+    boot.classList.remove("gone");
+    bootErr.textContent = err || "";
+  }
+
+  /* ---------------- conversation ---------------- */
+  async function wake() {
+    if (conv || mode === "connecting") return;
+    disarmSentinel();
+    mode = "connecting"; setStateLabel();
     let Conversation;
     try {
       ({ Conversation } = await import("https://cdn.jsdelivr.net/npm/@elevenlabs/client@latest/+esm"));
-    } catch (e) {
-      bootErr.textContent = "VOICE ENGINE FAILED TO LOAD — check connection and reload.";
-      mode = "offline"; setStateLabel(); return;
-    }
+    } catch (e) { showBoot("VOICE ENGINE FAILED TO LOAD — check connection and reload."); return; }
     const opts = {
       agentId: AGENT_ID,
       onConnect: () => {
@@ -209,17 +267,13 @@
         }, 1000);
       },
       onDisconnect: () => {
-        mode = "offline"; setStateLabel();
+        conv = null;
         clearInterval(timerIv);
         endbtn.hidden = true;
-        hint.textContent = "";
-        boot.classList.remove("gone");
-        bootErr.textContent = "LINK CLOSED — tap INITIALIZE to reconnect.";
+        capUser.textContent = ""; capAi.textContent = "";
+        armStandby("LINK CLOSED — CLAP OR TAP TO RECONNECT");
       },
-      onError: (e) => {
-        console.error(e);
-        bootErr.textContent = "LINK ERROR — tap INITIALIZE to reconnect.";
-      },
+      onError: (e) => { console.error(e); },
       onModeChange: (m) => {
         const mm = m && m.mode ? m.mode : m;
         mode = mm === "speaking" ? "speaking" : "listening";
@@ -229,28 +283,50 @@
         const src = msg && (msg.source || msg.role);
         const text = msg && (msg.message || msg.text);
         if (!text) return;
-        if (src === "user") { capUser.textContent = text; }
-        else { capAi.textContent = text; }
+        if (src === "user") capUser.textContent = text;
+        else capAi.textContent = text;
       }
     };
     try {
       conv = await Conversation.startSession({ ...opts, connectionType: "webrtc" });
     } catch (e1) {
       try { conv = await Conversation.startSession(opts); }
-      catch (e2) {
-        console.error(e2);
-        bootErr.textContent = "COULD NOT REACH THE AGENT — reload and try again.";
-        mode = "offline"; setStateLabel(); return;
-      }
+      catch (e2) { console.error(e2); showBoot("COULD NOT REACH THE AGENT — tap INITIALIZE to retry."); }
     }
   }
 
+  async function initialize() {
+    bootErr.textContent = "";
+    try { await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { bootErr.textContent = "MICROPHONE BLOCKED — allow mic access for this site, then tap INITIALIZE again."; return; }
+    wake();  /* first run goes straight into conversation */
+  }
   document.getElementById("initbtn").addEventListener("click", initialize);
-  endbtn.addEventListener("click", async () => { if (conv) { try { await conv.endSession(); } catch (e) {} conv = null; } });
+  endbtn.addEventListener("click", async (ev) => {
+    ev.stopPropagation();
+    if (conv) { try { await conv.endSession(); } catch (e) {} conv = null; }
+  });
+
+  /* tap anywhere wakes from standby (and arms iOS audio engine) */
+  document.body.addEventListener("click", (ev) => {
+    if (ev.target.closest(".boot") || ev.target.closest(".ctl")) return;
+    if (mode === "armed") {
+      if (!wakeAnalyser) armStandby();   /* was waiting for the iOS gesture */
+      else wake();
+    }
+  });
+
+  /* returning visitor with mic already granted: skip the boot screen, arm the sentinel */
+  (async () => {
+    try {
+      const st = await navigator.permissions.query({ name: "microphone" });
+      if (st.state === "granted") armStandby();
+    } catch (e) { /* Safari without permissions API: boot screen stays */ }
+  })();
 
   /* per-frame audio reactivity from the real voice streams */
   function sampleAudio() {
-    if (!conv) return;
+    if (!conv) { energy *= 0.96; return; }
     try {
       const out = conv.getOutputByteFrequencyData && conv.getOutputByteFrequencyData();
       if (out && out.length) {
@@ -264,7 +340,6 @@
         userEnergy += (Math.min(1, (s2 / inp.length / 255) * 3) - userEnergy) * 0.3;
       }
     } catch (e) { /* stream not ready yet */ }
-    if (!conv) { energy *= 0.95; userEnergy *= 0.95; }
   }
 
   /* ---------------- neural cortex ---------------- */
@@ -343,10 +418,11 @@
     sampleAudio();
     ctx.clearRect(0, 0, W, H);
     const time = ts * 0.001;
-    const E = Math.max(energy, userEnergy * 0.45);
+    const idleDim = mode === "armed" ? 0.55 : mode === "offline" ? 0.4 : 1;
+    const E = Math.max(energy, userEnergy * 0.45) * idleDim;
 
     if (!reduced) nodes.forEach(n => {
-      const drift = 4 + E * 7;
+      const drift = (4 + E * 7) * idleDim;
       n.x = n.bx + Math.sin(time * (0.4 + E) + n.phase) * drift;
       n.y = n.by + Math.cos(time * (0.33 + E * 0.8) + n.phase * 1.7) * drift;
     });
@@ -355,7 +431,7 @@
     edges.forEach(e => {
       const a = nodes[e[0]], b = nodes[e[1]];
       const g = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-      const al = 0.2 + E * 0.35;
+      const al = (0.2 + E * 0.35) * idleDim;
       g.addColorStop(0, hexA(CLUSTERS[a.cluster].hue, al));
       g.addColorStop(1, hexA(CLUSTERS[b.cluster].hue, al));
       ctx.strokeStyle = g;
@@ -379,7 +455,7 @@
         ctx.stroke();
       }
     }
-    /* listening shimmer ring — driven by Ryan's own voice */
+    /* listening shimmer ring — driven by Ryan's own voice (live and in standby) */
     if (userEnergy > 0.05) {
       ctx.strokeStyle = hexA("#00dcff", 0.25 + userEnergy * 0.4);
       ctx.lineWidth = 1.5;
@@ -399,7 +475,7 @@
         gr.addColorStop(0, hexA(hue, 0.9)); gr.addColorStop(1, hexA(hue, 0));
         ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, 8, 0, 6.29); ctx.fill();
       }
-      if (Math.random() < 0.1 + E * 0.6) spawnPulse();
+      if (Math.random() < (0.06 + E * 0.6) * idleDim) spawnPulse();
     }
 
     nodes.forEach((n, i) => {
@@ -408,14 +484,14 @@
       const r = 2.4 * n.size + (i === 0 ? 6 + Math.sin(time * 2) * 1.6 + boost : 0);
       const glowR = r * (6 + (i === 0 ? energy * 7 : 0));
       const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
-      glow.addColorStop(0, hexA(hue, i === 0 ? 0.6 + energy * 0.4 : 0.32));
+      glow.addColorStop(0, hexA(hue, (i === 0 ? 0.6 + energy * 0.4 : 0.32) * idleDim));
       glow.addColorStop(1, hexA(hue, 0));
       ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(n.x, n.y, glowR, 0, 6.29); ctx.fill();
-      ctx.fillStyle = i === 0 ? "#f2ffff" : hexA(hue, 0.95);
+      ctx.fillStyle = i === 0 ? "#f2ffff" : hexA(hue, 0.95 * idleDim);
       ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 6.29); ctx.fill();
       if (i === 0) {
         for (let ring = 0; ring < 2; ring++) {
-          ctx.strokeStyle = hexA("#00dcff", 0.45 - ring * 0.18 + energy * 0.3);
+          ctx.strokeStyle = hexA("#00dcff", (0.45 - ring * 0.18 + energy * 0.3) * idleDim);
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.arc(n.x, n.y, r + 8 + ring * 9 + Math.sin(time * 2 + ring) * 2 + energy * 10, 0, 6.29);
@@ -424,7 +500,7 @@
       }
       if (n.labeled) {
         ctx.font = "400 9px " + "ui-monospace, Menlo, monospace";
-        ctx.fillStyle = "rgba(160,185,215,0.7)";
+        ctx.fillStyle = "rgba(160,185,215," + 0.7 * idleDim + ")";
         ctx.textAlign = "center";
         ctx.fillText(n.name.toUpperCase(), n.x, n.y - r - 7);
       }
@@ -436,6 +512,7 @@
   layout();
   addEventListener("resize", layout);
   requestAnimationFrame(ts => { last = ts; requestAnimationFrame(frame); });
+
 </script>
 </body>
 </html>

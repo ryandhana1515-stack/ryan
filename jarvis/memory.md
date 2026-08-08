@@ -45,6 +45,9 @@ Active workflows (ID — what it does):
 - `xDrtylIHseMy1vle` Voice Agent — Call Me Now (POST /call-me, ElevenLabs)
 - `ObQN64nUN4QgoO3N` Voice Agent — Call Logger (/voice-call-log → Call Log table)
 - `wWtVDcMhL0mXvmjf` Website Agent — Immersive 3D Site Designer (chat)
+- `eIgJT3NAuP7v9Hes` **Jarvis — Task Intake** (webhook POST
+  https://ryan1515.app.n8n.cloud/webhook/jarvis-task, body {task, category} →
+  `jarvis_tasks` table + email to Ryan; this is where the voice app's dispatch_task lands)
 - `FYNbtG0oHGWiDI2g` Viral Content Engine (URL in → original short video → Metricool draft;
   email approval gate) — built 2026-08-06, PR #14 in this repo
 - `mK8LuWxGITRr60GG` Email Daily Market Brief (weekdays 07:50 SGT — emails the brief the
@@ -56,7 +59,8 @@ Active workflows (ID — what it does):
   `r0IXsruqQ8kQ6NiU` art utilities, `c86AzvcNlDmPn5im` WABA subscribe.
 
 n8n data tables: Business Profile, Leads CRM, Content Queue, Ad Drafts, Research
-Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGyONl0lhlyFB).
+Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGyONl0lhlyFB),
+`jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here).
 
 ## 3. Repos and sites
 
@@ -88,6 +92,26 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
   GitHub-fetch, gating and guards inside it are verified working.
 - Standing review: monthly unprompted meeting (see skill for the routine).
 
+## 4b. Jarvis voice app (the face)
+
+- **Live URL: https://ryan-rho.vercel.app** — Vercel project `ryan`
+  (prj_Bqty7IxYVy3xFGmDJF0vpxPU1pOh, team ryandhana1515-6929s-projects). Source:
+  `jarvis/app/` in this repo (index.html + manifest.webmanifest + icon.svg + vercel.json).
+  Deploying: the team blocks creating NEW Vercel projects (403) — always deploy into the
+  existing `ryan` project, and keep `vercel.json` in the upload (the project is pinned to
+  the Python framework; the builds override is what makes static files serve).
+- Behavior: PWA (save to home screen = standalone app). First visit: tap INITIALIZE →
+  mic grant → straight into conversation. Return visits: auto-arms a standby sentinel —
+  a clap (sharp transient) or ~350ms of speech wakes it, no buttons. Audio-reactive
+  neural-cortex canvas mapped to the real agent-fleet clusters.
+- Voice brain: **ElevenLabs conversational agent `agent_3001kzgz64emesm91398nx05c17e`**
+  ("JARVIS — Ryan's Chief of Staff", public auth, 10-min session cap, ElevenLabs-side
+  usage billed to Ryan's ElevenLabs account). Its `dispatch_task` webhook tool POSTs
+  {task, category} to the Jarvis — Task Intake workflow (`eIgJT3NAuP7v9Hes`), so tasks
+  spoken to the face land in `jarvis_tasks` + Ryan's inbox for a Claude session to execute.
+- Older artifact prototype (tap-to-talk, local intent engine, no ElevenLabs cost):
+  `jarvis/face/index.html`.
+
 ## 5. Decisions log
 
 - 2026-08-08 — Jarvis architecture: repo `ryan` is the brain (CLAUDE.md + jarvis/ +
@@ -106,6 +130,11 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
 - 2026-08-08: Jarvis brain created (CLAUDE.md, jarvis/memory.md, jarvis skill). Board of
   Advisors built: parser+gate lib (38 tests), 4 researched dossiers, adversarial
   fact-check, n8n meeting workflow `NOb10f0yUA8i8saA`, `board_meetings` table, PR #15.
+- 2026-08-08 (later): Jarvis voice app shipped to https://ryan-rho.vercel.app (clap/voice
+  wake, ElevenLabs realtime voice, PWA). Jarvis — Task Intake workflow `eIgJT3NAuP7v9Hes`
+  + `jarvis_tasks` table wired to the agent's dispatch_task tool. First real board
+  meeting ran ("$2,000 ads before store live?" → unanimous NO with per-seat unlock
+  conditions), stored + emailed via `6go4TpVkwmoO1tnd`.
 
 ## 7. Open loops / next actions
 
