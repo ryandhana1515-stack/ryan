@@ -55,3 +55,40 @@ own. Every run must either do one real thing or admit it did not.
 
 Each firing is a Claude session against Ryan's usage — one per day. It does not touch
 Higgsfield, Kling or ElevenLabs credits, because the prompt forbids paid generation.
+
+---
+
+# The bridge Ryan actually asked for (2026-08-08)
+
+**What he wants:** he speaks to Zaphiel → a Claude session wakes up on its own and does
+the work → he gets the result. No opening a session, no saying hi. "Zaphiel and Claude
+become friends and talk to each other."
+
+**Half of it already exists.** The ElevenLabs agent's `dispatch_task` tool POSTs to
+`https://ryan1515.app.n8n.cloud/webhook/jarvis-task`, which writes the spoken task into the
+`jarvis_tasks` data table (XqtaUAUVXTfTjb7F) and emails Ryan. So the order is already
+captured the moment he speaks it.
+
+**The missing half is the executor.** Nothing currently reads that table and acts. n8n
+cannot (Gmail + GitHub credentials only — see memory §2b). The fix is a second Routine:
+
+- **name:** `Zaphiel — Task Queue Runner`
+- **cron_expression:** `0 * * * *` (hourly; the server anchors it to the creation minute)
+- **create_new_session_on_fire:** `true`
+- **notifications:** `{ "push": true, "email": true }`
+- **prompt shape:** read CLAUDE.md and zaphiel/memory.md → read the `jarvis_tasks` table via
+  the n8n connector → if there are no unhandled rows, stop immediately and report nothing
+  (keeps idle runs cheap) → otherwise execute each task for real with the MCP connectors,
+  oldest first → mark each row handled → append what changed to memory, commit, push →
+  report per task: what was asked, what was actually done, what is blocked and why.
+- Same hard rules as the daily operator: spends no money, publishes nothing, sets nothing
+  ACTIVE, invents no numbers, never reports a queue receipt as if it were the work.
+
+**Latency:** up to one hour, because hourly is the minimum interval a Routine allows.
+Instant would need an endpoint that can spawn a session on demand; nothing available holds
+credentials to do that today.
+
+**Blocker (the only one):** every route to waking a session automatically —
+`create_trigger`, `send_later`, `create_session` — lives on the claude-code-remote MCP
+server, and that server's permission prompt has not been approved. One approval unblocks
+the whole bridge. Nothing else is missing.
