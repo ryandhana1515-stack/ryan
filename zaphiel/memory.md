@@ -183,6 +183,18 @@ name and disease-marker efficacy number, reframed lab data as raw-material lab m
 and strengthened the footer disclaimer. **Do not revert to the brand-deck copy** — it is
 HSA-unsafe in Singapore and an automatic Meta rejection.
 
+## 4e. Autonomous daily run (the thing that works without Ryan)
+
+- Spec: `zaphiel/routines/daily-operator.md` — full parameters and the verbatim prompt.
+- Fires 08:00 SGT daily as a FRESH Claude session (so it carries the full connector set),
+  push + email notification on completion.
+- Each run: read memory, check Shopify and the Meta ad-account flags for real, then DO one
+  concrete thing that advances open loop #1, then write what changed back to memory and push.
+- Guardrails in the prompt: spends no money, publishes nothing, sets nothing ACTIVE, invents
+  no numbers, and must admit plainly when a run achieved nothing.
+- **Status: awaiting Ryan's approval of the create_trigger permission prompt.** Re-issue the
+  call verbatim from the spec once granted.
+
 ## 5. Decisions log
 
 - 2026-08-08 — Zaphiel architecture: repo `ryan` is the brain (CLAUDE.md + zaphiel/ +
