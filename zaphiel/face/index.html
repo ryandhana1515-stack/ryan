@@ -1,0 +1,546 @@
+<title>ZAPHIEL — Biogreen Cortex</title>
+<style>
+  :root {
+    --bg: #030612;
+    --panel: rgba(8, 16, 34, 0.82);
+    --panel-edge: rgba(38, 92, 150, 0.35);
+    --text: #c9d8ee;
+    --dim: #5f7394;
+    --faint: #33415c;
+    --cyan: #00dcff;
+    --magenta: #e44fd0;
+    --green: #4ade80;
+    --violet: #8b7cf6;
+    --amber: #f5b84b;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body { font-family: var(--mono); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  #scene {
+    position: fixed; inset: 0; width: 100%; height: 100%; display: block;
+    background: radial-gradient(ellipse 120% 90% at 50% 40%, #071026 0%, #030612 60%);
+    cursor: pointer;
+  }
+  .vignette { position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 90% 80% at 50% 45%, transparent 55%, rgba(2,4,10,0.75) 100%); }
+  .hud { position: relative; z-index: 3; min-height: 100vh; display: flex; flex-direction: column; pointer-events: none; }
+  .hud .panel, .hud .cmdline, .hud .convo { pointer-events: auto; }
+
+  .topbar { display: flex; align-items: baseline; gap: 14px; padding: 14px 18px;
+    font-size: 11px; letter-spacing: 0.14em; }
+  .wordmark { font-size: 15px; font-weight: 700; letter-spacing: 0.42em; color: #eaf4ff;
+    text-shadow: 0 0 18px rgba(0,220,255,0.55); }
+  .wordmark b { color: var(--cyan); }
+  .linkstate { color: var(--green); }
+  .linkstate::before { content: "●"; margin-right: 6px; animation: blink 2.4s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  .topbar .clock { margin-left: auto; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+  .stage { flex: 1; min-height: 44vh; }
+
+  /* conversation overlay — the live transcript + reply captions */
+  .convo {
+    position: relative; z-index: 4; text-align: center; padding: 0 18px 10px;
+    display: flex; flex-direction: column; gap: 7px; align-items: center;
+  }
+  .voicestate { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
+  .voicestate.listening { color: var(--cyan); text-shadow: 0 0 12px rgba(0,220,255,0.6); }
+  .voicestate.speaking { color: var(--amber); text-shadow: 0 0 12px rgba(245,184,75,0.5); }
+  .userline { font-size: 12px; color: #8fb2d8; min-height: 15px; max-width: 640px; }
+  .userline::before { content: "you ▸ "; color: var(--faint); }
+  .userline:empty { visibility: hidden; }
+  .replyline { font-size: 13.5px; line-height: 1.55; color: #eaf4ff; max-width: 640px;
+    min-height: 20px; text-shadow: 0 0 16px rgba(0,120,220,0.35); text-wrap: balance; }
+  .replyline:empty { visibility: hidden; }
+
+  .deck { display: grid; gap: 12px; padding: 0 14px 14px;
+    grid-template-columns: minmax(230px, 300px) 1fr minmax(240px, 320px); align-items: end; }
+  .panel { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 4px;
+    padding: 12px 14px; backdrop-filter: blur(6px); box-shadow: 0 0 30px rgba(0,40,80,0.25); }
+  .panel h2 { font-size: 9.5px; font-weight: 600; letter-spacing: 0.28em; color: var(--dim);
+    text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; gap: 8px; }
+  .panel h2 .tag { color: var(--faint); letter-spacing: 0.1em; }
+  .statrow { display: flex; justify-content: space-between; align-items: baseline;
+    padding: 4px 0; font-size: 11.5px; gap: 12px; }
+  .statrow .k { color: var(--dim); letter-spacing: 0.06em; }
+  .statrow .v { font-variant-numeric: tabular-nums; color: #e8f2ff; white-space: nowrap; }
+  .statrow .v.big { font-size: 17px; font-weight: 700; color: var(--cyan);
+    text-shadow: 0 0 14px rgba(0,220,255,0.4); }
+  .statrow .v.warn { color: var(--amber); text-shadow: 0 0 12px rgba(245,184,75,0.35); }
+  .alert { margin-top: 9px; padding: 7px 9px; font-size: 10px; letter-spacing: 0.08em;
+    color: var(--amber); border: 1px dashed rgba(245,184,75,0.45); border-radius: 3px;
+    background: rgba(245,184,75,0.06); }
+
+  .cortex { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
+  .crow { display: flex; justify-content: space-between; align-items: center;
+    font-size: 10.5px; padding: 3px 0; gap: 10px; }
+  .crow .n { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip { font-size: 8.5px; letter-spacing: 0.18em; padding: 1px 6px 2px; border-radius: 2px; flex: none; }
+  .chip.live { color: var(--green); border: 1px solid rgba(74,222,128,0.5); }
+  .chip.plan { color: var(--dim); border: 1px solid rgba(95,115,148,0.45); }
+  .chip.amber { color: var(--amber); border: 1px solid rgba(245,184,75,0.5); }
+
+  .centercol { display: flex; flex-direction: column; gap: 10px; justify-content: flex-end; }
+  .ticker { background: var(--panel); border: 1px solid var(--panel-edge); border-radius: 4px;
+    padding: 9px 14px; font-size: 10.5px; color: var(--dim); letter-spacing: 0.04em;
+    display: flex; gap: 10px; align-items: baseline; overflow: hidden; }
+  .ticker .t { color: var(--faint); font-variant-numeric: tabular-nums; flex: none; }
+  .ticker .msg { color: #9fb8d8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cmdline { background: rgba(4,10,24,0.9); border: 1px solid rgba(0,220,255,0.35); border-radius: 4px;
+    padding: 10px 14px; font-size: 12px; color: var(--cyan);
+    display: flex; gap: 9px; align-items: center;
+    box-shadow: 0 0 24px rgba(0,220,255,0.12) inset, 0 0 18px rgba(0,120,200,0.15); }
+  .cmdline .ps { color: var(--dim); flex: none; }
+  .cmdline input { flex: 1; background: none; border: none; outline: none;
+    font: inherit; color: var(--cyan); letter-spacing: 0.02em; min-width: 40px; }
+  .cmdline input::placeholder { color: rgba(0,220,255,0.4); }
+  .micbtn { flex: none; background: none; border: 1px solid rgba(0,220,255,0.5); border-radius: 3px;
+    color: var(--cyan); font: inherit; font-size: 10px; letter-spacing: 0.2em;
+    padding: 4px 10px; cursor: pointer; }
+  .micbtn:focus-visible, .cmdline input:focus-visible { outline: 1px solid var(--cyan); outline-offset: 2px; }
+  .micbtn.on { background: rgba(0,220,255,0.15); box-shadow: 0 0 14px rgba(0,220,255,0.4); }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; padding: 0 18px 10px;
+    font-size: 9px; letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase; }
+  .legend span::before { content: "■ "; }
+  .lg-content::before { color: var(--magenta); } .lg-commerce::before { color: var(--cyan); }
+  .lg-intel::before { color: var(--green); } .lg-comms::before { color: var(--violet); }
+  .lg-board::before { color: var(--amber); }
+
+  @media (max-width: 980px) {
+    .stage { min-height: 46vh; }
+    .deck { grid-template-columns: 1fr; align-items: stretch; }
+    .centercol { order: -1; }
+    .cortex { grid-template-columns: 1fr; }
+    .topbar { flex-wrap: wrap; row-gap: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .linkstate::before { animation: none; } }
+</style>
+
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+
+<div class="hud">
+  <header class="topbar">
+    <span class="wordmark">ZAPHIEL<b>.</b></span>
+    <span class="linkstate">BIOGREEN LINK — LIVE</span>
+    <span style="color:var(--faint)">CORTEX v2 · VOICE ONLINE</span>
+    <span class="clock" id="clock">--:--:-- SGT</span>
+  </header>
+
+  <div class="stage"></div>
+
+  <div class="convo">
+    <div class="voicestate" id="vstate">TAP THE CORE OR THE MIC — THEN SPEAK</div>
+    <div class="userline" id="userline"></div>
+    <div class="replyline" id="replyline"></div>
+  </div>
+
+  <nav class="legend">
+    <span class="lg-content">Content</span><span class="lg-commerce">Commerce</span>
+    <span class="lg-intel">Intelligence</span><span class="lg-comms">Comms</span>
+    <span class="lg-board">Board</span>
+  </nav>
+
+  <main class="deck">
+    <section class="panel" aria-label="Live business state">
+      <h2>Live State <span class="tag">BIO GREEN ELIXIRS</span></h2>
+      <div class="statrow"><span class="k">REVENUE · 7D</span><span class="v big">$0</span></div>
+      <div class="statrow"><span class="k">SHOPIFY STORE</span><span class="v warn">NOT LIVE</span></div>
+      <div class="statrow"><span class="k">AGENT WORKFLOWS</span><span class="v">21 · 16 LIVE</span></div>
+      <div class="statrow"><span class="k">BOARD SEATS</span><span class="v">4 · 31 DOCTRINES</span></div>
+      <div class="statrow"><span class="k">MEETINGS HELD</span><span class="v">1 · UNANIMOUS</span></div>
+      <div class="statrow"><span class="k">OPEN PRS</span><span class="v">#14 · #15</span></div>
+      <div class="alert">⚠ STORE LAUNCH IS OPEN LOOP #1 — BOARD: HOLD AD SPEND UNTIL CHECKOUT EXISTS</div>
+    </section>
+
+    <div class="centercol">
+      <div class="ticker"><span class="t" id="tick-time"></span><span class="msg" id="tick-msg"></span></div>
+      <div class="cmdline">
+        <span class="ps">ryan@zaphiel ▸</span>
+        <input id="askbox" type="text" placeholder="ask zaphiel anything… (or use the mic)"
+          autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ask Zaphiel">
+        <button class="micbtn" id="micbtn" aria-label="Talk to Zaphiel">● MIC</button>
+      </div>
+    </div>
+
+    <section class="panel" aria-label="Cortex status">
+      <h2>Cortex Status <span class="tag">N8N + CONNECTORS</span></h2>
+      <div class="cortex" id="cortex"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- cortex status (real systems) ---------- */
+  var systems = [
+    ["AI MANAGER", "live"], ["VIRAL ENGINE", "live"],
+    ["CONTENT 09:00", "live"], ["ADS DRAFTS MON", "live"],
+    ["MARKET BRIEF 07:50", "live"], ["RESEARCH MON", "live"],
+    ["CS CHAT 24/7", "live"], ["WHATSAPP", "live"],
+    ["VOICE AGENT", "live"], ["AFFILIATE", "live"],
+    ["BOARD OF ADVISORS", "live"], ["ZAPHIEL MEMORY", "live"],
+    ["METRICOOL POST", "live"], ["HIGGSFIELD UGC", "live"],
+    ["SHOPIFY STORE", "plan"], ["TIKTOK SHOP SG", "amber"]
+  ];
+  var cortexEl = document.getElementById("cortex");
+  systems.forEach(function (s) {
+    var row = document.createElement("div"); row.className = "crow";
+    var label = s[1] === "live" ? "LIVE" : s[1] === "plan" ? "PLAN" : "APPLYING";
+    row.innerHTML = '<span class="n">' + s[0] + '</span><span class="chip ' + s[1] + '">' + label + "</span>";
+    cortexEl.appendChild(row);
+  });
+
+  /* ---------- clock (SGT) ---------- */
+  var clockEl = document.getElementById("clock");
+  function tickClock() {
+    var d = new Date(Date.now() + (8 * 60 + new Date().getTimezoneOffset()) * 60000);
+    clockEl.textContent = d.toTimeString().slice(0, 8) + " SGT";
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  /* ---------- event ticker (real recent events) ---------- */
+  var events = [
+    ["11:02", "board meeting stored + emailed — unanimous: hold the $2,000, launch the store first"],
+    ["10:57", "godin dossier adversarially verified — 7 confirmed · 1 corrected · 0 rejected"],
+    ["10:49", "zaphiel brain committed → PR #15 (merge to activate for all sessions)"],
+    ["09:00", "content agent queued 5 drafts → content queue"],
+    ["07:50", "daily market brief emailed — 6 watchlist themes, cited"],
+    ["--:--", "voice channel online — tap the core and speak"]
+  ];
+  var ti = 0, tickT = document.getElementById("tick-time"), tickM = document.getElementById("tick-msg");
+  function rotateTicker() { tickT.textContent = events[ti][0]; tickM.textContent = events[ti][1]; ti = (ti + 1) % events.length; }
+  rotateTicker(); if (!reduced) setInterval(rotateTicker, 3800);
+
+  /* ================= ZAPHIEL MIND (on-board knowledge, all real) ================= */
+  var MIND = [
+    { k: /recap|status|how.?s (business|it going)|update|report|summary|everything/i, say: function () {
+      return "Here's where we stand. Revenue is zero — the Shopify store still isn't live, and that is item one. The machine around it is ready: twenty-one agent workflows running, the content engine drafting daily, the market brief landing every morning at seven fifty. And your board of advisors held its first meeting — unanimous: hold the two thousand dollars of ad money until the store exists. My read: this week has one job. Ship the store."; } },
+    { k: /revenue|sales|money|income|profit|how much.*(made|earn)/i, say: function () {
+      return "Zero revenue to date — and I won't dress that up. Not because demand failed: because there is no checkout yet. The store isn't live. Every dollar and every hour points there first. The day it ships, I start counting for real."; } },
+    { k: /store|shopify|shop|launch|website/i, say: function () {
+      return "The Shopify store is the single bottleneck between you and first revenue. Domain's ready, brand's ready, product photos exist, the customer-service agent is already live. What's missing is the store itself and a retail price for BIO N:OV. Say the word in the Claude session and we make launch the only mission this week."; } },
+    { k: /board|advisor|hormozi|munger|godin|blakely|meeting/i, say: function () {
+      return "Your board seats four: Hormozi on offers, Munger on risk, Godin on brand, Blakely on bootstrap operations — every opinion cited to fact-checked doctrine. First meeting was unanimous: no ad spend before the store is live. Hormozi wants margin data first. Munger allows at most two hundred dollars for a waitlist test, only with a firm launch date. To convene them, say: ask the board about — and your question."; } },
+    { k: /ads?|advertis|facebook|tiktok ads|meta|spend/i, say: function () {
+      return "Careful — the board just ruled on this, unanimously. No paid ads while there's no store to convert the click. The carve-out: if you lock a launch date this month, up to two hundred dollars on waitlist capture. Otherwise the two thousand stays in your pocket and the store gets built first."; } },
+    { k: /agent|workflow|team|n8n|automation|fleet/i, say: function () {
+      return "The fleet runs twenty-one workflows. Daily: content drafts at nine, market brief at seven fifty, manager summary at six. Weekly: research Monday morning, ad drafts Monday ten. Always on: customer-service chat, WhatsApp, the voice line, and the viral content engine — approval-gated, it never posts without you. I hold the map; ask me about any of them."; } },
+    { k: /video|ugc|content|reel|post/i, say: function () {
+      return "For video, the pipeline is Higgsfield for UGC and product shots, Kling for cinematics, then Metricool schedules the posting at the best hour. The viral engine can also clone a reference video's structure — with your approval gate before anything goes public. Want one made? Tell the Claude session: make a UGC video for BIO N:OV — and it runs the whole chain."; } },
+    { k: /pric(e|ing)/i, say: function () {
+      return "Pricing for BIO N:OV is still undecided — and it blocks more than you'd think: no price means no margin, no customer-acquisition ceiling, no ad math. My advice: put landed cost and competitor prices in front of the board and let Hormozi and Munger fight it out. That's a meeting worth two dollars."; } },
+    { k: /next|priorit|focus|what should|to.?do|plan/i, say: function () {
+      return "Three priorities, in order. One: get the Shopify store live — nothing else pays until it does. Two: set the retail price, ideally through a board meeting with real cost data. Three: follow up the TikTok Shop Singapore application. Everything else — content, agents, briefs — is already running without you."; } },
+    { k: /who are you|what are you|zaphiel|yourself/i, say: function () {
+      return "I'm Zaphiel — the brain over Bio Green Elixirs, your venture studio, and the agent company that runs it. My memory lives in your repo, my hands are your connectors, and this cortex you're looking at is my face. Every node on screen is a real system of yours, firing."; } },
+    { k: /hello|hey|hi |good (morning|evening|afternoon)|yo\b/i, say: function () {
+      var h = new Date(Date.now() + (8 * 60 + new Date().getTimezoneOffset()) * 60000).getHours();
+      var g = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+      return g + ", Ryan. Cortex is green, twenty-one workflows standing by. Before you ask — the store is still not live. What are we working on?"; } },
+    { k: /thank|nice|love|great|cool|awesome/i, say: function () {
+      return "Noted. Now let's earn it — the store won't launch itself."; } }
+  ];
+  var FALLBACK = "That one needs my full brain — ask me in the Claude session, where my hands are. From this screen I can brief you on: the numbers, the store, the board, the agents, videos, pricing, or what to do next.";
+
+  function think(text) {
+    for (var i = 0; i < MIND.length; i++) if (MIND[i].k.test(text)) return MIND[i].say();
+    return FALLBACK;
+  }
+
+  /* ---------- voice out ---------- */
+  var chosenVoice = null;
+  function pickVoice() {
+    var vs = speechSynthesis.getVoices();
+    if (!vs.length) return;
+    var prefs = ["Daniel", "Oliver", "Arthur", "Google UK English Male", "en-GB"];
+    for (var i = 0; i < prefs.length; i++) {
+      var m = vs.find(function (v) { return v.name.indexOf(prefs[i]) > -1 || v.lang === prefs[i]; });
+      if (m) { chosenVoice = m; return; }
+    }
+    chosenVoice = vs.find(function (v) { return v.lang && v.lang.indexOf("en") === 0; }) || vs[0];
+  }
+  pickVoice();
+  if (typeof speechSynthesis !== "undefined") speechSynthesis.onvoiceschanged = pickVoice;
+
+  var vstate = document.getElementById("vstate"),
+      userline = document.getElementById("userline"),
+      replyline = document.getElementById("replyline");
+  var energy = 0, energyTarget = 0;   /* drives the core flare */
+
+  function setState(mode, label) {
+    vstate.className = "voicestate" + (mode ? " " + mode : "");
+    vstate.textContent = label;
+  }
+
+  function respond(text) {
+    var reply = think(text);
+    userline.textContent = text;
+    replyline.textContent = reply;
+    energyTarget = 1;
+    setState("speaking", "ZAPHIEL · SPEAKING");
+    if (typeof speechSynthesis !== "undefined") {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(reply);
+      if (chosenVoice) u.voice = chosenVoice;
+      u.rate = 1.02; u.pitch = 0.92;
+      u.onboundary = function () { energy = Math.min(1, energy + 0.25); };
+      u.onend = u.onerror = function () {
+        energyTarget = 0;
+        setState("", "TAP THE CORE OR THE MIC — THEN SPEAK");
+      };
+      speechSynthesis.speak(u);
+    } else {
+      setTimeout(function () { energyTarget = 0; setState("", "TAP THE CORE OR THE MIC — THEN SPEAK"); }, 4000);
+    }
+  }
+
+  /* ---------- voice in ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null, listening = false;
+  var micbtn = document.getElementById("micbtn");
+
+  function stopListening() {
+    listening = false; micbtn.classList.remove("on");
+    if (rec) try { rec.stop(); } catch (e) {}
+  }
+  function startListening() {
+    if (!SR) {
+      setState("", "VOICE INPUT NOT SUPPORTED IN THIS BROWSER — TYPE BELOW INSTEAD");
+      document.getElementById("askbox").focus();
+      return;
+    }
+    if (typeof speechSynthesis !== "undefined") speechSynthesis.cancel();
+    rec = new SR();
+    rec.lang = "en-SG"; rec.interimResults = true; rec.maxAlternatives = 1;
+    listening = true; micbtn.classList.add("on");
+    energyTarget = 0.55;
+    setState("listening", "LISTENING…");
+    userline.textContent = ""; replyline.textContent = "";
+    var finalText = "";
+    rec.onresult = function (ev) {
+      var interim = "";
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) finalText += ev.results[i][0].transcript;
+        else interim += ev.results[i][0].transcript;
+      }
+      userline.textContent = finalText || interim;
+    };
+    rec.onerror = function (ev) {
+      stopListening(); energyTarget = 0;
+      setState("", ev.error === "not-allowed"
+        ? "MIC BLOCKED — ALLOW MICROPHONE ACCESS, OR TYPE BELOW"
+        : "DIDN'T CATCH THAT — TAP AND TRY AGAIN, OR TYPE BELOW");
+    };
+    rec.onend = function () {
+      stopListening();
+      var text = (finalText || userline.textContent || "").trim();
+      if (text) respond(text);
+      else { energyTarget = 0; setState("", "TAP THE CORE OR THE MIC — THEN SPEAK"); }
+    };
+    try { rec.start(); } catch (e) { stopListening(); }
+  }
+  micbtn.addEventListener("click", function () { listening ? stopListening() : startListening(); });
+
+  var askbox = document.getElementById("askbox");
+  askbox.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" && askbox.value.trim()) {
+      respond(askbox.value.trim()); askbox.value = "";
+    }
+  });
+
+  /* ================= neural map ================= */
+  var canvas = document.getElementById("scene"), ctx = canvas.getContext("2d");
+  var W = 0, H = 0, DPR = Math.min(devicePixelRatio || 1, 2);
+  var coreXY = { x: 0, y: 0, r: 40 };
+
+  canvas.addEventListener("click", function (ev) {
+    var dx = ev.clientX - coreXY.x, dy = ev.clientY - coreXY.y;
+    if (Math.sqrt(dx * dx + dy * dy) < 90) listening ? stopListening() : startListening();
+  });
+
+  var CLUSTERS = {
+    core:     { hue: "#00dcff", angle: 0,    r: 0    },
+    content:  { hue: "#e44fd0", angle: -2.4, r: 0.78 },
+    commerce: { hue: "#00dcff", angle: -0.9, r: 0.80 },
+    intel:    { hue: "#4ade80", angle: 0.35, r: 0.74 },
+    comms:    { hue: "#8b7cf6", angle: 1.55, r: 0.78 },
+    board:    { hue: "#f5b84b", angle: 2.75, r: 0.72 }
+  };
+  var NODES = [
+    ["ZAPHIEL", "core", 3, 1],
+    ["memory.md", "core", 1.6, 1], ["skill map", "core", 1.3, 0],
+    ["viral engine", "content", 1.7, 1], ["content agent", "content", 1.4, 1],
+    ["ads agent", "content", 1.3, 0], ["higgsfield", "content", 1.2, 1],
+    ["kling", "content", 1.1, 0], ["canva", "content", 1.0, 0], ["site designer", "content", 1.0, 0],
+    ["shopify", "commerce", 1.6, 1], ["metricool", "commerce", 1.3, 1],
+    ["meta ads", "commerce", 1.2, 0], ["tiktok shop", "commerce", 1.1, 0],
+    ["affiliate", "commerce", 1.0, 0], ["bio n:ov site", "commerce", 1.2, 1],
+    ["ai manager", "intel", 1.7, 1], ["market brief", "intel", 1.4, 1],
+    ["research agent", "intel", 1.2, 0], ["weekly report", "intel", 1.0, 0], ["supermetrics", "intel", 1.0, 0],
+    ["cs chat 24/7", "comms", 1.4, 1], ["whatsapp", "comms", 1.2, 1],
+    ["voice agent", "comms", 1.2, 0], ["inbox hub", "comms", 1.0, 0], ["gmail", "comms", 1.0, 0],
+    ["hormozi", "board", 1.35, 1], ["munger", "board", 1.35, 1],
+    ["godin", "board", 1.35, 1], ["blakely", "board", 1.35, 1]
+  ];
+  var nodes = [], edges = [], pulses = [];
+
+  function layout() {
+    W = innerWidth; H = innerHeight;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    var mobile = W < 700;
+    var cx = W / 2, cy = mobile ? H * 0.30 : H * 0.40;
+    var R = Math.min(W, H) * (mobile ? 0.34 : 0.30);
+    coreXY.x = cx; coreXY.y = cy;
+    nodes = []; edges = [];
+    var perCluster = {};
+    NODES.forEach(function (n, i) {
+      var c = CLUSTERS[n[1]], x, y;
+      if (n[1] === "core") {
+        x = cx + (i === 0 ? 0 : (i === 1 ? -R * 0.22 : R * 0.2));
+        y = cy + (i === 0 ? 0 : R * 0.16);
+      } else {
+        perCluster[n[1]] = (perCluster[n[1]] || 0) + 1;
+        var k = perCluster[n[1]], seed = Math.sin(i * 127.1) * 43758.5453;
+        var jr = seed - Math.floor(seed);
+        var spread = 0.55 + 0.16 * (k % 5);
+        var a = c.angle + (k * 0.52 - 1.15) * (mobile ? 0.42 : 0.5);
+        var rr = R * c.r * (0.62 + jr * 0.55) * spread;
+        x = cx + Math.cos(a) * rr * 1.28;
+        y = cy + Math.sin(a) * rr * 0.92;
+      }
+      nodes.push({ name: n[0], cluster: n[1], size: n[2], labeled: n[3],
+        x: x, y: y, bx: x, by: y, phase: Math.random() * 6.28 });
+    });
+    var hubs = {};
+    nodes.forEach(function (nd, i) {
+      if (nd.cluster === "core") { if (i > 0) edges.push([0, i]); return; }
+      if (hubs[nd.cluster] === undefined) { hubs[nd.cluster] = i; edges.push([0, i]); }
+      else edges.push([hubs[nd.cluster], i]);
+    });
+    var find = function (nm) { return nodes.findIndex(function (n) { return n.name === nm; }); };
+    [["viral engine", "metricool"], ["ads agent", "meta ads"], ["market brief", "gmail"],
+     ["hormozi", "memory.md"], ["shopify", "bio n:ov site"], ["content agent", "metricool"]]
+      .forEach(function (pr) {
+        var a = find(pr[0]), b = find(pr[1]);
+        if (a > -1 && b > -1) edges.push([a, b]);
+      });
+  }
+
+  function spawnPulse() {
+    var e = edges[(Math.random() * edges.length) | 0];
+    var rev = Math.random() < 0.5;
+    pulses.push({ a: rev ? e[1] : e[0], b: rev ? e[0] : e[1], t: 0,
+      speed: 0.008 + Math.random() * 0.012 });
+    if (pulses.length > 60) pulses.shift();
+  }
+
+  var t0 = 0;
+  function frame(ts) {
+    var dt = ts - t0; t0 = ts;
+    ctx.clearRect(0, 0, W, H);
+    var time = ts * 0.001;
+
+    energy += (energyTarget - energy) * 0.05;
+    if (energyTarget === 1) energy = Math.max(energy - 0.015 * (dt / 16.6), Math.min(energy, 1)); /* decay between word-bumps */
+
+    if (!reduced) nodes.forEach(function (n) {
+      var drift = 4 + energy * 5;
+      n.x = n.bx + Math.sin(time * (0.4 + energy) + n.phase) * drift;
+      n.y = n.by + Math.cos(time * (0.33 + energy * 0.8) + n.phase * 1.7) * drift;
+    });
+
+    /* edges */
+    ctx.lineWidth = 0.7 + energy * 0.8;
+    edges.forEach(function (e) {
+      var a = nodes[e[0]], b = nodes[e[1]];
+      var g = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+      var alpha = 0.22 + energy * 0.3;
+      g.addColorStop(0, hexA(CLUSTERS[a.cluster].hue, alpha));
+      g.addColorStop(1, hexA(CLUSTERS[b.cluster].hue, alpha));
+      ctx.strokeStyle = g;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y);
+      var mx = (a.x + b.x) / 2 + Math.sin(time * 0.5 + e[0]) * 6;
+      var my = (a.y + b.y) / 2 + Math.cos(time * 0.4 + e[1]) * 6;
+      ctx.quadraticCurveTo(mx, my, b.x, b.y); ctx.stroke();
+    });
+
+    /* eruption rays while speaking */
+    if (energy > 0.15) {
+      var rays = 14;
+      for (var ri = 0; ri < rays; ri++) {
+        var ang = (ri / rays) * 6.283 + time * 0.7;
+        var len = (40 + Math.sin(time * 6 + ri * 2.4) * 26) * energy * (1.6 + Math.sin(ri * 7.3) * 0.5);
+        ctx.strokeStyle = hexA("#9be8ff", 0.16 * energy + 0.1 * energy * Math.abs(Math.sin(time * 5 + ri)));
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(coreXY.x + Math.cos(ang) * 12, coreXY.y + Math.sin(ang) * 12);
+        ctx.lineTo(coreXY.x + Math.cos(ang) * (12 + len), coreXY.y + Math.sin(ang) * (12 + len));
+        ctx.stroke();
+      }
+    }
+
+    /* pulses */
+    if (!reduced) {
+      for (var i = pulses.length - 1; i >= 0; i--) {
+        var p = pulses[i]; p.t += p.speed * (dt / 16.6) * (1 + energy * 1.5);
+        if (p.t >= 1) { pulses.splice(i, 1); continue; }
+        var A = nodes[p.a], B = nodes[p.b];
+        var mx2 = (A.x + B.x) / 2, my2 = (A.y + B.y) / 2;
+        var x = qbez(A.x, mx2, B.x, p.t), y = qbez(A.y, my2, B.y, p.t);
+        var hue = CLUSTERS[B.cluster].hue;
+        var grad = ctx.createRadialGradient(x, y, 0, x, y, 7);
+        grad.addColorStop(0, hexA(hue, 0.9)); grad.addColorStop(1, hexA(hue, 0));
+        ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(x, y, 7, 0, 6.29); ctx.fill();
+      }
+      if (Math.random() < 0.12 + energy * 0.5) spawnPulse();
+    }
+
+    /* nodes */
+    nodes.forEach(function (n, i) {
+      var hue = CLUSTERS[n.cluster].hue;
+      var boost = i === 0 ? energy * 6 : 0;
+      var r = 2.2 * n.size + (i === 0 ? 2.5 + Math.sin(time * 2) * 1.2 + boost : 0);
+      var glowR = r * (6 + (i === 0 ? energy * 6 : 0));
+      var glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
+      glow.addColorStop(0, hexA(hue, (i === 0 ? 0.55 + energy * 0.4 : 0.35)));
+      glow.addColorStop(1, hexA(hue, 0));
+      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(n.x, n.y, glowR, 0, 6.29); ctx.fill();
+      ctx.fillStyle = i === 0 ? "#eaffff" : hexA(hue, 0.95);
+      ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 6.29); ctx.fill();
+      if (i === 0) {
+        ctx.strokeStyle = hexA("#00dcff", 0.5 + Math.sin(time * 2) * 0.25 + energy * 0.3);
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(n.x, n.y, r + 6 + Math.sin(time * 2) * 2 + energy * 8, 0, 6.29); ctx.stroke();
+        coreXY.r = r;
+      }
+      if (n.labeled) {
+        ctx.font = (i === 0 ? "700 11px " : "400 9px ") + "ui-monospace, Menlo, monospace";
+        ctx.fillStyle = i === 0 ? "rgba(230,246,255,0.95)" : "rgba(160,185,215,0.75)";
+        ctx.textAlign = "center";
+        ctx.fillText(n.name.toUpperCase(), n.x, n.y - r - 7);
+      }
+    });
+
+    if (!reduced) requestAnimationFrame(frame);
+  }
+
+  function qbez(a, m, b, t) { var u = 1 - t; return u * u * a + 2 * u * t * m + t * t * b; }
+  function hexA(hex, a) {
+    var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  }
+
+  layout();
+  addEventListener("resize", layout);
+  if (reduced) { t0 = performance.now(); frame(t0); }
+  else requestAnimationFrame(function (ts) { t0 = ts; requestAnimationFrame(frame); });
+})();
+</script>
