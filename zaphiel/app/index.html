@@ -250,7 +250,7 @@
   <h2>ZAPHIEL</h2>
   <div class="blog" id="blog"></div>
   <button class="initb" id="initb">◉ &nbsp;JACK IN</button>
-  <div class="note">FIRST RUN GRANTS THE MIC. AFTER THAT HE WAKES ON A CLAP OR YOUR VOICE.<br>THE SIDEBAR AGENTS ARE TEXT — NO MIC NEEDED.</div>
+  <div class="note">FIRST RUN GRANTS THE MIC. AFTER THAT HE WAKES ON A CLAP OR YOUR VOICE.<br>VOICE RUNS ON YOUR OWN DEVICE — FREE, NO CREDITS.</div>
   <div class="err" id="booterr"></div>
 </div>
 
@@ -610,6 +610,7 @@ input.addEventListener("input", () => {
 
 /* =============== voice cortex =============== */
 let wakeStream = null, wakeCtx = null, wakeAnalyser = null, wakeRaf = 0, voiceMs = 0, micGranted = false;
+let elevenStart = 0, elevenSpoke = false;
 
 async function armStandby(msg) {
   if (conv || view !== "cortex") return;
@@ -662,7 +663,150 @@ function showBoot(err) {
   bootErr.textContent = err || "";
 }
 
+
+/* =============== FREE BROWSER VOICE (no ElevenLabs, no quota) =============== */
+/* Speech in  : Web Speech API (built into the phone, free)
+   Speech out : speechSynthesis, preferring a downloaded neural voice
+   Brain      : on-device answers from real business state; BRAIN_URL can point at a
+                remote endpoint later without touching anything else here.          */
+
+let ENGINE = localStorage.getItem("zaphiel.engine") || "free";   // "free" | "eleven"
+const BRAIN_URL = "";      // set to an endpoint returning {reply:"..."} to upgrade the brain
+let rec = null, recRunning = false, ttsVoice = null, speaking = false;
+
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang));
+  if (!vs.length) return null;
+  const score = v => {
+    const n = v.name.toLowerCase();
+    if (n.includes("siri")) return 6;
+    if (n.includes("premium") || n.includes("enhanced")) return 5;
+    if (n.includes("neural") || n.includes("natural")) return 4;
+    if (n.includes("samantha") || n.includes("aaron") || n.includes("daniel")) return 3;
+    if (!v.localService) return 2;
+    return 1;
+  };
+  return vs.sort((a, b) => score(b) - score(a))[0];
+}
+speechSynthesis.onvoiceschanged = () => { ttsVoice = pickVoice(); };
+ttsVoice = pickVoice();
+
+function say(text) {
+  return new Promise(resolve => {
+    if (!("speechSynthesis" in window)) { resolve(); return; }
+    try { speechSynthesis.cancel(); } catch (e) {}
+    const u = new SpeechSynthesisUtterance(text);
+    if (!ttsVoice) ttsVoice = pickVoice();
+    if (ttsVoice) u.voice = ttsVoice;
+    u.rate = 1.02; u.pitch = 1.0; u.volume = 1;
+    speaking = true; mode = "speaking"; voiceStatus();
+    capA.textContent = text;
+    /* drive the cortex from word boundaries, since there is no audio stream to sample */
+    u.onboundary = () => { energy = Math.min(1, 0.55 + Math.random() * 0.45); };
+    const done = () => {
+      speaking = false; energy = 0;
+      mode = recRunning ? "listening" : "armed"; voiceStatus();
+      resolve();
+    };
+    u.onend = done; u.onerror = done;
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ---- on-device brain: real facts only, never invents numbers ---- */
+const MIND = [
+  [/revenue|sales|money|earning|how much/i,
+   "Revenue is still zero, and the reason is simple: the store has no live product yet. BIO N:OV is sitting in Shopify as a draft with a placeholder price. Give me the landed cost and I can price it properly and get it live."],
+  [/store|shopify|live|launch/i,
+   "The store exists — Bio Elixirs, Singapore, Basic plan, in Singapore dollars. It had zero products until I added BIO N:OV as a draft. To publish it needs three things: a real price, product photos, and the status flipped to active."],
+  [/price|pricing|cost|margin|how much should/i,
+   "Pricing is not decided, and I won't invent it. I need your landed cost per bottle. Once I have that I'll show you the margin arithmetic at a few price points and you pick."],
+  [/board|advisor|hormozi|munger|godin|blakely/i,
+   "Your board is Hormozi, Munger, Godin and Blakely, all fact-checked against primary sources. Their last ruling was unanimous: do not spend the two thousand on ads before the store is live. At most two hundred on a waitlist test, and only with a launch date locked."],
+  [/ads?|meta|facebook|advertis/i,
+   "Meta ads are blocked, and not by me. Your ad account has automation switched off at Meta's end, and there's no payment method attached. Even if we wanted to spend, nothing could. The board says hold anyway until the store is live."],
+  [/video|ugc|content|tiktok|post/i,
+   "I can write the whole thing — hooks, a timestamped script, the shot list, captions. Rendering the actual video runs through Higgsfield or Kling, and that spends your generation credits, so I'll always name the cost before I burn any."],
+  [/website|site|3d|landing|page/i,
+   "Yes. Your three-D BIO N:OV site is built and its copy is now compliance-clean, and I have a reusable scroll-animation engine for new client sites. Ask me in the Claude chat and I'll build and deploy one."],
+  [/what can you do|help|capabilit|who are you|what are you/i,
+   "I'm Zaphiel — the brain over Bio Green Elixirs. Right now I'm running on your phone's own voice, free, so a dead credit balance can't silence me. I know your live business state, your board's rulings and your compliance rules. For work that touches Shopify, videos or websites, talk to me in the Claude chat where I have hands."],
+  [/next|priority|focus|what should i do|today/i,
+   "One thing matters: get the store live. Price it, photograph it, publish it. Everything else — ads, content, affiliates — is downstream of having something somebody can actually buy."],
+  [/compliance|claim|hsa|legal/i,
+   "Hard rule: never cure, treat, diagnose or prevent. Only support, promote, help maintain. No named diseases anywhere. I already stripped forty-three claim violations out of your three-D site, including a cancer claim that would have been a real problem."],
+  [/thank|thanks|good job|nice/i, "Anytime. What's next?"],
+  [/hello|hi\b|hey|what'?s up|yo\b/i, "What's up, Ryan. What are we building?"]
+];
+function think(q) {
+  for (const [re, ans] of MIND) if (re.test(q)) return ans;
+  return "I don't have a solid answer to that from what's in my memory, and I'd rather say so than make something up. Ask me in the Claude chat and I'll go find out properly.";
+}
+async function answer(q) {
+  capU.textContent = q;
+  let reply;
+  if (BRAIN_URL) {
+    try {
+      const r = await fetch(BRAIN_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q }) });
+      reply = (await r.json()).reply;
+    } catch (e) { reply = null; }
+  }
+  await say(reply || think(q));
+}
+
+function startListening() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { say("This browser can't do speech recognition. Safari on iPhone or Chrome will work."); return false; }
+  if (recRunning) return true;
+  rec = new SR();
+  rec.lang = "en-US";
+  rec.interimResults = true;
+  rec.continuous = false;          /* iOS ends each utterance; we restart below */
+  rec.onresult = e => {
+    let interim = "", final = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t; else interim += t;
+    }
+    if (interim) { capU.textContent = interim; userEnergy = 0.6; }
+    if (final.trim()) answer(final.trim());
+  };
+  rec.onerror = e => {
+    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+      recRunning = false;
+      showBoot("MICROPHONE BLOCKED — allow mic access for this site, then tap JACK IN again.");
+    }
+  };
+  rec.onend = () => { if (recRunning && !speaking) { try { rec.start(); } catch (e) {} } };
+  recRunning = true;
+  try { rec.start(); } catch (e) {}
+  return true;
+}
+function stopListening() {
+  recRunning = false;
+  if (rec) { try { rec.stop(); } catch (e) {} }
+  try { speechSynthesis.cancel(); } catch (e) {}
+  speaking = false;
+}
+
+async function wakeFree() {
+  disarmSentinel();
+  if (!startListening()) return;
+  boot.classList.add("gone");
+  mode = "listening"; voiceStatus(); markSidebar();
+  hint.textContent = "FREE ON-DEVICE VOICE · NO CREDITS USED";
+  wakebtn.hidden = false; wakebtn.textContent = "STAND DOWN"; wakebtn.classList.add("danger");
+  await say("What's up, Ryan. Running on your phone's own voice — no credits burning. What do you need?");
+}
+
+/* dispatcher: free by default; ElevenLabs only when explicitly switched on */
 async function wake() {
+  if (ENGINE === "eleven") return wakeEleven();
+  return wakeFree();
+}
+
+async function wakeEleven() {
   if (conv || mode === "connecting") return;
   disarmSentinel();
   mode = "connecting"; voiceStatus();
@@ -674,14 +818,27 @@ async function wake() {
     agentId: AGENT_ID,
     onConnect: () => {
       boot.classList.add("gone");
+      elevenStart = Date.now(); elevenSpoke = false;
       mode = "listening"; voiceStatus(); markSidebar();
       hint.textContent = "SESSIONS RUN UP TO 10 MINUTES";
       wakebtn.hidden = false; wakebtn.textContent = "STAND DOWN"; wakebtn.classList.add("danger");
     },
     onDisconnect: () => {
       conv = null; markSidebar();
-      capU.textContent = ""; capA.textContent = "";
+      capU.textContent = "";
       wakebtn.classList.remove("danger");
+      /* Died in seconds without ever speaking? That is an ElevenLabs quota/auth failure,
+         not a network blip. Say so plainly and fall back to the free voice for good,
+         instead of re-arming into a reconnect loop. */
+      const shortLived = elevenStart && (Date.now() - elevenStart) < 6000;
+      if (!elevenSpoke && shortLived) {
+        ENGINE = "free";
+        try { localStorage.setItem("zaphiel.engine", "free"); } catch (e) {}
+        capA.textContent = "ElevenLabs rejected the session — that account is out of credits. Switching to the free on-device voice.";
+        setTimeout(wakeFree, 400);
+        return;
+      }
+      capA.textContent = "";
       armStandby("LINK CLOSED — CLAP OR TAP TO RECONNECT");
     },
     onError: e => { console.error(e); },
@@ -694,7 +851,7 @@ async function wake() {
       const src = msg && (msg.source || msg.role);
       const text = msg && (msg.message || msg.text);
       if (!text) return;
-      if (src === "user") capU.textContent = text; else capA.textContent = text;
+      if (src === "user") capU.textContent = text; else { capA.textContent = text; elevenSpoke = true; }
     }
   };
   try { conv = await Conversation.startSession({ ...opts, connectionType: "webrtc" }); }
@@ -706,6 +863,13 @@ async function wake() {
 
 wakebtn.addEventListener("click", async () => {
   if (conv) { try { await conv.endSession(); } catch (e) {} conv = null; return; }
+  if (recRunning) {                       /* free voice is live — stand it down */
+    stopListening();
+    capU.textContent = ""; capA.textContent = "";
+    wakebtn.classList.remove("danger");
+    armStandby("STOOD DOWN — CLAP OR TAP TO WAKE");
+    return;
+  }
   if (!wakeAnalyser) armStandby(); else wake();
 });
 el("initb").addEventListener("click", async () => {

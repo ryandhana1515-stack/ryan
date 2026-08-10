@@ -138,6 +138,20 @@ Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
   only one agent to pay for. This required enabling prompt + firstMessage + text_only in
   the agent's `platform_settings.overrides`; if those get switched off, every sidebar chat
   silently falls back to the chief-of-staff persona.
+- **VOICE ENGINE (changed 2026-08-09): free on-device speech is now the DEFAULT.** The
+  ElevenLabs account ran out of credits — every conversation from 2026-08-08 onward died in
+  0-3 seconds with `termination_reason: "This request exceeds your quota limit."`, which
+  surfaced to Ryan as "link closed" halfway through speaking. The app now uses the Web
+  Speech API (recognition + speechSynthesis) with no quota and no cost, picking the best
+  neural voice installed on the device. Tell Ryan to install a premium voice at
+  Settings > Accessibility > Spoken Content > Voices — that is what makes it sound human
+  rather than robotic. `ENGINE` in the app switches between "free" and "eleven" and is
+  remembered in localStorage; if an ElevenLabs session dies inside 6 seconds without the
+  agent ever speaking, the app now names the real cause on screen and falls back to free
+  permanently instead of looping on reconnect.
+- Brain for the free voice is on-device (`MIND` in the app) — real business facts only,
+  and it says "I don't know" rather than inventing. `BRAIN_URL` is the single constant to
+  point at a remote LLM endpoint when one is available; nothing else needs changing.
 - **Anti-queue rule, baked in:** every specialist prompt AND the voice prompt forbid saying
   a request was filed, queued or emailed. They must produce the finished script/copy/plan
   in the window. `dispatch_task` is a last step, only when Ryan asks to queue something.
