@@ -149,6 +149,28 @@ Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
   remembered in localStorage; if an ElevenLabs session dies inside 6 seconds without the
   agent ever speaking, the app now names the real cause on screen and falls back to free
   permanently instead of looping on reconnect.
+- **THE MICROPHONE BUG (fixed 2026-08-11) — read before touching the voice loop.** Ryan
+  reported "he can't even listen to my voice now". Cause: recognition ends on its own after
+  every utterance on every browser (iOS after each sentence, Chrome after a few seconds of
+  quiet), so a stopped engine is ROUTINE and must always be restarted. The old `onend` read
+  `if (recRunning && !speaking) rec.start()` — during a reply `speaking` is true, so the
+  restart was skipped, and nothing restarted it when the reply ended. The mic died after
+  the greeting and never came back. Fixes: `say()` stops recognition before speaking and
+  always resumes after through one `done()` path; two timers cover a browser that accepts
+  an utterance and silently never speaks it (Safari autoplay, backgrounded tab); intent and
+  reality are separate state (`recWanted` vs `recLive`) so a restart can never throw
+  InvalidStateError into a live engine; errors are shown, not swallowed. There is now a
+  **HOLD TO TALK** button — continuous recognition is at the mercy of the browser, a press
+  is not — and speechSynthesis is primed on the first touch because iOS will not speak
+  unless speech first began inside a user gesture (a clap is not one).
+- **Regression test: `zaphiel/app/test/voice-loop.test.mjs`** (`npm i playwright`, then
+  `node zaphiel/app/test/voice-loop.test.mjs`). Runs headless with both Web Speech APIs
+  stubbed; asserts the mic is live after the greeting, after two replies, and after an
+  utterance the browser drops silently. Against the broken build it reports `starts: 1,
+  live: false`. Run it after ANY change to the voice loop.
+- **iOS caveat worth telling Ryan:** Safari does not give speech recognition to pages opened
+  from a home-screen icon or inside another app's browser. If the mic is dead there, open
+  https://ryan-rho.vercel.app in Safari itself. The app now says this on screen.
 - Brain for the free voice is on-device (`MIND` in the app) — real business facts only,
   and it says "I don't know" rather than inventing. `BRAIN_URL` is the single constant to
   point at a remote LLM endpoint when one is available; nothing else needs changing.
@@ -252,6 +274,11 @@ documented path to actually watch a clip rather than guess — skill §10.
   workflow display name. Deliberately NOT renamed (would break the live voice link):
   webhook path `/webhook/jarvis-task`, data table `jarvis_tasks`, ElevenLabs
   `agent_3001kzgz64emesm91398nx05c17e`, Vercel project `ryan` / URL ryan-rho.vercel.app.
+- 2026-08-11: **fixed the microphone dying after Zaphiel's first sentence** (see §4b —
+  recognition was never restarted once a reply began). Added a HOLD TO TALK button, iOS
+  speech priming, visible error states, and a headless regression test that fails against
+  the broken build. PR #17 carries this plus the male-voice preference. Also opened PR #17
+  because PR #15 is merged and a merged PR cannot carry follow-up work.
 
 ## 7. Open loops / next actions
 
