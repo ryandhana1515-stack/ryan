@@ -109,6 +109,10 @@
   .wake:hover { background: rgba(61,255,162,.12); }
   .wake.danger { border-color: rgba(255,107,99,.42); color: var(--red); box-shadow: none; }
   .hint { font-size: 8px; letter-spacing: .26em; color: var(--faint); text-align: center; }
+  .vbtn { pointer-events: auto; background: none; border: 1px solid var(--line); color: var(--dim);
+    font: inherit; font-size: 8px; letter-spacing: .24em; padding: 6px 12px; border-radius: 3px;
+    cursor: pointer; }
+  .vbtn:hover { color: var(--grn); border-color: rgba(61,255,162,.4); }
 
   /* ---------------- chat ---------------- */
   .log { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 18px 16px 8px;
@@ -217,6 +221,7 @@
           <div class="cap-u" id="capU"></div>
           <div class="cap-a" id="capA"></div>
           <button class="wake" id="wakebtn" hidden>◉ &nbsp;WAKE ZAPHIEL</button>
+          <button class="vbtn" id="voicebtn" hidden>VOICE ▸ …</button>
           <div class="hint" id="hint"></div>
         </div>
       </section>
@@ -674,19 +679,37 @@ let ENGINE = localStorage.getItem("zaphiel.engine") || "free";   // "free" | "el
 const BRAIN_URL = "";      // set to an endpoint returning {reply:"..."} to upgrade the brain
 let rec = null, recRunning = false, ttsVoice = null, speaking = false;
 
+/* Voice selection: prefer a MALE, mid-range English voice. Ryan's brief was
+   "a man, not a girl, not too manly", so deep/gravelly names are deprioritised
+   and light male voices win. He can cycle through the rest with the VOICE button
+   and the choice is remembered. */
+const V_MALE   = /(aaron|daniel|arthur|oliver|thomas|\btom\b|rishi|gordon|\balex\b|james|george|\bguy\b|david|mark|ryan|liam|matthew|brian|ethan|nathan|\bmale\b|reed|eddy)/i;
+const V_DEEP   = /(fred|grandpa|bahh|boing|ralph|junior|albert|bruce|lee|rocko|trinoids|zarvox|jacques)/i;
+const V_FEMALE = /(samantha|victoria|karen|moira|tessa|fiona|susan|allison|\bava\b|serena|\bzoe\b|kate|catherine|nicky|joanna|salli|kendra|\bamy\b|emma|martha|shelley|sandy|\bflo\b|princess|female|nora|ellen|female)/i;
+
+function voiceScore(v) {
+  const n = v.name.toLowerCase();
+  let sc = 0;
+  if (V_FEMALE.test(n)) sc -= 20;          /* not a girl */
+  if (V_MALE.test(n))   sc += 8;           /* a man */
+  if (V_DEEP.test(n))   sc -= 12;          /* not too manly / novelty voices */
+  if (/premium|enhanced/.test(n)) sc += 4; /* the downloaded neural ones */
+  if (/neural|natural/.test(n))   sc += 3;
+  if (/siri/.test(n))             sc += 2;
+  if (!v.localService)            sc += 1;
+  return sc;
+}
+function voiceCandidates() {
+  return speechSynthesis.getVoices()
+    .filter(v => /^en(-|_|$)/i.test(v.lang))
+    .sort((a, b) => voiceScore(b) - voiceScore(a));
+}
 function pickVoice() {
-  const vs = speechSynthesis.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang));
-  if (!vs.length) return null;
-  const score = v => {
-    const n = v.name.toLowerCase();
-    if (n.includes("siri")) return 6;
-    if (n.includes("premium") || n.includes("enhanced")) return 5;
-    if (n.includes("neural") || n.includes("natural")) return 4;
-    if (n.includes("samantha") || n.includes("aaron") || n.includes("daniel")) return 3;
-    if (!v.localService) return 2;
-    return 1;
-  };
-  return vs.sort((a, b) => score(b) - score(a))[0];
+  const list = voiceCandidates();
+  if (!list.length) return null;
+  const saved = localStorage.getItem("zaphiel.voice");
+  if (saved) { const hit = list.find(v => v.name === saved); if (hit) return hit; }
+  return list[0];
 }
 speechSynthesis.onvoiceschanged = () => { ttsVoice = pickVoice(); };
 ttsVoice = pickVoice();
@@ -698,7 +721,7 @@ function say(text) {
     const u = new SpeechSynthesisUtterance(text);
     if (!ttsVoice) ttsVoice = pickVoice();
     if (ttsVoice) u.voice = ttsVoice;
-    u.rate = 1.02; u.pitch = 1.0; u.volume = 1;
+    u.rate = 1.03; u.pitch = 1.06; u.volume = 1;   /* a touch lighter, less booming */
     speaking = true; mode = "speaking"; voiceStatus();
     capA.textContent = text;
     /* drive the cortex from word boundaries, since there is no audio stream to sample */
@@ -790,9 +813,22 @@ function stopListening() {
   speaking = false;
 }
 
+const voicebtn = el("voicebtn");
+voicebtn.addEventListener("click", () => {
+  const list = voiceCandidates();
+  if (!list.length) return;
+  const i = (list.findIndex(v => ttsVoice && v.name === ttsVoice.name) + 1) % list.length;
+  ttsVoice = list[i];
+  try { localStorage.setItem("zaphiel.voice", ttsVoice.name); } catch (e) {}
+  voicebtn.textContent = "VOICE ▸ " + ttsVoice.name.replace(/\s*\(.*\)/, "").slice(0, 18).toUpperCase();
+  say("This is me. Tap again if you want a different voice.");
+});
+
 async function wakeFree() {
   disarmSentinel();
   if (!startListening()) return;
+  voicebtn.hidden = false;
+  if (ttsVoice) voicebtn.textContent = "VOICE ▸ " + ttsVoice.name.replace(/\s*\(.*\)/, "").slice(0, 18).toUpperCase();
   boot.classList.add("gone");
   mode = "listening"; voiceStatus(); markSidebar();
   hint.textContent = "FREE ON-DEVICE VOICE · NO CREDITS USED";
