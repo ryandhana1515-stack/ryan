@@ -4,7 +4,7 @@
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-08-08 (session: Board of Advisors + Zaphiel brain build; renamed Jarvis → Zaphiel)
+Last updated: 2026-08-11 (session: autonomous daily run — found pricing was set outside memory tracking)
 
 ---
 
@@ -14,18 +14,41 @@ Last updated: 2026-08-08 (session: Board of Advisors + Zaphiel brain build; rena
 - **Hero product:** BIO N:OV — 3rd-gen nitric-oxide supplement, 500mg × 60 tablets,
   Bzzworld Korea manufacture, GMP + patented fermentation (KACC91554P). Ryan is the
   **Singapore distributor** (via Bisu World International, KL) — not the manufacturer.
-- **Revenue:** $0 to date. **Shopify store EXISTS** — "Bio Elixirs", `sz0gmr-cn.myshopify.com`,
-  Basic plan, SGD, Singapore, info@biogreenelixirs.com. Verified 2026-08-08: it had
-  **ZERO products**, which is why nothing downstream ever worked. First product created
-  that day as a DRAFT: BIO N:OV — Nitric Oxide Support Complex, SKU BIONOV-500-60,
-  `gid://shopify/Product/9365786624250`, provisional price S$89 (NOT a decided price —
-  needs landed cost). To go live it needs: real price, product photos, and status ACTIVE.
+- **Revenue:** $0 to date, zero orders (`list-orders` returned empty, checked 2026-08-11).
+  **Shopify store EXISTS** — "Bio Elixirs", `sz0gmr-cn.myshopify.com`, Basic plan, SGD,
+  Singapore, info@biogreenelixirs.com.
+  **CORRECTION 2026-08-11:** the product GID recorded here on 2026-08-08
+  (`gid://shopify/Product/9365786624250`) **no longer exists** — `get-product` on it now
+  returns "not found". Sometime on **2026-08-09** (one day after the last memory update,
+  no matching commit in this repo — happened directly in Shopify, outside git) the product
+  was recreated as `gid://shopify/Product/9366532915450`, title "BIO N:OV — 3rd Generation
+  Nitric Oxide Supplement", handle `bio-nov`, status **DRAFT**, and — unlike the old
+  placeholder — now carries **three real priced variants**: 1 Box (SKU BGX-NOV-1) S$69,
+  3 Boxes (SKU BGX-NOV-3) S$177, 6 Boxes (SKU BGX-NOV-6) S$294. Description is compliant
+  (support/promote language, FDA-style disclaimer, no disease names). **Still zero product
+  images** (`images: []`) — checked Google Drive and Gmail for any sourced product
+  photography and found none (only a non-compliant old brand-deck screenshot,
+  `bionov-canvas.png`, which claims specific efficacy numbers and is NOT usable). Photo
+  generation via Higgsfield/Kling costs money and was correctly not attempted.
+  2026-08-11 change: added SEO title + meta description to this product (safe — product
+  is still DRAFT, not publicly visible). To go live it still needs: **Ryan to confirm the
+  S$69/177/294 pricing is intentional** (memory had no record of this decision being made
+  — verify it wasn't a placeholder or a mistaken entry), real product photos, and status
+  ACTIVE.
+- **Store legal pages — gap found 2026-08-11:** `shop.shopPolicies` only returns Shopify's
+  default **Privacy Policy** template. Refund Policy, Shipping Policy, Terms of Service and
+  Contact Information were never set. Did not draft/apply these today: a refund window and
+  shipping regions/costs are business decisions Ryan hasn't made, and `shopPolicyUpdate`
+  writes live checkout text immediately (no draft state) — inventing those terms would be
+  the same mistake as inventing a price. Needs Ryan's input on terms, then one session can
+  draft and apply all four in an hour.
 - **Channels live:** biogreenelixirs.com domain (Namecheap, to 2029), Google Workspace
   (info@biogreenelixirs.com), Facebook page, IG @biogreenelixirs, TikTok
   @biogreenelixirs. TikTok Shop SG application in progress; Shopee SG and Amazon US/EU pending.
-- **Pricing:** retail price for BIO N:OV **not yet decided** — candidate work exists in
-  ad drafts; a board meeting on pricing is a good next step. (Update this line the day
-  pricing is set.)
+- **Pricing:** see the correction above — S$69 / S$177 / S$294 (1/3/6 boxes) are LIVE on
+  the product record as of 2026-08-09, but no decision log entry authorized this price and
+  landed cost is still not recorded anywhere in this repo. Ryan should confirm this was a
+  deliberate decision (and where landed cost/margin math lives) before treating it as final.
 - **Compliance:** supplement ads on Meta/TikTok restrict health claims — support/promote
   language only; "works in 30 minutes" claims must be framed as lab data, never cure/treat.
 - **Other ventures:** VEX (venture studio site, in this repo), Veloce Tempesta GT +
@@ -76,11 +99,13 @@ Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
   Metricool, Higgsfield or Kling credential in the instance. So every "agent" in §2 can
   only think, write to a data table, and email. **None of them can touch the store or the
   ad account.** That is the root cause of the queue-receipt problem — not prompt wording.
-- **Meta ads cannot be automated yet.** Ad account `767841886323870` (ACTIVE, SGD) returns
-  `is_ads_mcp_enabled: false` — Meta is still rolling Ads MCP out to this account, so
-  create/edit ad calls are refused by Meta, not by us. It also has
-  `has_payment_method: false`, so nothing could spend anyway. Read-only research
-  (ads_library_search, benchmarks) still works. Recheck the flag periodically.
+- **Meta ads cannot be automated yet.** Ad account `767841886323870` (ACTIVE, SGD) returned
+  `is_ads_mcp_enabled: false` and `has_payment_method: false` as of 2026-08-08. **Could not
+  recheck on 2026-08-11** — this session's connector list has no Meta/Facebook MCP server at
+  all (Airtable, Canva, ElevenLabs, Figma, Gmail, Google-Calendar, Google-Drive, Lovable,
+  Shopify, Slack, Supermetrics, Vercel, firecrawl, github, higgsfield, kling, n8n,
+  social-media-automate — no Meta). Either the connector was removed/renamed or it only
+  attaches on some sessions; flag to Ryan rather than assume the 08-08 flags still hold.
 - **The only thing with real hands is a Claude session** (this one), whose MCP connectors
   reach Shopify, Meta, Higgsfield, Kling, Metricool, Canva, Gmail, Drive, Calendar, Slack,
   Vercel, Lovable, Figma and n8n. Anything that must *do* rather than *draft* has to run
@@ -252,12 +277,27 @@ documented path to actually watch a clip rather than guess — skill §10.
   workflow display name. Deliberately NOT renamed (would break the live voice link):
   webhook path `/webhook/jarvis-task`, data table `jarvis_tasks`, ElevenLabs
   `agent_3001kzgz64emesm91398nx05c17e`, Vercel project `ryan` / URL ryan-rho.vercel.app.
+- 2026-08-11 (autonomous daily run): checked Shopify for real and found memory was
+  stale — the product recorded on 2026-08-08 had been deleted and recreated on 2026-08-09
+  (outside git) with real prices (S$69/177/294) that were never logged as a decision here.
+  Corrected §1 with the live product GID, confirmed zero orders and zero product images
+  (checked Drive/Gmail — nothing usable exists). Did the one real, safe thing available:
+  added SEO title + meta description to the still-DRAFT product via `productUpdate`. Did
+  NOT draft/apply the four missing shop policies (refund window and shipping terms are
+  undecided, and `shopPolicyUpdate` has no draft state — inventing those terms would be as
+  wrong as inventing a price). Could not recheck the Meta ad account flags — this session's
+  connector list has no Meta/Facebook MCP server at all, unlike 2026-08-08.
 
 ## 7. Open loops / next actions
 
 - **#1 bottleneck: get the Shopify store live** — until then revenue is $0 and every ad
   dollar is premature (board meeting topic).
-- Decide BIO N:OV retail pricing (convene the board with live cost data).
+- **Confirm the S$69/177/294 pricing found live on the product 2026-08-11** was a real,
+  intentional decision (and locate the landed-cost math) — or correct it.
+- Source real product photography (no AI-generated images exist or were made; this is now
+  the only remaining blocker to setting the product ACTIVE besides the price confirmation).
+- Decide refund window + shipping regions/costs so the four missing legal pages
+  (Refund, Shipping, Terms of Service, Contact Info) can be drafted and applied.
 - TikTok Shop SG application — follow up.
 - Merge PR #15 to activate the Zaphiel brain for all future sessions.
 - Wire the board's monthly standing review routine (first Monday of month).
