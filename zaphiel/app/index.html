@@ -436,6 +436,7 @@ function voiceStatus() {
   if (view !== "cortex") return;
   if (mode === "speaking") setStatus("ZAPHIEL · SPEAKING", "speak");
   else if (mode === "listening") setStatus("LISTENING — JUST TALK", "listen");
+  else if (mode === "thinking") setStatus("ZAPHIEL · THINKING…", "live");
   else if (mode === "connecting") setStatus("OPENING LINK…", "live");
   else if (mode === "armed") setStatus("STANDBY — CLAP TO WAKE", "live");
   else setStatus("OFFLINE", "");
@@ -684,7 +685,21 @@ function showBoot(err) {
                 remote endpoint later without touching anything else here.          */
 
 let ENGINE = localStorage.getItem("zaphiel.engine") || "free";   // "free" | "eleven"
-const BRAIN_URL = "";      // set to an endpoint returning {reply:"..."} to upgrade the brain
+/* THE BRAIN. Any endpoint that takes {question, session} and returns {reply:"..."}.
+   Currently the n8n workflow "Zaphiel — Voice Brain" (id 5Lvs87v8qfVMoUiB): webhook ->
+   AI Agent on Claude Sonnet 4.6 with twelve turns of conversation memory -> JSON.
+   It carries Zaphiel's identity, the real business state, the compliance rules and the
+   never-invent-a-number rule, so the voice thinks with the same head as the session.
+   If it is unreachable the app degrades to the MIND table below instead of going quiet. */
+const BRAIN_URL = "https://ryan1515.app.n8n.cloud/webhook/zaphiel-brain";
+/* one id per device, so the brain remembers this conversation across page loads */
+const BRAIN_SESSION = (() => {
+  try {
+    let s = localStorage.getItem("zaphiel.session");
+    if (!s) { s = "ryan-" + Math.random().toString(36).slice(2, 10); localStorage.setItem("zaphiel.session", s); }
+    return s;
+  } catch (e) { return "ryan-voice"; }
+})();
 /* recWanted = we intend to be listening. recLive = the engine actually is.
    Keeping those apart is the whole trick: every browser stops recognition on its
    own schedule (iOS after each utterance, Chrome after a few seconds of silence),
@@ -803,17 +818,49 @@ function think(q) {
   for (const [re, ans] of MIND) if (re.test(q)) return ans;
   return "I don't have a solid answer to that from what's in my memory, and I'd rather say so than make something up. Ask me in the Claude chat and I'll go find out properly.";
 }
+/* The real brain lives behind BRAIN_URL (see the constant at the top of this section).
+   If it answers, Zaphiel is genuinely intelligent. If it does not — endpoint down,
+   n8n subscription lapsed, phone offline — he falls back to MIND rather than going
+   silent, and the header says which brain is actually talking so it is never a
+   mystery. */
+let brainState = "unknown";                      /* unknown | live | down */
+function setBrainState(s, why) {
+  if (brainState === s) return;
+  brainState = s;
+  if (s === "live") hint.textContent = "FULL BRAIN ONLINE · JUST TALK";
+  else if (s === "down") hint.textContent = "BASIC BRAIN — " + (why || "SMART BRAIN UNREACHABLE");
+}
+
+async function askBrain(q) {
+  if (!BRAIN_URL) { setBrainState("down", "NO BRAIN ENDPOINT CONFIGURED"); return null; }
+  const ctl = new AbortController();
+  const bail = setTimeout(() => ctl.abort(), 20000);   /* a thinking model, not a lookup */
+  try {
+    const r = await fetch(BRAIN_URL, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q, session: BRAIN_SESSION }), signal: ctl.signal,
+    });
+    if (!r.ok) { setBrainState("down", "BRAIN RETURNED " + r.status); return null; }
+    const reply = (await r.json()).reply;
+    if (!reply) { setBrainState("down", "BRAIN SENT AN EMPTY ANSWER"); return null; }
+    setBrainState("live");
+    return reply;
+  } catch (e) {
+    setBrainState("down", e.name === "AbortError" ? "BRAIN TIMED OUT" : "BRAIN UNREACHABLE");
+    return null;
+  } finally { clearTimeout(bail); }
+}
+
+let thinking = false;
 async function answer(q) {
-  capU.textContent = q;
-  let reply;
-  if (BRAIN_URL) {
-    try {
-      const r = await fetch(BRAIN_URL, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q }) });
-      reply = (await r.json()).reply;
-    } catch (e) { reply = null; }
-  }
-  await say(reply || think(q));
+  if (thinking || speaking) return;      /* one question at a time; no talking over himself */
+  thinking = true;
+  try {
+    capU.textContent = q;
+    mode = "thinking"; voiceStatus();
+    const reply = await askBrain(q);
+    await say(reply || think(q));
+  } finally { thinking = false; }
 }
 
 function scheduleRestart(ms) {
