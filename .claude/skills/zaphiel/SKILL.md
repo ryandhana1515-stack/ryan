@@ -133,3 +133,38 @@ demo for every retail pitch.
 **Compliance gate before any wellness build goes public** (learned on `bionov/`): no named
 diseases anywhere, no efficacy numbers on disease markers, lab data labelled as lab data,
 support/promote/help-maintain only, and carry the not-intended-to-diagnose line.
+
+## 10. Watching and analysing video (Zaphiel can study a reference, not just make one)
+
+Ryan often points at a creator or a clip and says "I want that". Do not eyeball a
+thumbnail and guess — actually analyse it.
+
+**Scene-by-scene analysis** — Higgsfield `video_analysis_create`, then poll
+`video_analysis_status` every 30-60s (takes 3-5 min). It accepts EXACTLY ONE of:
+- `youtube_url` — a youtube.com / youtu.be link. Direct, no download needed.
+- `video_input_id` — the media_id of a video already in Higgsfield.
+
+**TikTok and Instagram links are NOT accepted.** For those, one of:
+1. Ask Ryan to save the video (TikTok Share > Save video, or a screen recording) and
+   upload it in chat. Then `media_upload` / `media_confirm` it into Higgsfield and pass the
+   returned id as `video_input_id`.
+2. If a direct file URL exists, `media_import_url` fetches it server-side — this works for
+   public raw links (it succeeded on raw.githubusercontent.com), but NOT for a TikTok page
+   URL, which serves HTML rather than a video file.
+3. For a quick read without Higgsfield, a video uploaded to the chat can be inspected
+   locally: `pip install av`, then extract frames with PyAV and look at them directly.
+   That is how the Z.E.R.O. reference clip was analysed on 2026-08-08.
+
+Accuracy note to pass on: the longer the video, the weaker the scene-by-scene breakdown.
+Short clips give the most reliable results — analyse one strong video, not a whole profile.
+
+**Engagement read** — `virality_predictor` scores hook strength, attention curve, retention
+risk and audience response. Use it on a reference to learn why it worked, and on Ryan's own
+cut before it goes out.
+
+**The point of analysing:** feed what you learn straight into the build. Extract the hook
+pattern, the shot rhythm, the on-screen text cadence and the character look, then run
+§9 (cinematic sites) or the Higgsfield UGC workflow with those as the brief. If the
+reference is an AI persona that reappears across many videos, the thing holding it together
+is a character sheet — call `get_workflow_instructions` with `{ workflow: "character-sheet" }`
+and lock one reference image FIRST, exactly like the hero-image rule in §9.
