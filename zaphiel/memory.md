@@ -72,6 +72,16 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
 
 Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
 
+- **THE N8N TRIAL HAS ENDED (found 2026-08-11) — nothing in n8n runs at all.** Every
+  execution now fails instantly in a pre-execute hook with *"Your trial has ended. Upgrade
+  now to keep automating"*. Last successful execution: **2026-08-08 17:00 UTC** (Task
+  Intake `eIgJT3NAuP7v9Hes`). Every scheduled run since has errored — checked the execution
+  list, they are all `status: error`. So all 21 workflows in §2 are dead, not idle. This
+  outranks the credential problem below: even a fully-credentialled workflow could not run.
+  **Fixing it is one paid upgrade on n8n Cloud** — the workflows themselves are intact and
+  resume the moment the plan is active. Ryan has not been told by anything except this.
+  Note the coincidence: ElevenLabs credits ran out on the same day, which is why 8 August
+  is when Zaphiel appeared to die all at once.
 - **n8n holds only TWO credentials: Gmail and GitHub.** There is no Shopify, Meta, TikTok,
   Metricool, Higgsfield or Kling credential in the instance. So every "agent" in §2 can
   only think, write to a data table, and email. **None of them can touch the store or the
@@ -149,9 +159,42 @@ Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
   remembered in localStorage; if an ElevenLabs session dies inside 6 seconds without the
   agent ever speaking, the app now names the real cause on screen and falls back to free
   permanently instead of looping on reconnect.
-- Brain for the free voice is on-device (`MIND` in the app) — real business facts only,
-  and it says "I don't know" rather than inventing. `BRAIN_URL` is the single constant to
-  point at a remote LLM endpoint when one is available; nothing else needs changing.
+- **THE MICROPHONE BUG (fixed 2026-08-11) — read before touching the voice loop.** Ryan
+  reported "he can't even listen to my voice now". Cause: recognition ends on its own after
+  every utterance on every browser (iOS after each sentence, Chrome after a few seconds of
+  quiet), so a stopped engine is ROUTINE and must always be restarted. The old `onend` read
+  `if (recRunning && !speaking) rec.start()` — during a reply `speaking` is true, so the
+  restart was skipped, and nothing restarted it when the reply ended. The mic died after
+  the greeting and never came back. Fixes: `say()` stops recognition before speaking and
+  always resumes after through one `done()` path; two timers cover a browser that accepts
+  an utterance and silently never speaks it (Safari autoplay, backgrounded tab); intent and
+  reality are separate state (`recWanted` vs `recLive`) so a restart can never throw
+  InvalidStateError into a live engine; errors are shown, not swallowed. There is now a
+  **HOLD TO TALK** button — continuous recognition is at the mercy of the browser, a press
+  is not — and speechSynthesis is primed on the first touch because iOS will not speak
+  unless speech first began inside a user gesture (a clap is not one).
+- **Regression test: `zaphiel/app/test/voice-loop.test.mjs`** (`npm i playwright`, then
+  `node zaphiel/app/test/voice-loop.test.mjs`). Runs headless with both Web Speech APIs
+  stubbed; asserts the mic is live after the greeting, after two replies, and after an
+  utterance the browser drops silently. Against the broken build it reports `starts: 1,
+  live: false`. Run it after ANY change to the voice loop.
+- **iOS caveat worth telling Ryan:** Safari does not give speech recognition to pages opened
+  from a home-screen icon or inside another app's browser. If the mic is dead there, open
+  https://ryan-rho.vercel.app in Safari itself. The app now says this on screen.
+- **THE BRAIN (built 2026-08-11).** `BRAIN_URL` now points at the n8n workflow
+  **"Zaphiel — Voice Brain" `5Lvs87v8qfVMoUiB`** — `POST /webhook/zaphiel-brain`
+  `{question, session}` → `{reply}`. Webhook → AI Agent on **Claude Sonnet 4.6** (credential
+  auto-assigned from n8n credits, no API key needed) with a 12-turn memory buffer keyed by a
+  per-device session id → JSON response with `Access-Control-Allow-Origin: *`. The system
+  prompt carries Zaphiel's identity, the real business state, the never-invent-a-number rule,
+  the health-claims rules and speech-shaped output limits (2–4 sentences, no markdown — it is
+  being read aloud). **It is published and correct but cannot execute until the n8n trial is
+  upgraded (§2b).** No further work is needed when it is: the app already calls it.
+- Fallback brain is on-device (`MIND` in the app) — real business facts only, and it says
+  "I don't know" rather than inventing. `answer()` calls the real brain first with a 20 s
+  timeout and drops to `MIND` on any failure, so the voice never goes silent. The header
+  states which brain answered: `FULL BRAIN ONLINE` or `BASIC BRAIN — <reason>`. Do not
+  remove that: it is the only way Ryan can tell the smart brain is down.
 - **Anti-queue rule, baked in:** every specialist prompt AND the voice prompt forbid saying
   a request was filed, queued or emailed. They must produce the finished script/copy/plan
   in the window. `dispatch_task` is a last step, only when Ryan asks to queue something.
@@ -196,6 +239,30 @@ diabetes and hypertension, claimed garlic "promotes anticancer substances", and 
 name and disease-marker efficacy number, reframed lab data as raw-material lab measurement,
 and strengthened the footer disclaimer. **Do not revert to the brand-deck copy** — it is
 HSA-unsafe in Singapore and an automatic Meta rejection.
+
+## 4e-0. THE ROUTINE IS LIVE (2026-08-11) — read this before rebuilding it
+
+- **Trigger `trig_01XdG5CaZK8cKUbbUbovtkzG` — "Zaphiel — Daily Operator (07:53 SGT)"**,
+  cron `53 23 * * *` UTC, `create_new_session_on_fire: true`, environment
+  `env_012RDLfCnxxpBpYEVGbga6rw` (Default), push + email notifications on. A fresh Claude
+  session wakes every day and does real work with nobody watching. This is the "works 24/7
+  without talking to it" capability Ryan kept asking for. First proof run fired manually
+  2026-08-11 17:14 UTC, session `cse_01Uvn6YpbCkicze3MSivCNmb`.
+- **The claude-code-remote MCP server was refused for days and now works.** Every earlier
+  attempt (5× `create_trigger`, plus a read-only `list_triggers` used as a control) was
+  denied; on 2026-08-11 it answered normally. Lesson: retry that server before concluding
+  scheduling is impossible.
+- **KNOWN LIMITATION — the fired sessions have NO MCP connectors.** `create_trigger` returns
+  a warning that it stored none, and passing the `connectors` parameter fails outright with
+  *"the connectors parameter is not available for this organization"*. So the daily run has
+  Bash, file editing, git, WebSearch and WebFetch — enough to research, write, build and ship
+  code (a git push to this repo auto-deploys via Vercel) — but it CANNOT reach Shopify,
+  Higgsfield, Kling, Meta or Metricool. **To give it hands, Ryan must create the Routine from
+  the claude.ai Routines UI**, where his account connectors attach; the tool's own error text
+  says so. Everything else about the Routine is already correct and can be copied from the
+  prompt stored on the trigger.
+- The prompt makes the run check its own tool list first and say which hands it had, so a
+  connector-less run is never disguised as a full one.
 
 ## 4e. Autonomous daily run (the thing that works without Ryan)
 
@@ -252,6 +319,17 @@ documented path to actually watch a clip rather than guess — skill §10.
   workflow display name. Deliberately NOT renamed (would break the live voice link):
   webhook path `/webhook/jarvis-task`, data table `jarvis_tasks`, ElevenLabs
   `agent_3001kzgz64emesm91398nx05c17e`, Vercel project `ryan` / URL ryan-rho.vercel.app.
+- 2026-08-11: **fixed the microphone dying after Zaphiel's first sentence** (see §4b —
+  recognition was never restarted once a reply began). Added a HOLD TO TALK button, iOS
+  speech priming, visible error states, and a headless regression test that fails against
+  the broken build. PR #17 carries this plus the male-voice preference. Also opened PR #17
+  because PR #15 is merged and a merged PR cannot carry follow-up work.
+- 2026-08-11 (later): **found the n8n trial had ended** — every workflow execution has failed
+  since 2026-08-08 17:00 UTC (§2b). That, not prompt wording, is why the whole fleet went
+  dead. Built and published **"Zaphiel — Voice Brain" `5Lvs87v8qfVMoUiB`**, a Claude endpoint
+  the voice app now calls so Zaphiel thinks properly instead of matching canned phrases; it
+  goes live the moment the n8n plan is active. Wired `BRAIN_URL`, added a 20 s timeout, a
+  one-question-at-a-time guard, and an honest brain-status line in the header.
 
 ## 7. Open loops / next actions
 

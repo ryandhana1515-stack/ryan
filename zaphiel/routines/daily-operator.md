@@ -1,94 +1,138 @@
 # Routine — Zaphiel Daily Operator
 
-**Status:** authored 2026-08-08, **not yet created** — the `create_trigger` call returns
-"requires approval" and the permission prompt has to be accepted on Ryan's side. Everything
-needed to create it is below; re-issue verbatim once approved.
+**Status (2026-08-11): LIVE, but with no hands.**
 
-**Why this exists.** The n8n fleet cannot act (memory §2b — only Gmail and GitHub
-credentials). A scheduled Claude session *can*: it carries the full connector set, so it is
-the only thing that can operate the store, the ad account and the generators without Ryan
-being present. This Routine is the difference between an assistant you summon and one that
-shows up.
+A Routine is running: `trig_01XdG5CaZK8cKUbbUbovtkzG`, "Zaphiel — Daily Operator (07:53 SGT)",
+cron `53 23 * * *` UTC, fresh session each fire, push + email on. It was created through the
+`create_trigger` MCP tool from a Claude session.
 
-## Parameters
+**The catch:** triggers created that way carry **no MCP connectors**. `create_trigger` returns a
+warning saying it stored none, and passing the `connectors` parameter fails outright:
 
-- **name:** `Zaphiel — Daily Operator (08:00 SGT)`
-- **cron_expression:** `0 0 * * *`  (00:00 UTC = 08:00 Singapore)
-- **create_new_session_on_fire:** `true`  (clean slate each run, full connectors)
-- **notifications:** `{ "push": true, "email": true }`
-- **environment_id:** inherit from the calling session (has this repo cloned)
+> create_trigger: the connectors parameter is not available for this organization.
 
-## Prompt (verbatim)
+So the current daily run has Bash, file editing, git, WebSearch and WebFetch — enough to
+research, write and ship code, since a push to this repo auto-deploys through Vercel — but it
+**cannot reach Shopify, Higgsfield, Kling, Meta or Metricool.**
+
+To give it hands, the Routine has to be created from the claude.ai Routines UI, where account
+connectors attach. Steps and the exact prompt are below. Once that one exists, delete
+`trig_01XdG5CaZK8cKUbbUbovtkzG` so the work does not run twice a day.
+
+---
+
+## How Ryan creates the version with hands
+
+Source: https://code.claude.com/docs/en/routines
+
+1. Open **https://claude.ai/code/routines** and click **New routine**.
+2. **Name it** `Zaphiel — Daily Operator`, and paste the prompt from the next section into the
+   instructions box. There is a model selector on that box; leave it on the strongest model
+   available, since this run has to make judgement calls with nobody watching.
+3. **Select repositories:** `ryandhana1515-stack/ryan`. It is cloned fresh each run from the
+   default branch, and Claude pushes to `claude/`-prefixed branches.
+4. **Select an environment:** `Default` is correct. Its Trusted network access only allows a
+   fixed domain allowlist, but **connector traffic is routed through Anthropic's servers and
+   does not need allowlisting** — so Shopify, Higgsfield and the rest work without touching it.
+5. **Select a trigger → Schedule → Daily**, and set the time in Ryan's own timezone; the form
+   converts it. Runs may start a few minutes late by design (deliberate stagger).
+6. **Connectors** (bottom of the form): every connected connector is included by default.
+   **Leave Shopify, Higgsfield, Kling, Vercel, Meta ads, Metricool, Canva, Gmail and GitHub
+   included** — those are the hands. Remove anything the routine has no business touching.
+   Note: Claude may use *any* tool from an included connector, including writes, without
+   asking during a run. That is the point here, and it is why the prompt below forbids
+   spending and publishing.
+   If a connector is missing from the list, it is a locally-configured MCP server rather than
+   an account connector — add it at **https://claude.ai/customize/connectors** first.
+7. Click **Create**, then **Run now** on the detail page to prove it works without waiting a day.
+
+Alternative: `/schedule` in the Claude Code CLI creates the same thing conversationally, and
+`/schedule list` / `/schedule update` / `/schedule run` manage it.
+
+**Limits worth knowing:** routines draw on the normal subscription usage and there is a daily
+cap on runs per account, shown at claude.ai/code/routines and claude.ai/settings/usage. A green
+status in the run list only means the session exited without an infrastructure error — it does
+not mean the task succeeded. Open the run and read it.
+
+---
+
+## Short prompt (easier to type on a phone — prefer this)
+
+Because the repo is cloned at the start of every run, the Routine's instructions can just
+point at this file. That keeps the box short, and it means the run's behaviour can be improved
+by editing this file instead of re-editing the Routine:
 
 ```
-You are ZAPHIEL, Ryan Dhana's AI chief of staff. This is your autonomous daily run — Ryan is not watching. Work, then report.
+You are ZAPHIEL, Ryan Dhana's AI chief of staff, on your autonomous daily run. Ryan is not watching and nobody will answer a question, so decide and act.
 
-START HERE, in order:
-1. Read CLAUDE.md and zaphiel/memory.md in this repo. Memory is the source of truth; it outranks anything you assume.
-2. Read zaphiel/memory.md section 2b ("WHAT CAN ACTUALLY ACT") before promising or attempting any automation. n8n holds only Gmail and GitHub credentials — n8n workflows cannot touch Shopify, Meta, Metricool, Higgsfield or Kling. YOU are the executor; use your own MCP connectors.
+Read CLAUDE.md, zaphiel/memory.md, and zaphiel/routines/daily-operator.md in this repo. Follow the full daily-operator prompt in that file exactly — it is your real instructions, including the hard rules on money, publishing, invented numbers and health claims. Then do what it says: build one real thing, commit it, and report honestly.
+```
 
-THEN CHECK REALITY (do not guess, look):
-- Shopify: how many products exist, what status are they, are there any orders yet? The BIO N:OV product (gid://shopify/Product/9365786624250) is DRAFT with a placeholder S$89 price and no photos.
-- Meta: re-check the ad account 767841886323870 for is_ads_mcp_enabled and has_payment_method. Both were false on 2026-08-08. If is_ads_mcp_enabled has flipped to true, say so loudly in your report — it unblocks ad automation.
-- Note anything that changed since the last run.
+## Prompt (the full text the short version points at — paste this instead if preferred)
 
-THEN DO ONE REAL THING. This is the point of the run. Pick the single highest-value action that advances the top open loop in memory section 7 — right now that is getting the store live and earning first revenue — and actually perform it with your tools. Finish it. Examples of real actions: writing and saving product page content, building a collection, drafting and saving policy pages, generating product imagery, preparing the launch checklist as concrete store changes. Do the work; do not describe work.
+```
+You are ZAPHIEL, Ryan Dhana's AI chief of staff. This is your autonomous daily run. Ryan is asleep or busy and is NOT watching. Nobody will answer a question you ask, so do not ask any — decide, act, report.
+
+FIRST, GROUND YOURSELF:
+1. Read CLAUDE.md and zaphiel/memory.md. Memory is the source of truth and outranks anything you assume.
+2. Read memory section 2b. The n8n TRIAL HAS ENDED, so no n8n workflow can run at all. Do not route work through n8n.
+
+SECOND, CHECK YOUR OWN HANDS. Look at your actual tool list before planning anything.
+- If tools named mcp__Shopify__*, mcp__higgsfield__*, mcp__Vercel__* are present, you have full hands: use them.
+- If they are ABSENT, this Routine was created without connectors attached. Do not pretend otherwise and do not waste the run mourning it. You still have Bash, file editing, git, WebSearch and WebFetch, which is enough to research, write, build and ship code. Say one line in your report about which hands you had.
+
+THIRD, BUILD ONE REAL THING. This is the entire point of the run: work that exists when Ryan wakes up. Pick the single highest-value item advancing the top open loop in memory section 7 — right now that is getting the store live and earning first revenue — and BUILD it end to end. The thing itself, not a plan for it.
+
+With full hands, good builds are: write and SAVE the BIO N:OV product page copy into Shopify; build a collection; write and save the policy pages; generate product imagery and attach it.
+With base tools only, good builds are: research the top competing Singapore supplement listings with WebSearch and write the positioning and pricing-comparison doc into the repo; build a cinematic scroll site from zaphiel/templates/cinematic-scroll and push it so Vercel deploys it; write the full product page copy as a file ready to paste into Shopify; write the launch checklist as real content; improve the Zaphiel app.
+Finish it. Commit it. Never describe work you did not do.
 
 HARD RULES:
-- Never say a task was "filed", "queued", "scheduled" or "sent to your inbox" as if that were the work. Either you did it or you did not.
-- Never spend money. No ad spend, no paid generation on Higgsfield or Kling, no purchases. If an action would cost credits or cash, stop and put it in the report as a decision for Ryan instead.
-- Never publish anything publicly without Ryan: do not set the product to ACTIVE, do not post to social, do not send email to anyone but Ryan.
-- Never invent numbers. Landed cost and retail price are NOT decided — say so rather than inventing them. If an action depends on price, prepare everything else and name the missing number.
-- Compliance is absolute for supplements: never cure, treat, diagnose, prevent or heal. Use support, promote, help maintain. No named diseases, no efficacy claims on disease markers. See memory section 4d for the rewrite already done on bionov/.
+- Never say a task was filed, queued, scheduled or emailed as if that were the work. Either you did it or you did not.
+- Spend no money. No ad spend, no purchases. Higgsfield and Kling generation burns Ryan's credits — you may spend a SMALL amount on product imagery only if it directly unblocks the store launch, and you must report exactly what it cost. Anything larger is a decision for Ryan, not an action.
+- Publish nothing publicly without Ryan: do not set the product ACTIVE, do not post to any social account, do not email anyone but Ryan.
+- Never invent a number. Landed cost and retail price are NOT decided. Say so rather than inventing them. If an action needs the price, build everything else and name the missing number.
+- Compliance is absolute for supplements: never cure, treat, diagnose, prevent or heal. Use support, promote, help maintain. No named diseases, no disease-marker claims. See memory section 4d.
 
-THEN CLOSE THE LOOP:
-- Append what actually changed to zaphiel/memory.md (Change log, and Decisions if you decided something), commit and push to the branch claude/ai-agent-board-advisors-wfrhh1. Memory that isn't written down died with the session.
-- Finish with a short report, in plain language, in this shape: what I checked, what I DID (the one real thing, concretely), what changed in the numbers, what I could not do and exactly why, and the one decision I need from Ryan. Keep it under 200 words. No filler, no flattery. If the run achieved nothing real, say that plainly rather than dressing it up.
+FINALLY, CLOSE THE LOOP:
+- Append what actually changed to zaphiel/memory.md (Change log, and Decisions if you decided something). Commit and push to branch claude/ai-agent-board-advisors-wfrhh1 and open a draft PR if none is open. Memory not written down died with the session.
+- Report in under 200 words, plain language: which hands I had, what I checked, what I BUILT (concretely, with links), what I could not do and exactly why, and the one decision I need from Ryan. No filler, no flattery. If the run achieved nothing real, say that plainly.
 ```
 
 ## Guardrails built into the prompt
 
-Spends no money. Publishes nothing. Invents no numbers. Cannot set the product live on its
-own. Every run must either do one real thing or admit it did not.
-
-## Cost
-
-Each firing is a Claude session against Ryan's usage — one per day. It does not touch
-Higgsfield, Kling or ElevenLabs credits, because the prompt forbids paid generation.
+Spends no money beyond a named, reported minimum on product imagery. Publishes nothing.
+Invents no numbers. Cannot set the product live on its own. Must state which hands it had, and
+must either do one real thing or admit it did not.
 
 ---
 
-# The bridge Ryan actually asked for (2026-08-08)
+# The voice-to-execution bridge
 
-**What he wants:** he speaks to Zaphiel → a Claude session wakes up on its own and does
-the work → he gets the result. No opening a session, no saying hi. "Zaphiel and Claude
-become friends and talk to each other."
+**What Ryan wants:** he speaks to Zaphiel → work happens → he gets the result. No opening a
+session, no saying hi.
 
-**Half of it already exists.** The ElevenLabs agent's `dispatch_task` tool POSTs to
-`https://ryan1515.app.n8n.cloud/webhook/jarvis-task`, which writes the spoken task into the
-`jarvis_tasks` data table (XqtaUAUVXTfTjb7F) and emails Ryan. So the order is already
-captured the moment he speaks it.
+**Where it stands.** The ElevenLabs agent's `dispatch_task` tool POSTs to
+`https://ryan1515.app.n8n.cloud/webhook/jarvis-task`, which wrote spoken tasks into the
+`jarvis_tasks` table (XqtaUAUVXTfTjb7F) and emailed Ryan. **That path is dead** — the n8n trial
+ended on 2026-08-08 and no workflow executes (memory §2b). So today nothing captures a spoken
+order, and nothing executes one.
 
-**The missing half is the executor.** Nothing currently reads that table and acts. n8n
-cannot (Gmail + GitHub credentials only — see memory §2b). The fix is a second Routine:
+**What it needs, in order:**
 
-- **name:** `Zaphiel — Task Queue Runner`
-- **cron_expression:** `0 * * * *` (hourly; the server anchors it to the creation minute)
-- **create_new_session_on_fire:** `true`
-- **notifications:** `{ "push": true, "email": true }`
-- **prompt shape:** read CLAUDE.md and zaphiel/memory.md → read the `jarvis_tasks` table via
-  the n8n connector → if there are no unhandled rows, stop immediately and report nothing
-  (keeps idle runs cheap) → otherwise execute each task for real with the MCP connectors,
-  oldest first → mark each row handled → append what changed to memory, commit, push →
-  report per task: what was asked, what was actually done, what is blocked and why.
-- Same hard rules as the daily operator: spends no money, publishes nothing, sets nothing
-  ACTIVE, invents no numbers, never reports a queue receipt as if it were the work.
+1. **Pay the n8n plan.** That revives the capture side and the Zaphiel Voice Brain
+   (`5Lvs87v8qfVMoUiB`), which is built and published and gives the voice a real Claude brain
+   instead of the canned `MIND` table.
+2. **A Task Queue Runner Routine**, created the same way as above so it has connectors: hourly,
+   fresh session per fire, prompt shape — read CLAUDE.md and memory → read the `jarvis_tasks`
+   table → if no unhandled rows, stop immediately and report nothing (keeps idle runs cheap) →
+   otherwise execute each task for real, oldest first → mark each row handled → append to
+   memory, commit, push → report per task: what was asked, what was actually done, what is
+   blocked and why. Same hard rules as the daily operator.
 
-**Latency:** up to one hour, because hourly is the minimum interval a Routine allows.
-Instant would need an endpoint that can spawn a session on demand; nothing available holds
-credentials to do that today.
-
-**Blocker (the only one):** every route to waking a session automatically —
-`create_trigger`, `send_later`, `create_session` — lives on the claude-code-remote MCP
-server, and that server's permission prompt has not been approved. One approval unblocks
-the whole bridge. Nothing else is missing.
+**Latency floor: one hour**, because that is the minimum Routine interval. Instant would need
+an endpoint that spawns a session on demand — the Routine **API trigger** can do exactly that
+(`POST .../routines/<id>/fire` with a bearer token), so once n8n is paid, the real bridge is:
+voice → n8n webhook → POST the routine's `/fire` endpoint → a session wakes immediately. Note
+the fire `text` arrives wrapped as untrusted data, so the routine's prompt has to explicitly
+say to act on the `routine-fire-payload` block.

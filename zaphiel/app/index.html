@@ -113,6 +113,13 @@
     font: inherit; font-size: 8px; letter-spacing: .24em; padding: 6px 12px; border-radius: 3px;
     cursor: pointer; }
   .vbtn:hover { color: var(--grn); border-color: rgba(61,255,162,.4); }
+  /* push-to-talk needs a thumb-sized target, and touch-action:none so a slight
+     finger drag does not cancel the press mid-sentence */
+  #talkbtn { font-size: 10px; padding: 13px 22px; color: var(--grn);
+    border-color: rgba(61,255,162,.34); background: rgba(6,14,12,.6);
+    touch-action: none; -webkit-user-select: none; user-select: none; }
+  #talkbtn.danger { color: var(--red); border-color: rgba(255,107,99,.55);
+    background: rgba(24,8,8,.6); }
 
   /* ---------------- chat ---------------- */
   .log { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 18px 16px 8px;
@@ -221,6 +228,8 @@
           <div class="cap-u" id="capU"></div>
           <div class="cap-a" id="capA"></div>
           <button class="wake" id="wakebtn" hidden>◉ &nbsp;WAKE ZAPHIEL</button>
+          <button class="vbtn" id="talkbtn" hidden>◎ &nbsp;HOLD TO TALK</button>
+          <button class="vbtn" id="sessbtn" hidden>▸ WATCH IT WORK</button>
           <button class="vbtn" id="voicebtn" hidden>VOICE ▸ …</button>
           <div class="hint" id="hint"></div>
         </div>
@@ -428,6 +437,7 @@ function voiceStatus() {
   if (view !== "cortex") return;
   if (mode === "speaking") setStatus("ZAPHIEL · SPEAKING", "speak");
   else if (mode === "listening") setStatus("LISTENING — JUST TALK", "listen");
+  else if (mode === "thinking") setStatus("ZAPHIEL · THINKING…", "live");
   else if (mode === "connecting") setStatus("OPENING LINK…", "live");
   else if (mode === "armed") setStatus("STANDBY — CLAP TO WAKE", "live");
   else setStatus("OFFLINE", "");
@@ -676,8 +686,32 @@ function showBoot(err) {
                 remote endpoint later without touching anything else here.          */
 
 let ENGINE = localStorage.getItem("zaphiel.engine") || "free";   // "free" | "eleven"
-const BRAIN_URL = "";      // set to an endpoint returning {reply:"..."} to upgrade the brain
-let rec = null, recRunning = false, ttsVoice = null, speaking = false;
+/* THE BRAIN. Any endpoint that takes {question, session} and returns {reply:"..."}.
+   Currently the n8n workflow "Zaphiel — Voice Brain" (id 5Lvs87v8qfVMoUiB): webhook ->
+   AI Agent on Claude Sonnet 4.6 with twelve turns of conversation memory -> JSON.
+   It carries Zaphiel's identity, the real business state, the compliance rules and the
+   never-invent-a-number rule, so the voice thinks with the same head as the session.
+   If it is unreachable the app degrades to the MIND table below instead of going quiet. */
+const BRAIN_URL = "https://ryan1515.app.n8n.cloud/webhook/zaphiel-brain";
+/* Shared secret for /api/dispatch. This IS visible to anyone who views source — it only
+   stops a passer-by firing Ryan's Routine, it is not real authentication. The Routine's
+   actual bearer token never leaves the Vercel environment. Set the same value as
+   DISPATCH_KEY in Vercel, or leave both empty to skip the check. */
+const DISPATCH_KEY = "";
+/* one id per device, so the brain remembers this conversation across page loads */
+const BRAIN_SESSION = (() => {
+  try {
+    let s = localStorage.getItem("zaphiel.session");
+    if (!s) { s = "ryan-" + Math.random().toString(36).slice(2, 10); localStorage.setItem("zaphiel.session", s); }
+    return s;
+  } catch (e) { return "ryan-voice"; }
+})();
+/* recWanted = we intend to be listening. recLive = the engine actually is.
+   Keeping those apart is the whole trick: every browser stops recognition on its
+   own schedule (iOS after each utterance, Chrome after a few seconds of silence),
+   so the engine dying is normal and must always be followed by a restart. */
+let rec = null, recWanted = false, recLive = false, recRestartT = 0, recFails = 0;
+let ttsVoice = null, speaking = false, ttsPrimed = false;
 
 /* Voice selection: prefer a MALE, mid-range English voice. Ryan's brief was
    "a man, not a girl, not too manly", so deep/gravelly names are deprioritised
@@ -714,25 +748,50 @@ function pickVoice() {
 speechSynthesis.onvoiceschanged = () => { ttsVoice = pickVoice(); };
 ttsVoice = pickVoice();
 
+/* iOS will not speak unless speech was first started inside a user gesture, so
+   arm it on the first touch anywhere and keep the result. */
+function primeTTS() {
+  if (ttsPrimed || !("speechSynthesis" in window)) return;
+  ttsPrimed = true;
+  if (!ttsVoice) ttsVoice = pickVoice();
+  try { const u = new SpeechSynthesisUtterance(" "); u.volume = 0; speechSynthesis.speak(u); } catch (e) {}
+}
+document.addEventListener("pointerdown", primeTTS, true);
+
 function say(text) {
   return new Promise(resolve => {
+    capA.textContent = text;
     if (!("speechSynthesis" in window)) { resolve(); return; }
+    speaking = true;                               /* set first: the abort below fires onend */
+    pauseRec();                                    /* never transcribe our own voice */
     try { speechSynthesis.cancel(); } catch (e) {}
     const u = new SpeechSynthesisUtterance(text);
     if (!ttsVoice) ttsVoice = pickVoice();
     if (ttsVoice) u.voice = ttsVoice;
     u.rate = 1.03; u.pitch = 1.06; u.volume = 1;   /* a touch lighter, less booming */
-    speaking = true; mode = "speaking"; voiceStatus();
-    capA.textContent = text;
+    mode = "speaking"; voiceStatus();
     /* drive the cortex from word boundaries, since there is no audio stream to sample */
     u.onboundary = () => { energy = Math.min(1, 0.55 + Math.random() * 0.45); };
+
+    let settled = false, started = false, startGuard = 0, endGuard = 0;
     const done = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(startGuard); clearTimeout(endGuard);
       speaking = false; energy = 0;
-      mode = recRunning ? "listening" : "armed"; voiceStatus();
+      resumeRec();                                 /* THE fix: listening always comes back */
+      mode = recWanted ? "listening" : "armed"; voiceStatus();
       resolve();
     };
+    u.onstart = () => { started = true; };
     u.onend = done; u.onerror = done;
-    speechSynthesis.speak(u);
+    /* Safari and Chrome both drop utterances silently under autoplay rules or after a
+       backgrounded tab. Either failure used to strand the microphone off forever. */
+    startGuard = setTimeout(() => {
+      if (!started) { hint.textContent = "TAP THE SCREEN ONCE TO LET THE VOICE OUT"; done(); }
+    }, 1400);
+    endGuard = setTimeout(done, 4000 + text.length * 95);
+    try { speechSynthesis.speak(u); } catch (e) { done(); }
   });
 }
 
@@ -765,27 +824,126 @@ function think(q) {
   for (const [re, ans] of MIND) if (re.test(q)) return ans;
   return "I don't have a solid answer to that from what's in my memory, and I'd rather say so than make something up. Ask me in the Claude chat and I'll go find out properly.";
 }
+/* The real brain lives behind BRAIN_URL (see the constant at the top of this section).
+   If it answers, Zaphiel is genuinely intelligent. If it does not — endpoint down,
+   n8n subscription lapsed, phone offline — he falls back to MIND rather than going
+   silent, and the header says which brain is actually talking so it is never a
+   mystery. */
+let brainState = "unknown";                      /* unknown | live | down */
+function setBrainState(s, why) {
+  if (brainState === s) return;
+  brainState = s;
+  if (s === "live") hint.textContent = "FULL BRAIN ONLINE · JUST TALK";
+  else if (s === "down") hint.textContent = "BASIC BRAIN — " + (why || "SMART BRAIN UNREACHABLE");
+}
+
+async function askBrain(q) {
+  if (!BRAIN_URL) { setBrainState("down", "NO BRAIN ENDPOINT CONFIGURED"); return null; }
+  const ctl = new AbortController();
+  const bail = setTimeout(() => ctl.abort(), 20000);   /* a thinking model, not a lookup */
+  try {
+    const r = await fetch(BRAIN_URL, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q, session: BRAIN_SESSION }), signal: ctl.signal,
+    });
+    if (!r.ok) { setBrainState("down", "BRAIN RETURNED " + r.status); return null; }
+    const reply = (await r.json()).reply;
+    if (!reply) { setBrainState("down", "BRAIN SENT AN EMPTY ANSWER"); return null; }
+    setBrainState("live");
+    return reply;
+  } catch (e) {
+    setBrainState("down", e.name === "AbortError" ? "BRAIN TIMED OUT" : "BRAIN UNREACHABLE");
+    return null;
+  } finally { clearTimeout(bail); }
+}
+
+/* ---- voice → worker bridge ----
+   Some things Ryan says are questions. Some are orders. An order should not come
+   back as a good answer — it should come back as work. When he asks for something
+   to be BUILT, this fires the Routine through /api/dispatch, which wakes a real
+   Claude session with every connector attached, and that session does the job.
+   Questions still go to the brain. */
+const BUILD_RE = /\b(build|make|create|generate|design|write|draft|set ?up|put together|launch|deploy|fix|update|add|remove|research|find out|look into|analy[sz]e|schedule|post|upload)\b/i;
+const ASK_RE   = /^(what|why|how much|how many|when|who|which|is |are |do |does |did |can |should |could |tell me|explain|remind)/i;
+function isOrder(q) { return BUILD_RE.test(q) && !ASK_RE.test(q.trim()); }
+
+async function dispatch(task) {
+  const headers = { "Content-Type": "application/json" };
+  if (DISPATCH_KEY) headers["X-Dispatch-Key"] = DISPATCH_KEY;
+  const r = await fetch("/api/dispatch", {
+    method: "POST", headers, body: JSON.stringify({ task }),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(data.message || data.error || ("HTTP " + r.status)); e.code = data.error; throw e; }
+  return data;
+}
+
+let thinking = false;
 async function answer(q) {
-  capU.textContent = q;
-  let reply;
-  if (BRAIN_URL) {
-    try {
-      const r = await fetch(BRAIN_URL, { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q }) });
-      reply = (await r.json()).reply;
-    } catch (e) { reply = null; }
-  }
-  await say(reply || think(q));
+  if (thinking || speaking) return;      /* one question at a time; no talking over himself */
+  thinking = true;
+  try {
+    capU.textContent = q;
+    mode = "thinking"; voiceStatus();
+
+    if (isOrder(q)) {
+      try {
+        const out = await dispatch(q);
+        lastSession = out.sessionUrl || null;
+        if (lastSession) { sessbtn.hidden = false; sessbtn.textContent = "▸ WATCH IT WORK"; }
+        await say("On it. I've woken a session with full access and it's building that now. "
+                + "It'll push the work and report when it's done — you don't have to wait here.");
+        return;
+      } catch (e) {
+        if (e.code === "not_configured") {
+          await say("I can't start work yet — no Routine is wired to this app. Create the Routine "
+                  + "at claude dot A I slash code slash routines, add an A P I trigger, and paste its "
+                  + "URL and token into Vercel. After that, saying it out loud is enough.");
+        } else {
+          await say("I couldn't wake a worker just now — " + e.message + ". Ask me again in a moment.");
+        }
+        return;
+      }
+    }
+
+    const reply = await askBrain(q);
+    await say(reply || think(q));
+  } finally { thinking = false; }
+}
+
+function scheduleRestart(ms) {
+  clearTimeout(recRestartT);
+  recRestartT = setTimeout(startRec, ms);
+}
+function startRec() {
+  if (!rec || !recWanted || speaking || recLive) return;
+  try { rec.start(); }
+  catch (e) { scheduleRestart(600); }   /* InvalidStateError: still winding down, try again */
+}
+function pauseRec() {
+  clearTimeout(recRestartT);
+  if (rec && recLive) { try { rec.abort(); } catch (e) { try { rec.stop(); } catch (e2) {} } }
+}
+function resumeRec() {
+  if (recWanted) scheduleRestart(280);
 }
 
 function startListening() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { say("This browser can't do speech recognition. Safari on iPhone or Chrome will work."); return false; }
-  if (recRunning) return true;
+  if (!SR) { noRecognition(); return false; }
+  recWanted = true; recFails = 0;
+  if (rec) { startRec(); return true; }
+
   rec = new SR();
   rec.lang = "en-US";
   rec.interimResults = true;
-  rec.continuous = false;          /* iOS ends each utterance; we restart below */
+  rec.maxAlternatives = 1;
+  rec.continuous = false;          /* iOS ends each utterance; the loop below restarts it */
+
+  rec.onstart = () => {
+    recLive = true; recFails = 0;
+    if (!speaking) { mode = "listening"; voiceStatus(); }
+  };
   rec.onresult = e => {
     let interim = "", final = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -796,22 +954,77 @@ function startListening() {
     if (final.trim()) answer(final.trim());
   };
   rec.onerror = e => {
+    recLive = false;
     if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-      recRunning = false;
+      recWanted = false; clearTimeout(recRestartT);
       showBoot("MICROPHONE BLOCKED — allow mic access for this site, then tap JACK IN again.");
+      return;
+    }
+    if (e.error === "audio-capture") {
+      recWanted = false; clearTimeout(recRestartT);
+      showBoot("NO MICROPHONE FOUND — another app may be holding it. Close it and tap JACK IN.");
+      return;
+    }
+    /* no-speech and aborted are routine; network and the rest get a backoff. */
+    if (e.error !== "no-speech" && e.error !== "aborted") {
+      recFails++;
+      hint.textContent = "MIC HICCUP (" + e.error + ") — RECONNECTING · HOLD TO TALK ALWAYS WORKS";
     }
   };
-  rec.onend = () => { if (recRunning && !speaking) { try { rec.start(); } catch (e) {} } };
-  recRunning = true;
-  try { rec.start(); } catch (e) {}
+  rec.onend = () => {
+    recLive = false;
+    if (!recWanted || speaking) return;
+    scheduleRestart(Math.min(4000, 300 + recFails * 500));
+  };
+
+  startRec();
   return true;
 }
 function stopListening() {
-  recRunning = false;
-  if (rec) { try { rec.stop(); } catch (e) {} }
+  recWanted = false; recLive = false;
+  clearTimeout(recRestartT);
+  if (rec) { try { rec.abort(); } catch (e) {} }
   try { speechSynthesis.cancel(); } catch (e) {}
   speaking = false;
+  talkbtn.hidden = true;
 }
+function noRecognition() {
+  hint.textContent = "THIS BROWSER WILL NOT GIVE ME A MICROPHONE";
+  wakebtn.hidden = true; talkbtn.hidden = true;
+  say("This browser won't give me a microphone. On an iPhone that usually means the page "
+    + "was opened from the home screen icon or inside another app — open it in Safari itself "
+    + "and I can hear you. Either way I'm not stuck: every agent in the sidebar takes text.");
+}
+
+/* The session Zaphiel most recently woke, so Ryan can watch it work if he wants to. */
+let lastSession = null;
+const sessbtn = el("sessbtn");
+sessbtn.addEventListener("click", () => { if (lastSession) window.open(lastSession, "_blank"); });
+
+/* Push to talk. Continuous recognition is at the mercy of the browser; a press is not.
+   Whatever else fails, holding this button gets a sentence through. */
+const talkbtn = el("talkbtn");
+function talkStart(e) {
+  e.preventDefault();
+  primeTTS();
+  try { speechSynthesis.cancel(); } catch (err) {}
+  speaking = false; clearTimeout(recRestartT);
+  talkbtn.classList.add("danger"); talkbtn.textContent = "◉  LISTENING — RELEASE TO SEND";
+  capU.textContent = "";
+  if (!rec) { startListening(); return; }
+  recWanted = true;
+  if (recLive) { try { rec.abort(); } catch (err) {} }
+  scheduleRestart(recLive ? 220 : 0);
+}
+function talkEnd(e) {
+  e.preventDefault();
+  talkbtn.classList.remove("danger"); talkbtn.textContent = "◎  HOLD TO TALK";
+  if (rec && recLive) { try { rec.stop(); } catch (err) {} }   /* stop finalises the transcript */
+}
+talkbtn.addEventListener("pointerdown", talkStart);
+talkbtn.addEventListener("pointerup", talkEnd);
+talkbtn.addEventListener("pointercancel", talkEnd);
+talkbtn.addEventListener("pointerleave", e => { if (talkbtn.classList.contains("danger")) talkEnd(e); });
 
 const voicebtn = el("voicebtn");
 voicebtn.addEventListener("click", () => {
@@ -826,12 +1039,13 @@ voicebtn.addEventListener("click", () => {
 
 async function wakeFree() {
   disarmSentinel();
+  primeTTS();
   if (!startListening()) return;
-  voicebtn.hidden = false;
+  talkbtn.hidden = false; voicebtn.hidden = false;
   if (ttsVoice) voicebtn.textContent = "VOICE ▸ " + ttsVoice.name.replace(/\s*\(.*\)/, "").slice(0, 18).toUpperCase();
   boot.classList.add("gone");
   mode = "listening"; voiceStatus(); markSidebar();
-  hint.textContent = "FREE ON-DEVICE VOICE · NO CREDITS USED";
+  hint.textContent = "FREE ON-DEVICE VOICE · NO CREDITS · HOLD TO TALK IF IT MISHEARS";
   wakebtn.hidden = false; wakebtn.textContent = "STAND DOWN"; wakebtn.classList.add("danger");
   await say("What's up, Ryan. Running on your phone's own voice — no credits burning. What do you need?");
 }
@@ -899,7 +1113,7 @@ async function wakeEleven() {
 
 wakebtn.addEventListener("click", async () => {
   if (conv) { try { await conv.endSession(); } catch (e) {} conv = null; return; }
-  if (recRunning) {                       /* free voice is live — stand it down */
+  if (recWanted) {                        /* free voice is live — stand it down */
     stopListening();
     capU.textContent = ""; capA.textContent = "";
     wakebtn.classList.remove("danger");

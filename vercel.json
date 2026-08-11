@@ -1,10 +1,12 @@
 {
   "version": 2,
   "builds": [
+    { "src": "zaphiel/app/api/*.js", "use": "@vercel/node" },
     { "src": "zaphiel/app/**", "use": "@vercel/static" },
     { "src": "bionov/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/zaphiel/app/api/$1" },
     { "src": "/bionov/?$", "dest": "/bionov/index.html" },
     { "src": "/bionov/(.*)", "dest": "/bionov/$1" },
     { "src": "/$", "dest": "/zaphiel/app/index.html" },
