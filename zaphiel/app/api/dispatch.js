@@ -24,9 +24,21 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Dispatch-Key");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   if (req.method === "OPTIONS") return res.status(204).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
   const { ROUTINE_FIRE_URL, ROUTINE_TOKEN, DISPATCH_KEY } = process.env;
+
+  /* Health check. Reports whether the wiring is done WITHOUT revealing any of it, so
+     setup can be verified remotely — by Ryan, or by a Claude session helping him — with
+     nothing sensitive on the wire. Never echo the token or the URL here. */
+  if (req.method === "GET") {
+    return res.status(200).json({
+      configured: Boolean(ROUTINE_FIRE_URL && ROUTINE_TOKEN),
+      has_fire_url: Boolean(ROUTINE_FIRE_URL),
+      has_token: Boolean(ROUTINE_TOKEN),
+      key_required: Boolean(DISPATCH_KEY),
+    });
+  }
+  if (req.method !== "POST") return res.status(405).json({ error: "POST or GET" });
   if (!ROUTINE_FIRE_URL || !ROUTINE_TOKEN) {
     /* Not wired up yet. Say so plainly rather than pretending the work started. */
     return res.status(503).json({
