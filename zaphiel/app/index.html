@@ -229,6 +229,7 @@
           <div class="cap-a" id="capA"></div>
           <button class="wake" id="wakebtn" hidden>◉ &nbsp;WAKE ZAPHIEL</button>
           <button class="vbtn" id="talkbtn" hidden>◎ &nbsp;HOLD TO TALK</button>
+          <button class="vbtn" id="sessbtn" hidden>▸ WATCH IT WORK</button>
           <button class="vbtn" id="voicebtn" hidden>VOICE ▸ …</button>
           <div class="hint" id="hint"></div>
         </div>
@@ -692,6 +693,11 @@ let ENGINE = localStorage.getItem("zaphiel.engine") || "free";   // "free" | "el
    never-invent-a-number rule, so the voice thinks with the same head as the session.
    If it is unreachable the app degrades to the MIND table below instead of going quiet. */
 const BRAIN_URL = "https://ryan1515.app.n8n.cloud/webhook/zaphiel-brain";
+/* Shared secret for /api/dispatch. This IS visible to anyone who views source — it only
+   stops a passer-by firing Ryan's Routine, it is not real authentication. The Routine's
+   actual bearer token never leaves the Vercel environment. Set the same value as
+   DISPATCH_KEY in Vercel, or leave both empty to skip the check. */
+const DISPATCH_KEY = "";
 /* one id per device, so the brain remembers this conversation across page loads */
 const BRAIN_SESSION = (() => {
   try {
@@ -851,6 +857,27 @@ async function askBrain(q) {
   } finally { clearTimeout(bail); }
 }
 
+/* ---- voice → worker bridge ----
+   Some things Ryan says are questions. Some are orders. An order should not come
+   back as a good answer — it should come back as work. When he asks for something
+   to be BUILT, this fires the Routine through /api/dispatch, which wakes a real
+   Claude session with every connector attached, and that session does the job.
+   Questions still go to the brain. */
+const BUILD_RE = /\b(build|make|create|generate|design|write|draft|set ?up|put together|launch|deploy|fix|update|add|remove|research|find out|look into|analy[sz]e|schedule|post|upload)\b/i;
+const ASK_RE   = /^(what|why|how much|how many|when|who|which|is |are |do |does |did |can |should |could |tell me|explain|remind)/i;
+function isOrder(q) { return BUILD_RE.test(q) && !ASK_RE.test(q.trim()); }
+
+async function dispatch(task) {
+  const headers = { "Content-Type": "application/json" };
+  if (DISPATCH_KEY) headers["X-Dispatch-Key"] = DISPATCH_KEY;
+  const r = await fetch("/api/dispatch", {
+    method: "POST", headers, body: JSON.stringify({ task }),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(data.message || data.error || ("HTTP " + r.status)); e.code = data.error; throw e; }
+  return data;
+}
+
 let thinking = false;
 async function answer(q) {
   if (thinking || speaking) return;      /* one question at a time; no talking over himself */
@@ -858,6 +885,27 @@ async function answer(q) {
   try {
     capU.textContent = q;
     mode = "thinking"; voiceStatus();
+
+    if (isOrder(q)) {
+      try {
+        const out = await dispatch(q);
+        lastSession = out.sessionUrl || null;
+        if (lastSession) { sessbtn.hidden = false; sessbtn.textContent = "▸ WATCH IT WORK"; }
+        await say("On it. I've woken a session with full access and it's building that now. "
+                + "It'll push the work and report when it's done — you don't have to wait here.");
+        return;
+      } catch (e) {
+        if (e.code === "not_configured") {
+          await say("I can't start work yet — no Routine is wired to this app. Create the Routine "
+                  + "at claude dot A I slash code slash routines, add an A P I trigger, and paste its "
+                  + "URL and token into Vercel. After that, saying it out loud is enough.");
+        } else {
+          await say("I couldn't wake a worker just now — " + e.message + ". Ask me again in a moment.");
+        }
+        return;
+      }
+    }
+
     const reply = await askBrain(q);
     await say(reply || think(q));
   } finally { thinking = false; }
@@ -947,6 +995,11 @@ function noRecognition() {
     + "was opened from the home screen icon or inside another app — open it in Safari itself "
     + "and I can hear you. Either way I'm not stuck: every agent in the sidebar takes text.");
 }
+
+/* The session Zaphiel most recently woke, so Ryan can watch it work if he wants to. */
+let lastSession = null;
+const sessbtn = el("sessbtn");
+sessbtn.addEventListener("click", () => { if (lastSession) window.open(lastSession, "_blank"); });
 
 /* Push to talk. Continuous recognition is at the mercy of the browser; a press is not.
    Whatever else fails, holding this button gets a sentence through. */

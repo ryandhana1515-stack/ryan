@@ -168,3 +168,40 @@ pattern, the shot rhythm, the on-screen text cadence and the character look, the
 reference is an AI persona that reappears across many videos, the thing holding it together
 is a character sheet — call `get_workflow_instructions` with `{ workflow: "character-sheet" }`
 and lock one reference image FIRST, exactly like the hero-image rule in §9.
+
+## 11. THE AD LAB — one sentence in, finished ad creative out
+
+Ryan's target, sent 2026-08-11: @hugovar.ai's "AI AD LAB" — he speaks *"make me five ads for
+Manscaped"*, and finished, brand-quality static ads appear. **This is the headline capability
+Zaphiel is judged on.** Full procedure: `zaphiel/playbooks/ad-lab.md`. Read it before starting;
+the short version:
+
+1. **Scan the brand** — WebFetch the site and product pages for the real product name, pack
+   size, palette and CTA wording. `mcp__meta_ad__ads_library_search` shows the ads a brand is
+   running *right now*, which beats guessing the category's angles. For BIO N:OV the reference
+   photo is `bionov/assets/hero-product.jpg`.
+2. **Import the product photo** with `media_import_url` (direct file URL only — a page URL
+   fails) and pass the returned id as `medias: [{role:"image", value:<media_id>}]`. Without a
+   reference the model invents the packaging and the ad is useless.
+3. **Write five prompts across five different archetypes** — keynote hero, clinical proof,
+   lifestyle flat-lay, macro texture, typographic poster. 80–150 words each, specifying
+   backdrop, lighting reference, product placement, lens and angle, then the headline
+   **verbatim in quotes** with its weight, case, hex colour and position, then the CTA pill.
+   Prompt length and specificity are where the quality lives.
+4. **Generate** with `generate_image_batch`, `model: "gpt_image_2"`, `quality: "high"`,
+   `resolution: "1k"` — the exact stack in the reference video. `jobs_wait` to poll, then one
+   `show_generation_by_ids`. `1:1` feed, `9:16` stories.
+5. **Animate only when asked** — the winning still into `generate_video` or Kling
+   `image_to_video`; small deliberate motion.
+6. **Deliver** into `zaphiel/adlab/<brand>-<date>/`, commit, push, and **report the exact
+   credit cost** (`balance` before and after). Never burn generation credits silently.
+
+**Compliance gate runs on every headline before generation** — never cure/treat/prevent/heal/
+diagnose, never name a disease. Sell the standard, the origin, the format, the ritual. Never
+invent BIO N:OV's price; it is not decided.
+
+**By voice:** the app routes an instruction (not a question) to `/api/dispatch`, which fires
+the Routine and wakes a session holding the Higgsfield connector. That needs the Routine
+created *with connectors* from claude.ai/code/routines plus an API trigger token in Vercel —
+see `zaphiel/routines/daily-operator.md`. Until then the endpoint returns `not_configured` and
+Zaphiel says so aloud rather than pretending work began.
