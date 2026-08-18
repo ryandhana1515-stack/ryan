@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 *.pyo
 output/
+viral_engine/runs/
+viral_engine/library/clips/

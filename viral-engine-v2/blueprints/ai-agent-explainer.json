@@ -1,0 +1,635 @@
+{
+  "source_url": "https://www.tiktok.com/@duncanrogoff",
+  "source_file": "work/ref.mp4",
+  "duration_sec": 60.37,
+  "cut_count": 23,
+  "cuts_per_10s": 3.81,
+  "mean_shot_sec": 2.52,
+  "median_shot_sec": 1.9,
+  "shot_len_p10_p90": [
+    0.57,
+    4.97
+  ],
+  "threshold_used": 0.2,
+  "aroll_seconds": 16.0,
+  "aroll_share": 0.265,
+  "aroll_broll_ratio": 0.361,
+  "composition": {
+    "aroll_presentation": "split_band",
+    "split_ratio_median": 0.5,
+    "aroll_band": "bottom",
+    "aroll_is_full_width": true,
+    "aroll_floating_card": false
+  },
+  "grade": {
+    "lut_description": "crushed blacks, high contrast, near-monochrome dark base with a single saturated green accent; AI b-roll skews cyan-blue neon; presenter band left neutral-warm; fine film grain, soft vignette",
+    "dominant_hue": "neutral",
+    "accent_hex": "#3AFF5F",
+    "mean_brightness": 0.241,
+    "mean_contrast": 0.209,
+    "grain": "fine",
+    "backdrop_motif": "dark plane with palm-frond gobo shadow and faint square grid"
+  },
+  "caption_style": {
+    "position": "lower-third",
+    "y_center_pct": 0.8,
+    "max_words_visible": 4,
+    "font_weight": "800",
+    "case": "sentence",
+    "highlight_mode": "box",
+    "highlight_colour": "#000000",
+    "box_opacity": 0.75,
+    "corner_radius_px": 10,
+    "text_colour": "#FFFFFF",
+    "height_share_of_frame": 0.06
+  },
+  "graphic_vocabulary": [
+    {
+      "name": "LogoOrbit",
+      "position": "centre",
+      "anim_in": "arc-draw",
+      "uses": 6,
+      "duration_sec": 0.87
+    },
+    {
+      "name": "KineticType",
+      "position": "full",
+      "anim_in": "scale-blur-in",
+      "uses": 4,
+      "duration_sec": 3.12
+    },
+    {
+      "name": "NumberBadge",
+      "position": "centre",
+      "anim_in": "spring-pop",
+      "uses": 3,
+      "duration_sec": 2.32
+    },
+    {
+      "name": "DashedFrame",
+      "position": "frame",
+      "anim_in": "draw",
+      "uses": 3,
+      "duration_sec": 2.32
+    },
+    {
+      "name": "CaptionPill",
+      "position": "top-band-center",
+      "anim_in": "pop",
+      "uses": 1,
+      "duration_sec": 1.47
+    },
+    {
+      "name": "StepChips",
+      "position": "centre",
+      "anim_in": "stagger-slide",
+      "uses": 1,
+      "duration_sec": 0.83
+    },
+    {
+      "name": "CalloutPill",
+      "position": "upper-left",
+      "anim_in": "stamp",
+      "uses": 1,
+      "duration_sec": 2.2
+    },
+    {
+      "name": "EndCard",
+      "position": "centre",
+      "anim_in": "fade",
+      "uses": 1,
+      "duration_sec": 4.0
+    }
+  ],
+  "shots": [
+    {
+      "i": 0,
+      "start": 0.0,
+      "end": 1.667,
+      "len": 1.667,
+      "layer": "split",
+      "split_ratio": 0.5,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.279,
+        "contrast": 0.261,
+        "saturation": 0.499,
+        "dominant_hue": "blue"
+      }
+    },
+    {
+      "i": 1,
+      "start": 1.667,
+      "end": 9.467,
+      "len": 7.8,
+      "layer": "broll",
+      "split_ratio": null,
+      "framing": "medium",
+      "camera_move": "push",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "whoosh",
+      "measured": {
+        "brightness": 0.133,
+        "contrast": 0.195,
+        "saturation": 0.513,
+        "dominant_hue": "blue"
+      }
+    },
+    {
+      "i": 2,
+      "start": 9.467,
+      "end": 10.933,
+      "len": 1.466,
+      "layer": "split",
+      "split_ratio": 0.53,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "CaptionPill"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.216,
+        "contrast": 0.269,
+        "saturation": 0.596,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 3,
+      "start": 10.933,
+      "end": 17.1,
+      "len": 6.167,
+      "layer": "screenrec",
+      "split_ratio": null,
+      "framing": "ui",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "whoosh",
+      "measured": {
+        "brightness": 0.02,
+        "contrast": 0.117,
+        "saturation": 0.004,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 4,
+      "start": 17.1,
+      "end": 22.067,
+      "len": 4.967,
+      "layer": "split",
+      "split_ratio": 0.5,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.257,
+        "contrast": 0.252,
+        "saturation": 0.152,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 5,
+      "start": 22.067,
+      "end": 26.633,
+      "len": 4.566,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "push",
+      "graphics_on_screen": [
+        "KineticType"
+      ],
+      "transition_in": "whip",
+      "sfx_hint": "whoosh",
+      "measured": {
+        "brightness": 0.235,
+        "contrast": 0.327,
+        "saturation": 0.288,
+        "dominant_hue": "green"
+      }
+    },
+    {
+      "i": 6,
+      "start": 26.633,
+      "end": 28.0,
+      "len": 1.367,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.065,
+        "contrast": 0.121,
+        "saturation": 0.051,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 7,
+      "start": 28.0,
+      "end": 28.4,
+      "len": 0.4,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.145,
+        "contrast": 0.242,
+        "saturation": 0.117,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 8,
+      "start": 28.4,
+      "end": 29.033,
+      "len": 0.633,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.174,
+        "contrast": 0.309,
+        "saturation": 0.047,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 9,
+      "start": 29.033,
+      "end": 29.6,
+      "len": 0.567,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.191,
+        "contrast": 0.321,
+        "saturation": 0.064,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 10,
+      "start": 29.6,
+      "end": 30.533,
+      "len": 0.933,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.195,
+        "contrast": 0.328,
+        "saturation": 0.066,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 11,
+      "start": 30.533,
+      "end": 31.833,
+      "len": 1.3,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "pull",
+      "graphics_on_screen": [
+        "LogoOrbit"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.091,
+        "contrast": 0.176,
+        "saturation": 0.141,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 12,
+      "start": 31.833,
+      "end": 34.9,
+      "len": 3.067,
+      "layer": "split",
+      "split_ratio": 0.5,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "KineticType"
+      ],
+      "transition_in": "flash",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.264,
+        "contrast": 0.284,
+        "saturation": 0.112,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 13,
+      "start": 34.9,
+      "end": 35.733,
+      "len": 0.833,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "StepChips"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.098,
+        "contrast": 0.183,
+        "saturation": 0.135,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 14,
+      "start": 35.733,
+      "end": 39.2,
+      "len": 3.467,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "NumberBadge",
+        "DashedFrame"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.045,
+        "contrast": 0.15,
+        "saturation": 0.154,
+        "dominant_hue": "green"
+      }
+    },
+    {
+      "i": 15,
+      "start": 39.2,
+      "end": 42.133,
+      "len": 2.933,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "NumberBadge",
+        "DashedFrame"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.122,
+        "contrast": 0.154,
+        "saturation": 0.109,
+        "dominant_hue": "green"
+      }
+    },
+    {
+      "i": 16,
+      "start": 42.133,
+      "end": 42.7,
+      "len": 0.567,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "NumberBadge",
+        "DashedFrame"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.033,
+        "contrast": 0.159,
+        "saturation": 0.103,
+        "dominant_hue": "green"
+      }
+    },
+    {
+      "i": 17,
+      "start": 42.7,
+      "end": 46.5,
+      "len": 3.8,
+      "layer": "screenrec",
+      "split_ratio": null,
+      "framing": "ui",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.977,
+        "contrast": 0.103,
+        "saturation": 0.001,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 18,
+      "start": 46.5,
+      "end": 47.5,
+      "len": 1.0,
+      "layer": "screenrec",
+      "split_ratio": null,
+      "framing": "ui",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.092,
+        "contrast": 0.095,
+        "saturation": 0.387,
+        "dominant_hue": "blue"
+      }
+    },
+    {
+      "i": 19,
+      "start": 47.5,
+      "end": 49.333,
+      "len": 1.833,
+      "layer": "screenrec",
+      "split_ratio": null,
+      "framing": "ui",
+      "camera_move": "static",
+      "graphics_on_screen": [],
+      "transition_in": "cut",
+      "sfx_hint": "tick",
+      "measured": {
+        "brightness": 0.931,
+        "contrast": 0.197,
+        "saturation": 0.024,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 20,
+      "start": 49.333,
+      "end": 51.533,
+      "len": 2.2,
+      "layer": "screenrec",
+      "split_ratio": null,
+      "framing": "ui",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "CalloutPill"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "sub",
+      "measured": {
+        "brightness": 0.485,
+        "contrast": 0.104,
+        "saturation": 0.043,
+        "dominant_hue": "neutral"
+      }
+    },
+    {
+      "i": 21,
+      "start": 51.533,
+      "end": 54.4,
+      "len": 2.867,
+      "layer": "split",
+      "split_ratio": 0.5,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "KineticType"
+      ],
+      "transition_in": "flash",
+      "sfx_hint": "whoosh",
+      "measured": {
+        "brightness": 0.224,
+        "contrast": 0.278,
+        "saturation": 0.115,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 22,
+      "start": 54.4,
+      "end": 56.367,
+      "len": 1.967,
+      "layer": "split",
+      "split_ratio": 0.498,
+      "framing": "medium",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "KineticType"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "riser",
+      "measured": {
+        "brightness": 0.402,
+        "contrast": 0.244,
+        "saturation": 0.579,
+        "dominant_hue": "warm"
+      }
+    },
+    {
+      "i": 23,
+      "start": 56.367,
+      "end": 60.37,
+      "len": 4.003,
+      "layer": "graphic",
+      "split_ratio": null,
+      "framing": "type",
+      "camera_move": "static",
+      "graphics_on_screen": [
+        "EndCard"
+      ],
+      "transition_in": "cut",
+      "sfx_hint": "riser",
+      "measured": {
+        "brightness": 0.101,
+        "contrast": 0.155,
+        "saturation": 0.52,
+        "dominant_hue": "blue"
+      }
+    }
+  ],
+  "beat_map": [
+    {
+      "beat": 1,
+      "function": "hook",
+      "start": 0.0,
+      "end": 7.24
+    },
+    {
+      "beat": 2,
+      "function": "context",
+      "start": 7.24,
+      "end": 16.9
+    },
+    {
+      "beat": 3,
+      "function": "demo",
+      "start": 16.9,
+      "end": 47.09
+    },
+    {
+      "beat": 4,
+      "function": "payoff",
+      "start": 47.09,
+      "end": 55.54
+    },
+    {
+      "beat": 5,
+      "function": "cta",
+      "start": 55.54,
+      "end": 60.37
+    }
+  ],
+  "constraints": {
+    "form_only": true,
+    "note": "Pacing, shot grammar, graphic vocabulary, grade and caption style only. No script, claims, examples or footage from the source."
+  }
+}

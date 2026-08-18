@@ -1,0 +1,19 @@
+{
+  "name": "viral-engine-v2",
+  "version": "1.0.0",
+  "description": "Rebuild of the short-form video system. The old one (n8n `FYNbtG0oHGWiDI2g`) treated a video as a list of assets glued to a voice track and produced a slideshow. This one models a video as **layers composited on a timeline** and copies the **form** of a reference — pacing, shot grammar, graphic vocabulary, grade, caption style — never its content.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/cli": "^4.0.506",
+    "@remotion/renderer": "^4.0.506",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.506"
+  }
+}
