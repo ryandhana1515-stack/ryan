@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEO Command Center — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f4f4f2; --surface-1: #fcfcfb; --border: #e4e3df;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #8a8880;
+    --series-1: #2a78d6; --good: #008300; --warning: #eda100; --serious: #e34948;
+    --track: #ececea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2d2b;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8a8880;
+      --series-1: #3987e5; --good: #34a853; --warning: #c98500; --serious: #e66767;
+      --track: #262624;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 14px/1.5 system-ui, -apple-system, sans-serif; background: var(--surface-0);
+         color: var(--text-primary); padding: 24px; }
+  header { display: flex; align-items: baseline; justify-content: space-between;
+           flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  h1 { font-size: 20px; } h1 small { color: var(--text-muted); font-weight: 400; font-size: 13px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+       color: var(--text-secondary); margin: 28px 0 10px; }
+  .hero { text-align: right; }
+  .hero .num { font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hero .lbl { color: var(--text-secondary); font-size: 12px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+          padding: 12px 14px; }
+  .tile .v { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .tile .k { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+  .meters { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .meter { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .meter .row { display: flex; justify-content: space-between; font-size: 12px;
+                color: var(--text-secondary); margin-bottom: 6px; }
+  .meter .row b { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 4px; background: var(--series-1); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+  .agent { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+           padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .agent .top { display: flex; justify-content: space-between; align-items: center; }
+  .agent .name { font-weight: 600; }
+  .chip { font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--border);
+          color: var(--text-secondary); }
+  .status { font-size: 12px; display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.on { background: var(--good); } .dot.off { background: var(--serious); }
+  table { width: 100%; border-collapse: collapse; background: var(--surface-1);
+          border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 9px 12px; border-top: 1px solid var(--border); font-size: 13px; }
+  th { border-top: 0; color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+  td.body { max-width: 480px; }
+  button { font: inherit; font-size: 12px; padding: 5px 12px; border-radius: 7px; cursor: pointer;
+           border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
+  button.primary { background: var(--series-1); border-color: var(--series-1); color: #fff; }
+  #digest { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px; white-space: pre-wrap; color: var(--text-secondary); display: none; }
+  .empty { color: var(--text-muted); font-size: 13px; padding: 8px 2px; }
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="/static/brand/logo-128.png" alt="OmniX AI" style="width:44px;height:44px;border-radius:10px">
+    <div>
+      <h1 id="tenant">CEO Command Center <small>OmniX AI — live</small></h1>
+      <div class="status" style="margin-top:4px"><span id="refreshed" class="empty"></span>
+        <span id="whoami" class="empty"></span>
+        <a id="signout" href="#" style="display:none;color:var(--text-secondary);font-size:12px;margin-left:8px"
+           onclick="fetch('/api/auth/logout',{method:'POST'}).then(()=>location.href='/login');return false">Sign out</a></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/video-studio" style="background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+       text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">🎬 Video Studio</a>
+    <a href="/calendar" style="background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+       text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">📅 Calendar</a>
+    <a href="/team" style="background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+       text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">👥 Team</a>
+    <a href="/studio" style="background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+       text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">🎨 Studio</a>
+    <a href="/launch" style="background:var(--surface-1);color:var(--text-primary);border:1px solid var(--border);
+       text-decoration:none;padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">🚀 Launch Pad</a>
+    <a href="/chat" style="background:var(--series-1);color:#fff;text-decoration:none;
+       padding:10px 18px;border-radius:9px;font-weight:600;font-size:14px">💬 Talk to Manager AI</a>
+    <div class="hero">
+      <div class="num" id="health">–</div>
+      <div class="lbl">Business Health Score / 100</div>
+    </div>
+  </div>
+</header>
+
+<section class="tiles" id="tiles"></section>
+
+<h2>Health components</h2>
+<section class="meters" id="meters"></section>
+
+<h2>AI employees <button onclick="digest()" class="primary" style="margin-left:8px">Generate daily digest</button></h2>
+<div id="digest"></div>
+<section class="grid" id="agents" style="margin-top:10px"></section>
+
+<h2>Approval queue — waiting for you</h2>
+<div id="approvals"></div>
+
+<script>
+const TILE_DEFS = [
+  ["revenue_today", "Revenue today", v => "$" + v.toLocaleString()],
+  ["deals_won_today", "Deals won today", v => v],
+  ["leads_today", "Leads today", v => v],
+  ["conversion_rate", "Conversion rate", v => v + "%"],
+  ["pipeline_value", "Pipeline value", v => "$" + v.toLocaleString()],
+  ["appointments_upcoming", "Upcoming appointments", v => v],
+  ["pending_tasks", "Pending tasks", v => v],
+  ["pending_approvals", "Pending approvals", v => v],
+  ["open_tickets", "Open tickets", v => v],
+  ["messages_today", "Messages today", v => v],
+  ["agent_runs_today", "AI runs today", v => v],
+  ["ai_cost_today", "AI cost today", v => "$" + v.toFixed(2)],
+];
+
+async function load() {
+  const s = await (await fetch("/api/dashboard/summary")).json();
+  document.getElementById("tenant").innerHTML =
+    s.tenant + " <small>CEO Command Center — OmniX AI</small>";
+  document.getElementById("health").textContent = s.health.overall;
+  document.getElementById("tiles").innerHTML = TILE_DEFS.map(([k, label, fmt]) =>
+    `<div class="tile"><div class="v">${fmt(s.metrics[k] ?? 0)}</div><div class="k">${label}</div></div>`).join("");
+  document.getElementById("meters").innerHTML =
+    Object.entries(s.health.components).map(([k, v]) =>
+      `<div class="meter"><div class="row"><span>${k}</span><b>${v}</b></div>
+       <div class="bar"><i style="width:${v}%"></i></div></div>`).join("");
+  document.getElementById("agents").innerHTML = s.agents.map(a =>
+    `<div class="agent"><div class="top"><span class="name">${a.name}</span>
+       <span class="chip">${a.autonomy}</span></div>
+     <div class="status"><span class="dot ${a.active ? "on" : "off"}"></span>
+       ${a.active ? "active" : "stopped (kill switch)"}${a.has_activity ? " · has runs" : ""}</div></div>`).join("");
+  document.getElementById("refreshed").textContent = "updated " + new Date().toLocaleTimeString();
+  loadApprovals();
+}
+
+// Show who is signed in (customer accounts); admins without a session see nothing extra.
+fetch("/api/auth/me").then(r => r.ok ? r.json() : null).then(me => {
+  if (!me) return;
+  document.getElementById("whoami").textContent = " · " + me.name + " — " + me.tenant;
+  document.getElementById("signout").style.display = "inline";
+}).catch(() => {});
+
+async function loadApprovals() {
+  const items = await (await fetch("/api/approvals")).json();
+  const el = document.getElementById("approvals");
+  if (!items.length) { el.innerHTML = '<div class="empty">Nothing waiting — all clear.</div>'; return; }
+  el.innerHTML = `<table><tr><th>Agent</th><th>Action</th><th>Content</th><th></th></tr>` +
+    items.map(i => `<tr><td>${i.agent}</td><td>${i.kind}</td>
+      <td class="body">${(i.payload.body || JSON.stringify(i.payload)).slice(0, 300)}</td>
+      <td style="white-space:nowrap">
+        <button class="primary" onclick="decide('${i.id}','approve')">Approve</button>
+        <button onclick="decide('${i.id}','reject')">Reject</button></td></tr>`).join("") + "</table>";
+}
+
+async function decide(id, action) {
+  await fetch(`/api/approvals/${id}/${action}`, { method: "POST",
+    headers: {"Content-Type": "application/json"}, body: "{}" });
+  load();
+}
+
+async function digest() {
+  const el = document.getElementById("digest");
+  el.style.display = "block"; el.textContent = "Analytics AI is writing today's digest…";
+  const r = await (await fetch("/api/dashboard/daily-digest", { method: "POST" })).json();
+  el.textContent = r.digest || "(no analytics agent configured)";
+}
+
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>

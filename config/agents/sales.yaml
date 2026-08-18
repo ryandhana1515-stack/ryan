@@ -1,0 +1,12 @@
+key: sales
+name: Sales AI
+description: Instant replies, qualification, lead scoring, objection handling, appointment booking, human handoff.
+system_prompt_ref: prompts/sales_system.md
+model_tier: frontier
+autonomy: approve
+tools: [crm.update_lead, crm.create_appointment, comms.send_message, handoff.to_human]
+knowledge_scope: [product, script, faq, brand]
+guardrails:
+  max_discount_pct: 10
+  forbidden_topics: [legal advice, competitor pricing claims]
+  escalate_keywords: [lawyer, sue, refund, furious, scam]

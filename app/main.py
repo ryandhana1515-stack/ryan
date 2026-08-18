@@ -1,0 +1,160 @@
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.api import (accounts, agents_api, calendar_api, crm, dashboard,
+                     knowledge, manager_api, media, public, team, video_studio)
+from app.config import GENERATED_DIR
+from app.db import SessionLocal, get_session, init_db
+from app.workflows import register_all
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    init_db()
+    register_all()
+    GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+    # New agents added to config/agents/ appear for existing tenants on restart
+    from app.agents.registry import sync_agents_for_tenant
+    from app.models import Tenant
+
+    with SessionLocal() as session:
+        for tenant in session.scalars(select(Tenant)).all():
+            sync_agents_for_tenant(session, tenant.id)
+        session.commit()
+    yield
+
+
+app = FastAPI(title="AI Business Operating System", version="0.3.1", lifespan=lifespan)
+
+from app.auth import BasicAuthMiddleware  # noqa: E402
+
+app.add_middleware(BasicAuthMiddleware)
+
+app.include_router(crm.router)
+app.include_router(agents_api.router)
+app.include_router(knowledge.router)
+app.include_router(dashboard.router)
+app.include_router(manager_api.router)
+app.include_router(public.router)
+app.include_router(media.router)
+app.include_router(accounts.router)
+app.include_router(team.router)
+app.include_router(calendar_api.router)
+app.include_router(video_studio.router)
+
+_STATIC = Path(__file__).parent / "static"
+GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/generated", StaticFiles(directory=GENERATED_DIR), name="generated")
+app.mount("/static", StaticFiles(directory=_STATIC), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(_STATIC / "brand" / "favicon-64.png")
+
+
+@app.get("/site/{artifact_id}", include_in_schema=False)
+def serve_site(artifact_id: str, session: Session = Depends(get_session)):
+    """AI-built pages, served from the DB so links never die on redeploy.
+    Public on purpose: these are shareable marketing pages."""
+    from app.models import Artifact
+
+    artifact = session.get(Artifact, artifact_id)
+    if artifact is None:
+        raise HTTPException(404, "This page doesn't exist (or was deleted).")
+    return HTMLResponse(artifact.content)
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    """The CEO Dashboard."""
+    return FileResponse(_STATIC / "dashboard.html")
+
+
+@app.get("/chat", include_in_schema=False)
+def chat_page():
+    """The Manager AI chat — one agent that commands all the others."""
+    return FileResponse(_STATIC / "chat.html")
+
+
+@app.get("/welcome", include_in_schema=False)
+def landing_page():
+    """Public marketing landing page (multi-language)."""
+    return FileResponse(_STATIC / "landing.html")
+
+
+@app.get("/login", include_in_schema=False)
+def login_page():
+    """Customer sign-in / create-account page."""
+    return FileResponse(_STATIC / "login.html")
+
+
+@app.get("/video-studio", include_in_schema=False)
+def video_studio_page():
+    """Guided video production: brief -> AI Director -> storyboard -> render."""
+    return FileResponse(_STATIC / "video-studio.html")
+
+
+@app.get("/calendar", include_in_schema=False)
+def calendar_page():
+    """Content calendar / social scheduler."""
+    return FileResponse(_STATIC / "calendar.html")
+
+
+@app.get("/team", include_in_schema=False)
+def team_page():
+    """Workspace team management."""
+    return FileResponse(_STATIC / "team.html")
+
+
+@app.get("/signup", include_in_schema=False)
+def signup_page():
+    """Public signup funnel — creates a lead in the owner's own tenant."""
+    return FileResponse(_STATIC / "signup.html")
+
+
+@app.get("/offer", include_in_schema=False)
+def offer_page():
+    """Public founding-member offer page."""
+    return FileResponse(_STATIC / "offer.html")
+
+
+@app.get("/how", include_in_schema=False)
+def how_page():
+    """Public 'how it works' walkthrough page."""
+    return FileResponse(_STATIC / "how.html")
+
+
+@app.get("/agents", include_in_schema=False)
+def agent_page():
+    """Public per-agent detail page (?a=sales ... ?a=manager)."""
+    return FileResponse(_STATIC / "agent.html")
+
+
+@app.get("/videos", include_in_schema=False)
+def videos_page():
+    """Public real-footage gallery."""
+    return FileResponse(_STATIC / "videos.html")
+
+
+@app.get("/launch", include_in_schema=False)
+def launch_page():
+    """Launch Pad: campaign builder + platform doors (behind login)."""
+    return FileResponse(_STATIC / "launch.html")
+
+
+@app.get("/studio", include_in_schema=False)
+def studio_page():
+    """Creative Studio: create content + platform size packs (behind login)."""
+    return FileResponse(_STATIC / "studio.html")
+
+
+@app.get("/health", include_in_schema=False)
+def health():
+    return {"status": "ok", "version": app.version}

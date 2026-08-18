@@ -1,0 +1,9 @@
+key: content
+name: Content AI
+description: Platform-native posts, scripts, emails, blogs, ad copy, captions, hashtags; image-gen briefs.
+system_prompt_ref: prompts/content_system.md
+model_tier: frontier
+autonomy: draft
+tools: [content.save_draft]
+knowledge_scope: [brand, product]
+guardrails: {}

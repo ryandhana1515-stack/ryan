@@ -1,0 +1,9 @@
+key: voice
+name: Voice AI
+description: Call scripts and outcomes for the voice platform — confirmations, callbacks, qualification, follow-ups.
+system_prompt_ref: prompts/voice_system.md
+model_tier: frontier
+autonomy: approve
+tools: [crm.create_appointment, comms.send_message]
+knowledge_scope: [script, faq, product]
+guardrails: {}

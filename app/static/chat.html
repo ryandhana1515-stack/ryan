@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manager AI — OmniX AI</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f4f4f2; --surface-1: #fcfcfb; --border: #e4e3df;
+    --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #8a8880;
+    --accent: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2d2b;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8a8880;
+      --accent: #3987e5;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 15px/1.55 system-ui, -apple-system, sans-serif; background: var(--surface-0);
+         color: var(--text-primary); display: flex; flex-direction: column; height: 100vh; }
+  header { padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface-1);
+           display: flex; justify-content: space-between; align-items: center; }
+  header b { font-size: 16px; } header small { color: var(--text-muted); }
+  header a { color: var(--accent); text-decoration: none; font-size: 13px; }
+  #log { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 760px; padding: 12px 16px; border-radius: 14px; white-space: pre-wrap; }
+  .me { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+  .ai { align-self: flex-start; background: var(--surface-1); border: 1px solid var(--border);
+        border-bottom-left-radius: 4px; }
+  .ai .tag { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
+             text-transform: uppercase; letter-spacing: .05em; }
+  .ai img { max-width: 100%; border-radius: 10px; margin-top: 8px; display: block; }
+  .ai video { max-width: 100%; border-radius: 10px; margin-top: 8px; display: block; }
+  .ai a.artifact { display: inline-block; margin-top: 8px; color: var(--accent); font-weight: 600; }
+  form { display: flex; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--border);
+         background: var(--surface-1); }
+  input { flex: 1; font: inherit; padding: 11px 14px; border-radius: 10px;
+          border: 1px solid var(--border); background: var(--surface-0); color: var(--text-primary); }
+  button { font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 10px; border: 0;
+           background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  .hint { color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px; }
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="/static/brand/logo-128.png" alt="OmniX AI" style="width:32px;height:32px;border-radius:8px">
+    <span><b>Manager AI</b> <small>— your chief of staff. Ask for anything; it delegates to your AI employees.</small></span>
+  </div>
+  <a href="/">← Dashboard</a>
+</header>
+<div id="log">
+  <div class="hint">Try: “Create an image of a modern aesthetics clinic reception” ·
+    “Write 3 Instagram captions about laser facials” · “Make me a landing page for a promo” ·
+    “Write an SOP for closing the shop” · “How is the business doing?”</div>
+</div>
+<form id="f">
+  <input id="box" placeholder="Tell your Manager AI what you need…" autocomplete="off" autofocus>
+  <button type="button" id="mic" title="Speak instead of typing"
+          style="background:var(--surface-1,#1a1a19);border:1px solid var(--border);color:inherit">🎙️</button>
+  <button id="send">Send</button>
+</form>
+<script>
+const log = document.getElementById("log");
+const box = document.getElementById("box");
+const send = document.getElementById("send");
+const history = [];
+
+function add(role, text, meta) {
+  const div = document.createElement("div");
+  div.className = "msg " + (role === "user" ? "me" : "ai");
+  if (role !== "user" && meta && meta.delegated_to) {
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = "via " + meta.delegated_to + " agent";
+    div.appendChild(tag);
+  }
+  div.appendChild(document.createTextNode(text));
+  if (meta) {
+    for (const m of meta.media || []) {
+      if (m.type === "video" && !m.url.endsWith(".svg")) {
+        const v = document.createElement("video");
+        v.src = m.url; v.controls = true; div.appendChild(v);
+      } else {
+        const img = document.createElement("img");
+        img.src = m.url; div.appendChild(img);
+      }
+    }
+    for (const a of meta.artifacts || []) {
+      const link = document.createElement("a");
+      link.className = "artifact"; link.href = a.url; link.target = "_blank";
+      link.textContent = "Open: " + (a.title || a.url);
+      div.appendChild(link);
+    }
+  }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = box.value.trim();
+  if (!text) return;
+  add("user", text);
+  history.push({ role: "user", content: text });
+  box.value = ""; send.disabled = true;
+  const thinking = document.createElement("div");
+  thinking.className = "msg ai"; thinking.textContent = "Working on it…";
+  log.appendChild(thinking); log.scrollTop = log.scrollHeight;
+  try {
+    const r = await fetch("/api/manager/chat", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text, history: history.slice(0, -1) }),
+    });
+    const data = await r.json();
+    thinking.remove();
+    add("ai", data.reply || "(no reply)", data);
+    history.push({ role: "assistant", content: data.reply || "" });
+  } catch (err) {
+    thinking.textContent = "Connection error — is the server window still open?";
+  }
+  send.disabled = false; box.focus();
+});
+
+// Voice commands: speak to your Manager AI (Chrome/Edge/Safari)
+const micBtn = document.getElementById("mic");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  const rec = new SR();
+  rec.lang = navigator.language || "en-US";
+  rec.interimResults = false;
+  let listening = false;
+  micBtn.addEventListener("click", () => {
+    if (listening) { rec.stop(); return; }
+    listening = true; micBtn.textContent = "🔴";
+    rec.start();
+  });
+  rec.onresult = (e) => {
+    box.value = (box.value + " " + e.results[0][0].transcript).trim();
+  };
+  rec.onend = () => {
+    listening = false; micBtn.textContent = "🎙️";
+    if (box.value.trim()) document.getElementById("f").dispatchEvent(new Event("submit"));
+  };
+  rec.onerror = () => { listening = false; micBtn.textContent = "🎙️"; };
+} else {
+  micBtn.style.display = "none";
+}
+
+// Allow other pages to open the chat with a question ready to go: /chat?q=...
+const preq = new URLSearchParams(location.search).get("q");
+if (preq) {
+  box.value = preq;
+  setTimeout(() => document.getElementById("f").dispatchEvent(new Event("submit")), 400);
+}
+</script>
+</body>
+</html>

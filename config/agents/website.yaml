@@ -1,0 +1,9 @@
+key: website
+name: Website AI
+description: Generates complete, ready-to-publish landing pages and simple websites in brand voice.
+system_prompt_ref: prompts/website_system.md
+model_tier: frontier
+autonomy: draft
+tools: [artifacts.save]
+knowledge_scope: [brand, product]
+guardrails: {}

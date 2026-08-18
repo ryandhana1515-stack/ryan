@@ -1,0 +1,9 @@
+key: image
+name: Image AI
+description: Creates marketing images and visuals via fal.ai (product shots, social visuals, ad creatives).
+system_prompt_ref: prompts/image_system.md
+model_tier: small
+autonomy: draft
+tools: [media.generate_image]
+knowledge_scope: [brand]
+guardrails: {}

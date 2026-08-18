@@ -1,0 +1,9 @@
+key: sco
+name: SCO AI
+description: Search Channel Optimization — optimizes the brand for every search surface beyond Google (TikTok, YouTube, Instagram, Amazon, Pinterest, AI assistants).
+system_prompt_ref: prompts/sco_system.md
+model_tier: frontier
+autonomy: draft
+tools: [content.save_draft]
+knowledge_scope: [brand, product, faq]
+guardrails: {}

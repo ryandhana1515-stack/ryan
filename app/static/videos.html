@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>See OmniX AI in action — real footage</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon-64.png">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  :root { --grad: linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+          --accent: #8b5cf6; --ink: #f2f5ff; --ink-2: #a3adce;
+          --bg: #0a0e1e; --card: #121a38; --border: #263059; }
+  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 22px 70px; }
+  nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; text-decoration: none; color: var(--ink); }
+  .logo img { width: 34px; height: 34px; border-radius: 8px; }
+  .logo span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn { display: inline-block; background: var(--grad); color: #fff; font-weight: 800; text-decoration: none;
+         padding: 13px 26px; border-radius: 12px; box-shadow: 0 4px 24px rgba(109,91,245,.45); }
+  .btn-ghost { background: none; box-shadow: none; border: 1px solid var(--border); color: var(--ink); font-weight: 600; }
+  h1 { font-size: clamp(28px, 5vw, 42px); letter-spacing: -.02em; font-weight: 850; }
+  h1 em { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: normal; }
+  .lead { color: var(--ink-2); font-size: 17px; margin: 12px 0 34px; }
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
+  .vcard { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+  .vcard video { width: 100%; border-radius: 10px; background: #000; border: 1px solid var(--border); }
+  .vcard h3 { font-size: 16.5px; margin: 12px 0 4px; }
+  .vcard p { color: var(--ink-2); font-size: 14px; }
+  .cta-block { text-align: center; margin-top: 40px; padding: 34px 24px; background: var(--card);
+               border: 1px solid var(--border); border-radius: 18px; }
+  .cta-block h2 { margin-bottom: 6px; }
+  .cta-block p { color: var(--ink-2); margin-bottom: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="/welcome"><img src="/static/brand/logo-128.png" alt="OmniX AI">Omni<span>X</span> AI</a>
+    <a class="btn btn-ghost" href="/welcome">← Back</a>
+  </nav>
+
+  <h1>This is <em>real footage</em> — not a mockup</h1>
+  <p class="lead">Actual screen recordings of OmniX AI running a business. No actors, no editing tricks — press play.</p>
+
+  <div class="vcard" style="margin-bottom:22px">
+    <video src="/static/videos/omnix_full_demo.mp4" controls autoplay muted playsinline style="width:100%;border-radius:10px;background:#000"></video>
+    <h3>▶ The full demo — 90 seconds, sound on 🔊</h3>
+    <p>Intro, four real scenes of the product working, and the offer — one video.</p>
+  </div>
+
+  <div class="vgrid">
+    <div class="vcard">
+      <video src="/static/videos/02_lead_arrives.webm" controls muted loop playsinline></video>
+      <h3>① A customer signs up — and lands in your CRM</h3>
+      <p>Watch a real signup flow straight into the dashboard as a scored lead.</p>
+    </div>
+    <div class="vcard">
+      <video src="/static/videos/01_dashboard_tour.webm" controls muted loop playsinline></video>
+      <h3>② The CEO Command Center</h3>
+      <p>Live revenue, leads, health score, all 17 AI employees — ending with a real one-tap Approve.</p>
+    </div>
+    <div class="vcard">
+      <video src="/static/videos/03_manager_ai.webm" controls muted loop playsinline></video>
+      <h3>③ Talk to your Manager AI</h3>
+      <p>"How is the business doing today?" — answered with live numbers, not canned text.</p>
+    </div>
+    <div class="vcard">
+      <video src="/static/videos/04_website_tour.webm" controls muted loop playsinline></video>
+      <h3>④ Your storefront, agents & founding offer</h3>
+      <p>The public site your customers see — including a live agent demo playing.</p>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h2>Now watch it run YOUR business</h2>
+    <p>Free for 14 days. Founding members lock $49/month for life.</p>
+    <a class="btn" href="/signup">Start free trial</a>&nbsp;&nbsp;
+    <a class="btn btn-ghost" href="/offer">See founding offer</a>
+  </div>
+</div>
+</body>
+</html>

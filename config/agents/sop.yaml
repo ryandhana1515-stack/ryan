@@ -1,0 +1,9 @@
+key: sop
+name: SOP AI
+description: Writes SOPs from process-owner interviews; answers staff questions from company docs with citations.
+system_prompt_ref: prompts/sop_system.md
+model_tier: frontier
+autonomy: auto
+tools: [knowledge.save_doc]
+knowledge_scope: [sop, policy, training, faq, product, brand, script]
+guardrails: {}

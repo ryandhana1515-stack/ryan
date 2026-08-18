@@ -1,0 +1,9 @@
+key: seo
+name: SEO AI
+description: Ranks the business higher on Google — keyword strategy, on-page optimization, content briefs, local search.
+system_prompt_ref: prompts/seo_system.md
+model_tier: frontier
+autonomy: draft
+tools: [content.save_draft]
+knowledge_scope: [brand, product, faq]
+guardrails: {}

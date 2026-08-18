@@ -1,0 +1,9 @@
+key: manager
+name: Manager AI
+description: The CEO's chief of staff — one chat interface that understands requests, delegates to the right department agent, and reports back.
+system_prompt_ref: prompts/manager_system.md
+model_tier: frontier
+autonomy: auto
+tools: [delegate]
+knowledge_scope: [brand, product, faq, sop, policy]
+guardrails: {}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team — OmniX AI</title>
+<link rel="icon" href="/static/brand/favicon-64.png">
+<style>
+:root {
+  --grad:   linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+  --accent: #8b5cf6;  --cyan: #22d3ee;
+  --ink:    #f2f5ff;  --ink-2: #a3adce;
+  --bg:     #0a0e1e;  --bg-soft:#0e1430;  --card: #121a38;  --border: #263059;
+  --good:   #34d399;  --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--ink); padding: 22px; }
+.wrap { max-width: 720px; margin: 0 auto; }
+header { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+h1 { font-size: clamp(22px, 4vw, 30px); letter-spacing: -.02em; }
+h1 span { background: var(--grad); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+.nav a { color: var(--ink-2); text-decoration: none; font-size: 14px;
+  font-weight: 700; margin-left: 14px; }
+.nav a:hover { color: var(--cyan); }
+.card { background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+label { display: block; font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2);
+  margin: 10px 0 5px; }
+input, select { width: 100%; padding: 10px 12px; border-radius: 9px;
+  font-size: 14px; background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--ink); }
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.btn { padding: 12px 18px; border: 0; border-radius: 11px; background: var(--grad);
+  color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 14px;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, .3); }
+.member { display: flex; align-items: center; gap: 12px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; animation: rise .35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.avatar { width: 40px; height: 40px; border-radius: 99px; background: var(--grad);
+  display: flex; align-items: center; justify-content: center; font-weight: 800;
+  color: #fff; flex-shrink: 0; }
+.member .body { flex: 1; min-width: 0; }
+.member b { display: block; font-size: 15px; }
+.member .sub { font-size: 13px; color: var(--ink-2); word-break: break-all; }
+.badge { padding: 3px 10px; border-radius: 99px; font-size: 10px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .05em;
+  background: rgba(139,92,246,.18); color: #c4b5fd; }
+.badge.owner { background: rgba(34,211,238,.15); color: var(--cyan); }
+.rm { background: transparent; border: 1px solid var(--border); color: var(--ink-2);
+  border-radius: 9px; padding: 7px 12px; font-size: 13px; cursor: pointer; }
+.rm:hover { color: var(--danger); border-color: var(--danger); }
+.msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+.msg.err { color: var(--danger); } .msg.ok { color: var(--good); }
+.note { color: var(--ink-2); font-size: 13px; line-height: 1.6; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>👥 Your <span>Team</span></h1>
+    <nav class="nav">
+      <a href="/">Dashboard</a><a href="/calendar">Calendar</a><a href="/chat">Manager AI</a>
+    </nav>
+  </header>
+
+  <div class="card">
+    <b>Add a teammate</b>
+    <div class="note">They sign in at <b>/login</b> with the email + password you set here,
+      and work inside this same workspace. Managers can approve AI output; staff can view and chat.</div>
+    <div class="row">
+      <div><label>Name</label><input id="m-name" placeholder="e.g. Sarah"></div>
+      <div><label>Email</label><input id="m-email" type="email" placeholder="sarah@business.com"></div>
+      <div><label>Temporary password (8+)</label><input id="m-pass" placeholder="they can use it right away"></div>
+      <div><label>Role</label><select id="m-role">
+        <option value="manager">Manager — can approve AI output</option>
+        <option value="staff" selected>Staff — view + chat</option>
+      </select></div>
+    </div>
+    <button class="btn" onclick="add()">Add teammate</button>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+async function load() {
+  const users = await (await fetch('/api/team')).json();
+  document.getElementById('list').innerHTML = users.map(u => `
+    <div class="member">
+      <div class="avatar">${esc((u.name || '?')[0].toUpperCase())}</div>
+      <div class="body"><b>${esc(u.name)}</b><span class="sub">${esc(u.email)}</span></div>
+      <span class="badge ${u.is_owner ? 'owner' : ''}">${u.is_owner ? 'owner' : esc(u.role)}</span>
+      ${u.is_owner ? '' : `<button class="rm" onclick="rm('${u.id}')">Remove</button>`}
+    </div>`).join('');
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function setMsg(t, c) { const m = document.getElementById('msg');
+  m.textContent = t; m.className = 'msg ' + c; }
+
+async function add() {
+  const body = {name: document.getElementById('m-name').value,
+    email: document.getElementById('m-email').value,
+    password: document.getElementById('m-pass').value,
+    role: document.getElementById('m-role').value};
+  const r = await fetch('/api/team', {method: 'POST',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { setMsg(typeof data.detail === 'string' ? data.detail : 'Could not add — check the fields.', 'err'); return; }
+  setMsg(data.name + ' added — they can sign in now.', 'ok');
+  document.getElementById('m-name').value = '';
+  document.getElementById('m-email').value = '';
+  document.getElementById('m-pass').value = '';
+  load();
+}
+async function rm(id) {
+  if (!confirm('Remove this teammate? They will no longer be able to sign in.')) return;
+  await fetch('/api/team/' + id, {method: 'DELETE'});
+  load();
+}
+load();
+</script>
+</body>
+</html>

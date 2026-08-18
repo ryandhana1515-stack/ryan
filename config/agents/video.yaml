@@ -1,0 +1,9 @@
+key: video
+name: Video AI
+description: Creates short marketing video clips via fal.ai (reels, product teasers).
+system_prompt_ref: prompts/video_system.md
+model_tier: small
+autonomy: draft
+tools: [media.generate_video]
+knowledge_scope: [brand]
+guardrails: {}

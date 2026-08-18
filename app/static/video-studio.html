@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Studio — OmniX AI</title>
+<link rel="icon" href="/static/brand/favicon-64.png">
+<style>
+:root {
+  --grad:   linear-gradient(92deg, #22d3ee, #6d5bf5 55%, #d946ef);
+  --accent: #8b5cf6;  --cyan: #22d3ee;  --magenta: #d946ef;
+  --ink:    #f2f5ff;  --ink-2: #a3adce;
+  --bg:     #0a0e1e;  --bg-soft:#0e1430;  --card: #121a38;  --border: #263059;
+  --good:   #34d399;  --warn: #f0b429;  --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--ink); padding: 22px; }
+.wrap { max-width: 980px; margin: 0 auto; }
+header { display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+h1 { font-size: clamp(22px, 4vw, 30px); letter-spacing: -.02em; }
+h1 span { background: var(--grad); -webkit-background-clip: text;
+  background-clip: text; color: transparent; }
+.nav a { color: var(--ink-2); text-decoration: none; font-size: 14px;
+  font-weight: 700; margin-left: 14px; }
+.nav a:hover { color: var(--cyan); }
+.sub { color: var(--ink-2); font-size: 14px; margin-bottom: 18px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.step { font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 99px;
+  border: 1px solid var(--border); color: var(--ink-2); }
+.step.on { background: var(--grad); color: #fff; border: 0; }
+.card { background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; margin-bottom: 16px; animation: rise .35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.goals { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.goal { border: 1px solid var(--border); background: var(--bg-soft); border-radius: 12px;
+  padding: 14px; cursor: pointer; text-align: center; font-weight: 700; font-size: 13px; }
+.goal:hover, .goal.sel { border-color: var(--accent); transform: translateY(-2px); }
+.goal .e { font-size: 26px; display: block; margin-bottom: 6px; }
+label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--ink-2); margin: 12px 0 5px; }
+input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 9px;
+  font-size: 14px; background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--ink); font-family: inherit; }
+textarea { min-height: 56px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.btn { padding: 13px 22px; border: 0; border-radius: 11px; background: var(--grad);
+  color: #fff; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 16px;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, .3); }
+.btn:disabled { opacity: .55; cursor: wait; }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink);
+  box-shadow: none; padding: 9px 14px; border-radius: 9px; font-size: 13px;
+  font-weight: 700; cursor: pointer; margin-top: 0; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 10px;
+  font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.badge.draft { background: rgba(163,173,206,.15); color: var(--ink-2); }
+.badge.generating { background: rgba(240,180,41,.15); color: var(--warn); }
+.badge.completed { background: rgba(52,211,153,.15); color: var(--good); }
+.badge.failed { background: rgba(248,113,113,.15); color: var(--danger); }
+.scene { border: 1px solid var(--border); background: var(--bg-soft); border-radius: 12px;
+  padding: 16px; margin-bottom: 12px; }
+.scene .top { display: flex; justify-content: space-between; gap: 10px;
+  align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.scene b { font-size: 15px; }
+.scene .meta { font-size: 12px; color: var(--ink-2); }
+.scene video { width: 100%; max-width: 420px; border-radius: 10px; margin-top: 10px;
+  border: 1px solid var(--border); }
+.scene .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.plan-box { background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin: 10px 0; font-size: 14px; line-height: 1.6; }
+.plan-box b { color: var(--cyan); }
+.note { color: var(--ink-2); font-size: 13px; line-height: 1.6; }
+.outs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.out video { width: 100%; border-radius: 10px; border: 1px solid var(--border); }
+.err { color: var(--danger); font-size: 13px; margin-top: 8px; }
+.projects a { color: var(--cyan); text-decoration: none; font-weight: 700; }
+.projects div { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎬 Video <span>Studio</span></h1>
+    <nav class="nav">
+      <a href="/">Dashboard</a><a href="/studio">Creative Studio</a>
+      <a href="/calendar">Calendar</a><a href="/chat">Manager AI</a>
+    </nav>
+  </header>
+  <p class="sub">One brief → AI Director plan → storyboard → scene generation → finished video in every format.</p>
+
+  <div class="steps" id="steps"></div>
+
+  <div id="s1" class="card">
+    <b>What kind of video?</b>
+    <div class="goals" id="goals" style="margin-top:12px"></div>
+    <div class="card" style="margin:16px 0 0;padding:14px" id="pastbox">
+      <b style="font-size:14px">My projects</b>
+      <div class="projects" id="projects"><span class="note">Loading…</span></div>
+    </div>
+  </div>
+
+  <div id="s2" class="card" style="display:none">
+    <b>Tell the AI Director about it</b>
+    <div class="row">
+      <div><label>Project title</label><input id="b-title" placeholder="July serum launch ad"></div>
+      <div><label>Product / company</label><input id="b-product" placeholder="GlowLab Vitamin C Serum"></div>
+      <div><label>Target audience</label><input id="b-audience" placeholder="women 25-45 who care about skincare"></div>
+      <div><label>Duration (seconds)</label><input id="b-duration" type="number" value="30" min="10" max="120"></div>
+      <div><label>Language</label><input id="b-language" value="English"></div>
+      <div><label>Call to action</label><input id="b-cta" placeholder="Order now at glowlab.sg"></div>
+    </div>
+    <label>Main selling points</label>
+    <textarea id="b-selling" placeholder="Visible glow in 7 days, dermatologist tested, vegan"></textarea>
+    <button class="btn" onclick="go(3)">Next: creative direction →</button>
+  </div>
+
+  <div id="s3" class="card" style="display:none">
+    <b>Creative direction</b>
+    <div class="row">
+      <div><label>Style</label><select id="d-style">
+        <option>Cinematic</option><option>Luxury</option><option>UGC / natural</option>
+        <option>Minimal</option><option>Energetic</option><option>Corporate</option>
+        <option>Scientific</option><option>Emotional</option><option>Lifestyle</option></select></div>
+      <div><label>Tone of voice</label><input id="d-tone" placeholder="warm and confident"></div>
+      <div><label>Music style</label><input id="d-music" placeholder="elegant piano"></div>
+      <div><label>Narrator</label><input id="d-narrator" placeholder="female, natural, English"></div>
+    </div>
+    <label>Location, people, lighting, mood (free text)</label>
+    <textarea id="d-visual" placeholder="Bright laboratory + bathroom shelfie scenes, soft morning light, close-ups of skin texture"></textarea>
+    <button class="btn" id="direct-btn" onclick="createProject()">🎬 Ask the AI Director for a plan →</button>
+    <div class="err" id="s3err"></div>
+  </div>
+
+  <div id="s4" class="card" style="display:none">
+    <b>The Director's plan</b>
+    <div class="plan-box" id="planbox"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="go(5)" style="margin-top:0">✅ Approve → storyboard</button>
+      <button class="btn-ghost" onclick="replan()">🔄 Regenerate the whole plan</button>
+    </div>
+  </div>
+
+  <div id="s5" class="card" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <b>Storyboard — control every scene</b>
+      <button class="btn" style="margin:0" id="genall" onclick="generateAll()">⚡ Generate all scenes</button>
+    </div>
+    <p class="note" id="providernote" style="margin-top:8px"></p>
+    <div id="scenes" style="margin-top:12px"></div>
+    <div class="card" style="margin-top:8px;background:var(--bg-soft)">
+      <b>Final video</b>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0">
+        <label style="display:flex;gap:6px;align-items:center;margin:0;text-transform:none;font-size:13px"><input type="checkbox" style="width:auto" class="fmt" value="landscape_16_9" checked> 16:9 YouTube</label>
+        <label style="display:flex;gap:6px;align-items:center;margin:0;text-transform:none;font-size:13px"><input type="checkbox" style="width:auto" class="fmt" value="vertical_9_16" checked> 9:16 TikTok/Reels</label>
+        <label style="display:flex;gap:6px;align-items:center;margin:0;text-transform:none;font-size:13px"><input type="checkbox" style="width:auto" class="fmt" value="square_1_1"> 1:1 Feed</label>
+      </div>
+      <button class="btn" id="assemble-btn" style="margin-top:4px" onclick="assemble()">🎞️ Assemble final video</button>
+      <div class="err" id="s5err"></div>
+      <div class="outs" id="outputs" style="margin-top:14px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GOALS = [
+  ["product_ad", "🧴", "Product ad"], ["social_ad", "📱", "Social media ad"],
+  ["talking_avatar", "🗣️", "Talking avatar"], ["founder_video", "👤", "Founder video"],
+  ["explainer", "💡", "Explainer"], ["tutorial", "🎓", "Tutorial"],
+  ["testimonial", "⭐", "Testimonial"], ["real_estate", "🏠", "Real estate"],
+  ["restaurant_hotel", "🍽️", "Hotel / restaurant"], ["ugc_ad", "🤳", "UGC-style ad"],
+  ["short_film", "🎥", "Short cinematic"], ["custom", "✨", "Custom"]];
+const STEPS = ["1 Goal", "2 Brief", "3 Direction", "4 Director plan", "5 Storyboard & export"];
+let state = {goal: "product_ad", project: null};
+
+function renderSteps(n) {
+  document.getElementById('steps').innerHTML = STEPS.map((s, i) =>
+    `<span class="step ${i + 1 <= n ? 'on' : ''}">${s}</span>`).join('');
+  for (let i = 1; i <= 5; i++)
+    document.getElementById('s' + i).style.display = (i === n || (n >= 4 && i === n)) ? '' : 'none';
+}
+function go(n) { renderSteps(n); window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+document.getElementById('goals').innerHTML = GOALS.map(([k, e, l]) =>
+  `<div class="goal ${k === state.goal ? 'sel' : ''}" data-k="${k}" onclick="pickGoal('${k}')"><span class="e">${e}</span>${l}</div>`).join('');
+function pickGoal(k) {
+  state.goal = k;
+  document.querySelectorAll('.goal').forEach(g => g.classList.toggle('sel', g.dataset.k === k));
+  go(2);
+}
+
+async function createProject() {
+  const btn = document.getElementById('direct-btn');
+  btn.disabled = true; btn.textContent = 'The Director is thinking…';
+  try {
+    const r = await fetch('/api/video-studio/projects', {method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        title: val('b-title') || 'Untitled video', goal: state.goal,
+        brief: {product: val('b-product'), audience: val('b-audience'),
+          duration_sec: parseInt(val('b-duration') || '30'), language: val('b-language'),
+          cta: val('b-cta'), selling_points: val('b-selling')},
+        direction: {style: val('d-style'), tone: val('d-tone'), music: val('d-music'),
+          narrator: val('d-narrator'), visual: val('d-visual')}})});
+    if (!r.ok) throw new Error((await r.json()).detail || 'Director failed');
+    state.project = await r.json();
+    showPlan(); go(4);
+  } catch (e) { document.getElementById('s3err').textContent = e.message; }
+  btn.disabled = false; btn.textContent = '🎬 Ask the AI Director for a plan →';
+}
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function showPlan() {
+  const p = state.project.plan;
+  document.getElementById('planbox').innerHTML =
+    `<b>Concept:</b> ${esc(p.concept)}<br><b>Hook:</b> ${esc(p.hook)}<br>
+     <b>Script:</b> ${esc(p.script)}<br>
+     <b>Scenes:</b> ${state.project.scenes.length} ·
+     <b>Estimated credits:</b> ${state.project.estimated_credits}`;
+  renderScenes();
+}
+
+async function replan() {
+  const r = await fetch(`/api/video-studio/projects/${state.project.id}/replan`, {method: 'POST'});
+  state.project = await r.json();
+  showPlan();
+}
+
+function renderScenes() {
+  const box = document.getElementById('scenes');
+  box.innerHTML = state.project.scenes.map(s => `
+    <div class="scene" id="scene-${s.id}">
+      <div class="top"><b>Scene ${s.idx + 1} — ${esc(s.purpose)}</b>
+        <span><span class="badge ${s.status}">${s.status}</span>
+        <span class="meta"> ${s.duration_sec}s · ${esc(s.provider)} · ~${s.estimated_credits} cr</span></span></div>
+      <label>Dialogue</label><textarea data-f="dialogue" data-id="${s.id}">${esc(s.dialogue)}</textarea>
+      <label>Visual prompt</label><textarea data-f="visual_prompt" data-id="${s.id}">${esc(s.visual_prompt)}</textarea>
+      ${s.error ? `<div class="err">${esc(s.error)}</div>` : ''}
+      ${s.media_url && s.media_url.endsWith('.mp4') ? `<video src="${s.media_url}" controls></video>` : ''}
+      <div class="acts">
+        <button class="btn-ghost" onclick="saveScene('${s.id}')">💾 Save edits</button>
+        <button class="btn-ghost" onclick="genScene('${s.id}')">🎬 ${s.status === 'completed' ? 'Regenerate' : 'Generate'} scene</button>
+      </div>
+    </div>`).join('');
+  fetch('/api/video-studio/providers').then(r => r.json()).then(list => {
+    const live = list.filter(p => p.available && p.id !== 'demo').map(p => p.name);
+    document.getElementById('providernote').textContent = live.length
+      ? 'Connected video engines: ' + live.join(', ')
+      : 'Demo mode: no video API connected yet — scenes render as labelled preview clips so you can test the full workflow. Add FAL_KEY (or HeyGen/Veo/Runway keys later) for real AI footage.';
+  });
+}
+
+async function saveScene(id) {
+  const patch = {};
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => patch[el.dataset.f] = el.value);
+  const r = await fetch('/api/video-studio/scenes/' + id, {method: 'PATCH',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify(patch)});
+  await refresh();
+}
+async function genScene(id) {
+  const card = document.getElementById('scene-' + id);
+  card.querySelector('.badge').className = 'badge generating';
+  card.querySelector('.badge').textContent = 'generating';
+  await fetch(`/api/video-studio/scenes/${id}/generate`, {method: 'POST'});
+  await refresh();
+}
+async function generateAll() {
+  const btn = document.getElementById('genall'); btn.disabled = true;
+  for (const s of state.project.scenes.filter(s => s.status !== 'completed')) {
+    btn.textContent = `Generating scene ${s.idx + 1}/${state.project.scenes.length}…`;
+    await fetch(`/api/video-studio/scenes/${s.id}/generate`, {method: 'POST'});
+    await refresh();
+  }
+  btn.disabled = false; btn.textContent = '⚡ Generate all scenes';
+}
+async function refresh() {
+  const r = await fetch('/api/video-studio/projects/' + state.project.id);
+  state.project = await r.json();
+  renderScenes();
+  renderOutputs();
+}
+async function assemble() {
+  const btn = document.getElementById('assemble-btn');
+  btn.disabled = true; btn.textContent = 'Rendering…';
+  document.getElementById('s5err').textContent = '';
+  const formats = [...document.querySelectorAll('.fmt:checked')].map(c => c.value);
+  const r = await fetch(`/api/video-studio/projects/${state.project.id}/assemble`,
+    {method: 'POST', headers: {'Content-Type': 'application/json'},
+     body: JSON.stringify({formats})});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) document.getElementById('s5err').textContent = data.detail || 'Render failed';
+  else { state.project.outputs = data.outputs; renderOutputs(); }
+  btn.disabled = false; btn.textContent = '🎞️ Assemble final video';
+}
+function renderOutputs() {
+  document.getElementById('outputs').innerHTML = (state.project.outputs || []).map(o =>
+    `<div class="out"><video src="${o.url}" controls></video>
+     <div style="margin-top:6px;font-size:13px"><b>${o.label}</b> ·
+     <a href="${o.url}" download style="color:var(--cyan)">Download ↓</a></div></div>`).join('');
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+async function loadProjects() {
+  const list = await (await fetch('/api/video-studio/projects')).json();
+  document.getElementById('projects').innerHTML = list.length
+    ? list.map(p => `<div><a href="#" onclick="openProject('${p.id}');return false">${esc(p.title)}</a>
+        <span class="badge ${p.status === 'completed' ? 'completed' : 'draft'}">${p.status}</span></div>`).join('')
+    : '<span class="note">No projects yet — pick a video type above to start.</span>';
+}
+async function openProject(id) {
+  const r = await fetch('/api/video-studio/projects/' + id);
+  state.project = await r.json();
+  showPlan(); renderOutputs(); go(5);
+}
+renderSteps(1);
+loadProjects();
+</script>
+</body>
+</html>
