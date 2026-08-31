@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results – Before &amp; After | ProLaser Aesthetic Singapore</title>
+  <meta name="description" content="See real before and after results from ProLaser Aesthetic's laser eyebrow embroidery removal treatments in Singapore. Upload your videos and photos here." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Upload Placeholder Styling ── */
+    .upload-zone {
+      border: 2px dashed rgba(201,150,60,0.4);
+      border-radius: var(--radius);
+      background: rgba(201,150,60,0.04);
+      padding: 48px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .upload-zone:hover {
+      border-color: var(--accent);
+      background: rgba(201,150,60,0.08);
+    }
+    .upload-zone-icon { font-size: 3rem; margin-bottom: 12px; }
+    .upload-zone h4 { color: var(--primary); margin-bottom: 8px; }
+    .upload-zone p { font-size: 0.88rem; color: var(--mid-grey); margin: 0; }
+
+    /* ── Progress indicator ── */
+    .session-progress {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 32px 0;
+      flex-wrap: wrap;
+    }
+    .session-step {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      position: relative;
+    }
+    .session-step::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--rose));
+      z-index: 0;
+    }
+    .session-step:last-child::after { display: none; }
+    .session-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin: 0 auto 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .session-dot.done { background: var(--accent); color: var(--white); }
+    .session-dot.partial { background: var(--rose); color: var(--white); }
+    .session-dot.empty { background: var(--light-grey); color: var(--mid-grey); border: 2px solid #ddd; }
+    .session-step span { font-size: 0.78rem; color: var(--text-light); display: block; }
+
+    /* ── Video card ── */
+    .video-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(26,26,46,0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+    .video-thumb {
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--primary), #2d1f3d);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 3rem;
+      gap: 8px;
+      position: relative;
+    }
+    .video-thumb span { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .play-btn {
+      width: 56px;
+      height: 56px;
+      background: rgba(201,150,60,0.85);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--white);
+      position: absolute;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .video-card:hover .play-btn {
+      background: var(--accent);
+      transform: scale(1.1);
+    }
+    .video-info { padding: 18px 20px; }
+    .video-info h4 { margin-bottom: 6px; font-size: 1rem; }
+    .video-info p { font-size: 0.85rem; margin: 0; }
+    .video-tag {
+      display: inline-block;
+      background: rgba(201,150,60,0.1);
+      color: var(--accent);
+      border-radius: 50px;
+      padding: 3px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    /* ── BA card ── */
+    .ba-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(26,26,46,0.06);
+      transition: transform 0.3s;
+    }
+    .ba-card:hover { transform: translateY(-4px); }
+    .ba-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .ba-side {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 2rem;
+      color: var(--mid-grey);
+    }
+    .ba-side.before { background: #f0ece8; }
+    .ba-side.after { background: #e8f0ec; }
+    .ba-side span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .ba-info { padding: 16px 20px; }
+    .ba-info h4 { margin-bottom: 4px; font-size: 0.95rem; }
+    .ba-info p { font-size: 0.82rem; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">PL</div>
+        <span><span class="logo-pro">Pro</span>Laser Aesthetic</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Technology</a></li>
+        <li><a href="treatments.html">Treatments</a></li>
+        <li><a href="results.html" class="active">Results</a></li>
+        <li><a href="testimonials.html">Testimonials</a></li>
+      </ul>
+      <a href="https://wa.me/6500000000" class="btn btn-wa nav-cta" target="_blank" rel="noopener">
+        &#128172; Book Now
+      </a>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="about.html">Technology</a>
+    <a href="treatments.html">Treatments</a>
+    <a href="results.html">Results</a>
+    <a href="testimonials.html">Testimonials</a>
+    <a href="https://wa.me/6500000000" target="_blank" rel="noopener" style="color:#25d366;">&#128172; WhatsApp Us</a>
+  </div>
+
+  <!-- ── Page Hero ── -->
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-label" style="color:var(--accent-light);">Real Results</span>
+      <h1>Before &amp; After Results</h1>
+      <p>See the real transformations achieved by our clients using PicoSure laser eyebrow embroidery removal at ProLaser Aesthetic.</p>
+    </div>
+  </section>
+
+  <!-- ── Key Stats ── -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="specs-grid">
+        <div class="spec-item">
+          <span class="spec-value">3+</span>
+          <span class="spec-label">Sessions for Visible Fading</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-value">98%</span>
+          <span class="spec-label">Client Satisfaction Rate</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-value">All</span>
+          <span class="spec-label">Pigment Colours Treated</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-value">Min</span>
+          <span class="spec-label">Downtime After Sessions</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Session Progress Visual ── -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">Typical Progress</span>
+        <h2 class="section-title">How Results Develop Over Sessions</h2>
+        <p class="section-sub">Every client is different, but here is the typical fading progression with PicoSure laser treatment.</p>
+      </div>
+      <div class="session-progress">
+        <div class="session-step">
+          <div class="session-dot done">1</div>
+          <span>Initial fading begins</span>
+        </div>
+        <div class="session-step">
+          <div class="session-dot done">2</div>
+          <span>Noticeable lightening</span>
+        </div>
+        <div class="session-step">
+          <div class="session-dot done">3</div>
+          <span>Significant fading visible</span>
+        </div>
+        <div class="session-step">
+          <div class="session-dot partial">4–5</div>
+          <span>Deep pigment clearing</span>
+        </div>
+        <div class="session-step">
+          <div class="session-dot empty">6–8</div>
+          <span>Complete removal</span>
+        </div>
+      </div>
+      <div class="info-box">
+        <h4>&#128204; Individual Results Vary</h4>
+        <p>The number of sessions depends on pigment depth, colour, original embroidery technique, and your skin type. Our practitioners will set realistic expectations during your consultation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Before & After Gallery ── -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">Photo Gallery</span>
+        <h2 class="section-title">Before &amp; After Photos</h2>
+        <p class="section-sub">Real client results — upload your own before and after photos here once you have them.</p>
+      </div>
+      <div class="cards-grid">
+        <!-- Placeholder BA cards – replace the ba-side divs with <img> tags when you have photos -->
+        <div class="ba-card">
+          <div class="ba-images">
+            <div class="ba-side before">&#128247;<span>Before</span></div>
+            <div class="ba-side after">&#10024;<span>After</span></div>
+          </div>
+          <div class="ba-info">
+            <h4>Client 1 – 5 Sessions</h4>
+            <p>Full eyebrow embroidery removal — red-shifted pigment completely cleared.</p>
+          </div>
+        </div>
+        <div class="ba-card">
+          <div class="ba-images">
+            <div class="ba-side before">&#128247;<span>Before</span></div>
+            <div class="ba-side after">&#10024;<span>After</span></div>
+          </div>
+          <div class="ba-info">
+            <h4>Client 2 – 4 Sessions</h4>
+            <p>Grey and blue tones removed. Client proceeded to fresh embroidery.</p>
+          </div>
+        </div>
+        <div class="ba-card">
+          <div class="ba-images">
+            <div class="ba-side before">&#128247;<span>Before</span></div>
+            <div class="ba-side after">&#10024;<span>After</span></div>
+          </div>
+          <div class="ba-info">
+            <h4>Client 3 – 3 Sessions</h4>
+            <p>Significant fading after just 3 sessions on newer embroidery pigment.</p>
+          </div>
+        </div>
+        <div class="ba-card">
+          <div class="ba-images">
+            <div class="ba-side before">&#128247;<span>Before</span></div>
+            <div class="ba-side after">&#10024;<span>After</span></div>
+          </div>
+          <div class="ba-info">
+            <h4>Client 4 – 6 Sessions</h4>
+            <p>Deep, dark pigment removed with complete natural brow restoration.</p>
+          </div>
+        </div>
+        <div class="ba-card">
+          <div class="ba-images">
+            <div class="ba-side before">&#128247;<span>Before</span></div>
+            <div class="ba-side after">&#10024;<span>After</span></div>
+          </div>
+          <div class="ba-info">
+            <h4>Client 5 – 4 Sessions</h4>
+            <p>Uneven block brow corrected. Clean slate for natural feathered look.</p>
+          </div>
+        </div>
+        <!-- Add Photo Upload Placeholder -->
+        <div class="upload-zone">
+          <div class="upload-zone-icon">&#128247;</div>
+          <h4>Add Your Client Photos Here</h4>
+          <p>Upload before &amp; after images via your Cloud AI or website CMS to replace these placeholders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Video Results ── -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">Treatment Videos</span>
+        <h2 class="section-title">Client Journey Videos</h2>
+        <p class="section-sub">Watch real treatment sessions and client journey clips. Upload your videos here to showcase your results.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">&#9654;</div>
+            <span>Upload Video</span>
+          </div>
+          <div class="video-info">
+            <div class="video-tag">Treatment Session</div>
+            <h4>Eyebrow Removal – Session 1</h4>
+            <p>See what a first PicoSure session looks like from start to finish.</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">&#9654;</div>
+            <span>Upload Video</span>
+          </div>
+          <div class="video-info">
+            <div class="video-tag">Client Journey</div>
+            <h4>3-Session Transformation</h4>
+            <p>Follow a client's journey across 3 sessions with before and after comparison.</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="play-btn">&#9654;</div>
+            <span>Upload Video</span>
+          </div>
+          <div class="video-info">
+            <div class="video-tag">Testimonial</div>
+            <h4>Client Feedback Video</h4>
+            <p>Hear directly from a client about their experience at ProLaser Aesthetic.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Upload Zone -->
+      <div class="upload-zone" style="margin-top:28px;">
+        <div class="upload-zone-icon">&#127909;</div>
+        <h4>Upload Your Treatment Videos Here</h4>
+        <p>Add your video content via your website CMS or Cloud AI platform to replace these placeholder cards.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Achieve Your Own Transformation</h2>
+      <p>Book a free consultation and let us create a personalised treatment plan for your eyebrow removal goals.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/6500000000" class="btn btn-wa" target="_blank" rel="noopener">
+          &#128172; Book Free Consultation
+        </a>
+        <a href="testimonials.html" class="btn btn-outline">Read Client Reviews</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact Bar ── -->
+  <div class="contact-bar">
+    <div class="container">
+      <div class="contact-items">
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128205;</div>
+          <div>
+            <strong>Location</strong>
+            <a href="#">Singapore</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128172;</div>
+          <div>
+            <strong>WhatsApp</strong>
+            <a href="https://wa.me/6500000000" target="_blank" rel="noopener">+65 0000 0000</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128231;</div>
+          <div>
+            <strong>Email</strong>
+            <a href="mailto:hello@prolaseraesthetic.com">hello@prolaseraesthetic.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-logo"><span>Pro</span>Laser Aesthetic</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">Technology</a>
+        <a href="treatments.html">Treatments</a>
+        <a href="results.html">Results</a>
+        <a href="testimonials.html">Testimonials</a>
+      </div>
+      <div>&copy; 2025 ProLaser Aesthetic. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/6500000000" class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    &#128172;
+  </a>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('mobileMenu');
+      if (menu.classList.contains('open') && !menu.contains(e.target) && !e.target.closest('.hamburger')) {
+        menu.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
