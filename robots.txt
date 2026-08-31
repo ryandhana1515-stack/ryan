@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ryandhana1515-stack.github.io/ryan/sitemap.xml
