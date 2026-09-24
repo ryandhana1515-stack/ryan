@@ -1,0 +1,24 @@
+{
+  "id": "sales-qualification",
+  "name": "Sales Qualification Agent",
+  "version": "1.0.0",
+  "description": "Agent #1. Reads an inbound lead, extracts structured business facts without fabricating, classifies intent/temperature/status, drafts the next progressive-question reply, and flags anything that needs a human.",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
+  "model_display_name": "Claude Sonnet 4.6",
+  "temperature": 0.1,
+  "max_tokens": 2500,
+  "prompts": {
+    "system": "prompts/sales-qualification.system.md",
+    "user": "prompts/sales-qualification.user.md"
+  },
+  "input_schema": "schemas/lead-input.schema.json",
+  "output_schema": "schemas/sales-qualification-output.schema.json",
+  "fallback": "agents/sales-qualification/rules.js",
+  "postprocess": "agents/sales-qualification/postprocess.js",
+  "default_tenant": "biogreen",
+  "notify_email": "ryandhana1515@gmail.com",
+  "may_autonomously": ["draft a reply", "recommend a status", "create a follow-up task", "ask qualifying questions"],
+  "must_escalate": ["prices or discounts", "contracts or terms", "refunds or money movement", "guarantees or delivery dates", "WON/LOST decisions", "proposals", "legal or hostile messages", "confidence below 0.4"],
+  "never": ["send anything to the customer (Phase 1)", "invent facts", "expose credentials", "delete records"]
+}

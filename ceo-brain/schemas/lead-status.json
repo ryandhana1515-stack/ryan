@@ -1,0 +1,37 @@
+{
+  "$comment": "Lead lifecycle statuses and the transitions the system may recommend. WON and LOST are human-only.",
+  "statuses": [
+    "NEW",
+    "CONTACTED",
+    "QUALIFYING",
+    "QUALIFIED",
+    "HOT",
+    "PROPOSAL_REQUIRED",
+    "HUMAN_REVIEW",
+    "WON",
+    "LOST",
+    "FOLLOW_UP"
+  ],
+  "ai_may_set": [
+    "CONTACTED",
+    "QUALIFYING",
+    "QUALIFIED",
+    "HOT",
+    "PROPOSAL_REQUIRED",
+    "HUMAN_REVIEW",
+    "FOLLOW_UP"
+  ],
+  "human_only": ["WON", "LOST"],
+  "transitions": {
+    "NEW": ["CONTACTED", "QUALIFYING", "QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "LOST"],
+    "CONTACTED": ["QUALIFYING", "QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "LOST"],
+    "QUALIFYING": ["QUALIFYING", "QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "LOST"],
+    "QUALIFIED": ["QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "WON", "LOST"],
+    "HOT": ["HOT", "QUALIFIED", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "WON", "LOST"],
+    "PROPOSAL_REQUIRED": ["PROPOSAL_REQUIRED", "HUMAN_REVIEW", "FOLLOW_UP", "HOT", "WON", "LOST"],
+    "HUMAN_REVIEW": ["HUMAN_REVIEW", "QUALIFYING", "QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "FOLLOW_UP", "WON", "LOST"],
+    "FOLLOW_UP": ["FOLLOW_UP", "CONTACTED", "QUALIFYING", "QUALIFIED", "HOT", "PROPOSAL_REQUIRED", "HUMAN_REVIEW", "LOST"],
+    "WON": ["WON"],
+    "LOST": ["LOST", "FOLLOW_UP"]
+  }
+}

@@ -4,7 +4,7 @@
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-08-08 (session: Board of Advisors + Zaphiel brain build; renamed Jarvis → Zaphiel)
+Last updated: 2026-09-24 (session: CEO Brain Phase 1 — AI Lead & Sales Qualification Agent)
 
 ---
 
@@ -61,17 +61,29 @@ Active workflows (ID — what it does):
 - `s6x9D3vyoNSbvryn` Daily Market Research Agent (07:30 SGT writer — currently INACTIVE;
   the email workflow reads the repo file)
 - `NOb10f0yUA8i8saA` **Board of Advisors — Meeting** (built 2026-08-08; see §4)
+- `5Lvs87v8qfVMoUiB` Zaphiel — Voice Brain (POST /webhook/zaphiel-brain; inactive draft)
+- `b7kbJpnKLN2uQxyn` **CEO Brain — Lead Intake (Phase 1)** — ACTIVE. POST
+  https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead → Sales Qualification Agent (Claude via
+  Gateway credits, rule-engine fallback) → ceo_* tables → approval email. Source of truth:
+  `ceo-brain/` in this repo (build.js generates it — never hand-edit its Code nodes). See §4g.
 - Inactive/temp: `X5frUjOIdaMQPAbl` Louis Transcribe, `CyiN1kwx3bfjTQyW` +
   `r0IXsruqQ8kQ6NiU` art utilities, `c86AzvcNlDmPn5im` WABA subscribe.
 
 n8n data tables: Business Profile, Leads CRM, Content Queue, Ad Drafts, Research
 Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGyONl0lhlyFB),
-`jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here; legacy name, see §2 note).
+`jarvis_tasks` (XqtaUAUVXTfTjb7F — voice-dispatched tasks land here; legacy name, see §2 note),
+**CEO Brain (2026-09-24):** `ceo_leads` (R78LlzNLIpVoy802), `ceo_messages` (eImH5AdVZEOW0t31),
+`ceo_agent_runs` (zoxuUjbgzs6iLIaU), `ceo_tasks` (sPnRGXe4VYDJLJHr), `ceo_audit_logs`
+(zjeuGe9AEgJS5MKg) — every row carries `tenant_id`.
 
 ## 2b. WHAT CAN ACTUALLY ACT (read this before promising automation)
 
 Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
 
+- **UPDATE 2026-09-24: n8n Gateway credits WORK again** — the managed Anthropic credential
+  answered on `lmChatAnthropic` and `anthropic` nodes (claude-sonnet-4-6) with no API key. The
+  "Payment required" failures of 2026-08-05/08 no longer reproduce. Workflow `NOb10f0yUA8i8saA`
+  (board meeting) is therefore probably runnable again — untested since.
 - **n8n holds only TWO credentials: Gmail and GitHub.** There is no Shopify, Meta, TikTok,
   Metricool, Higgsfield or Kling credential in the instance. So every "agent" in §2 can
   only think, write to a data table, and email. **None of them can touch the store or the
@@ -223,8 +235,28 @@ documented path to actually watch a clip rather than guess — skill §10.
 - Open reference Ryan wants studied: TikTok @hugovar.ai (an AI-persona account). Blocked
   from this environment — tiktok.com is refused by the egress proxy. Needs an upload.
 
+## 4g. CEO Brain — AI Company OS, Phase 1 (built 2026-09-24)
+
+Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS later).
+- Code: `ceo-brain/` (agents/, prompts/, schemas/, workflows/, database/, integrations/, tests/,
+  docs/). `npm test` = 22 tests incl. a simulation of the exact n8n Code-node JS.
+- Live: n8n workflow `b7kbJpnKLN2uQxyn`, endpoint POST /webhook/ceo-brain/lead. Verified end to
+  end (executions 159 mock, 160 live Claude, 161 human-review + Gmail email).
+- Agent #1 `sales-qualification` v1.0.0: strict output schema 1.0, never fabricates (nulls +
+  missing_information), max 3 progressive questions, drafts only. Guardrails are code
+  (postprocess.js): prices/guarantees/refunds/contracts in a reply → withheld + HUMAN_REVIEW;
+  WON/LOST human-only; proposals need approval. Rule engine (rules-v1) is mock mode AND fallback.
+- Data: n8n data tables now (ids in §2); Postgres/Supabase migration with RLS ready in
+  `ceo-brain/database/migrations/0001_init.sql`.
+- Tenant for Ryan's own business = `biogreen`. Approval emails go to ryandhana1515@gmail.com
+  (Workflow Config node).
+- **Phase 2 is NOT started** — waits for Ryan's approval of Phase 1 (plan: ceo-brain/docs/phase-2-plan.md).
+
 ## 5. Decisions log
 
+- 2026-09-24 — CEO Brain architecture: repo `ceo-brain/` is the source of truth, n8n is the
+  runtime, agents return schema-validated JSON, guardrails live in code not prompts, the rule
+  engine always runs as baseline/fallback, every row is tenant-scoped. AI drafts; humans send.
 - 2026-08-08 — Zaphiel architecture: repo `ryan` is the brain (CLAUDE.md + zaphiel/ +
   .claude/skills/zaphiel); n8n is the always-on body; connectors are the hands. One-off
   session builds are over — new capabilities get indexed here.
@@ -238,6 +270,9 @@ documented path to actually watch a clip rather than guess — skill §10.
 
 ## 6. Change log
 
+- 2026-09-24: **CEO Brain Phase 1 shipped** — `ceo-brain/` module, n8n workflow `b7kbJpnKLN2uQxyn`
+  (24 nodes, published), 5 `ceo_*` data tables, Sales Qualification Agent with Claude + rule
+  fallback, 22 tests, Postgres migration, docs. Discovered Gateway credits work again (§2b).
 - 2026-08-08: brain created (CLAUDE.md, memory.md, ops skill). Board of
   Advisors built: parser+gate lib (38 tests), 4 researched dossiers, adversarial
   fact-check, n8n meeting workflow `NOb10f0yUA8i8saA`, `board_meetings` table, PR #15.

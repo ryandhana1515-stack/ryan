@@ -1,0 +1,14 @@
+{
+  "name": "ceo-brain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CEO Brain — AI Company Operating System. Phase 1: AI Lead & Sales Qualification Agent on n8n.",
+  "scripts": {
+    "build": "node workflows/lead-intake/build.js",
+    "test": "node workflows/lead-intake/build.js && node tests/run-tests.js",
+    "test:show": "SHOW_RESULT=1 node tests/run-tests.js",
+    "test:live": "bash tests/live-test.sh"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}

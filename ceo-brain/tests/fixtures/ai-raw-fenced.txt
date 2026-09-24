@@ -1,0 +1,26 @@
+Here is the analysis:
+```json
+{
+  "schema_version": "1.0",
+  "lead_status": "HOT",
+  "intent": "ai_automation_enquiry",
+  "lead_temperature": "hot",
+  "summary": "John Tan runs ABC Property, a 25-agent property agency. Facebook leads are not followed up; wants AI WhatsApp replies and appointment booking.",
+  "extracted": {
+    "company_name": "ABC Property Pte Ltd", "contact_name": "John Tan", "industry": "real estate", "company_size": 25,
+    "problem": "Agents do not follow up Facebook leads properly", "current_tools": [], "lead_sources": ["facebook"],
+    "current_follow_up_process": "manual by agents, inconsistent", "uses_whatsapp": true, "uses_email": null,
+    "accounting_or_erp": [], "desired_automation": ["WhatsApp auto-reply", "appointment booking"], "users_needed": 25,
+    "desired_outcome": "Leads replied to and appointments booked automatically", "budget": null, "timeline": null, "decision_maker": true
+  },
+  "missing_information": ["current_tools", "uses_email", "accounting_or_erp", "budget", "timeline"],
+  "recommended_reply": "Hi John, thanks for reaching out. A 25-agent agency losing Facebook leads to slow follow-up is exactly what we help with. Two quick questions so we can suggest the right setup: which CRM or software do your agents use today, and when would you like this running?",
+  "questions_to_ask": ["Which CRM or software do your agents use today?", "When would you like this running?"],
+  "next_action": "book_discovery_call",
+  "follow_up_at": null,
+  "human_review_required": false,
+  "escalation_reasons": [],
+  "confidence": 0.88,
+  "reasoning": "Clear pain, clear ask, size stated, owner speaking."
+}
+```

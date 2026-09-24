@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ceo-brain.local/schemas/lead-input.schema.json",
+  "title": "LeadIntakeInput",
+  "description": "Payload any channel adapter POSTs to the lead-intake webhook. Everything is optional except that a message OR a name plus a contact point must be present.",
+  "type": "object",
+  "properties": {
+    "tenant_id": { "type": "string", "description": "Client company this lead belongs to. Defaults to the platform owner tenant when omitted." },
+    "name": { "type": ["string", "null"] },
+    "phone": { "type": ["string", "null"] },
+    "email": { "type": ["string", "null"] },
+    "company": { "type": ["string", "null"] },
+    "industry": { "type": ["string", "null"] },
+    "source": { "type": ["string", "null"], "description": "facebook | instagram | tiktok | website | whatsapp | email | referral | manual | test" },
+    "channel": { "type": ["string", "null"], "description": "Where the reply should go: whatsapp | email | messenger | instagram_dm | web_chat | phone" },
+    "message": { "type": ["string", "null"], "description": "The original enquiry text" },
+    "conversation_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": { "type": "string", "enum": ["customer", "agent", "human"] },
+          "content": { "type": "string" },
+          "ts": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "external_ids": { "type": "object", "description": "Adapter-specific ids (e.g. facebook_lead_id, wa_id, respond_io_contact_id)", "additionalProperties": { "type": "string" } },
+    "test_mode": { "type": "boolean", "description": "true = never contact the customer, mark all records as test" },
+    "ai_mode": { "type": "string", "enum": ["live", "mock"], "description": "mock = skip the LLM and use the deterministic rule engine" },
+    "lead_id": { "type": ["string", "null"], "description": "Existing lead id when continuing a conversation" }
+  },
+  "additionalProperties": true
+}
