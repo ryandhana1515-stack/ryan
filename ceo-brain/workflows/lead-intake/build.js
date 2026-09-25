@@ -20,11 +20,15 @@ const TABLES_JSON = JSON.parse(read('database/n8n-data-tables.json'));
 const TABLES = TABLES_JSON.tables;
 TABLES.__sender_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.outbound_sender) || null;
 TABLES.__website_builder_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_builder) || null;
+TABLES.__vault_writer_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.vault_writer) || null;
+const GITHUB = TABLES_JSON.github || { owner: 'ryandhana1515-stack', repo: 'ryan', credential_id: 'lZqYskCh7zVfXsc7', credential_name: 'GitHub account' };
 const agentManifest = JSON.parse(read('agents/sales-qualification/agent.json'));
 const outputSchema = JSON.stringify(JSON.parse(read('schemas/sales-qualification-output.schema.json')));
 const leadStatus = JSON.stringify(JSON.parse(read('schemas/lead-status.json')));
 const companyContext = read('prompts/company-context.md').trim();
-const systemPrompt = companyContext + '\n\n' + read('prompts/sales-qualification.system.md').replace('{{OUTPUT_SCHEMA}}', outputSchema.trim());
+const salesBody = read('prompts/sales-qualification.system.md').replace('{{OUTPUT_SCHEMA}}', outputSchema.trim());
+const systemPrompt = companyContext + '\n\n' + salesBody; // compiled fallback (used when the vault cannot be read)
+const VAULT = agentManifest.vault_sources || { brain: 'zaphiel/vault/FusionTech AI — Master Company Brain.md', playbook: 'zaphiel/vault/Knowledge/John — Sales playbook.md' };
 const userPrompt = read('prompts/sales-qualification.user.md');
 
 // Strip the Node-only module wrapper lines so the code runs inside the n8n sandbox.
@@ -156,6 +160,37 @@ return [{ json: {
 
 // ---------------------------------------------------------------- SDK source
 const j = (v) => JSON.stringify(v);
+const codeCompose = `// Composes John's system prompt AT RUN TIME: the static parts are compiled from the repo, the company
+// knowledge and the sales playbook are read live from Ryan's Obsidian vault (GitHub). If the vault
+// cannot be read, the compiled copy is used so a lead is never dropped.
+const STATIC_HEAD = ${j(companyContext)};
+const STATIC_BODY = ${j(salesBody)};
+function vaultText(nodeName) {
+  try {
+    const j = $(nodeName).first().json || {};
+    if (j && j.content && !j.error) {
+      const raw = String(j.content).replace(/\\n/g, '');
+      const txt = (typeof Buffer !== 'undefined') ? Buffer.from(raw, 'base64').toString('utf8') : decodeURIComponent(escape(atob(raw)));
+      return txt.replace(/^---[\\s\\S]*?---\\n/, '').trim() || null;
+    }
+  } catch (e) {}
+  return null;
+}
+const brain = vaultText('Load Brain from Vault');
+const playbook = vaultText('Load Sales Playbook');
+let system, source;
+if (brain) {
+  system = STATIC_HEAD + '\\n\\n# Company knowledge (live from Ryan\\'s vault — authoritative; newest statements win)\\n\\n' + brain
+    + (playbook ? '\\n\\n# Sales playbook (live from the vault — follow it)\\n\\n' + playbook : '')
+    + '\\n\\n' + STATIC_BODY;
+  source = playbook ? 'vault:brain+playbook' : 'vault:brain';
+} else {
+  system = STATIC_HEAD + '\\n\\n' + STATIC_BODY;
+  source = 'compiled_fallback';
+}
+return [{ json: { system_prompt: system, brain_source: source, brain_chars: brain ? brain.length : 0, playbook_chars: playbook ? playbook.length : 0 } }];
+`;
+
 const col = (id, type) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, type, canBeUsedToMatch: true });
 const schemaFor = (cols) => cols.map(([id, type]) => col(id, type));
 const F = "$('Finalize & Validate Result').item.json";
@@ -362,6 +397,43 @@ const useLiveAi = ifElse({
   }
 });
 
+const loadBrain = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: {
+    name: 'Load Brain from Vault',
+    onError: 'continueRegularOutput',
+    parameters: { authentication: 'oAuth2', resource: 'file', operation: 'get', owner: { __rl: true, mode: 'name', value: ${j(GITHUB.owner)} }, repository: { __rl: true, mode: 'name', value: ${j(GITHUB.repo)} }, filePath: ${j(VAULT.brain)}, asBinaryProperty: false, additionalParameters: {} },
+    credentials: { githubOAuth2Api: { id: ${j(GITHUB.credential_id)}, name: ${j(GITHUB.credential_name)} } },
+    position: [2200, 100]
+  },
+  output: [{ content: 'LS0t', encoding: 'base64', sha: 'x', path: ${j(VAULT.brain)} }]
+});
+
+const loadPlaybook = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: {
+    name: 'Load Sales Playbook',
+    onError: 'continueRegularOutput',
+    parameters: { authentication: 'oAuth2', resource: 'file', operation: 'get', owner: { __rl: true, mode: 'name', value: ${j(GITHUB.owner)} }, repository: { __rl: true, mode: 'name', value: ${j(GITHUB.repo)} }, filePath: ${j(VAULT.playbook)}, asBinaryProperty: false, additionalParameters: {} },
+    credentials: { githubOAuth2Api: { id: ${j(GITHUB.credential_id)}, name: ${j(GITHUB.credential_name)} } },
+    position: [2420, 100]
+  },
+  output: [{ content: 'LS0t', encoding: 'base64', sha: 'x', path: ${j(VAULT.playbook)} }]
+});
+
+const composePrompt = node({
+  type: 'n8n-nodes-base.code',
+  version: 2,
+  config: {
+    name: 'Compose System Prompt',
+    parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: ${j(codeCompose)} },
+    position: [2640, 100]
+  },
+  output: [{ system_prompt: 'You are John...', brain_source: 'vault:brain+playbook', brain_chars: 17000, playbook_chars: 2000 }]
+});
+
 const claudeAgent = node({
   type: '@n8n/n8n-nodes-langchain.anthropic',
   version: 1,
@@ -375,13 +447,13 @@ const claudeAgent = node({
       messages: { values: [{ role: 'user', content: expr("{{ ${R}.user_prompt }}") }] },
       simplify: true,
       options: {
-        system: ${j(systemPrompt)},
+        system: expr("{{ $('Compose System Prompt').first().json.system_prompt }}"),
         maxTokens: 2500,
         temperature: 0.1,
         includeMergedResponse: true
       }
     },
-    position: [2240, 200]
+    position: [2860, 100]
   },
   output: [{ text: '{"schema_version":"1.0","lead_status":"QUALIFYING"}', model: 'claude-sonnet-4-6', usage: { input_tokens: 1, output_tokens: 1 } }]
 });
@@ -439,7 +511,7 @@ const updateLeadStatus = node({
         schema: ${j(schemaFor(leadCols))}
       }
     },
-    position: [2540, 300]
+    position: [3100, 300]
   },
   output: [{ id: 1, status: 'QUALIFYING' }]
 });
@@ -477,7 +549,7 @@ const logAgentRun = node({
         schema: ${j(schemaFor(runCols))}
       }
     },
-    position: [2760, 300]
+    position: [3320, 300]
   },
   output: [{ id: 1, run_id: 'run_x' }]
 });
@@ -508,7 +580,7 @@ const logAudit = node({
         schema: ${j(schemaFor(auditCols))}
       }
     },
-    position: [2980, 300]
+    position: [3540, 300]
   },
   output: [{ id: 1, action: 'status_changed' }]
 });
@@ -540,7 +612,7 @@ const saveDraftReply = node({
         schema: ${j(schemaFor(msgCols))}
       }
     },
-    position: [3200, 300]
+    position: [3760, 300]
   },
   output: [{ id: 2, direction: 'outbound', status: 'draft' }]
 });
@@ -575,9 +647,55 @@ const createTask = node({
         schema: ${j(schemaFor(taskCols))}
       }
     },
-    position: [3420, 300]
+    position: [3980, 300]
   },
   output: [{ id: 1, task_id: 'task_x' }]
+});
+
+const writeVault = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'Write to Vault (Vault Writer)',
+    onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once',
+      source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__vault_writer_workflow_id || 'REPLACE_ME')}, cachedResultName: 'CEO Brain — Vault Writer' },
+      workflowInputs: {
+        mappingMode: 'defineBelow',
+        value: {
+          tenant_id: expr("{{ ${F}.lead.tenant_id }}"),
+          lead_id: expr("{{ ${F}.lead.lead_id }}"),
+          contact_name: expr("{{ ${F}.lead.contact_name ?? '' }}"),
+          company_name: expr("{{ ${F}.lead.company_name ?? ${F}.result.extracted.company_name ?? '' }}"),
+          industry: expr("{{ ${F}.lead.industry ?? ${F}.result.extracted.industry ?? '' }}"),
+          channel: expr("{{ ${F}.lead.channel }}"),
+          lead_source: expr("{{ ${F}.lead.lead_source }}"),
+          status: expr("{{ ${F}.status_change.to }}"),
+          temperature: expr("{{ ${F}.result.lead_temperature }}"),
+          intent: expr("{{ ${F}.result.intent }}"),
+          summary: expr("{{ ${F}.result.summary }}"),
+          extracted_json: expr("{{ JSON.stringify(${F}.result.extracted) }}"),
+          message: expr("{{ ${F}.lead.message ?? '' }}"),
+          reply: expr("{{ ${F}.result.recommended_reply ?? '' }}"),
+          next_action: expr("{{ ${F}.result.next_action }}"),
+          handoffs_json: expr("{{ JSON.stringify(${F}.handoffs ?? []) }}"),
+          provider: expr("{{ ${F}.provider }}"),
+          execution_id: expr("{{ ${F}.execution_id }}"),
+          ts: expr("{{ ${F}.finished_at }}"),
+          test_mode: expr("{{ ${F}.lead.test_mode }}")
+        },
+        matchingColumns: [],
+        schema: ${j([['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['channel','string'],['lead_source','string'],['status','string'],['temperature','string'],['intent','string'],['summary','string'],['extracted_json','string'],['message','string'],['reply','string'],['next_action','string'],['handoffs_json','string'],['provider','string'],['execution_id','string'],['ts','string'],['test_mode','boolean']].map(([id,type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))},
+        attemptToConvertTypes: false,
+        convertFieldsToString: true
+      },
+      options: { waitForSubWorkflow: false }
+    },
+    position: [4200, 300]
+  },
+  output: [{ ok: true }]
 });
 
 const websiteGate = ifElse({
@@ -591,7 +709,7 @@ const websiteGate = ifElse({
         combinator: 'and'
       }
     },
-    position: [3640, 300]
+    position: [4420, 300]
   }
 });
 
@@ -631,7 +749,7 @@ const callWebsiteBuilder = node({
       },
       options: { waitForSubWorkflow: false }
     },
-    position: [3860, 520]
+    position: [4640, 520]
   },
   output: [{ ok: true }]
 });
@@ -647,7 +765,7 @@ const autoSendGate = ifElse({
         combinator: 'and'
       }
     },
-    position: [4080, 300]
+    position: [4860, 300]
   }
 });
 
@@ -681,7 +799,7 @@ const sendReplyNow = node({
       },
       options: { waitForSubWorkflow: true }
     },
-    position: [4300, 160]
+    position: [5080, 160]
   },
   output: [{ sent: true, status: 'sent' }]
 });
@@ -697,7 +815,7 @@ const needsHuman = ifElse({
         combinator: 'and'
       }
     },
-    position: [4520, 300]
+    position: [5300, 300]
   }
 });
 
@@ -716,7 +834,7 @@ const notifyOwner = node({
       message: expr("{{ '<h2>' + ${F}.task.title + '</h2>' + '<p><b>Status:</b> ' + ${F}.status_change.from + ' → ' + ${F}.status_change.to + ' &nbsp; <b>Temperature:</b> ' + ${F}.result.lead_temperature + ' &nbsp; <b>Intent:</b> ' + ${F}.result.intent + '</p>' + '<p><b>Why a human:</b> ' + ${F}.result.escalation_reasons.join(', ') + '</p>' + '<p><b>Summary:</b> ' + ${F}.result.summary + '</p>' + '<p><b>Original message:</b><br>' + (${F}.lead.message ?? '') + '</p>' + '<p><b>Draft reply (NOT sent):</b><br>' + (${F}.result.recommended_reply || '(withheld by guardrail)') + '</p>' + '<p><b>Missing:</b> ' + ${F}.result.missing_information.join(', ') + '</p>' + '<p><b>Next action:</b> ' + ${F}.result.next_action + ' &nbsp; <b>Follow up by:</b> ' + (${F}.result.follow_up_at ?? '-') + '</p>' + (${F}.result.recommended_reply && ${F}.send_channel ? '<p><a href=\\"${agentManifest.approve_url}?decision=approve&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#0a7d3c;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">APPROVE &amp; SEND via ' + ${F}.send_channel + '</a> &nbsp; <a href=\\"${agentManifest.approve_url}?decision=reject&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#999;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">Reject</a></p>' : '<p><i>No reply can be sent automatically (no draft or no email/WhatsApp channel). Handle manually.</i></p>') + '<p style=\\"color:#888\\">lead ' + ${F}.lead.lead_id + ' · run ' + ${F}.run_id + ' · ' + ${F}.provider + '/' + ${F}.model + ' · execution ' + ${F}.execution_id + '</p>' }}"),
       options: { appendAttribution: false, senderName: 'CEO Brain' }
     },
-    position: [4760, 200]
+    position: [5540, 200]
   },
   output: [{ id: 'gmail-id' }]
 });
@@ -731,13 +849,13 @@ const respondResult = node({
       responseBody: expr("{{ JSON.stringify($('Finalize & Validate Result').first().json.response) }}"),
       options: { responseCode: 200 }
     },
-    position: [5000, 300]
+    position: [5780, 300]
   },
   output: [{ ok: true }]
 });
 
 const noteIntro = sticky(${j('## CEO Brain — Lead Intake (Phase 1)\nPOST /webhook/ceo-brain/lead with {name, phone, email, company, industry, source, channel, message, conversation_history, test_mode, ai_mode}.\n\nFlow: validate → save lead → log message → AI (Claude) or rule engine → validate JSON + guardrails → update status → agent run + audit + draft reply + task → email owner when approval needed → respond.\n\nSource of truth: repo ryan/ceo-brain (workflows/lead-intake/build.js). Edit there, rebuild, redeploy — do not hand-edit Code nodes.')}, [leadWebhook, workflowConfig, normalizeLeadNode, isLeadValid], { color: 4 });
-const noteAi = sticky(${j('## AI qualification\nThe rule engine always runs first (deterministic baseline). ai_mode=live → Claude (n8n managed Anthropic credential). If the model errors or returns invalid JSON, Finalize falls back to the rule-engine result so the lead is never dropped.\nai_mode=mock → rule engine only (no AI credits).\nGuardrails in "Finalize & Validate Result": no prices/guarantees/contracts/refunds in replies, WON/LOST are human-only, proposals need approval.')}, [rulesEngine, useLiveAi, claudeAgent, finalize], { color: 6 });
+const noteAi = sticky(${j('## AI qualification\nThe rule engine always runs first (deterministic baseline). ai_mode=live → the company brain + sales playbook are loaded from the Obsidian vault (GitHub) into the prompt, then Claude (n8n managed Anthropic credential). If the model errors or returns invalid JSON, Finalize falls back to the rule-engine result so the lead is never dropped.\nai_mode=mock → rule engine only (no AI credits).\nGuardrails in "Finalize & Validate Result": no prices/guarantees/contracts/refunds in replies, WON/LOST are human-only, proposals need approval.')}, [rulesEngine, useLiveAi, claudeAgent, finalize], { color: 6 });
 const noteHuman = sticky(${j('## Human approval gate\nThe AI only DRAFTS. Nothing is sent to the customer in Phase 1. When human_review_required or a proposal is needed, the owner gets an email and a task with requires_approval=true.')}, [needsHuman, notifyOwner, respondResult], { color: 3 });
 
 export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Phase 1)')
@@ -746,7 +864,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(normalizeLeadNode)
   .to(isLeadValid
     .onTrue(findExistingLead.to(resolveLead).to(saveLead).to(logInbound).to(rulesEngine).to(useLiveAi
-      .onTrue(claudeAgent.to(finalize))
+      .onTrue(loadBrain.to(loadPlaybook).to(composePrompt).to(claudeAgent.to(finalize)))
       .onFalse(finalize)))
     .onFalse(respondInvalid))
   .add(claudeAgent.onError(finalize))
@@ -756,6 +874,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(logAudit)
   .to(saveDraftReply)
   .to(createTask)
+  .to(writeVault)
   .to(websiteGate
     .onTrue(callWebsiteBuilder.to(autoSendGate))
     .onFalse(autoSendGate))
@@ -770,8 +889,8 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .add(noteHuman)
   .group('1. Intake & validation', [workflowConfig, normalizeLeadNode, isLeadValid], { description: 'Reads the webhook body, normalizes contact fields, and gates on validity (invalid payloads get an HTTP 400 response).' })
   .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound], { description: 'Looks up the lead by dedupe key, merges known contact facts, upserts the lead row and logs the inbound message.' })
-  .group('3. AI qualification', [rulesEngine, useLiveAi, claudeAgent, finalize], { description: 'Rule engine always computes a baseline; Claude extracts + classifies when ai_mode=live; strict schema validation, fallback and guardrails run on every result.' })
-  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, websiteGate, callWebsiteBuilder, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Writes status, run, audit, draft, task; hands website asks to the Website Builder; auto-sends low-risk replies; emails approve links; responds.' });
+  .group('3. AI qualification', [rulesEngine, useLiveAi, loadBrain, loadPlaybook, composePrompt, claudeAgent, finalize], { description: 'Rule baseline; live: company brain + sales playbook loaded from the Obsidian vault into the prompt, Claude classifies; validation, fallback, guardrails.' })
+  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, writeVault, websiteGate, callWebsiteBuilder, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Writes status, run, audit, draft, task; writes the vault; hands website asks to the Website Builder; auto-sends low-risk replies; emails approve links; responds.' });
 `;
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
@@ -780,6 +899,7 @@ fs.writeFileSync(path.join(DIST, 'code-nodes', 'validate-and-normalize-lead.js')
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'resolve-lead-identity.js'), codeResolve);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'rule-based-qualification.js'), codeRules);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'finalize-and-validate-result.js'), codeFinalize);
+fs.writeFileSync(path.join(DIST, 'code-nodes', 'compose-system-prompt.js'), codeCompose);
 fs.writeFileSync(path.join(DIST, 'system-prompt.rendered.md'), systemPrompt);
 const sdkStr = (re) => { const m = sdk.match(re); return m ? JSON.parse('"' + m[1] + '"') : null; };
 fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({
@@ -796,6 +916,9 @@ fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({
   gmail_subject: '=' + sdkStr(/name: 'Notify Owner \(Gmail\)'[\s\S]*?subject: expr\("((?:[^"\\]|\\.)*)"\)/),
   system_prompt: systemPrompt,
   sender_workflow_id: TABLES.__sender_workflow_id,
-  website_builder_workflow_id: TABLES.__website_builder_workflow_id
+  website_builder_workflow_id: TABLES.__website_builder_workflow_id,
+  vault_writer_workflow_id: TABLES.__vault_writer_workflow_id,
+  claude_system_expr: "={{ $('Compose System Prompt').first().json.system_prompt }}",
+  vault_sources: VAULT
 }, null, 2));
 console.log('built', path.relative(ROOT, path.join(DIST, 'lead-intake.sdk.ts')), sdk.length, 'chars');

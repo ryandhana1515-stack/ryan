@@ -162,7 +162,7 @@ const codeOf = (f) => fs.readFileSync(path.join(distDir, f), 'utf8');
 function runCodeNode(file, inputItems, nodeOutputs) {
   const $input = { first: () => inputItems[0], all: () => inputItems };
   const $ = (name) => { if (!nodeOutputs[name]) throw new Error('simulation: node "' + name + '" has no output'); return { first: () => ({ json: nodeOutputs[name] }), item: { json: nodeOutputs[name] } }; };
-  const ctx = { $input, $, $execution: { id: 'sim-exec' }, $workflow: { id: 'sim-wf' }, JSON, Math, Date, Number, String, Array, Object, parseInt, parseFloat, isNaN, RegExp, console };
+  const ctx = { $input, $, $execution: { id: 'sim-exec' }, $workflow: { id: 'sim-wf' }, JSON, Math, Date, Number, String, Array, Object, parseInt, parseFloat, isNaN, RegExp, console, Buffer };
   const fn = vm.runInNewContext('(function(){\n' + codeOf(file) + '\n})', ctx);
   return fn();
 }
@@ -186,6 +186,7 @@ function simulate(payload, opts) {
   return { norm, resolved, aiOut, fin };
 }
 
+const outputs = { 'Workflow Config': { model: 'claude-sonnet-4-6' } };
 let mockRun;
 test('mock mode: John Tan end-to-end through the real node code', () => {
   mockRun = simulate(fx('john-tan.json'));
@@ -244,6 +245,22 @@ test('a returning lead is only handed off when the current message asks for a si
   const p = Object.assign({}, fx('john-tan.json'), { message: 'Yes we use WhatsApp and Google Sheets', conversation_history: [{ role: 'customer', content: 'we might want a website later' }] });
   const run = simulate(p, { existing: { id: 7, lead_key: 'x', lead_id: 'lead_existing', status: 'QUALIFYING' } });
   assert.strictEqual(run.fin.website_requested, false);
+});
+
+test('compose system prompt: vault notes are injected live, fallback when unreadable', () => {
+  const b64 = (t) => Buffer.from(t, 'utf8').toString('base64');
+  const withVault = runCodeNode('compose-system-prompt.js', [{ json: {} }], Object.assign({}, outputs, {
+    'Load Brain from Vault': { content: b64('---\ntitle: x\n---\n# FUSIONTECH BRAIN\nWe build AI workforces.'), encoding: 'base64' },
+    'Load Sales Playbook': { content: b64('---\ntags: [x]\n---\n# Playbook\nAlways ask about WhatsApp.'), encoding: 'base64' }
+  }))[0].json;
+  assert.strictEqual(withVault.brain_source, 'vault:brain+playbook');
+  assert.ok(withVault.system_prompt.includes('We build AI workforces.'));
+  assert.ok(withVault.system_prompt.includes('Always ask about WhatsApp.'));
+  assert.ok(!withVault.system_prompt.includes('title: x'), 'frontmatter must be stripped');
+  assert.ok(withVault.system_prompt.includes('Return ONLY the JSON object'), 'static rules must follow the vault text');
+  const noVault = runCodeNode('compose-system-prompt.js', [{ json: {} }], Object.assign({}, outputs, { 'Load Brain from Vault': { error: 'Not Found' }, 'Load Sales Playbook': { error: 'Not Found' } }))[0].json;
+  assert.strictEqual(noVault.brain_source, 'compiled_fallback');
+  assert.ok(noVault.system_prompt.includes('You are John'));
 });
 
 console.log('\n[5] website builder agent (agents/website-builder/brief.js)');

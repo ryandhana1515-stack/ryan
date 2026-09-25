@@ -43,7 +43,11 @@
   ],
   "persona_name": "John",
   "company_context": "prompts/company-context.md",
-  "knowledge_source": "zaphiel/knowledge/fusiontech-master-brain.md",
+  "knowledge_source": "zaphiel/vault/FusionTech AI — Master Company Brain.md (live at run time; compiled copy = fallback)",
   "auto_send_low_risk": true,
-  "approve_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/approve"
+  "approve_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/approve",
+  "vault_sources": {
+    "brain": "zaphiel/vault/FusionTech AI — Master Company Brain.md",
+    "playbook": "zaphiel/vault/Knowledge/John — Sales playbook.md"
+  }
 }
