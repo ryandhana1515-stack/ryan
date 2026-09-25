@@ -38,9 +38,5 @@ tags: [zaphiel, memory]
 - 2026-08-08 — Board roster fixed at Hormozi/Munger/Godin/Blakely; meetings via n8n with
   managed Anthropic credentials; chat + repo archive + email surfacing; monthly standing
   review approved by Ryan.
-- 2026-08-06 — Viral Content Engine flow: reference URL → transcript → 3 Claude agents →
-  email approval → render → Metricool draft (never auto-publish without approval).
-- Earlier (from account skill): affiliate commissions 15–20% TikTok / 15–25% GoAffPro;
-  target markets SG→MY/TH/PH→US/AU/UK; FAL.AI model choices for images/ads.
 
 Up: [[00 Home]]

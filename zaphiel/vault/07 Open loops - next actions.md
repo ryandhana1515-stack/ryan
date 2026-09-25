@@ -25,11 +25,6 @@ tags: [zaphiel, memory]
 - CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
   adapters, follow-up nudges, Calendar booking, Supabase. Then Phase 3: Agent Router + Solution
   Architect Agent.
-- **#1 bottleneck: get the Shopify store live** — until then revenue is $0 and every ad
-  dollar is premature (board meeting topic).
-- Decide BIO N:OV retail pricing (convene the board with live cost data).
-- TikTok Shop SG application — follow up.
-- Merge PR #15 to activate the Zaphiel brain for all future sessions.
 - Wire the board's monthly standing review routine (first Monday of month).
 - Fusion AI / AI Business OS: design exists; decide build vs park.
 
