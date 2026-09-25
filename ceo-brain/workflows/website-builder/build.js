@@ -20,8 +20,11 @@ const TABLES = TABLES_JSON.tables;
 const manifest = JSON.parse(read('agents/website-builder/agent.json'));
 const briefSchema = JSON.stringify(JSON.parse(read('schemas/website-brief.schema.json')));
 const companyContext = read('prompts/company-context.md').trim();
-const systemPrompt = companyContext + '\n\n' + read('prompts/website-builder.system.md').replace('{{OUTPUT_SCHEMA}}', briefSchema);
+const builderBody = read('prompts/website-builder.system.md').replace('{{OUTPUT_SCHEMA}}', briefSchema);
+const systemPrompt = companyContext + '\n\n' + builderBody; // compiled fallback (used when the vault cannot be read)
 const userPrompt = read('prompts/website-builder.user.md');
+const GITHUB = TABLES_JSON.github || { owner: 'ryandhana1515-stack', repo: 'ryan', credential_id: 'lZqYskCh7zVfXsc7', credential_name: 'GitHub account' };
+const VAULT = manifest.vault_sources || { playbook: 'zaphiel/vault/Knowledge/Website Builder — playbook.md', design_standard: 'zaphiel/vault/Knowledge/Website design standard.md' };
 
 function inline(file) {
   return read(file)
@@ -85,8 +88,8 @@ const who = (ctx.input.contact_name || 'lead') + (b.business_name ? ' @ ' + b.bu
 const task = {
   task_id: 'task_web_' + String(ctx.input.lead_id).replace(/[^a-z0-9_]/gi, '').slice(0, 60),
   task_type: 'website_build',
-  title: 'APPROVAL: build ' + b.site_type.replace(/_/g, ' ') + ' for ' + who,
-  description: 'Goal: ' + b.primary_goal + ' · Pages: ' + b.pages.map((p) => p.name).join(', ') + (b.integrations.length ? ' · Integrations: ' + b.integrations.join(', ') : '') + ' · Missing: ' + (b.missing_information.join(', ') || 'none'),
+  title: 'APPROVAL: build ' + (b.mode === 'medical' ? 'MEDICAL ' : '') + b.site_type.replace(/_/g, ' ') + ' for ' + who,
+  description: 'Mode: ' + b.mode + ' (' + b.industry_category + ') · Goal: ' + b.primary_goal + ' · Pages: ' + b.pages.map((p) => p.name).join(', ') + (b.integrations.length ? ' · Integrations: ' + b.integrations.join(', ') : '') + ' · Missing: ' + (b.missing_information.join(', ') || 'none'),
   status: 'open',
   assigned_to: 'human',
   requires_approval: true,
@@ -96,15 +99,18 @@ const esc = (s) => String(s === undefined || s === null ? '' : s).replace(/&/g, 
 const li = (arr) => arr.length ? '<ul>' + arr.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<i>none</i>';
 const emailHtml = '<h2>' + esc(task.title) + '</h2>'
   + '<p><b>Lead:</b> ' + esc(ctx.input.contact_name || '-') + ' · ' + esc(ctx.input.email || ctx.input.phone || '-') + ' · via ' + esc(ctx.input.channel) + (ctx.input.test_mode ? ' · <b>TEST</b>' : '') + '</p>'
-  + '<p><b>Site type:</b> ' + esc(b.site_type) + ' &nbsp; <b>Goal:</b> ' + esc(b.primary_goal) + ' &nbsp; <b>Industry:</b> ' + esc(b.industry || '-') + ' &nbsp; <b>Audience:</b> ' + esc(b.audience || '-') + '</p>'
+  + '<p><b>Mode:</b> ' + esc(b.mode === 'medical' ? 'MEDICAL / DOCTOR (stricter content, privacy and compliance rules)' : 'SME') + ' &nbsp; <b>Category:</b> ' + esc(b.industry_category) + ' &nbsp; <b>Site type:</b> ' + esc(b.site_type) + ' &nbsp; <b>Goal:</b> ' + esc(b.primary_goal) + ' &nbsp; <b>Industry:</b> ' + esc(b.industry || '-') + ' &nbsp; <b>Audience:</b> ' + esc(b.audience || '-') + '</p>'
+  + '<p><b>Design direction:</b></p>' + li(['Brand personality: ' + b.design_direction.brand_personality, 'Typography: ' + b.design_direction.typography, 'Layout: ' + b.design_direction.layout, 'Imagery: ' + b.design_direction.imagery, 'Motion: ' + b.design_direction.motion, 'Palette: ' + b.design_direction.palette])
   + '<p><b>Pages:</b></p>' + li(b.pages.map((p) => p.name + (p.purpose ? ' — ' + p.purpose : '')))
   + '<p><b>Features:</b></p>' + li(b.features) + '<p><b>Integrations:</b></p>' + li(b.integrations)
+  + (b.verification_required.length ? '<p><b>The clinic must verify before patients see it:</b></p>' + li(b.verification_required) : '')
   + '<p><b>Still missing:</b> ' + esc(b.missing_information.join(', ') || 'nothing') + '</p>'
   + '<p><b>John should ask next:</b></p>' + li(b.questions_for_customer)
   + '<p><b>What the customer said:</b><br>' + esc(ctx.input.message) + '</p>'
   + '<p><a href="' + fin.lovable_url + '" style="background:#0a7d3c;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px">OPEN IN LOVABLE (prompt prefilled — press Send there to build)</a></p>'
   + '<p style="color:#555">Nothing has been built. Clicking the button opens Lovable with the prompt below prefilled in your own workspace; pressing Send there is the approval and uses your Lovable credits. Ignore this email to decline.</p>'
   + '<details><summary>Build prompt</summary><pre style="white-space:pre-wrap;font-family:inherit">' + esc(fin.build_prompt) + '</pre></details>'
+  + '<details><summary>QA checklist (before the customer sees the mock-up)</summary>' + li(b.qa_checklist) + '</details>'
   + '<p style="color:#888">' + esc(fin.provider) + (fin.fallback_used ? ' (fallback: ' + esc(fin.fallback_reason) + ')' : '') + ' · confidence ' + esc(b.confidence) + ' · ' + esc(b.reasoning) + '<br>lead ' + esc(ctx.input.lead_id) + ' · task ' + esc(task.task_id) + ' · execution ' + esc(ctx.execution_id) + (ctx.input.source_execution_id ? ' (from ' + esc(ctx.input.source_execution_id) + ')' : '') + '</p>';
 return [{ json: {
   input: ctx.input, config: ctx.config, execution_id: ctx.execution_id, workflow_id: ctx.workflow_id,
@@ -115,6 +121,38 @@ return [{ json: {
   email_subject: (ctx.input.test_mode ? '[TEST] ' : '') + 'CEO Brain: website brief ready — ' + who,
   email_html: emailHtml
 } }];
+`;
+
+const codeCompose = `// Composes the Website Builder's system prompt AT RUN TIME: the company context and the builder rules
+// are compiled from the repo; the design standard and the builder playbook are read live from Ryan's
+// Obsidian vault (GitHub). If the vault cannot be read, the compiled copy is used so a brief is never dropped.
+const STATIC_HEAD = ${j(companyContext)};
+const STATIC_BODY = ${j(builderBody)};
+function vaultText(nodeName) {
+  try {
+    const j = $(nodeName).first().json || {};
+    if (j && j.content && !j.error) {
+      const raw = String(j.content).replace(/\\n/g, '');
+      const txt = (typeof Buffer !== 'undefined') ? Buffer.from(raw, 'base64').toString('utf8') : decodeURIComponent(escape(atob(raw)));
+      return txt.replace(/^---[\\s\\S]*?---\\n/, '').trim() || null;
+    }
+  } catch (e) {}
+  return null;
+}
+const standard = vaultText('Load Design Standard');
+const playbook = vaultText('Load Website Playbook');
+let system, source;
+if (standard || playbook) {
+  system = STATIC_HEAD
+    + (standard ? '\\n\\n# Website design standard (live from Ryan\\'s vault — authoritative; the QA stage enforces it)\\n\\n' + standard : '')
+    + (playbook ? '\\n\\n# Website Builder playbook (live from the vault — follow it; newest lessons win)\\n\\n' + playbook : '')
+    + '\\n\\n' + STATIC_BODY;
+  source = 'vault:' + [standard ? 'standard' : null, playbook ? 'playbook' : null].filter(Boolean).join('+');
+} else {
+  system = STATIC_HEAD + '\\n\\n' + STATIC_BODY;
+  source = 'compiled_fallback';
+}
+return [{ json: { system_prompt: system, brain_source: source, standard_chars: standard ? standard.length : 0, playbook_chars: playbook ? playbook.length : 0 } }];
 `;
 
 // ---------------------------------------------------------------- SDK source
@@ -148,7 +186,44 @@ const buildPrompt = node({
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: ${j(codePrompt)} },
     position: [220, 300]
   },
-  output: [{ input: { tenant_id: 'fusiontech', lead_id: 'lead_x', message: 'I want a website', conversation: [], extracted: {}, test_mode: true, notify_email: 'owner@example.com' }, user_prompt: 'Prepare the website build brief...', started_at: '2026-01-01T00:00:00.000Z', config: { model: ${j(manifest.model)}, agent: 'website-builder', agent_version: '1.0.0' }, execution_id: '1', workflow_id: 'w' }]
+  output: [{ input: { tenant_id: 'fusiontech', lead_id: 'lead_x', message: 'I want a website', conversation: [], extracted: {}, test_mode: true, notify_email: 'owner@example.com' }, user_prompt: 'Prepare the website build brief...', started_at: '2026-01-01T00:00:00.000Z', config: { model: ${j(manifest.model)}, agent: 'website-builder', agent_version: '2.0.0' }, execution_id: '1', workflow_id: 'w' }]
+});
+
+const loadStandard = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: {
+    name: 'Load Design Standard',
+    onError: 'continueRegularOutput',
+    parameters: { authentication: 'oAuth2', resource: 'file', operation: 'get', owner: { __rl: true, mode: 'name', value: ${j(GITHUB.owner)} }, repository: { __rl: true, mode: 'name', value: ${j(GITHUB.repo)} }, filePath: ${j(VAULT.design_standard)}, asBinaryProperty: false, additionalParameters: {} },
+    credentials: { githubOAuth2Api: { id: ${j(GITHUB.credential_id)}, name: ${j(GITHUB.credential_name)} } },
+    position: [440, 300]
+  },
+  output: [{ content: 'IyBX', encoding: 'base64', sha: 'x' }]
+});
+
+const loadPlaybook = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: {
+    name: 'Load Website Playbook',
+    onError: 'continueRegularOutput',
+    parameters: { authentication: 'oAuth2', resource: 'file', operation: 'get', owner: { __rl: true, mode: 'name', value: ${j(GITHUB.owner)} }, repository: { __rl: true, mode: 'name', value: ${j(GITHUB.repo)} }, filePath: ${j(VAULT.playbook)}, asBinaryProperty: false, additionalParameters: {} },
+    credentials: { githubOAuth2Api: { id: ${j(GITHUB.credential_id)}, name: ${j(GITHUB.credential_name)} } },
+    position: [660, 300]
+  },
+  output: [{ content: 'IyBX', encoding: 'base64', sha: 'x' }]
+});
+
+const composeSystem = node({
+  type: 'n8n-nodes-base.code',
+  version: 2,
+  config: {
+    name: 'Compose System Prompt',
+    parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: ${j(codeCompose)} },
+    position: [880, 300]
+  },
+  output: [{ system_prompt: 'You are the Website Builder Agent…', brain_source: 'vault:standard+playbook', standard_chars: 1, playbook_chars: 1 }]
 });
 
 const claudeAgent = node({
@@ -164,15 +239,15 @@ const claudeAgent = node({
       messages: { values: [{ role: 'user', content: expr("{{ $('Build Website Brief Prompt').item.json.user_prompt }}") }] },
       simplify: true,
       options: {
-        system: ${j(systemPrompt)},
+        system: expr("{{ $('Compose System Prompt').first().json.system_prompt }}"),
         maxTokens: ${manifest.max_tokens},
         temperature: ${manifest.temperature},
         includeMergedResponse: true
       }
     },
-    position: [440, 300]
+    position: [1100, 300]
   },
-  output: [{ text: '{"schema_version":"1.0","site_type":"business_website"}', model: ${j(manifest.model)}, usage: { input_tokens: 1, output_tokens: 1 } }]
+  output: [{ text: '{"schema_version":"2.0","mode":"sme","site_type":"business_website"}', model: ${j(manifest.model)}, usage: { input_tokens: 1, output_tokens: 1 } }]
 });
 
 const finalize = node({
@@ -181,9 +256,9 @@ const finalize = node({
   config: {
     name: 'Finalize Website Brief',
     parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: ${j(codeFinalize)} },
-    position: [720, 300]
+    position: [1380, 300]
   },
-  output: [{ input: { tenant_id: 'fusiontech', lead_id: 'lead_x', test_mode: true, notify_email: 'owner@example.com' }, config: { agent: 'website-builder', agent_version: '1.0.0', model: ${j(manifest.model)} }, execution_id: '1', workflow_id: 'w', brief: { site_type: 'business_website', primary_goal: 'leads', pages: [], features: [], integrations: [], missing_information: [] }, provider: 'anthropic', model: ${j(manifest.model)}, fallback_used: false, fallback_reason: null, validation_errors: [], build_prompt: 'Build a...', lovable_url: 'https://lovable.dev/#prompt=Build', task: { task_id: 'task_web_lead_x', task_type: 'website_build', title: 't', description: 'd', status: 'open', assigned_to: 'human', requires_approval: true, approval_reason: 'r' }, usage: null, run_id: 'run_x', started_at: '2026-01-01T00:00:00.000Z', finished_at: '2026-01-01T00:00:01.000Z', latency_ms: 1000, email_subject: 's', email_html: '<p>x</p>' }]
+  output: [{ input: { tenant_id: 'fusiontech', lead_id: 'lead_x', test_mode: true, notify_email: 'owner@example.com' }, config: { agent: 'website-builder', agent_version: '2.0.0', model: ${j(manifest.model)} }, execution_id: '1', workflow_id: 'w', brief: { mode: 'sme', industry_category: 'other', site_type: 'business_website', primary_goal: 'leads', design_direction: { brand_personality: 'x' }, pages: [], features: [], integrations: [], verification_required: [], qa_checklist: [], missing_information: [] }, provider: 'anthropic', model: ${j(manifest.model)}, fallback_used: false, fallback_reason: null, validation_errors: [], build_prompt: 'Build a...', lovable_url: 'https://lovable.dev/#prompt=Build', task: { task_id: 'task_web_lead_x', task_type: 'website_build', title: 't', description: 'd', status: 'open', assigned_to: 'human', requires_approval: true, approval_reason: 'r' }, usage: null, run_id: 'run_x', started_at: '2026-01-01T00:00:00.000Z', finished_at: '2026-01-01T00:00:01.000Z', latency_ms: 1000, email_subject: 's', email_html: '<p>x</p>' }]
 });
 
 const upsertTask = node({
@@ -222,7 +297,7 @@ const upsertTask = node({
         schema: ${j(schemaFor(taskCols))}
       }
     },
-    position: [960, 300]
+    position: [1620, 300]
   },
   output: [{ id: 1, task_id: 'task_web_lead_x' }]
 });
@@ -260,7 +335,7 @@ const logRun = node({
         schema: ${j(schemaFor(runCols))}
       }
     },
-    position: [1180, 300]
+    position: [1840, 300]
   },
   output: [{ id: 1 }]
 });
@@ -291,7 +366,7 @@ const logAudit = node({
         schema: ${j(schemaFor(auditCols))}
       }
     },
-    position: [1400, 300]
+    position: [2060, 300]
   },
   output: [{ id: 1 }]
 });
@@ -311,16 +386,19 @@ const emailOwner = node({
       message: expr("{{ ${F}.email_html }}"),
       options: { appendAttribution: false, senderName: 'CEO Brain' }
     },
-    position: [1620, 300]
+    position: [2280, 300]
   },
   output: [{ id: 'gmail_x' }]
 });
 
-const note = sticky(${j('## CEO Brain — Website Builder (Agent #2)\nCalled by Lead Intake when the customer asks for a website / landing page / online store / web app / portal.\n\nFlow: build prompt → Claude (Gateway) → validate + fallback + guardrails → upsert one website_build task per lead (requires_approval) → agent run + audit → email the owner the brief with an OPEN IN LOVABLE link (Build-with-URL, prompt prefilled). Nothing is built until the owner presses Send in Lovable.\n\nSource of truth: repo ryan/ceo-brain (workflows/website-builder/build.js). Do not hand-edit Code nodes.')}, [whenCalled, buildPrompt, claudeAgent, finalize], { color: 4 });
+const note = sticky(${j('## CEO Brain — Website Builder v2 (Agent #2)\nCalled by Lead Intake when the customer asks for a website / landing page / online store / web app / portal. Two modes: SME and Medical.\n\nFlow: build prompt → design standard + playbook live from the vault → Claude (Gateway) → validate + mode guard + fallback → brief with design direction, content rules, QA checklist and Lovable prompt → one website_build task per lead → agent run + audit → owner email with OPEN IN LOVABLE link.\n\nSource of truth: repo ryan/ceo-brain (workflows/website-builder/build.js). Do not hand-edit Code nodes.')}, [whenCalled, buildPrompt, loadStandard, loadPlaybook, composeSystem], { color: 4 });
 
 export default workflow('ceo-brain-website-builder', 'CEO Brain — Website Builder')
   .add(whenCalled)
   .to(buildPrompt)
+  .to(loadStandard)
+  .to(loadPlaybook)
+  .to(composeSystem)
   .to(claudeAgent.to(finalize))
   .add(claudeAgent.onError(finalize))
   .add(finalize)
@@ -329,7 +407,7 @@ export default workflow('ceo-brain-website-builder', 'CEO Brain — Website Buil
   .to(logAudit)
   .to(emailOwner)
   .add(note)
-  .group('1. Brief generation', [buildPrompt, claudeAgent, finalize], { description: 'Renders the prompt from the hand-off, asks Claude for the brief, validates it, falls back deterministically and builds the Lovable prompt.' })
+  .group('1. Brief generation', [buildPrompt, loadStandard, loadPlaybook, composeSystem, claudeAgent, finalize], { description: 'Prompt from the hand-off; design standard + playbook live from the vault; Claude; validate, mode guard, fallback, Lovable prompt.' })
   .group('2. Persist & notify', [upsertTask, logRun, logAudit, emailOwner], { description: 'One website_build approval task per lead, observability rows, and the owner email with the Open-in-Lovable link.' });
 `;
 
@@ -337,6 +415,7 @@ fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
 fs.writeFileSync(path.join(DIST, 'website-builder.sdk.ts'), sdk);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'build-website-brief-prompt.js'), codePrompt);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'finalize-website-brief.js'), codeFinalize);
+fs.writeFileSync(path.join(DIST, 'code-nodes', 'compose-system-prompt.js'), codeCompose);
 fs.writeFileSync(path.join(DIST, 'system-prompt.rendered.md'), systemPrompt);
-fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({ system_prompt: systemPrompt, model: manifest.model, workflow_id: TABLES_JSON.workflows.website_builder || null }, null, 2));
+fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({ system_prompt_compiled_fallback: systemPrompt, claude_system_expr: "={{ $('Compose System Prompt').first().json.system_prompt }}", vault_sources: VAULT, model: manifest.model, workflow_id: TABLES_JSON.workflows.website_builder || null }, null, 2));
 console.log('built', path.relative(ROOT, path.join(DIST, 'website-builder.sdk.ts')), sdk.length, 'chars');

@@ -98,7 +98,9 @@ return [{ json: Object.assign({}, req, {
   is_playbook: req.action === 'playbook' && !!agent,
   is_train: req.action === 'train' && !!agent && req.text.length > 2,
   is_chat_john: req.action === 'chat' && !!agent && agent.chat === 'john' && req.text.length > 0,
-  is_chat_wb: req.action === 'chat' && !!agent && agent.chat === 'website-builder' && req.text.length > 0
+  is_chat_wb: req.action === 'chat' && !!agent && agent.chat === 'website-builder' && req.text.length > 0,
+  is_chat_url: req.action === 'chat' && !!agent && agent.chat !== 'john' && agent.chat !== 'website-builder' && typeof agent.chat_url === 'string' && /^https:\\/\\//.test(agent.chat_url) && req.text.length > 0,
+  agent_chat_url: agent && typeof agent.chat_url === 'string' ? agent.chat_url : ''
 }) }];` },
     position: [1100, 300]
   },
@@ -287,14 +289,35 @@ const respondWb = node({
   output: [{ ok: true }]
 });
 
+const isChatUrl = ifElse({ version: 2.3, config: { name: 'Chat via agent URL?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'u', leftValue: expr("{{ $('Resolve Agent').item.json.is_chat_url }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [2420, 1100] } });
+
+const askAgentUrl = node({
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.5,
+  config: {
+    name: 'Ask Agent (chat URL)',
+    onError: 'continueRegularOutput',
+    parameters: { method: 'POST', url: expr("{{ $('Resolve Agent').item.json.agent_chat_url }}"), authentication: 'none', sendBody: true, contentType: 'json', specifyBody: 'json', jsonBody: expr("{{ JSON.stringify({ action: 'sendMessage', sessionId: 'dash_' + $('Resolve Agent').item.json.session, chatInput: $('Resolve Agent').item.json.text }) }}"), options: { timeout: 120000, response: { response: { responseFormat: 'json', neverError: true } } } },
+    position: [2640, 1100]
+  },
+  output: [{ output: 'Hi…' }]
+});
+
+const respondAgentUrl = node({
+  type: 'n8n-nodes-base.respondToWebhook',
+  version: 1.5,
+  config: { name: 'Respond Agent', parameters: { respondWith: 'json', responseBody: expr("{{ JSON.stringify({ ok: true, agent: $('Resolve Agent').item.json.agent_id, reply: $json.output || $json.text || ($json.error ? 'The agent could not answer: ' + String($json.error.message || $json.error) : JSON.stringify($json)) }) }}"), options: { responseCode: 200 } }, position: [2860, 1100] },
+  output: [{ ok: true }]
+});
+
 const respondUnknown = node({
   type: 'n8n-nodes-base.respondToWebhook',
   version: 1.5,
-  config: { name: 'Respond 400', parameters: { respondWith: 'json', responseBody: expr("{{ JSON.stringify({ ok: false, error: $('Resolve Agent').item.json.agent_ok ? 'nothing_to_do' : 'unknown_agent' }) }}"), options: { responseCode: 400 } }, position: [2420, 1100] },
+  config: { name: 'Respond 400', parameters: { respondWith: 'json', responseBody: expr("{{ JSON.stringify({ ok: false, error: $('Resolve Agent').item.json.agent_ok ? 'nothing_to_do' : 'unknown_agent' }) }}"), options: { responseCode: 400 } }, position: [2640, 1300] },
   output: [{ ok: false }]
 });
 
-const note = sticky('## CEO Brain — Trainer API\nBackend of Ryan\'s training dashboard. POST /webhook/ceo-brain/trainer {pin, action, agent, text, session}.\n\nlist → agents registry (vault Knowledge/agents.json) + master brain · playbook → the agent\'s live playbook note · train → appends a dated line under "## Lessons learned" of that note (GitHub commit → Obsidian; the agent follows it on its next message) · chat → John via the chat console (test mode) or a test brief from the Website Builder.\n\nThe PIN lives in the Trainer Config node. Change it there; never in the repo or the page.', [hook, config, parse, authorized], { color: 4 });
+const note = sticky('## CEO Brain — Trainer API\nBackend of Ryan\'s training dashboard. POST /webhook/ceo-brain/trainer {pin, action, agent, text, session}.\n\nlist → agents registry (vault Knowledge/agents.json) + master brain · playbook → the agent\'s live playbook note · train → appends a dated line under "## Lessons learned" of that note (GitHub commit → Obsidian; the agent follows it on its next message) · chat → John via the chat console (test mode), a test brief from the Website Builder, or any other agent through the chat_url in its registry entry (e.g. the Discovery Console).\n\nThe PIN lives in the Trainer Config node. Change it there; never in the repo or the page.', [hook, config, parse, authorized], { color: 4 });
 
 export default workflow('ceo-brain-trainer-api', 'CEO Brain — Trainer API')
   .add(hook)
@@ -311,6 +334,8 @@ export default workflow('ceo-brain-trainer-api', 'CEO Brain — Trainer API')
             .onTrue(askJohn.to(respondJohn))
             .onFalse(isChatWb
               .onTrue(runWebsiteBuilder.to(getBriefTask).to(summarizeBrief).to(respondWb))
-              .onFalse(respondUnknown)))))))
+              .onFalse(isChatUrl
+                .onTrue(askAgentUrl.to(respondAgentUrl))
+                .onFalse(respondUnknown))))))))
     .onFalse(respondDenied))
   .add(note);

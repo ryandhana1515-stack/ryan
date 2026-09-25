@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ceo-brain.local/schemas/company-discovery-output.schema.json",
+  "title": "CompanyDiscoveryTurn",
+  "description": "One turn of the Company Discovery & Onboarding Agent: the reply to the business owner plus a PATCH of the Client Digital Company Map (only fields learned this turn; arrays are unioned, scalars overwrite when non-null). The agent never asks for 'all your data'; it finds where information lives and plans the connection/import.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "reply", "map_patch", "topics_covered_this_turn", "next_topics", "data_onboarding_plan", "discovery_complete", "confidence", "reasoning"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "reply": { "type": "string", "maxLength": 1500, "description": "What to say to the owner now: acknowledge what they said in plain words, reassure about data (e.g. 'That's fine, we can import the spreadsheet'), then at most TWO natural questions." },
+    "map_patch": { "type": "object", "description": "Partial ClientDigitalCompanyMap (same shape, only what was learned this turn)." },
+    "topics_covered_this_turn": { "type": "array", "items": { "type": "string", "enum": ["company", "customers", "sales", "marketing", "communication", "software", "operations", "customer_service", "finance", "hr_team", "management", "automation", "data_sources"] } },
+    "next_topics": { "type": "array", "maxItems": 3, "items": { "type": "string", "enum": ["company", "customers", "sales", "marketing", "communication", "software", "operations", "customer_service", "finance", "hr_team", "management", "automation", "data_sources"] } },
+    "data_onboarding_plan": { "type": "array", "items": { "type": "string" }, "description": "Plain-English steps for how each data source will be connected/imported/indexed (never 'send us everything')." },
+    "discovery_complete": { "type": "boolean", "description": "true only when enough is known to generate the Company Map and a proposal draft" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "reasoning": { "type": "string", "maxLength": 600 }
+  }
+}

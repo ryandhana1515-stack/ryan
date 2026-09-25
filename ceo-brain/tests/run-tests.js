@@ -157,7 +157,7 @@ test('status spec is internally consistent', () => {
 console.log('\n[4] n8n Code node simulation (dist/code-nodes)');
 const distDir = path.join(ROOT, 'workflows', 'lead-intake', 'dist', 'code-nodes');
 if (!fs.existsSync(path.join(distDir, 'finalize-and-validate-result.js'))) require('child_process').execSync('node ' + path.join(ROOT, 'workflows', 'lead-intake', 'build.js'), { stdio: 'inherit' });
-const codeOf = (f) => fs.readFileSync(path.join(distDir, f), 'utf8');
+const codeOf = (f) => fs.readFileSync(fs.existsSync(path.join(distDir, f)) ? path.join(distDir, f) : path.join(ROOT, f), 'utf8');
 
 function runCodeNode(file, inputItems, nodeOutputs) {
   const $input = { first: () => inputItems[0], all: () => inputItems };
@@ -275,16 +275,23 @@ test('fallback brief for the logistics lead validates against the schema', () =>
   assert.strictEqual(r.brief.primary_goal, 'leads');
   assert.ok(r.brief.integrations.includes('WhatsApp click-to-chat'));
   assert.ok(r.brief.pages.length >= 3);
-  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 1800);
+  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 3400);
+  assert.strictEqual(r.brief.mode, 'sme');
+  assert.strictEqual(r.brief.industry_category, 'logistics');
+  assert.ok(r.build_prompt.includes('Never use:') && /purple\/blue gradient/.test(r.build_prompt), 'anti-generic rules must be in the prompt');
+  assert.ok(r.build_prompt.includes('Typography:'), 'design direction must be in the prompt');
+  assert.ok(r.brief.qa_checklist.length >= 15 && r.brief.verification_required.length === 0);
   assert.ok(r.lovable_url.startsWith('https://lovable.dev/#prompt='));
   assert.ok(!/\$\s?\d|guarantee/i.test(r.build_prompt), 'no prices or guarantees in the build prompt');
 });
 test('valid model brief is accepted and a fabricated business name is stripped', () => {
-  const good = { schema_version: '1.0', site_type: 'web_app', business_name: 'SwiftMove Logistics', industry: 'logistics', audience: 'SME shippers', primary_goal: 'leads', pages: [{ name: 'Home', purpose: 'x' }, { name: 'Track', purpose: 'y' }], features: ['Quote form'], integrations: ['WhatsApp click-to-chat'], style: { tone: 'clean', colours: null, references: [] }, existing_assets: { domain: null, logo: null, brand_colours: null, content: null }, content_notes: null, questions_for_customer: ['Do you have a domain?'], missing_information: ['existing_domain'], build_prompt: 'Build a web app…', confidence: 0.8, reasoning: 'ok' };
+  const good = { schema_version: '2.0', mode: 'sme', industry_category: 'logistics', site_type: 'web_app', business_name: 'SwiftMove Logistics', industry: 'logistics', audience: 'SME shippers', primary_goal: 'leads', design_direction: { brand_personality: 'reliable, fast', typography: 'Archivo + Inter', layout: 'action-first', imagery: 'fleet', motion: 'minimal', palette: 'white + signal orange' }, pages: [{ name: 'Home', purpose: 'x' }, { name: 'Track', purpose: 'y' }], features: ['Quote form'], integrations: ['WhatsApp click-to-chat'], style: { tone: 'clean', colours: null, references: [] }, existing_assets: { domain: null, logo: null, brand_colours: null, content: null }, content_notes: null, questions_for_customer: ['Do you have a domain?'], missing_information: ['existing_domain'], build_prompt: 'Build a web app…', confidence: 0.8, reasoning: 'ok' };
   const r = wb.finalizeBrief({ raw_text: '```json\n' + JSON.stringify(good) + '\n```', input: wbInput(fx('logistics-website.json')) });
   assert.strictEqual(r.fallback_used, false);
   assert.strictEqual(r.brief.business_name, 'SwiftMove Logistics');
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+  assert.strictEqual(r.brief.design_direction.typography, 'Archivo + Inter', 'model design direction is kept');
+  assert.ok(r.build_prompt.includes('Never use:'), 'a thin model prompt is regenerated with the anti-generic rules');
   const fake = Object.assign({}, good, { business_name: 'Acme Freight Kings' });
   const r2 = wb.finalizeBrief({ raw_text: JSON.stringify(fake), input: Object.assign(wbInput(fx('logistics-website.json')), { company_name: null }) });
   assert.strictEqual(r2.brief.business_name, null, 'name the customer never said must be removed');
@@ -296,6 +303,109 @@ test('invalid model output falls back with the reason recorded', () => {
   assert.strictEqual(r.fallback_used, true);
   assert.ok(String(r.fallback_reason).startsWith('schema_invalid'));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+});
+test('dental clinic → medical mode: doctor/treatment pages, verification list, medical QA, no fabricated claims', () => {
+  const input = { company_name: null, industry: null, contact_name: 'Dr Tan', message: 'We are a dental clinic in Bishan with 3 dentists. Patients keep calling to book; we want a website where they can book appointments and read about our treatments.', conversation: [], sales_summary: '', extracted: {} };
+  const r = wb.finalizeBrief({ error: 'model_error: simulated', input });
+  assert.strictEqual(r.brief.mode, 'medical');
+  assert.strictEqual(r.brief.industry_category, 'healthcare');
+  assert.strictEqual(r.brief.primary_goal, 'bookings');
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+  const names = r.brief.pages.map((p) => p.name).join('|');
+  assert.ok(/Our Doctors/.test(names) && /Treatments/.test(names) && /Book an Appointment/.test(names) && /Patient Information/.test(names));
+  assert.ok(r.brief.verification_required.length >= 5);
+  assert.ok(r.brief.qa_checklist.some((q) => /Medical content verification/.test(q)));
+  assert.ok(r.brief.missing_information.includes('doctor_profiles') && r.brief.missing_information.includes('credentials'));
+  assert.ok(/VERIFY WITH CLINIC/.test(r.build_prompt) && /medical disclaimer/.test(r.build_prompt) && /privacy notice/.test(r.build_prompt));
+  assert.ok(!/guarantee|\$\s?\d/i.test(r.build_prompt), 'no prices or guarantees');
+  assert.ok(/Never fabricate[^.]*success rates/.test(r.build_prompt), 'the only mention of success rates is the prohibition');
+  assert.strictEqual(r.brief.design_direction.brand_personality, wb.WB_DESIGN.healthcare.personality);
+});
+test('model answering sme for a clinic is forced into medical mode by code', () => {
+  const said = { company_name: null, industry: null, contact_name: 'Dr Lim', message: 'Our aesthetic clinic wants a new website for patients to book consultations', conversation: [], sales_summary: '', extracted: {} };
+  const modelSme = { schema_version: '2.0', mode: 'sme', industry_category: 'beauty', site_type: 'business_website', business_name: null, industry: 'aesthetic clinic', audience: 'patients', primary_goal: 'bookings', design_direction: { brand_personality: 'luxurious', typography: 'Cormorant + Inter', layout: 'image-led', imagery: 'clinic', motion: 'soft', palette: 'sand' }, pages: [{ name: 'Home', purpose: 'x' }], features: [], integrations: [], style: { tone: null, colours: null, references: [] }, existing_assets: { domain: null, logo: null, brand_colours: null, content: null }, content_notes: null, questions_for_customer: [], missing_information: [], build_prompt: 'Build it. Never use: gradients.', confidence: 0.7, reasoning: 'ok' };
+  const r = wb.finalizeBrief({ raw_text: JSON.stringify(modelSme), input: said });
+  assert.strictEqual(r.fallback_used, false);
+  assert.strictEqual(r.brief.mode, 'medical');
+  assert.strictEqual(r.brief.industry_category, 'healthcare');
+  assert.ok(r.brief.verification_required.length >= 5 && r.brief.qa_checklist.some((q) => /Medical content/.test(q)));
+  assert.ok(/VERIFY WITH CLINIC/.test(r.build_prompt), 'prompt regenerated with the medical rules');
+  assert.ok(/\[guardrail\] medical mode enforced/.test(r.brief.reasoning));
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+});
+test('website builder Compose System Prompt loads the design standard + playbook live, falls back when the vault is unreadable', () => {
+  const b64 = (t) => Buffer.from(t, 'utf8').toString('base64');
+  const file = 'workflows/website-builder/dist/code-nodes/compose-system-prompt.js';
+  const withVault = runCodeNode(file, [{ json: {} }], { 'Load Design Standard': { content: b64('---\ntitle: x\n---\n# Standard\nRejected on sight: purple gradient.') }, 'Load Website Playbook': { content: b64('# Playbook\nAlways propose a Book page.') } }, ROOT)[0].json;
+  assert.strictEqual(withVault.brain_source, 'vault:standard+playbook');
+  assert.ok(withVault.system_prompt.includes('Rejected on sight: purple gradient.') && withVault.system_prompt.includes('Always propose a Book page.'));
+  assert.ok(!withVault.system_prompt.includes('title: x'), 'frontmatter must be stripped');
+  assert.ok(withVault.system_prompt.indexOf('Rejected on sight') < withVault.system_prompt.indexOf('# Output schema'), 'vault text precedes the static rules');
+  const noVault = runCodeNode(file, [{ json: {} }], { 'Load Design Standard': { error: 'Not Found' }, 'Load Website Playbook': { error: 'Not Found' } }, ROOT)[0].json;
+  assert.strictEqual(noVault.brain_source, 'compiled_fallback');
+  assert.ok(noVault.system_prompt.includes('You are the Website Builder Agent'));
+});
+
+console.log('\n[6] company discovery agent (agents/company-discovery/discovery.js) + proposal draft');
+const ds = require('../agents/company-discovery/discovery.js');
+const pr = require('../agents/proposal/draft.js');
+const mapSchema = require('../schemas/company-map.schema.json');
+const turnSchema = require('../schemas/company-discovery-output.schema.json');
+const OWNER_MSG = 'We are SwiftMove Logistics Pte Ltd, a logistics company in Singapore with 15 drivers. Leads come from Facebook and referrals, customers WhatsApp us, our customers are in Excel and we use Xero. We keep forgetting to follow up quotes.';
+test('empty map validates; rules turn extracts company, headcount, software, data handling, pain points', () => {
+  assert.deepStrictEqual(ppValidate(mapSchema, ds.dsEmptyMap()), []);
+  const r = ds.finalizeDiscoveryTurn({ error: 'model_error: simulated', input: { map: null, turns: 0, message: OWNER_MSG } });
+  assert.strictEqual(r.provider, 'rules');
+  assert.deepStrictEqual(ppValidate(mapSchema, r.map), [], 'merged map must validate');
+  assert.deepStrictEqual(ppValidate(turnSchema, Object.assign({}, r.turn, { map_patch: {} })), []);
+  assert.strictEqual(r.map.company_profile.company_name, 'SwiftMove Logistics Pte Ltd');
+  assert.strictEqual(r.map.company_profile.employees, 15);
+  assert.strictEqual(r.map.company_profile.industry, 'logistics');
+  assert.ok(r.map.current_software.some((s) => s.name === 'Xero' && s.category === 'accounting'));
+  assert.ok(r.map.communication_channels.includes('whatsapp') && r.map.marketing.channels.includes('facebook'));
+  const cust = r.map.data_sources.find((d) => d.category === 'customer_records');
+  assert.ok(cust && cust.availability === 'IMPORT_REQUIRED' && cust.handling === 'IMPORTED', 'Excel customers → import, not "send us everything"');
+  assert.ok(r.map.pain_points.length >= 1);
+  assert.ok(/import the spreadsheet/i.test(r.turn.reply), 'reassurance about the spreadsheet');
+  assert.ok((r.turn.reply.match(/\?/g) || []).length <= 3, 'at most two or three questions');
+  assert.strictEqual(r.discovery_complete, false, 'never complete after one turn');
+  assert.ok(r.next_topics.length > 0 && !r.next_topics.includes('company'));
+});
+test('model turn is merged (arrays union, scalars overwrite), invented company name is stripped, credentials request replaced', () => {
+  const first = ds.finalizeDiscoveryTurn({ error: 'x', input: { map: null, turns: 0, message: OWNER_MSG } }).map;
+  const good = { schema_version: '1.0', reply: 'Got it — Xero and Excel. Who follows up on quotes today, and how many times?', map_patch: { company_profile: { markets: ['Singapore'], employees: 18 }, current_software: [{ name: 'Xero', category: 'accounting', notes: 'invoices only' }, { name: 'Google Sheets', category: 'spreadsheets', notes: null }], sales_process: { follow_up_owner: 'the owner himself' } }, topics_covered_this_turn: ['sales'], next_topics: ['operations'], data_onboarding_plan: ['customer records: import the spreadsheet'], discovery_complete: false, confidence: 0.8, reasoning: 'ok' };
+  const r = ds.finalizeDiscoveryTurn({ raw_text: '```json\n' + JSON.stringify(good) + '\n```', input: { map: first, turns: 1, message: 'I follow up myself, maybe once.' } });
+  assert.strictEqual(r.provider, 'anthropic');
+  assert.strictEqual(r.map.company_profile.employees, 18, 'scalar overwritten');
+  assert.strictEqual(r.map.company_profile.company_name, 'SwiftMove Logistics Pte Ltd', 'earlier fact kept');
+  assert.strictEqual(r.map.current_software.length, 3, 'Xero merged, Google Sheets added');
+  assert.strictEqual(r.map.current_software.find((s) => s.name === 'Xero').notes, 'invoices only');
+  assert.deepStrictEqual(ppValidate(mapSchema, r.map), []);
+  const fake = Object.assign({}, good, { map_patch: { company_profile: { company_name: 'Acme Freight Kings' } } });
+  const r2 = ds.finalizeDiscoveryTurn({ raw_text: JSON.stringify(fake), input: { map: null, turns: 0, message: 'we move parcels' } });
+  assert.strictEqual(r2.map.company_profile.company_name, null);
+  assert.ok(r2.guardrails.includes('company_name_not_in_owner_words'));
+  const bad = Object.assign({}, good, { reply: 'Please send me your HubSpot password and all your customer data so I can import it.' });
+  const r3 = ds.finalizeDiscoveryTurn({ raw_text: JSON.stringify(bad), input: { map: first, turns: 1, message: 'ok' } });
+  assert.ok(r3.guardrails.includes('reply_asks_for_credentials'));
+  assert.ok(!/password/i.test(r3.turn.reply), 'reply replaced by the safe fallback');
+});
+test('discovery completes only after enough turns and coverage; note + proposal draft render without prices', () => {
+  let map = null;
+  const msgs = [OWNER_MSG, 'Customers are mostly SMEs that ship parcels, B2B. Marketing is Facebook ads run by an agency.', 'Jobs come in by WhatsApp, my ops manager assigns drivers in a WhatsApp group, deadlines are tracked on a whiteboard; delays happen when a driver is sick. Support is me answering the phone.', 'I check the whiteboard and the bank every morning. Hardest thing is knowing which quotes are outstanding. Everyone repeats typing the same delivery quote and we forget to chase.'];
+  let r = null;
+  msgs.forEach((m, i) => { r = ds.finalizeDiscoveryTurn({ error: 'x', input: { map, turns: i, message: m } }); map = r.map; });
+  assert.ok(r.coverage >= 0.75, 'coverage ' + r.coverage);
+  assert.strictEqual(r.discovery_complete, true);
+  const proposal = pr.draftProposal(map, { contact_name: 'Marcus', date: '2026-09-25' });
+  assert.ok(/## Executive summary/.test(proposal) && /## Implementation phases/.test(proposal) && /## Pricing/.test(proposal));
+  assert.ok(/Requires human approval/.test(proposal) && !/S?\$\s?\d/.test(proposal), 'no amounts');
+  assert.ok(/Sales Agent \(John\)/.test(proposal) && /CEO Dashboard/.test(proposal));
+  assert.ok(/import the spreadsheet|imported once/i.test(proposal), 'data onboarding plan present');
+  const note = ds.dsRenderMapNote({ map, map_id: 'map_test', contact_name: 'Marcus', ts: '2026-09-25T00:00:00.000Z', test_mode: true, discovery_complete: true, proposal_md: proposal });
+  assert.ok(note.startsWith('---\ntype: company-map\nmap_id: map_test\n'));
+  assert.ok(/\| customer records \| IMPORT_REQUIRED \|/.test(note), 'data source table row');
+  assert.ok(/- \[x\] company/.test(note) && /## Proposal draft/.test(note));
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

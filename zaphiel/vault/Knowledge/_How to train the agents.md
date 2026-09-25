@@ -45,11 +45,16 @@ Every agent listed in [[Knowledge/agents.json]] shows up automatically; new agen
 6. Keep both notes short. Everything in them is sent to John on every message; long notes make him
    slower and vaguer.
 
+## Training the Discovery Agent
+- Talk to it in the Training Room (agent "Discovery") or in its console
+  (https://ryan1515.app.n8n.cloud/webhook/40d1b87c-1ec4-4534-ac80-bbdeef475d23/chat) as a business owner would.
+  Watch `Discovery/Test/…` fill in after every message.
+- Correct it in [[Knowledge/Company Discovery — playbook]] under **Lessons learned** ("when the owner
+  says everything is in WhatsApp, say …"). It follows the note on the next message.
+
 ## Training the Website Builder
-- Today it reads its instructions from the repo; its live playbook note
-  `Knowledge/Website Builder — playbook` is the next wiring step (same pattern as John).
-  Until then, write what you want there anyway: page structure you like, styles, must-have
-  sections, things never to build. Zaphiel wires it in on the next redeploy.
+- It reads [[Knowledge/Website design standard]] and [[Knowledge/Website Builder — playbook]] live on
+  every brief. Design rules go in the standard; behaviour and preferences in the playbook.
 - Judge its work in the brief emails and, once builds run, the Lovable previews. Put your verdicts
   under "Lessons learned" in that note.
 

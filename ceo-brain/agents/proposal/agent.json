@@ -1,0 +1,10 @@
+{
+  "id": "proposal",
+  "name": "Proposal Agent (draft)",
+  "version": "1.0.0",
+  "description": "Deterministic proposal DRAFT generator: turns a Client Digital Company Map into the FusionTech proposal sections (executive summary, current problems, current technology, proposed architecture, CEO Brain modules, AI agents, CRM requirements, ERP/operations requirements, integrations, data onboarding plan, website requirements, automations, implementation phases, customer and FusionTech responsibilities, security, ongoing support). Pricing is never generated: it requires human approval.",
+  "provider": "rules",
+  "postprocess": "agents/proposal/draft.js#draftProposal",
+  "triggered_by": "Company Discovery Agent when discovery_complete (Discovery Console); the draft is appended to the Company Map note in the vault and a proposal_draft task (requires_approval) is created",
+  "never": ["invent prices, timelines or guarantees", "send anything to the customer"]
+}

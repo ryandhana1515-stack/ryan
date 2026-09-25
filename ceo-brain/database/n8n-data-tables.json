@@ -21,6 +21,10 @@
     "ceo_audit_logs": {
       "id": "zjeuGe9AEgJS5MKg",
       "purpose": "Status transitions and other state changes with actor + reason."
+    },
+    "ceo_company_maps": {
+      "id": "l02tcAaRNNYzCwBP",
+      "purpose": "One row per discovery conversation: the Client Digital Company Map (map_json), the conversation, coverage, status, proposal draft and the vault note path. Key = map_id (chat session)."
     }
   },
   "workflows": {
