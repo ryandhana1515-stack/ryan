@@ -38,3 +38,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-09-25 — Order of play: (1) top up n8n AI credits, (2) website chain end to end incl. WhatsApp,
   (3) then the other agents. The training dashboard comes first so Ryan can train agents before
   activating them.
+- 2026-09-25 — **Ryan: website mock-ups are fully automatic, zero approvals.** Customer asks John for a
+  mock-up → John asks for the details (business name, what it does, what the site must do, where to
+  send the link) → John hands off to the Website Builder → the mock-up is built → the link comes back
+  to John → John sends it to the customer. No approve click anywhere. Publishing to a live domain
+  stays with Ryan. (Supersedes the "owner clicks OPEN IN LOVABLE" approval step of the same day.)
