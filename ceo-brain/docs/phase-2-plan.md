@@ -10,7 +10,10 @@ Goal: connect real channels in and out, keep every guardrail.
 | WhatsApp inbound adapter (Meta Cloud API → Lead Intake with history) | BUILT `3IhIJ5IYsB7wQQSg`, waiting for credential + Meta webhook switch |
 | CEO Daily Brief (CEO Intelligence Agent v0) | DONE `Pew2PX1IcgdXqXr7`, 08:00 SGT |
 | Sales Agent has the FusionTech company brain, persona John | DONE (agent v1.1.0) |
-| Website Builder agent (John → brief → Open-in-Lovable approval email) | DONE `hSTRGnHVsu6tMOmH`, verified execution 176 |
+| Website Builder agent (John → brief → Open-in-Lovable approval email) | DONE `hSTRGnHVsu6tMOmH`; **v2** 2026-09-25: SME + Medical modes, design intelligence, QA checklist, vault-live standard (execution 209) |
+| Company Discovery & Onboarding Agent + Discovery Console (Company Map → vault, proposal draft) | DONE `9TnzsgPGRatMaQI3` (2026-09-25) |
+| CRM/ERP data layer (39 tables, tenant RLS) | DESIGNED + validated locally: `database/migrations/002_crm_erp_core.sql`; Supabase connection TODO |
+| Training Room dashboard + Trainer API | DONE `AM59goLdbt0clv8q` / `zKqlk05WShUOrojw` |
 | John Chat Console (hosted test chat with per-session memory) | DONE `ny60ozvH8B4uNpcb`, verified execution 177 |
 | n8n AI Gateway credits | EXHAUSTED 2026-09-25 ("Payment required") — agents on rule fallbacks until Ryan tops up |
 | Facebook/Instagram Lead Ads, website form, TikTok, respond.io, Gmail adapters | TODO |

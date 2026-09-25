@@ -2,36 +2,326 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ceo-brain.local/schemas/website-brief.schema.json",
   "title": "WebsiteBrief",
-  "description": "Output of the Website Builder Agent: a build brief for a customer website/web app plus a self-contained Lovable build prompt. Facts (business name, industry, audience, existing assets) come only from the customer's words; pages/features/integrations may be proposals. Unknown facts are null and listed in missing_information.",
+  "description": "Output of the Website Builder Agent v2: a premium build brief for a customer website/web app (SME mode or Medical mode) plus a self-contained Lovable build prompt. Facts (business name, industry, audience, existing assets) come only from the customer's words; pages/features/integrations/design direction may be proposals. Unknown facts are null and listed in missing_information. content_rules, verification_required and qa_checklist are set by code from the mode.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "site_type", "business_name", "industry", "audience", "primary_goal", "pages", "features", "integrations", "style", "existing_assets", "content_notes", "questions_for_customer", "missing_information", "build_prompt", "confidence", "reasoning"],
+  "required": [
+    "schema_version",
+    "mode",
+    "industry_category",
+    "site_type",
+    "business_name",
+    "industry",
+    "audience",
+    "primary_goal",
+    "design_direction",
+    "pages",
+    "features",
+    "integrations",
+    "style",
+    "existing_assets",
+    "content_rules",
+    "verification_required",
+    "qa_checklist",
+    "content_notes",
+    "questions_for_customer",
+    "missing_information",
+    "build_prompt",
+    "confidence",
+    "reasoning"
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "1.0" },
-    "site_type": { "type": "string", "enum": ["business_website", "landing_page", "online_store", "web_app", "portal", "other"] },
-    "business_name": { "type": ["string", "null"] },
-    "industry": { "type": ["string", "null"] },
-    "audience": { "type": ["string", "null"], "description": "Who the site is for, in the customer's words" },
-    "primary_goal": { "type": "string", "enum": ["leads", "bookings", "sales", "information", "support", "other"] },
-    "pages": {
-      "type": "array", "minItems": 1, "maxItems": 12,
-      "items": { "type": "object", "additionalProperties": false, "required": ["name", "purpose"], "properties": { "name": { "type": "string" }, "purpose": { "type": "string" } } }
+    "schema_version": {
+      "type": "string",
+      "const": "2.0"
     },
-    "features": { "type": "array", "items": { "type": "string" } },
-    "integrations": { "type": "array", "items": { "type": "string" } },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "sme",
+        "medical"
+      ],
+      "description": "medical = doctors, clinics, dental, aesthetic practices, healthcare providers (stricter content, privacy and compliance rules)"
+    },
+    "industry_category": {
+      "type": "string",
+      "enum": [
+        "professional_services",
+        "beauty",
+        "property",
+        "technology",
+        "consulting",
+        "retail",
+        "education",
+        "home_services",
+        "b2b",
+        "local_business",
+        "food_beverage",
+        "logistics",
+        "healthcare",
+        "other"
+      ]
+    },
+    "site_type": {
+      "type": "string",
+      "enum": [
+        "business_website",
+        "landing_page",
+        "online_store",
+        "web_app",
+        "portal",
+        "other"
+      ]
+    },
+    "business_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "industry": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "audience": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Who the site is for, in the customer's words"
+    },
+    "primary_goal": {
+      "type": "string",
+      "enum": [
+        "leads",
+        "bookings",
+        "sales",
+        "information",
+        "support",
+        "other"
+      ]
+    },
+    "design_direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brand_personality",
+        "typography",
+        "layout",
+        "imagery",
+        "motion",
+        "palette",
+        "avoid"
+      ],
+      "properties": {
+        "brand_personality": {
+          "type": "string"
+        },
+        "typography": {
+          "type": "string",
+          "description": "A deliberate pairing for this brand, never the same on every site"
+        },
+        "layout": {
+          "type": "string"
+        },
+        "imagery": {
+          "type": "string",
+          "description": "Imagery appropriate to the actual business; no irrelevant stock"
+        },
+        "motion": {
+          "type": "string",
+          "description": "Only where it improves the experience"
+        },
+        "palette": {
+          "type": "string"
+        },
+        "avoid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The generic AI patterns that are forbidden (set by code)"
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "purpose"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "style": {
-      "type": "object", "additionalProperties": false, "required": ["tone", "colours", "references"],
-      "properties": { "tone": { "type": ["string", "null"] }, "colours": { "type": ["string", "null"] }, "references": { "type": "array", "items": { "type": "string" } } }
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tone",
+        "colours",
+        "references"
+      ],
+      "properties": {
+        "tone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "colours": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "existing_assets": {
-      "type": "object", "additionalProperties": false, "required": ["domain", "logo", "brand_colours", "content"],
-      "properties": { "domain": { "type": ["boolean", "null"] }, "logo": { "type": ["boolean", "null"] }, "brand_colours": { "type": ["boolean", "null"] }, "content": { "type": ["boolean", "null"] } }
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "logo",
+        "brand_colours",
+        "content"
+      ],
+      "properties": {
+        "domain": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "logo": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "brand_colours": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "content": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
     },
-    "content_notes": { "type": ["string", "null"], "maxLength": 1200 },
-    "questions_for_customer": { "type": "array", "maxItems": 3, "items": { "type": "string" }, "description": "What John should ask next to complete the brief" },
-    "missing_information": { "type": "array", "items": { "type": "string", "enum": ["business_name", "industry", "audience", "primary_goal", "pages", "features", "integrations", "style", "existing_domain", "logo_and_brand", "content", "examples", "timeline", "decision_maker"] } },
-    "build_prompt": { "type": "string", "maxLength": 2500, "description": "Self-contained prompt for Lovable. Unknown facts appear as [PLACEHOLDER: ...]." },
-    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-    "reasoning": { "type": "string", "maxLength": 800 }
+    "content_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verification_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Medical mode: facts the clinic must verify before anything is shown to patients"
+    },
+    "qa_checklist": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "string"
+      },
+      "description": "What the QA stage inspects before the customer sees the mock-up (medical adds content verification)"
+    },
+    "content_notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1200
+    },
+    "questions_for_customer": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "string"
+      },
+      "description": "What John should ask next to complete the brief"
+    },
+    "missing_information": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "business_name",
+          "industry",
+          "audience",
+          "primary_goal",
+          "pages",
+          "features",
+          "integrations",
+          "style",
+          "existing_domain",
+          "logo_and_brand",
+          "content",
+          "examples",
+          "timeline",
+          "decision_maker",
+          "competitors",
+          "existing_website",
+          "brand_personality",
+          "doctor_profiles",
+          "treatments",
+          "clinic_locations",
+          "credentials"
+        ]
+      }
+    },
+    "build_prompt": {
+      "type": "string",
+      "maxLength": 3600,
+      "description": "Self-contained prompt for Lovable. Carries the design direction and the anti-generic rules. Unknown facts appear as [PLACEHOLDER: ...]; medical unknowns as [VERIFY WITH CLINIC]."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reasoning": {
+      "type": "string",
+      "maxLength": 800
+    }
   }
 }

@@ -17,3 +17,13 @@ tags: [zaphiel, changelog]
   `Knowledge/agents.json`; teaching writes "Lessons learned" lines into the playbook notes here;
   chat relays to John (chat console) and the Website Builder (brief). First taught line landed in
   John's playbook from the dashboard (commit 880ec38). Voice via the browser (Web Speech API).
+- 2026-09-25 — Ryan's product directive received (verbatim in [[FusionTech AI — Product & Build Directive]]).
+  Built from it the same day: **Website Builder v2** (SME + Medical modes, design intelligence per
+  business category, anti-generic rules, medical verification, QA checklist, design standard +
+  playbook read live from the vault; deployed to `hSTRGnHVsu6tMOmH`, verified execution 209);
+  **Company Discovery & Onboarding Agent** + Discovery Console (`9TnzsgPGRatMaQI3`) writing the Client
+  Digital Company Map to `Discovery/` and a proposal draft when complete; **Proposal draft generator**;
+  **CRM/ERP data layer** (39-table Postgres migration with tenant RLS, validated locally); Trainer API
+  now chats with any registered agent; new vault notes: design standard, discovery playbook, product
+  architecture, workforce roster, templates. Tests: 35 passing.
+

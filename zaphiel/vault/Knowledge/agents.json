@@ -2,6 +2,17 @@
   "$comment": "Registry the training dashboard reads. Add a new agent here (and a playbook note) and it appears on the dashboard.",
   "agents": [
     {
+      "id": "company-discovery",
+      "name": "Discovery",
+      "role": "Company Discovery & Onboarding Agent",
+      "description": "Talks to a business owner like a consultant, finds where their information lives (never 'send us all your data'), builds the Client Digital Company Map and a proposal draft in the vault.",
+      "playbook": "zaphiel/vault/Knowledge/Company Discovery — playbook.md",
+      "chat": "discovery",
+      "chat_url": "https://ryan1515.app.n8n.cloud/webhook/40d1b87c-1ec4-4534-ac80-bbdeef475d23/chat",
+      "workflow_id": "",
+      "status": "live"
+    },
+    {
       "id": "john",
       "name": "John",
       "role": "Sales & WhatsApp Agent",
@@ -14,12 +25,13 @@
     {
       "id": "website-builder",
       "name": "Website Builder",
-      "role": "Website brief & Lovable build agent",
-      "description": "Turns a conversation into a build brief and a Lovable build prompt, then a mock-up for the customer.",
+      "role": "Website Builder v2 — SME + Medical modes",
+      "description": "Turns a conversation into a premium build brief: mode (SME or Medical), design direction for the business category, pages, content rules, QA checklist and a Lovable build prompt. Reads the design standard and its playbook live from the vault.",
       "playbook": "zaphiel/vault/Knowledge/Website Builder — playbook.md",
       "chat": "website-builder",
       "workflow_id": "hSTRGnHVsu6tMOmH",
-      "status": "live"
+      "status": "live",
+      "design_standard": "zaphiel/vault/Knowledge/Website design standard.md"
     }
   ]
 }

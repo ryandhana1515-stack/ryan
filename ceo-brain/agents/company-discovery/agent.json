@@ -1,0 +1,47 @@
+{
+  "id": "company-discovery",
+  "name": "Company Discovery & Onboarding Agent",
+  "version": "1.0.0",
+  "description": "Agent #1 of the AI workforce. Converts an ordinary conversation with a business owner into the Client Digital Company Map (company, customers, sales, marketing, communication, software, operations, customer service, finance, team, management, automation signals, data sources with the discovery checklist). Progressive questions (max two per reply), never 'send us all your data': it finds where information lives and plans connect / import / index / summarize / leave-in-place. When discovery is complete it writes the Company Map and a proposal DRAFT (no pricing) into the vault for Ryan's review.",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
+  "model_display_name": "Claude Sonnet 4.6",
+  "temperature": 0.2,
+  "max_tokens": 3500,
+  "prompts": {
+    "system": "prompts/company-discovery.system.md",
+    "user": "prompts/company-discovery.user.md"
+  },
+  "output_schema": "schemas/company-discovery-output.schema.json",
+  "map_schema": "schemas/company-map.schema.json",
+  "fallback": "agents/company-discovery/discovery.js#dsFallbackTurn",
+  "postprocess": "agents/company-discovery/discovery.js#finalizeDiscoveryTurn",
+  "proposal": "agents/proposal/draft.js#draftProposal",
+  "vault_sources": {
+    "brain": "zaphiel/vault/FusionTech AI — Master Company Brain.md",
+    "playbook": "zaphiel/vault/Knowledge/Company Discovery — playbook.md"
+  },
+  "vault_output": "zaphiel/vault/Discovery/<map_id>.md (test maps under Discovery/Test/)",
+  "data_table": "ceo_company_maps",
+  "may_autonomously": [
+    "ask discovery questions",
+    "acknowledge and reassure about data onboarding",
+    "classify data sources",
+    "propose modules, agents and automation opportunities",
+    "write the Company Map and proposal draft to the vault"
+  ],
+  "must_escalate": [
+    "prices, packages, timelines, guarantees",
+    "any sensitive financial record request",
+    "sending the proposal to the customer (human review first)"
+  ],
+  "never": [
+    "invent facts",
+    "ask for passwords, logins or API keys",
+    "ask the customer to send all their data",
+    "quote prices or guarantees",
+    "store secrets"
+  ],
+  "console_url": "https://ryan1515.app.n8n.cloud/webhook/40d1b87c-1ec4-4534-ac80-bbdeef475d23/chat",
+  "workflow_id": "9TnzsgPGRatMaQI3"
+}

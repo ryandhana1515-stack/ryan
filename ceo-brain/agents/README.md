@@ -28,9 +28,11 @@ Rules that apply to all agents:
 |---|---|---|
 | `sales-qualification` | **live, v1.1.0** | Agent #1, persona **John**. Briefed with the FusionTech Master Company Brain (`prompts/company-context.md`). Extracts, classifies, asks progressively, drafts; low-risk replies auto-sent, the rest approved by the owner. |
 | `ceo-intelligence` (v0, inside the Daily Brief workflow) | live | Agent #8. Writes the recommended-priorities section of the 08:00 brief from table numbers only. |
-| `website-builder` | **live, v1.0.0** | Agent #2 (the Solution Architect's mock-up-brief half). Triggered by Lead Intake when the customer asks for a website / web app. Produces a validated brief + Lovable build prompt, one `website_build` approval task per lead, and emails the owner an Open-in-Lovable link. Never builds or deploys by itself. |
-| solution-architect | planned (Phase 3) | Full solution outline (workflow architecture, scope, tasks) for a qualified lead. |
-| proposal | planned (Phase 2) | Drafts proposals; always `requires_approval`. |
+| `company-discovery` | **live, v1.0.0** | Agent #1 of the workforce. Consultant-style conversation → Client Digital Company Map (`schemas/company-map.schema.json`), data discovery checklist with connect/import/index/summarize/leave handling, proposal draft when complete. Rules fallback records the owner's answers under the asked topic. Runs in the Discovery Console. |
+| `website-builder` | **live, v2.0.0** | Agents #4–#6: SME Website Builder + Medical/Doctor Website Builder on shared infrastructure, with the Website Architect's requirements step inside. Mode detection (medical is enforced by code from the customer's words), category design direction, anti-generic rules, content rules, medical verification list, QA checklist, Lovable prompt. Design standard + playbook read live from the vault. Never builds or deploys by itself. |
+| `proposal` | **live (draft), v1.0.0** | Deterministic proposal draft from the Company Map — all sections, never pricing. Appended to the Discovery note, review task + email to the owner. |
+| solution-architect | planned | Full technical architecture from the Company Map (today: the proposal draft's architecture/modules/agents sections). |
 | customer-service | planned | Existing n8n "Customer Service Agent — 24/7 Chat" will be migrated into this contract. |
 | marketing | planned | Existing content/ads n8n agents migrate here. |
-| email-admin, finance-assistant, operations, project-manager, ceo-intelligence | planned | Folders are created only when the agent is built. |
+| website-qa | checklist live, inspection planned | The QA checklist ships with every brief; inspecting a built preview needs Lovable builds. Medical adds content verification. |
+| email-admin, finance-assistant, operations, project-manager | planned | Folders are created only when the agent is built. |

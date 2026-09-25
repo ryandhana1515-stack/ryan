@@ -1,4 +1,20 @@
-# CEO Brain — architecture (Phase 1 slice of the long-term system)
+# CEO Brain — architecture
+
+## The product (Ryan's directive, 2026-09-25)
+
+FusionTech sells a **CEO Brain operating system** per customer: CEO Brain + AI workforce + CRM/ERP
+company data layer + automation + custom software + high-end websites. Layers that never mix:
+**live operational data** in the CRM/database, **long-term knowledge** in the Obsidian vault
+(`zaphiel/vault/`), **orchestration** in n8n, **reasoning** in Claude. Customer journey: Discovery
+Agent (never "send us all your data") → Client Digital Company Map (`schemas/company-map.schema.json`)
+→ data onboarding plan (CONNECTED LIVE / IMPORTED / INDEXED / SUMMARIZED / LEFT IN PLACE) → CEO Brain
+modules selected per customer → proposal draft (pricing human) → build pipeline (tenant → CRM →
+agents → integrations → workflows → interface → tests → security → human review → UAT → production).
+Data layer: `database/migrations/002_crm_erp_core.sql` (39 tables, tenant RLS) explained in
+`database/crm-erp-data-layer.md`. Human approval ladder and security rules: `docs/approvals-and-guardrails.md`.
+The twelve-agent roster and status live in the vault: `Knowledge/AI Workforce — roster.md`.
+
+## Phase 1 slice (how the first workflows were built)
 
 ```
 Facebook / Instagram / TikTok / Website / WhatsApp / Email
