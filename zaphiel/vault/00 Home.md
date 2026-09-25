@@ -1,17 +1,20 @@
 ---
-generated_by: build-vault.js
-source: zaphiel/memory.md
-source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+generated_by: build-vault.js (one-time migration, 2026-09-25)
+source: this vault is the source of truth since 2026-09-25 (memory.md archived)
+source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 built: 2026-09-25
 tags: [zaphiel, moc]
 ---
 # Zaphiel — Home
 
+> **This vault is Zaphiel's brain** (Ryan confirmed "vault is ready" on 2026-09-25). Ryan edits it in
+> Obsidian; Claude sessions read it first and write real changes back before they end. Obsidian Git
+> syncs it with GitHub every 10 minutes.
 > Every session reads this first and appends real changes before it ends.
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+Last updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 
 ---
 

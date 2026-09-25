@@ -1,7 +1,7 @@
 ---
 generated_by: build-vault.js
 source: zaphiel/memory.md
-source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 built: 2026-09-25
 tags: [zaphiel, memory]
 ---
@@ -24,6 +24,10 @@ tags: [zaphiel, memory]
 - 2026-08-08 — Zaphiel architecture: repo `ryan` is the brain (CLAUDE.md + zaphiel/ +
   .claude/skills/zaphiel); n8n is the always-on body; connectors are the hands. One-off
   session builds are over — new capabilities get indexed here.
+- 2026-09-25 (evening) — **Ryan confirmed "vault is ready".** `zaphiel/vault/` (Obsidian on Ryan's
+  computer, synced by Obsidian Git every 10 min) is now THE brain. `memory.md` is archived at
+  `zaphiel/archive/memory-final-2026-09-25.md` and never edited again. Sessions write to the vault
+  notes (05 Decisions log, 06 Change log, 07 Open loops) and update section notes in place.
 - 2026-09-25 — **Obsidian vault = the main brain from the day Ryan creates it.** Everything
   important Ryan says and everything built gets added to the vault at the end of every session
   (memory.md until then). Knowledge documents (FusionTech brain) live in the vault verbatim.

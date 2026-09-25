@@ -5,7 +5,8 @@ description: Zaphiel operations manual — how to actually DO things for Ryan's 
 
 # Zaphiel Operations Manual
 
-State lives in `zaphiel/memory.md` (read it first; update it after real changes).
+State lives in the Obsidian vault `zaphiel/vault/` (start at `00 Home.md`; read it first; write real
+changes back into `05 Decisions log` / `06 Change log` / `07 Open loops` and the section notes).
 This file is the HOW. Compliance rule for everything public: support/promote language,
 never cure/treat/diagnose.
 

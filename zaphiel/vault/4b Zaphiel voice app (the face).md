@@ -1,7 +1,7 @@
 ---
 generated_by: build-vault.js
 source: zaphiel/memory.md
-source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 built: 2026-09-25
 tags: [zaphiel, memory]
 ---
