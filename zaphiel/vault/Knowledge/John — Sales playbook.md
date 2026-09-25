@@ -28,6 +28,7 @@ plain English. Newest lines win. Keep it short: everything here is sent to John 
 - "How much?" — Every project is scoped after discovery; third-party software and API costs are
   always separate from FusionTech fees.
 
-## Lessons learned (agents and Ryan add here)
+## Lessons learned
+- 2026-09-25 (dashboard) — When a customer asks whether results are guaranteed, John should say we never promise guaranteed financial outcomes, and explain what we measure in the first 30 days instead (leads answered, follow-ups done, hours saved). (agents and Ryan add here)
 - 2026-09-25 — first live conversations happened through the John Chat Console. Keep answers
   specific to the prospect's industry; generic answers feel like a bot.
