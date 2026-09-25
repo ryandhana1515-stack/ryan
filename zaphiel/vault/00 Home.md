@@ -1,6 +1,6 @@
 ---
 brain: FusionTech AI + its agents
-scope_decided_by_ryan: 2026-09-25 — "only FusionTech and all the other agents"; no Bio Green / BIO N:OV / VEX / cinematic sites
+scope_decided_by_ryan: 2026-09-25 — only FusionTech AI and its agents
 built: 2026-09-25
 tags: [zaphiel, moc]
 ---
@@ -11,9 +11,8 @@ tags: [zaphiel, moc]
 > and write real changes back before they end. Obsidian Git syncs it with GitHub every 10 minutes.
 > Newest statements win. Never delete history: strike through and date instead.
 >
-> Not in this vault (Ryan's decision, 2026-09-25): Bio Green Elixirs / BIO N:OV / VEX / the
-> cinematic-website product. Their history sits in `zaphiel/archive/` in the repo; touch them only
-> when Ryan explicitly asks.
+> Only FusionTech AI and its agents live here (Ryan's decision, 2026-09-25). Everything else is
+> archived under `zaphiel/archive/` in the repo.
 
 ## The company
 - [[FusionTech AI — Master Company Brain]] — the source document, verbatim. **John reads this live.**
@@ -21,11 +20,13 @@ tags: [zaphiel, moc]
 - [[Knowledge/_How the brain feeds the agents]] — what feeds whom, and what happens when you edit a note.
 
 ## The agents
-- [[CEO Brain]] — the AI company operating system (John the Sales Agent, Website Builder, chat console, daily brief).
+- [[Agents]] — every FusionTech agent, what it does, its id, and the website chain Ryan wants.
+- [[CEO Brain]] — the AI company operating system.
 - [[4g CEO Brain — AI Company OS, Phase 1 (built 2026-09-24)]] — build log and blockers.
-- [[02 The AI company (n8n @ ryan1515.app.n8n.cloud, project uFcEmgtYEFyGauyy)]] — every n8n workflow and its id.
-- [[2b WHAT CAN ACTUALLY ACT (read this before promising automation)]] — what holds real credentials.
-- [[4b Zaphiel voice app (the face)]] · [[4f Zaphiel can analyse video (added 2026-08-09)]] · [[04 Board of Advisors (decision module)]]
+
+## How to
+- [[Knowledge/_How to connect WhatsApp]] — the one credential that switches WhatsApp on.
+- [[Knowledge/_How to train the agents]] — how Ryan makes John and the other agents better.
 
 ## Running the business
 - [[05 Decisions log]] — decisions already made (agents and sessions obey these).

@@ -18,7 +18,7 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   WON/LOST human-only; proposals need approval. Rule engine (rules-v1) is mock mode AND fallback.
 - Data: n8n data tables now (ids in [[02 The AI company (n8n @ ryan1515.app.n8n.cloud, project uFcEmgtYEFyGauyy)|§2]]); Postgres/Supabase migration with RLS ready in
   `ceo-brain/database/migrations/0001_init.sql`.
-- Default tenant = `fusiontech` (the earlier `biogreen` tenant is retired). Approval emails go to ryandhana1515@gmail.com
+- Default tenant = `fusiontech`. Approval emails go to ryandhana1515@gmail.com
   (Workflow Config node).
 - **Phase 2 (2026-09-25, Ryan: "never mind, do phase two")**: Outbound Sender, auto-send of
   low-risk replies (`Workflow Config.auto_send_low_risk`, default true), owner approval links,

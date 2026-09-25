@@ -7,6 +7,11 @@ tags: [zaphiel, memory]
 ---
 # Change log
 
+- 2026-09-25 (evening): vault trimmed to FusionTech AI + agents only (Ryan). Living brain live:
+  John loads the master brain + sales playbook from this vault on every message; the Vault Writer
+  (`tVvSWjOubwBNLi88`) writes Leads/ and Companies/ notes after every turn (first note landed
+  16:25 UTC). Website Build Record now sends the finished mock-up to the customer via the
+  Outbound Sender (WhatsApp when the credential exists, else email) and copies Ryan.
 - 2026-09-25 (session 2, final): **Obsidian switch-over executed.** Vault regenerated from this file
   one last time, memory.md archived + stubbed, CLAUDE.md / Zaphiel skill / daily-operator routine
   now read and write `zaphiel/vault/`. Obsidian Git plugin pre-installed in the vault (PR #21).
@@ -27,16 +32,5 @@ tags: [zaphiel, memory]
 - 2026-08-08: brain created (CLAUDE.md, memory.md, ops skill). Board of
   Advisors built: parser+gate lib (38 tests), 4 researched dossiers, adversarial
   fact-check, n8n meeting workflow `NOb10f0yUA8i8saA`, `board_meetings` table, PR #15.
-- 2026-08-08 (later): voice app shipped to https://ryan-rho.vercel.app (clap/voice
-  wake, ElevenLabs realtime voice, PWA). Task Intake workflow `eIgJT3NAuP7v9Hes`
-  + `jarvis_tasks` table wired to the agent's dispatch_task tool. First real board
-  meeting ran ("$2,000 ads before store live?" → unanimous NO with per-seat unlock
-  conditions), stored + emailed via `6go4TpVkwmoO1tnd`.
-- 2026-08-08 (later still): **renamed Jarvis → ZAPHIEL** at Ryan's instruction. Renamed:
-  repo dirs (`jarvis/` → `zaphiel/`, skill dir + skill name), CLAUDE.md identity,
-  this file, the voice app UI, the ElevenLabs agent name and greeting, and the n8n
-  workflow display name. Deliberately NOT renamed (would break the live voice link):
-  webhook path `/webhook/jarvis-task`, data table `jarvis_tasks`, ElevenLabs
-  `agent_3001kzgz64emesm91398nx05c17e`, Vercel project `ryan` / URL ryan-rho.vercel.app.
 
 Up: [[00 Home]]
