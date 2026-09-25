@@ -1,0 +1,39 @@
+{
+  "$comment": "Registry the training dashboard reads. Add a new agent here (and a playbook note) and it appears on the dashboard.",
+  "agents": [
+    {
+      "id": "company-discovery",
+      "name": "Discovery",
+      "role": "Company Discovery & Onboarding Agent",
+      "description": "Talks to a business owner like a consultant, finds where their information lives (never 'send us all your data'), builds the Client Digital Company Map and a proposal draft in the vault.",
+      "playbook": "zaphiel/vault/Knowledge/Company Discovery — playbook.md",
+      "chat": "discovery",
+      "chat_url": "https://ryan1515.app.n8n.cloud/webhook/40d1b87c-1ec4-4534-ac80-bbdeef475d23/chat",
+      "workflow_id": "9TnzsgPGRatMaQI3",
+      "status": "live"
+    },
+    {
+      "id": "john",
+      "name": "John",
+      "role": "Sales & WhatsApp Agent",
+      "description": "Answers every enquiry, qualifies the lead, asks the right questions, hands website requests to the Website Builder.",
+      "playbook": "zaphiel/vault/Knowledge/John — Sales playbook.md",
+      "chat": "john",
+      "workflow_id": "b7kbJpnKLN2uQxyn",
+      "status": "live",
+      "public_chat_page": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat",
+      "website_embed": "ceo-brain/website-chat/embed-snippet.html"
+    },
+    {
+      "id": "website-builder",
+      "name": "Website Builder",
+      "role": "Website Builder v2 — SME + Medical modes",
+      "description": "Turns a conversation into a premium build brief: mode (SME or Medical), design direction for the business category, pages, content rules, QA checklist and a Lovable build prompt. Reads the design standard and its playbook live from the vault.",
+      "playbook": "zaphiel/vault/Knowledge/Website Builder — playbook.md",
+      "chat": "website-builder",
+      "workflow_id": "hSTRGnHVsu6tMOmH",
+      "status": "live",
+      "design_standard": "zaphiel/vault/Knowledge/Website design standard.md"
+    }
+  ]
+}

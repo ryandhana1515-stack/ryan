@@ -33,11 +33,3 @@ tags: [zaphiel, open-loops]
 - **Zaphiel (after credits):** Website QA inspection of a built Lovable preview (the checklist exists;
   the inspection needs a built site); Solution Architect, Customer Service, Email/Admin, Marketing,
   Operations, Finance Assistant agents in the same contract; Supabase migration (002 is ready).
-
-## From Build Prompt v3 (2026-09-25) — Ryan's items
-- **Ryan:** put the two PDFs (Blueprint, Review v2) into `zaphiel/vault/_sources/`; Zaphiel then copies the MUST DO / MUST NOT DO word-for-word into all 25 agent/worker notes.
-- **Ryan:** review Phase 1 (the new folders) and say "continue" — or correct anything.
-- **Ryan:** approval authority: who approves what (Ryan, Dad, client owner) and money limits → [[40_Registries/Agent_Permission_Matrix]] human approvers table.
-- **Ryan:** choose the core stack for the first package (CRM, WhatsApp provider, dashboard, hosting) and create/authenticate the accounts; then say which integrations are `tested` so the [[40_Registries/Integration_Registry]] moves off `planned`.
-- **Ryan:** pick the first pilot client (Bio Green Elixirs or Brow Revolution) and set the package price (proposal only, never in an agent).
-- **Zaphiel (Phase 2, after Ryan's "continue"):** Solution Architect output (phased target architecture per client), onboarding steps 5–8 design detail, the first `80_Clients/` folder for the pilot, skill-pack extraction.

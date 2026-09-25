@@ -80,3 +80,6 @@ row carries the tenant; the vault is knowledge, the CRM/database is live data.
 ## 5. Vault writing rules
 Pull first; append, never rewrite Ryan's lines; keep notes short (playbooks are sent to the agents
 on every message); no secrets; commit, push, PR, merge in the same session.
+
+## CEO Brain v3 vault structure (2026-09-25)
+Numbered folders next to the original notes: `00_CEO_Brain` (master rules, architecture v3, build backlog + open questions), `10_Agents` (16 contracts), `20_Specialist_Workers` (9), `30_Platform_Services` (11 + environments), `40_Registries` (integration status is real: `planned` until Ryan confirms), `50_Client_Onboarding`, `80_Clients/<tenant>/` (never mixed), `90_Templates`. Root logs stay canonical (ADR-1). Work phase by phase per [[00_CEO_Brain/02_Build_Backlog]]; end every phase with files created / changed, open questions, what Ryan does next. Never move the four live-read Knowledge notes.

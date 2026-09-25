@@ -43,8 +43,3 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   send the link) → John hands off to the Website Builder → the mock-up is built → the link comes back
   to John → John sends it to the customer. No approve click anywhere. Publishing to a live domain
   stays with Ryan. (Supersedes the "owner clicks OPEN IN LOVABLE" approval step of the same day.)
-
-## ADR-1 · Vault structure v3 (2026-09-25, Ryan: "do all okay")
-- **Decision:** the numbered CEO Brain v3 structure is added next to the existing notes; nothing existing is moved, renamed or deleted. `Decisions`, `Change log`, `Open loops` stay at the root as the canonical logs (n8n and sessions write there); `00_CEO_Brain/03_Decision_Log` and `04_Changelog` point to them.
-- **Why:** the live agents and the Vault Writer read/write fixed paths; moving them would break automation for no gain.
-- **Consequences:** new decisions are appended here as `ADR-<n>` using [[90_Templates/ADR_Decision_TEMPLATE]]; the four live-read notes (`Knowledge/John — Sales playbook`, `Knowledge/Company Discovery — playbook`, `Knowledge/Website design standard`, `Knowledge/Website Builder — playbook`) never move.
