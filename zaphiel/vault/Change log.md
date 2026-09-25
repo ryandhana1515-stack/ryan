@@ -33,3 +33,12 @@ tags: [zaphiel, changelog]
   v2.0.2 deployed (automotive category, wider business-name detection). New **Chat with John public
   page** (`FngKsJ2x0AaWOdJl`, /webhook/ceo-brain/chat) + embed snippet for FusionTech.com.sg
   (`ceo-brain/website-chat/`). Tests: 36 passing. Still manual: the Lovable build step (see Open loops).
+- 2026-09-25 — **Automatic mock-up chain built in the repo** (Ryan: zero approvals). John now greets and
+  explains FusionTech himself (no escalation), runs the website intake (name, what the business does,
+  what the site must do, where to send the link), and hands off only when complete. Website Builder
+  v2.1: cinematic photo-led standard (full-bleed photography, rich colour and gradients, motion; no
+  black boxes), image shot list, Decide Build (one build per lead, daily cap 12), calls the new
+  **Website Build Runner** (`7sEuGyU6IjJsSaKL`, created in n8n): Higgsfield/Kling photography →
+  Lovable (MCP, OAuth) → Website Build Record → John sends the link; chat console shows the preview
+  and treats public-page visitors as real leads. 40 tests passing. **Not yet live:** the Claude Code
+  permission classifier refused the deployment steps; see Open loops.

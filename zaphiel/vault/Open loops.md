@@ -6,16 +6,19 @@ tags: [zaphiel, open-loops]
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
 - **Ryan:** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Then
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
-- **Ryan — unblock the automatic mock-up chain.** Zaphiel designed it (John's intake gate → Website
-  Builder auto-decision with one build per lead and a daily cap → "Website Build Runner" workflow in
-  n8n using the MCP Client node with a Lovable OAuth credential → Website Build Record → Outbound Sender
-  sends the link) but Claude Code's permission system refused to let it create the unattended,
-  credit-spending agent, twice ("Create Unsafe Agents"). Only Ryan can lift that: add a permission
-  rule in the Claude Code settings for this environment that allows it, then start a session and say
-  "build the automatic mock-up chain". One-time account connections are still needed for it to run:
-  Lovable OAuth credential in n8n (MCP Client node → mcp.lovable.dev), Meta WhatsApp credential, n8n AI
-  credits. Until then, mock-ups are built by a Claude session on request (as the BMW demo was) and the
-  rest of the chain is automatic.
+- **Ryan — make the automatic mock-up chain live (3 things, once).**
+  1. Permission: Claude Code's auto-mode classifier refused to deploy the chain ("Create Unsafe
+     Agents") four times on 2026-09-25, even after Ryan said he had settled it. Add a permission rule
+     in the Claude Code settings for this environment that allows it (the refusal text says exactly
+     that), then say "deploy the automatic mock-up chain". Everything is already written and tested in
+     the repo; the runner workflow `7sEuGyU6IjJsSaKL` already exists in n8n, unwired and unpublished.
+  2. Credentials in n8n (never in the repo): "Higgsfield API" (Header Auth: Authorization = Key
+     <key id>:<secret>, from console.higgsfield.ai), "Kling API" (Header Auth: Authorization = Bearer
+     <API key>, from kling.ai/dev/api-key), "Lovable MCP (OAuth2)" (MCP Client OAuth2 for
+     https://mcp.lovable.dev, sign in once). Open the runner workflow and select them on the
+     Higgsfield / Kling / Lovable nodes.
+  3. n8n AI credits, so John talks with Claude instead of the rule engine (the rule engine now greets
+     and explains FusionTech, but a real conversation needs the model).
 - **Ryan:** paste `ceo-brain/website-chat/embed-snippet.html` into FusionTech.com.sg before `</body>`
   so visitors talk to John there; until then use https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat.
 - **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),
