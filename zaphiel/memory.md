@@ -375,8 +375,10 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   /webhook/ceo-brain/website-built) from his own Claude session, or add a permission rule for
   `mcp__Lovable__create_project`. Until then the email's Lovable button is the one click.
 - Ryan already used the John Chat Console himself (lead_chat_780236a8…, "website about bmw").
-- **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
-  then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
+- **Obsidian vault**: generated INTO the repo at `zaphiel/vault/` (17 notes) with Obsidian Git
+  pre-installed + configured; PR #20 merged 2026-09-25 so it is on the default branch. Ryan's remaining
+  steps: clone with GitHub Desktop, "Open folder as vault" on `ryan/zaphiel/vault`, then say
+  "vault is ready" → retire memory.md (stub) and switch CLAUDE.md to read `00 Home`.
 - CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
   adapters, follow-up nudges, Calendar booking, Supabase. Then Phase 3: Agent Router + Solution
   Architect Agent.
