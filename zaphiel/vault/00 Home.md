@@ -1,43 +1,37 @@
 ---
-generated_by: build-vault.js (one-time migration, 2026-09-25)
-source: this vault is the source of truth since 2026-09-25 (memory.md archived)
-source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
+brain: FusionTech AI + its agents
+scope_decided_by_ryan: 2026-09-25 — "only FusionTech and all the other agents"; no Bio Green / BIO N:OV / VEX / cinematic sites
 built: 2026-09-25
 tags: [zaphiel, moc]
 ---
-# Zaphiel — Home
+# Zaphiel — Home (FusionTech AI)
 
-> **This vault is Zaphiel's brain** (Ryan confirmed "vault is ready" on 2026-09-25). Ryan edits it in
-> Obsidian; Claude sessions read it first and write real changes back before they end. Obsidian Git
-> syncs it with GitHub every 10 minutes.
-> Every session reads this first and appends real changes before it ends.
-> Rules: newest entry wins; never delete history (strike through and date instead);
-> facts here outrank the static account skill when they disagree.
+> **This vault is Zaphiel's brain** for **FusionTech AI** — the AI-agent company — and every agent
+> that runs it. Ryan edits it in Obsidian; the agents read it live; Claude sessions read it first
+> and write real changes back before they end. Obsidian Git syncs it with GitHub every 10 minutes.
+> Newest statements win. Never delete history: strike through and date instead.
+>
+> Not in this vault (Ryan's decision, 2026-09-25): Bio Green Elixirs / BIO N:OV / VEX / the
+> cinematic-website product. Their history sits in `zaphiel/archive/` in the repo; touch them only
+> when Ryan explicitly asks.
 
-Last updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
+## The company
+- [[FusionTech AI — Master Company Brain]] — the source document, verbatim. **John reads this live.**
+- [[Knowledge/John — Sales playbook]] — tone, answers, lessons. **John reads this live.**
+- [[Knowledge/_How the brain feeds the agents]] — what feeds whom, and what happens when you edit a note.
 
----
+## The agents
+- [[CEO Brain]] — the AI company operating system (John the Sales Agent, Website Builder, chat console, daily brief).
+- [[4g CEO Brain — AI Company OS, Phase 1 (built 2026-09-24)]] — build log and blockers.
+- [[02 The AI company (n8n @ ryan1515.app.n8n.cloud, project uFcEmgtYEFyGauyy)]] — every n8n workflow and its id.
+- [[2b WHAT CAN ACTUALLY ACT (read this before promising automation)]] — what holds real credentials.
+- [[4b Zaphiel voice app (the face)]] · [[4f Zaphiel can analyse video (added 2026-08-09)]] · [[04 Board of Advisors (decision module)]]
 
-## Sections
-- [[01 Live business state]]
-- [[02 The AI company (n8n @ ryan1515.app.n8n.cloud, project uFcEmgtYEFyGauyy)]]
-- [[2b WHAT CAN ACTUALLY ACT (read this before promising automation)]]
-- [[03 Repos and sites]]
-- [[04 Board of Advisors (decision module)]]
-- [[4b Zaphiel voice app (the face)]]
-- [[4c Cinematic 3D-scroll websites (a product Ryan sells)]]
-- [[4d bionov- site — compliance rewrite (2026-08-08)]]
-- [[4e Autonomous daily run (the thing that works without Ryan)]]
-- [[4f Zaphiel can analyse video (added 2026-08-09)]]
-- [[4g CEO Brain — AI Company OS, Phase 1 (built 2026-09-24)]]
-- [[05 Decisions log]]
-- [[06 Change log]]
-- [[07 Open loops - next actions]]
+## Running the business
+- [[05 Decisions log]] — decisions already made (agents and sessions obey these).
+- [[06 Change log]] — what was built, when.
+- [[07 Open loops - next actions]] — what is waiting on Ryan or on the next session.
 
-## Linked systems
-- [[CEO Brain]] — AI Lead & Sales Agent "John" + Website Builder (Phase 2 live)
-- Board dossiers: `board/dossiers/` in the repo
-- Ops manual: `.claude/skills/zaphiel/SKILL.md`
-
-## Knowledge (verbatim source documents)
-- [[FusionTech AI — Master Company Brain]]
+## Grows by itself
+- `Leads/` — one note per prospect John talks to (tests under `Leads/Test/`), with the conversation log.
+- `Companies/` — one note per company, linked to its leads. Open the graph view to watch it grow.
