@@ -1,4 +1,11 @@
-# Zaphiel's brain → Obsidian (planned, not executed)
+# Zaphiel's brain → Obsidian — EXECUTED 2026-09-25
+
+> Status: Ryan opened `zaphiel/vault/` in Obsidian and said "vault is ready". The vault is the
+> brain; `zaphiel/memory.md` is a stub and the last full copy sits in `zaphiel/archive/`.
+> `build-vault.js` was a one-time migration tool — do not run it again (it would overwrite
+> Ryan's edits with the archived memory).
+
+# Original plan (kept for history)
 
 Decision (Ryan, 2026-09-25): Zaphiel's persistent memory moves from `zaphiel/memory.md` into an
 Obsidian vault. Ryan sets the vault up; until then `zaphiel/memory.md` stays the source of truth

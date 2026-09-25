@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// ONE-TIME MIGRATION TOOL — ran for the last time on 2026-09-25. The vault is now edited directly
+// (Ryan in Obsidian, Claude in sessions). Running this again would overwrite those edits with the
+// archived memory file. Kept only for history / disaster recovery from zaphiel/archive/.
 // Splits zaphiel/memory.md into an Obsidian vault of linked notes.
 //   node zaphiel/obsidian/build-vault.js [outDir]   (default: zaphiel/vault)
 // Safe to re-run: it rewrites generated notes only (files it created, marked in frontmatter).

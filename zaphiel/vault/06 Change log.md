@@ -1,12 +1,15 @@
 ---
 generated_by: build-vault.js
 source: zaphiel/memory.md
-source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 built: 2026-09-25
 tags: [zaphiel, memory]
 ---
 # Change log
 
+- 2026-09-25 (session 2, final): **Obsidian switch-over executed.** Vault regenerated from this file
+  one last time, memory.md archived + stubbed, CLAUDE.md / Zaphiel skill / daily-operator routine
+  now read and write `zaphiel/vault/`. Obsidian Git plugin pre-installed in the vault (PR #21).
 - 2026-09-25 (session 2): built **Website Builder** (Agent #2, `hSTRGnHVsu6tMOmH`) + Lead Intake
   hand-off gate; **John Chat Console** (`ny60ozvH8B4uNpcb`); John's brief now welcomes website
   requests; rules engine tags `website_build`; lead webhook `ignoreBots` removed; Obsidian

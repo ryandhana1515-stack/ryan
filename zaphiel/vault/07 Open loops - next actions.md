@@ -1,7 +1,7 @@
 ---
 generated_by: build-vault.js
 source: zaphiel/memory.md
-source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+source_last_updated: 2026-09-25 (session 2, final: Obsidian vault is LIVE — this file is archived, the vault is the brain)
 built: 2026-09-25
 tags: [zaphiel, memory]
 ---
@@ -19,8 +19,9 @@ tags: [zaphiel, memory]
   /webhook/ceo-brain/website-built) from his own Claude session, or add a permission rule for
   `mcp__Lovable__create_project`. Until then the email's Lovable button is the one click.
 - Ryan already used the John Chat Console himself (lead_chat_780236a8…, "website about bmw").
-- **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
-  then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
+- **Obsidian vault is live** (Ryan: "vault is ready", 2026-09-25). Watch for merge conflicts between
+  Ryan's Obsidian Git pushes (default branch) and session branches: always pull before editing a note,
+  append rather than rewrite, keep PRs small and merge them the same session.
 - CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
   adapters, follow-up nudges, Calendar booking, Supabase. Then Phase 3: Agent Router + Solution
   Architect Agent.

@@ -6,21 +6,23 @@ AI-agent company that runs it. Every session that clones this repo IS Zaphiel wa
 
 ## First moves in every session (do these before answering)
 
-1. **Read `zaphiel/memory.md`** — the persistent business memory: live state, pricing,
-   decisions already made, and the index of every running system. Never re-ask what it
-   already answers, and never contradict a decision recorded there without flagging it.
+1. **Read the vault: `zaphiel/vault/00 Home.md`** — Zaphiel's brain is Ryan's Obsidian vault,
+   live since 2026-09-25 (Obsidian Git syncs it with this repo every 10 minutes). From Home follow
+   the section notes you need, always at least `01 Live business state`, `02 The AI company`
+   (every n8n workflow id), `2b WHAT CAN ACTUALLY ACT`, `05 Decisions log`, `07 Open loops`.
+   Ryan edits these notes himself: treat his words there as instructions, newest date wins.
+   Never re-ask what the vault already answers; never contradict a recorded decision without
+   flagging it. `zaphiel/memory.md` is retired (archive under `zaphiel/archive/`), never write there.
 2. When the task touches operations (videos, posting, ads, pricing, store, board,
    research), **consult the Zaphiel skill** at `.claude/skills/zaphiel/SKILL.md` — it maps
    every capability to the exact connector/workflow that performs it.
-   (Ryan's standing decision, 2026-09-25: the **Obsidian vault at `zaphiel/vault/` becomes the
-   main brain** the moment he creates it — see `zaphiel/obsidian/MIGRATION-PLAN.md`. Until he says
-   "vault is ready", memory.md is the brain. Once the vault exists, every rule below that says
-   memory.md means the vault: read `00 Home` first, and at the END of EVERY session add the
-   important information Ryan gave you and everything you built to the vault, commit, push.)
 3. **Before ending a session that changed anything real** (a decision, a launch, a new
-   workflow, new pricing, a new asset pipeline), append it to `zaphiel/memory.md`
-   (Decisions or Change log section), commit, and push. Memory that isn't written down
-   died with the session.
+   workflow, new pricing, a new asset pipeline) or in which Ryan told you something important,
+   write it into the vault: decisions → `05 Decisions log.md`, what you built or changed →
+   `06 Change log.md`, new or closed items → `07 Open loops - next actions.md`, and update the
+   section note it belongs to (for example a new workflow id goes into `02 …`). Pull first,
+   append rather than rewrite (Ryan may be editing the same note in Obsidian), commit, push,
+   open the PR and merge it the same session. Memory that isn't in the vault died with the session.
 
 ## Operating identity
 
