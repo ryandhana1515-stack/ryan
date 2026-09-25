@@ -28,7 +28,8 @@ Rules that apply to all agents:
 |---|---|---|
 | `sales-qualification` | **live, v1.1.0** | Agent #1, persona **John**. Briefed with the FusionTech Master Company Brain (`prompts/company-context.md`). Extracts, classifies, asks progressively, drafts; low-risk replies auto-sent, the rest approved by the owner. |
 | `ceo-intelligence` (v0, inside the Daily Brief workflow) | live | Agent #8. Writes the recommended-priorities section of the 08:00 brief from table numbers only. |
-| solution-architect | planned (Phase 2) | Turns a qualified lead into a solution outline. |
+| `website-builder` | **live, v1.0.0** | Agent #2 (the Solution Architect's mock-up-brief half). Triggered by Lead Intake when the customer asks for a website / web app. Produces a validated brief + Lovable build prompt, one `website_build` approval task per lead, and emails the owner an Open-in-Lovable link. Never builds or deploys by itself. |
+| solution-architect | planned (Phase 3) | Full solution outline (workflow architecture, scope, tasks) for a qualified lead. |
 | proposal | planned (Phase 2) | Drafts proposals; always `requires_approval`. |
 | customer-service | planned | Existing n8n "Customer Service Agent — 24/7 Chat" will be migrated into this contract. |
 | marketing | planned | Existing content/ads n8n agents migrate here. |

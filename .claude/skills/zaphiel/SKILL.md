@@ -185,4 +185,15 @@ and lock one reference image FIRST, exactly like the hero-image rule in §9.
   Prices, proposals, refunds, contracts and WON/LOST always stay human-approved.
 - Company knowledge for the agents: `zaphiel/knowledge/fusiontech-master-brain.md` (derive, never
   paraphrase the file). Daily brief: `Pew2PX1IcgdXqXr7` 08:00 SGT.
+- **Talk to John yourself** (test console, nothing goes to customers):
+  https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat — workflow
+  `ny60ozvH8B4uNpcb`; every message is a real Lead Intake run in test_mode with memory per chat session.
+- **Website Builder (Agent #2)** `hSTRGnHVsu6tMOmH`: Lead Intake hands off automatically when the
+  customer asks for a website / landing page / online store / web app / portal. It emails Ryan the
+  brief with an **OPEN IN LOVABLE** button (Build-with-URL, prompt prefilled). Clicking it and pressing
+  Send in Lovable IS the approval; nothing is built otherwise. Source: `ceo-brain/agents/website-builder/`,
+  `ceo-brain/workflows/website-builder/build.js`.
+- **AI credits**: if `ceo_agent_runs.provider` shows `rules` / `fallback` with error "Payment required",
+  the n8n AI Gateway credits are exhausted — the agents keep working on their deterministic fallbacks
+  but replies are generic. Ryan tops up n8n credits (or adds an Anthropic API key credential).
 

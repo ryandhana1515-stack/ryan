@@ -1,0 +1,11 @@
+{
+  "name": "Marcus Lim",
+  "phone": "+65 9234 5678",
+  "email": "marcus@swiftmove.sg",
+  "company": "SwiftMove Logistics Pte Ltd",
+  "source": "website",
+  "channel": "email",
+  "message": "Hi John, I run a logistics company in Singapore with 15 drivers. Customers keep WhatsApping us for delivery quotes and asking where their parcels are. I want a website where customers can request a delivery quote and track their shipment, connected to our WhatsApp. Can you build a logistics website for us? I am the owner.",
+  "test_mode": true,
+  "ai_mode": "mock"
+}

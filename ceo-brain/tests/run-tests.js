@@ -227,6 +227,60 @@ test('refund lead produces an approval task and email trigger', () => {
   assert.strictEqual(run.fin.task.task_type, 'approval');
 });
 
+test('logistics website lead is handed off to the Website Builder', () => {
+  const run = simulate(fx('logistics-website.json'));
+  assert.strictEqual(run.fin.website_requested, true);
+  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
+  assert.strictEqual(JSON.stringify(run.fin.response.handoffs), '["website-builder"]');
+  assert.ok(run.fin.result.extracted.desired_automation.includes('website_build'), 'rules must tag website_build');
+  assert.strictEqual(run.fin.result.extracted.industry, 'logistics');
+  assert.strictEqual(run.fin.result.intent !== 'spam', true);
+});
+test('john tan (no website ask) is not handed off', () => {
+  assert.strictEqual(mockRun.fin.website_requested, false);
+  assert.strictEqual(JSON.stringify(mockRun.fin.handoffs), '[]');
+});
+test('a returning lead is only handed off when the current message asks for a site', () => {
+  const p = Object.assign({}, fx('john-tan.json'), { message: 'Yes we use WhatsApp and Google Sheets', conversation_history: [{ role: 'customer', content: 'we might want a website later' }] });
+  const run = simulate(p, { existing: { id: 7, lead_key: 'x', lead_id: 'lead_existing', status: 'QUALIFYING' } });
+  assert.strictEqual(run.fin.website_requested, false);
+});
+
+console.log('\n[5] website builder agent (agents/website-builder/brief.js)');
+const wb = require('../agents/website-builder/brief.js');
+const briefSchema = require('../schemas/website-brief.schema.json');
+const wbInput = (fixture) => ({ company_name: fixture.company || null, industry: fixture.industry || null, contact_name: fixture.name, message: fixture.message, conversation: [], sales_summary: '', extracted: {} });
+test('fallback brief for the logistics lead validates against the schema', () => {
+  const r = wb.finalizeBrief({ error: 'model_error: simulated', input: wbInput(fx('logistics-website.json')) });
+  assert.strictEqual(r.fallback_used, true);
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+  assert.strictEqual(r.brief.business_name, 'SwiftMove Logistics Pte Ltd');
+  assert.strictEqual(r.brief.primary_goal, 'leads');
+  assert.ok(r.brief.integrations.includes('WhatsApp click-to-chat'));
+  assert.ok(r.brief.pages.length >= 3);
+  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 1800);
+  assert.ok(r.lovable_url.startsWith('https://lovable.dev/#prompt='));
+  assert.ok(!/\$\s?\d|guarantee/i.test(r.build_prompt), 'no prices or guarantees in the build prompt');
+});
+test('valid model brief is accepted and a fabricated business name is stripped', () => {
+  const good = { schema_version: '1.0', site_type: 'web_app', business_name: 'SwiftMove Logistics', industry: 'logistics', audience: 'SME shippers', primary_goal: 'leads', pages: [{ name: 'Home', purpose: 'x' }, { name: 'Track', purpose: 'y' }], features: ['Quote form'], integrations: ['WhatsApp click-to-chat'], style: { tone: 'clean', colours: null, references: [] }, existing_assets: { domain: null, logo: null, brand_colours: null, content: null }, content_notes: null, questions_for_customer: ['Do you have a domain?'], missing_information: ['existing_domain'], build_prompt: 'Build a web app…', confidence: 0.8, reasoning: 'ok' };
+  const r = wb.finalizeBrief({ raw_text: '```json\n' + JSON.stringify(good) + '\n```', input: wbInput(fx('logistics-website.json')) });
+  assert.strictEqual(r.fallback_used, false);
+  assert.strictEqual(r.brief.business_name, 'SwiftMove Logistics');
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+  const fake = Object.assign({}, good, { business_name: 'Acme Freight Kings' });
+  const r2 = wb.finalizeBrief({ raw_text: JSON.stringify(fake), input: Object.assign(wbInput(fx('logistics-website.json')), { company_name: null }) });
+  assert.strictEqual(r2.brief.business_name, null, 'name the customer never said must be removed');
+  assert.ok(r2.brief.missing_information.includes('business_name'));
+  assert.ok(r2.brief.build_prompt.includes('[PLACEHOLDER: business name]'));
+});
+test('invalid model output falls back with the reason recorded', () => {
+  const r = wb.finalizeBrief({ raw_text: '{"site_type":"spaceship"}', input: wbInput(fx('logistics-website.json')) });
+  assert.strictEqual(r.fallback_used, true);
+  assert.ok(String(r.fallback_reason).startsWith('schema_invalid'));
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

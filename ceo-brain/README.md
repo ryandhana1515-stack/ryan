@@ -17,8 +17,10 @@ needs you, an email lands in your inbox.
 
 - **n8n** at `https://ryan1515.app.n8n.cloud` — the orchestrator. Authenticated through the
   official n8n MCP in the Claude session, so workflows are created/updated/tested from code.
-- **Claude Sonnet 4.6 via n8n Gateway credits** — no API key needed; verified working today
-  (14 s, ~2,900 tokens per lead).
+- **Claude Sonnet 4.6 via n8n Gateway credits** — no API key needed. Worked on 2026-09-24/25;
+  on the afternoon of 2026-09-25 the Gateway returned **"Payment required"** (credits used up), so
+  John and the Website Builder ran on their deterministic fallbacks. Top up n8n AI credits (or add
+  an Anthropic API key credential in n8n) to get Claude-quality replies back. Nothing breaks meanwhile.
 - **Gmail credential** in n8n — used for the approval email. Verified: a `[TEST]` email was sent.
 - **GitHub credential** in n8n (not used by Phase 1).
 - **Lead Intake, deployed and active**: `CEO Brain — Lead Intake`, id `b7kbJpnKLN2uQxyn`,
@@ -27,6 +29,14 @@ needs you, an email lands in your inbox.
 - **Phase 2 workflows (all published)**: Outbound Sender `SAcnNxG1GWPwn3N7`, Approve Reply
   `uQxHTTdEkazgKpRT`, WhatsApp Inbound `3IhIJ5IYsB7wQQSg`, Daily Brief `Pew2PX1IcgdXqXr7`.
   See `workflows/README.md`.
+- **Website Builder (Agent #2)** `hSTRGnHVsu6tMOmH`: when a prospect asks John for a website,
+  landing page, online store, web app or portal, Lead Intake hands the conversation to this agent.
+  It writes a build brief + a Lovable build prompt, stores a `website_build` approval task and
+  emails you an **OPEN IN LOVABLE** button. Pressing Send in Lovable is the approval; nothing is
+  built otherwise. Verified 2026-09-25 (execution 176).
+- **John Chat Console** `ny60ozvH8B4uNpcb` — a hosted chat page to test John as a prospect:
+  https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (test mode,
+  nothing goes to real customers, conversation memory per chat session).
 - **Five data tables** in n8n holding leads, messages, agent runs, tasks and audit logs.
 
 ## WHAT WAS CREATED (this folder)
@@ -34,12 +44,15 @@ needs you, an email lands in your inbox.
 | Path | What it is |
 |---|---|
 | `agents/sales-qualification/` | Agent #1: manifest, input normalizer, deterministic rule engine (mock/fallback), post-processor with guardrails |
-| `prompts/` | The agent's system prompt (consultant persona, 13 discovery questions, hard rules) and user template |
+| `agents/website-builder/` | Agent #2: manifest and `brief.js` (deterministic fallback brief, validator, Lovable prompt builder, business-name guardrail) |
+| `prompts/` | John's system prompt (FusionTech context, 13 discovery questions + website branch, hard rules), the Website Builder prompts, and the user templates |
 | `schemas/` | Lead input contract, the production output schema (strict JSON), lead statuses + allowed transitions |
 | `workflows/lead-intake/` | `build.js` generates the n8n workflow from the above; `dist/` has the SDK code, the inlined Code-node JS, and an importable n8n JSON |
+| `workflows/website-builder/` | `build.js` generates the Website Builder workflow (same single-source pattern) |
+| `workflows/john-chat-console/` | The hosted chat console workflow (SDK source) |
 | `database/` | n8n data-table ids (live) and the Postgres/Supabase migration with tenant isolation (ready, not connected) |
 | `integrations/` | The one-payload adapter contract and the Phase 2 channel list |
-| `tests/` | 22 automated tests (unit + simulated n8n Code nodes) and a live webhook smoke test |
+| `tests/` | 28 automated tests (unit + simulated n8n Code nodes, incl. the website hand-off and the brief agent) and a live webhook smoke test |
 | `docs/` | Architecture, approvals/guardrails, Phase 2 plan |
 | `.env.example` | Variable names only. No values. |
 
@@ -93,7 +106,12 @@ step diffed them).
 ## WHAT CREDENTIALS ARE STILL MISSING
 
 For everything email-based: **none.** Claude runs on n8n Gateway credits; email goes through the
-existing Gmail credential.
+existing Gmail credential. **But the Gateway credits ran out on 2026-09-25** ("Payment required"):
+top them up in n8n, or create an Anthropic API key credential and attach it to the two Claude nodes.
+Until then the agents answer from their rule engines (safe, but generic).
+
+For Lovable website builds: **none.** The Website Builder uses Lovable's Build-with-URL link; you
+click, review the prefilled prompt and press Send in your own Lovable workspace.
 
 For WhatsApp (in and out): **one credential** — a Meta **WhatsApp Business Cloud** credential in
 n8n (permanent System User access token + the WhatsApp Business phone number ID). The old
@@ -124,5 +142,5 @@ the repo.
 Phase 2 is partly done (delivery, approval, WhatsApp adapter, daily brief). Still open in Phase 2:
 WhatsApp credential + Meta webhook switch-over, Facebook/Instagram Lead Ads and website-form
 adapters, automated follow-up nudges from `ceo_tasks`, Google Calendar booking, Supabase.
-Phase 3: Agent Router + Solution Architect Agent (turns a qualified lead into a scope), Lovable
-dashboard, Obsidian sync. See `docs/phase-2-plan.md` for the live checklist.
+Website Builder (Agent #2) is live. Phase 3: Agent Router + full Solution Architect Agent (turns a
+qualified lead into a scope), Lovable dashboard, Obsidian sync. See `docs/phase-2-plan.md` for the live checklist.

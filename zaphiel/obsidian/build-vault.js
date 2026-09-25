@@ -40,12 +40,25 @@ for (const s of sections) {
     + `# ${s.title}\n\n` + link(s.body) + '\n\nUp: [[00 Home]]\n';
   fs.writeFileSync(path.join(OUT, safe(s.file) + '.md'), note);
 }
+// Knowledge documents (zaphiel/knowledge/*.md) are copied VERBATIM as notes — they are source
+// documents Ryan gave Zaphiel (e.g. the FusionTech Master Company Brain), never paraphrased.
+const knowledge = [];
+const kdir = path.join(ROOT, 'zaphiel', 'knowledge');
+if (fs.existsSync(kdir)) for (const f of fs.readdirSync(kdir).filter((f) => f.endsWith('.md')).sort()) {
+  const raw = fs.readFileSync(path.join(kdir, f), 'utf8');
+  const titleM = raw.match(/^title:\s*"?(.+?)"?\s*$/m) || raw.match(/^#\s+(.+)$/m);
+  const title = safe(titleM ? titleM[1].trim() : f.replace(/\.md$/, ''));
+  const body = raw.replace(/^---[\s\S]*?---\n/, '');
+  fs.writeFileSync(path.join(OUT, title + '.md'), fm({ generated_by: 'build-vault.js', source: 'zaphiel/knowledge/' + f, built: today, tags: ['zaphiel', 'knowledge', 'verbatim'] }) + body + '\n\nUp: [[00 Home]]\n');
+  knowledge.push(title);
+}
 const home = fm({ generated_by: 'build-vault.js', source: 'zaphiel/memory.md', source_last_updated: lastUpdated, built: today, tags: ['zaphiel', 'moc'] })
   + `# Zaphiel — Home\n\n${preamble.replace(/^# .*\n/, '').trim()}\n\n## Sections\n`
   + sections.map((s) => `- [[${safe(s.file)}]]`).join('\n')
-  + `\n\n## Linked systems\n- [[CEO Brain]] — AI Lead & Sales Agent (Phase 1 live, Phase 2 on hold)\n- Board dossiers: \`board/dossiers/\` in the repo\n- Ops manual: \`.claude/skills/zaphiel/SKILL.md\`\n`;
+  + `\n\n## Linked systems\n- [[CEO Brain]] — AI Lead & Sales Agent "John" + Website Builder (Phase 2 live)\n- Board dossiers: \`board/dossiers/\` in the repo\n- Ops manual: \`.claude/skills/zaphiel/SKILL.md\`\n`
+  + (knowledge.length ? `\n## Knowledge (verbatim source documents)\n` + knowledge.map((k) => `- [[${k}]]`).join('\n') + '\n' : '');
 fs.writeFileSync(path.join(OUT, '00 Home.md'), home);
 const ceo = fm({ generated_by: 'build-vault.js', source: 'ceo-brain/README.md', built: today, tags: ['zaphiel', 'ceo-brain'] })
-  + '# CEO Brain\n\nAI Company Operating System. Phase 1 (lead intake + Sales Qualification Agent) is live on n8n workflow `b7kbJpnKLN2uQxyn`. Phase 2 waits for Ryan\'s approval.\n\n- Repo docs: `ceo-brain/README.md`, `ceo-brain/docs/architecture.md`, `ceo-brain/docs/phase-2-plan.md`\n- Data tables: ceo_leads, ceo_messages, ceo_agent_runs, ceo_tasks, ceo_audit_logs\n\nUp: [[00 Home]]\n';
+  + '# CEO Brain\n\nAI Company Operating System for FusionTech AI. Live on n8n: Lead Intake `b7kbJpnKLN2uQxyn` (Sales Agent **John**), Website Builder `hSTRGnHVsu6tMOmH`, Outbound Sender, Approve Reply, WhatsApp Inbound, Daily Brief, John Chat Console `ny60ozvH8B4uNpcb`.\n\n- Repo docs: `ceo-brain/README.md`, `ceo-brain/workflows/README.md`, `ceo-brain/docs/architecture.md`\n- Data tables: ceo_leads, ceo_messages, ceo_agent_runs, ceo_tasks, ceo_audit_logs\n- Company knowledge the agents are briefed from: [[FusionTech AI — Master Company Brain]]\n\nUp: [[00 Home]]\n';
 fs.writeFileSync(path.join(OUT, 'CEO Brain.md'), ceo);
-console.log(`vault written to ${path.relative(ROOT, OUT)}: ${sections.length + 2} notes`);
+console.log(`vault written to ${path.relative(ROOT, OUT)}: ${sections.length + 2 + knowledge.length} notes`);

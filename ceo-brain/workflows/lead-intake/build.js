@@ -19,6 +19,7 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 const TABLES_JSON = JSON.parse(read('database/n8n-data-tables.json'));
 const TABLES = TABLES_JSON.tables;
 TABLES.__sender_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.outbound_sender) || null;
+TABLES.__website_builder_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_builder) || null;
 const agentManifest = JSON.parse(read('agents/sales-qualification/agent.json'));
 const outputSchema = JSON.stringify(JSON.parse(read('schemas/sales-qualification-output.schema.json')));
 const leadStatus = JSON.stringify(JSON.parse(read('schemas/lead-status.json')));
@@ -109,6 +110,12 @@ const approvalNeeded = r.human_review_required || r.next_action === 'request_pro
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
 const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
+// Hand-offs to other agents. Website Builder: the CURRENT customer message asks for a site (or a brand-new lead whose desired automation includes it).
+const WEBSITE_RE = /\\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\\b/i;
+const wantsSiteNow = WEBSITE_RE.test(String(ctx.lead.message || ''));
+const wantsSiteExtracted = (r.extracted.desired_automation || []).some((a) => /website|web ?app|landing/i.test(String(a)));
+const websiteRequested = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch' && (wantsSiteNow || (ctx.is_new && wantsSiteExtracted));
+const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -132,6 +139,7 @@ const response = {
   result: r,
   follow_up_task: followUpTask,
   audit: fin.audit,
+  handoffs,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -142,7 +150,7 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', response
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response
 } }];
 `;
 
@@ -168,7 +176,7 @@ const leadWebhook = trigger({
   version: 2.1,
   config: {
     name: 'Lead Webhook',
-    parameters: { httpMethod: 'POST', path: 'ceo-brain/lead', responseMode: 'responseNode', options: { ignoreBots: true } },
+    parameters: { httpMethod: 'POST', path: 'ceo-brain/lead', responseMode: 'responseNode', options: {} },
     position: [0, 300]
   },
   output: [{ body: { name: 'John Tan', company: 'ABC Property Pte Ltd', source: 'facebook', message: 'Hi, I run a property agency with 25 agents.', test_mode: true } }]
@@ -572,6 +580,62 @@ const createTask = node({
   output: [{ id: 1, task_id: 'task_x' }]
 });
 
+const websiteGate = ifElse({
+  version: 2.3,
+  config: {
+    name: 'Website Requested?',
+    parameters: {
+      conditions: {
+        options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 },
+        conditions: [{ id: 'website', leftValue: expr("{{ ${F}.website_requested }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }],
+        combinator: 'and'
+      }
+    },
+    position: [3640, 300]
+  }
+});
+
+const callWebsiteBuilder = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'Hand Off to Website Builder',
+    onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once',
+      source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__website_builder_workflow_id || 'REPLACE_ME')}, cachedResultName: 'CEO Brain — Website Builder' },
+      workflowInputs: {
+        mappingMode: 'defineBelow',
+        value: {
+          tenant_id: expr("{{ ${F}.lead.tenant_id }}"),
+          lead_id: expr("{{ ${F}.lead.lead_id }}"),
+          contact_name: expr("{{ ${F}.lead.contact_name ?? '' }}"),
+          company_name: expr("{{ ${F}.lead.company_name ?? '' }}"),
+          industry: expr("{{ ${F}.lead.industry ?? ${F}.result.extracted.industry ?? '' }}"),
+          email: expr("{{ ${F}.lead.email ?? '' }}"),
+          phone: expr("{{ ${F}.lead.phone ?? '' }}"),
+          channel: expr("{{ ${F}.lead.channel }}"),
+          message: expr("{{ ${F}.lead.message ?? '' }}"),
+          conversation_json: expr("{{ JSON.stringify(${F}.lead.conversation_history ?? []) }}"),
+          sales_summary: expr("{{ ${F}.result.summary }}"),
+          extracted_json: expr("{{ JSON.stringify(${F}.result.extracted) }}"),
+          test_mode: expr("{{ ${F}.lead.test_mode }}"),
+          notify_email: expr("{{ ${F}.config.notify_email }}"),
+          source_execution_id: expr("{{ ${F}.execution_id }}")
+        },
+        matchingColumns: [],
+        schema: ${j([['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']].map(([id,type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))},
+        attemptToConvertTypes: false,
+        convertFieldsToString: true
+      },
+      options: { waitForSubWorkflow: false }
+    },
+    position: [3860, 520]
+  },
+  output: [{ ok: true }]
+});
+
 const autoSendGate = ifElse({
   version: 2.3,
   config: {
@@ -583,7 +647,7 @@ const autoSendGate = ifElse({
         combinator: 'and'
       }
     },
-    position: [3640, 300]
+    position: [4080, 300]
   }
 });
 
@@ -617,7 +681,7 @@ const sendReplyNow = node({
       },
       options: { waitForSubWorkflow: true }
     },
-    position: [3860, 160]
+    position: [4300, 160]
   },
   output: [{ sent: true, status: 'sent' }]
 });
@@ -633,7 +697,7 @@ const needsHuman = ifElse({
         combinator: 'and'
       }
     },
-    position: [4080, 300]
+    position: [4520, 300]
   }
 });
 
@@ -652,7 +716,7 @@ const notifyOwner = node({
       message: expr("{{ '<h2>' + ${F}.task.title + '</h2>' + '<p><b>Status:</b> ' + ${F}.status_change.from + ' → ' + ${F}.status_change.to + ' &nbsp; <b>Temperature:</b> ' + ${F}.result.lead_temperature + ' &nbsp; <b>Intent:</b> ' + ${F}.result.intent + '</p>' + '<p><b>Why a human:</b> ' + ${F}.result.escalation_reasons.join(', ') + '</p>' + '<p><b>Summary:</b> ' + ${F}.result.summary + '</p>' + '<p><b>Original message:</b><br>' + (${F}.lead.message ?? '') + '</p>' + '<p><b>Draft reply (NOT sent):</b><br>' + (${F}.result.recommended_reply || '(withheld by guardrail)') + '</p>' + '<p><b>Missing:</b> ' + ${F}.result.missing_information.join(', ') + '</p>' + '<p><b>Next action:</b> ' + ${F}.result.next_action + ' &nbsp; <b>Follow up by:</b> ' + (${F}.result.follow_up_at ?? '-') + '</p>' + (${F}.result.recommended_reply && ${F}.send_channel ? '<p><a href=\\"${agentManifest.approve_url}?decision=approve&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#0a7d3c;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">APPROVE &amp; SEND via ' + ${F}.send_channel + '</a> &nbsp; <a href=\\"${agentManifest.approve_url}?decision=reject&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#999;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">Reject</a></p>' : '<p><i>No reply can be sent automatically (no draft or no email/WhatsApp channel). Handle manually.</i></p>') + '<p style=\\"color:#888\\">lead ' + ${F}.lead.lead_id + ' · run ' + ${F}.run_id + ' · ' + ${F}.provider + '/' + ${F}.model + ' · execution ' + ${F}.execution_id + '</p>' }}"),
       options: { appendAttribution: false, senderName: 'CEO Brain' }
     },
-    position: [4320, 200]
+    position: [4760, 200]
   },
   output: [{ id: 'gmail-id' }]
 });
@@ -667,7 +731,7 @@ const respondResult = node({
       responseBody: expr("{{ JSON.stringify($('Finalize & Validate Result').first().json.response) }}"),
       options: { responseCode: 200 }
     },
-    position: [4560, 300]
+    position: [5000, 300]
   },
   output: [{ ok: true }]
 });
@@ -692,7 +756,10 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(logAudit)
   .to(saveDraftReply)
   .to(createTask)
-  .to(autoSendGate
+  .to(websiteGate
+    .onTrue(callWebsiteBuilder.to(autoSendGate))
+    .onFalse(autoSendGate))
+  .add(autoSendGate
     .onTrue(sendReplyNow.to(needsHuman))
     .onFalse(needsHuman))
   .add(needsHuman
@@ -704,7 +771,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .group('1. Intake & validation', [workflowConfig, normalizeLeadNode, isLeadValid], { description: 'Reads the webhook body, normalizes contact fields, and gates on validity (invalid payloads get an HTTP 400 response).' })
   .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound], { description: 'Looks up the lead by dedupe key, merges known contact facts, upserts the lead row and logs the inbound message.' })
   .group('3. AI qualification', [rulesEngine, useLiveAi, claudeAgent, finalize], { description: 'Rule engine always computes a baseline; Claude extracts + classifies when ai_mode=live; strict schema validation, fallback and guardrails run on every result.' })
-  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Writes status, run, audit, draft and task; auto-sends low-risk replies; emails approve/reject links when a human is needed; responds.' });
+  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, websiteGate, callWebsiteBuilder, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Writes status, run, audit, draft, task; hands website asks to the Website Builder; auto-sends low-risk replies; emails approve links; responds.' });
 `;
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
@@ -728,6 +795,7 @@ fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({
   gmail_message: '=' + sdkStr(/name: 'Notify Owner \(Gmail\)'[\s\S]*?message: expr\("((?:[^"\\]|\\.)*)"\)/),
   gmail_subject: '=' + sdkStr(/name: 'Notify Owner \(Gmail\)'[\s\S]*?subject: expr\("((?:[^"\\]|\\.)*)"\)/),
   system_prompt: systemPrompt,
-  sender_workflow_id: TABLES.__sender_workflow_id
+  sender_workflow_id: TABLES.__sender_workflow_id,
+  website_builder_workflow_id: TABLES.__website_builder_workflow_id
 }, null, 2));
 console.log('built', path.relative(ROOT, path.join(DIST, 'lead-intake.sdk.ts')), sdk.length, 'chars');

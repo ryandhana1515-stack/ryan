@@ -28,6 +28,7 @@ var RB_SOURCES = [
   [/walk[- ]?in/i, 'walk_in'], [/cold call|telemarket/i, 'outbound_calls']
 ];
 var RB_AUTOMATION = [
+  [/\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\b/i, 'website_build'],
   [/whatsapp.*(reply|respond|answer|chat)|(reply|respond|answer).*whatsapp/i, 'whatsapp_auto_reply'],
   [/book(ing)? (an? )?appointment|schedule (a )?(call|meeting|viewing)|appointment/i, 'appointment_booking'],
   [/follow[- ]?up/i, 'lead_follow_up'],

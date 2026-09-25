@@ -201,6 +201,12 @@ const approvalNeeded = r.human_review_required || r.next_action === 'request_pro
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
 const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
+// Hand-offs to other agents. Website Builder: the CURRENT customer message asks for a site (or a brand-new lead whose desired automation includes it).
+const WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\b/i;
+const wantsSiteNow = WEBSITE_RE.test(String(ctx.lead.message || ''));
+const wantsSiteExtracted = (r.extracted.desired_automation || []).some((a) => /website|web ?app|landing/i.test(String(a)));
+const websiteRequested = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch' && (wantsSiteNow || (ctx.is_new && wantsSiteExtracted));
+const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -224,6 +230,7 @@ const response = {
   result: r,
   follow_up_task: followUpTask,
   audit: fin.audit,
+  handoffs,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -234,5 +241,5 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', response
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response
 } }];

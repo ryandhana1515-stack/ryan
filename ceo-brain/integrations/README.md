@@ -28,6 +28,14 @@ wrapped with lead id, status change, follow-up task and observability fields.
 | respond.io | respond.io webhook → map → POST | respond.io API token | Phase 2 |
 | Website form (Lovable site) | fetch() to the webhook from the form handler | none (add `CEO_BRAIN_WEBHOOK_SECRET` header in Phase 2) | Phase 2 |
 | Gmail (inbound enquiries) | Gmail Trigger → map → POST | existing Gmail credential | Phase 2 |
+| John Chat Console (hosted test chat) | `CEO Brain — John Chat Console` `ny60ozvH8B4uNpcb` → POST to the webhook in test_mode | none | **working** — https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat |
+
+## Outbound builders
+
+| Target | How | Credential needed | Status |
+|---|---|---|---|
+| Lovable (website builds) | Website Builder emails an **Open in Lovable** link (`https://lovable.dev/#prompt=<encoded brief>`, Lovable "Build with URL"). The owner presses Send in Lovable = approval + build. | none. The Lovable REST API cannot create AI projects (MCP-only), so nothing is created automatically. | **working** |
+| Claude (n8n AI Gateway credits) | Anthropic node with the managed Gateway credential | n8n credits — exhausted on 2026-09-25 ("Payment required"); agents fall back to rules until topped up | **needs top-up** |
 
 Outbound: every customer message leaves through `CEO Brain — Outbound Sender` (`SAcnNxG1GWPwn3N7`):
 email via Gmail (live), WhatsApp via the Cloud API node (re-add once the credential exists).

@@ -4,7 +4,7 @@
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-09-25 (session: FusionTech brain added; CEO Brain Phase 2 delivery + approval + WhatsApp adapter + daily brief)
+Last updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
 
 ---
 
@@ -73,6 +73,11 @@ Active workflows (ID — what it does):
 - `3IhIJ5IYsB7wQQSg` CEO Brain — WhatsApp Inbound (GET/POST /webhook/ceo-brain/whatsapp, verify
   token ceo-brain-verify) — published, Meta NOT pointed at it yet
 - `Pew2PX1IcgdXqXr7` CEO Brain — Daily Brief (08:00 SGT → email; CEO Intelligence Agent v0)
+- `hSTRGnHVsu6tMOmH` **CEO Brain — Website Builder** (Agent #2; called by Lead Intake when a
+  customer asks for a website/web app → brief + Lovable build prompt → approval task → email with
+  OPEN IN LOVABLE button; source `ceo-brain/workflows/website-builder/build.js`)
+- `ny60ozvH8B4uNpcb` **CEO Brain — John Chat Console** — hosted chat to test John:
+  https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (test_mode)
 - Inactive/temp: `X5frUjOIdaMQPAbl` Louis Transcribe, `CyiN1kwx3bfjTQyW` +
   `r0IXsruqQ8kQ6NiU` art utilities, `c86AzvcNlDmPn5im` WABA subscribe.
 
@@ -87,6 +92,10 @@ Reports, Manager Reports, Call Log, Affiliate Outreach, `board_meetings` (jJwgGy
 
 Diagnosed 2026-08-08 after Ryan said the fleet "does nothing". He was right:
 
+- **UPDATE 2026-09-25 (afternoon): Gateway credits EXHAUSTED again** — both Claude nodes returned
+  "Payment required"; Lead Intake and Website Builder fell back to their rule engines (safe,
+  generic). Ryan must top up n8n AI credits or add an Anthropic API key credential. Check
+  `ceo_agent_runs.provider` = `rules`/`fallback` to see when this is happening.
 - **UPDATE 2026-09-24: n8n Gateway credits WORK again** — the managed Anthropic credential
   answered on `lmChatAnthropic` and `anthropic` nodes (claude-sonnet-4-6) with no API key. The
   "Payment required" failures of 2026-08-05/08 no longer reproduce. Workflow `NOb10f0yUA8i8saA`
@@ -269,6 +278,21 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   Meta's webhook at /webhook/ceo-brain/whatsapp.
 - Not in the repo: the four Phase 2 workflows' SDK source (the session's permission classifier
   blocked writing the sender file). Export them from n8n when next touched.
+- **Phase 2b (2026-09-25, later)**: **Website Builder = Agent #2** (`ceo-brain/agents/website-builder/`).
+  Lead Intake's new "Website Requested?" gate fires when the CURRENT message asks for a website /
+  landing page / online store / web app / portal (or a new lead's desired automation includes
+  `website_build`), hands off fire-and-forget to `hSTRGnHVsu6tMOmH`. That agent validates a brief
+  (facts only from the customer's words; pages/features may be proposed; fabricated business names
+  are stripped), builds a ≤1800-char Lovable prompt, upserts ONE `website_build` task per lead
+  (`requires_approval`), and emails Ryan an **OPEN IN LOVABLE** button (Lovable Build-with-URL,
+  `https://lovable.dev/#prompt=…`). Pressing Send in Lovable is the approval. The Lovable REST API
+  cannot create AI projects (MCP-only), so nothing is created automatically — by design.
+  John's context now says FusionTech DOES build websites as part of AI systems (was "NOT a website
+  agency"). Verified: execution 175 → 176 (email 1a0d800062ce04cf), chat console execution 177.
+  Lead webhook `ignoreBots` removed (it rejected n8n's own HTTP client with 403). 28 tests pass.
+- **John Chat Console** `ny60ozvH8B4uNpcb`: where Ryan tests John as a prospect. Every message =
+  real Lead Intake run in test_mode (nothing to customers), memory reloaded from `ceo_messages`
+  per chat session, console status line under each reply.
 
 ## 5. Decisions log
 
@@ -289,6 +313,13 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 - 2026-08-08 — Zaphiel architecture: repo `ryan` is the brain (CLAUDE.md + zaphiel/ +
   .claude/skills/zaphiel); n8n is the always-on body; connectors are the hands. One-off
   session builds are over — new capabilities get indexed here.
+- 2026-09-25 — **Obsidian vault = the main brain from the day Ryan creates it.** Everything
+  important Ryan says and everything built gets added to the vault at the end of every session
+  (memory.md until then). Knowledge documents (FusionTech brain) live in the vault verbatim.
+- 2026-09-25 — Website builds go through Lovable via Build-with-URL links inside an approval
+  email; no automatic project creation, no deploys without Ryan. Website Builder is Agent #2.
+- 2026-09-25 — John's brief changed: FusionTech builds websites/web apps when part of an AI
+  system (not "NOT a website agency"). Website requests are welcomed and handed to Agent #2.
 - 2026-08-08 — Board roster fixed at Hormozi/Munger/Godin/Blakely; meetings via n8n with
   managed Anthropic credentials; chat + repo archive + email surfacing; monthly standing
   review approved by Ryan.
@@ -299,6 +330,11 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 ## 6. Change log
 
+- 2026-09-25 (session 2): built **Website Builder** (Agent #2, `hSTRGnHVsu6tMOmH`) + Lead Intake
+  hand-off gate; **John Chat Console** (`ny60ozvH8B4uNpcb`); John's brief now welcomes website
+  requests; rules engine tags `website_build`; lead webhook `ignoreBots` removed; Obsidian
+  builder copies `zaphiel/knowledge/*.md` verbatim; CLAUDE.md carries the "vault = main brain,
+  append every session" rule. Gateway credits found exhausted ("Payment required").
 - 2026-09-25: FusionTech brain stored; Sales Agent v1.1.0 (John); Phase 2 workflows built and
   published (Outbound Sender, Approve Reply, WhatsApp Inbound, Daily Brief); Lead Intake updated
   in place (26 nodes) and verified byte-identical to the repo build.
@@ -322,6 +358,11 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 ## 7. Open loops / next actions
 
+- **Top up n8n AI Gateway credits** (or add an Anthropic API key credential) — John and the
+  Website Builder are on rule fallbacks since 2026-09-25 afternoon.
+- **Push branch `claude/inspiring-cori-j5wemu`** (two commits, incl. this one) — the session's
+  permission classifier blocked `git push`; Ryan pushes, PR #20 updates, merge = brain update.
+- Try the John Chat Console; when a website is requested, click OPEN IN LOVABLE in the email.
 - **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
   then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
 - CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website

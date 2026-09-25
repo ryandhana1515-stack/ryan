@@ -40,3 +40,10 @@ workflow already reach the repo. No new credential, no new service.
 - Zaphiel keeps the same discipline: read `00 Home` first, append real changes before ending a
   session, commit, push.
 - No secrets in the vault, ever (it syncs to GitHub).
+- **Ryan's rule (2026-09-25): the vault is the MAIN brain from the day it exists.** At the end of
+  EVERY session Zaphiel adds the important information Ryan gave and everything that was built
+  (decisions, new workflows, new agents, IDs, blockers) to the vault — then commit + push.
+- `zaphiel/knowledge/*.md` (e.g. the FusionTech Master Company Brain) is copied into the vault
+  verbatim by `build-vault.js` as `knowledge` notes; the agents (John, Website Builder) are briefed
+  from those documents, so editing them in Obsidian is how Ryan updates John's brain (rebuild +
+  redeploy the workflows afterwards).

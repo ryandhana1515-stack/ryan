@@ -1,0 +1,43 @@
+{
+  "id": "website-builder",
+  "name": "Website Builder Agent",
+  "version": "1.0.0",
+  "description": "Agent #2 (Solution Architect: mock-up brief). When John detects that a prospect wants a website, landing page, online store, web app or portal, this agent turns the conversation into a structured build brief plus a self-contained Lovable build prompt, stores it as an approval task and emails the owner a one-click 'Open in Lovable' link. It never builds or deploys anything itself.",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
+  "model_display_name": "Claude Sonnet 4.6",
+  "temperature": 0.2,
+  "max_tokens": 3000,
+  "prompts": {
+    "system": "prompts/website-builder.system.md",
+    "user": "prompts/website-builder.user.md"
+  },
+  "output_schema": "schemas/website-brief.schema.json",
+  "fallback": "agents/website-builder/brief.js#wbFallbackBrief",
+  "postprocess": "agents/website-builder/brief.js#finalizeBrief",
+  "triggered_by": "sales-qualification (Lead Intake 'Website Requested?' gate: current customer message mentions a website / landing page / online store / web app / portal, or a new lead whose desired automation includes website_build)",
+  "builder": {
+    "tool": "Lovable",
+    "mechanism": "Build-with-URL (https://lovable.dev/#prompt=<encoded build_prompt>) — no API key; the human clicking the link and pressing Send in Lovable IS the approval. The Lovable REST API cannot create AI projects (MCP-only), so nothing is created automatically.",
+    "human_approval": "always (task_type website_build, requires_approval=true)"
+  },
+  "notify_email": "ryandhana1515@gmail.com",
+  "may_autonomously": [
+    "read the lead's conversation and the sales agent's summary",
+    "draft a website brief and a Lovable build prompt",
+    "propose pages, features and integrations",
+    "create/refresh one website_build approval task per lead",
+    "email the owner the brief with an Open-in-Lovable link"
+  ],
+  "must_escalate": [
+    "starting a build (the owner clicks the Lovable link)",
+    "any deploy or publish",
+    "prices, packages, timelines, guarantees (never in the brief)"
+  ],
+  "never": [
+    "create or deploy anything on Lovable or Vercel by itself",
+    "invent a business name, tagline, testimonial, award, price or delivery date",
+    "send anything to the customer (John's reply is handled by the Sales agent)",
+    "store credentials or secrets in briefs, tasks or logs"
+  ]
+}
