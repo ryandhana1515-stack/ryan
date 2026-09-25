@@ -1,0 +1,5 @@
+# Obsidian keeps per-device UI state here; only shared settings/plugins belong in git
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.trash/

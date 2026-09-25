@@ -1,0 +1,35 @@
+---
+generated_by: build-vault.js
+source: zaphiel/memory.md
+source_last_updated: 2026-09-25 (session 2: Website Builder agent via Lovable, John Chat Console, Obsidian = main brain rule)
+built: 2026-09-25
+tags: [zaphiel, memory]
+---
+# Open loops - next actions
+
+- **Top up n8n AI Gateway credits** (or add an Anthropic API key credential) — John and the
+  Website Builder are on rule fallbacks since 2026-09-25 afternoon.
+- **Push branch `claude/inspiring-cori-j5wemu`** (two commits, incl. this one) — the session's
+  permission classifier blocked `git push`; Ryan pushes, PR #20 updates, merge = brain update.
+- **Zero-click website builds (Ryan 2026-09-25: "the AI agents do it all, I just sit and relax")**:
+  Lovable MCP is OAuth-only → only a Claude session with the Lovable connector can build; the build
+  session's permission system refused the demo build and the unattended hourly Routine. Needs Ryan's
+  own authorization: start the "Website Build Routine" (hourly; reads open website_build tasks,
+  skips test/chat leads, create_project on workspace zjVuSnHzhPWFroVpa2KX, reports to
+  /webhook/ceo-brain/website-built) from his own Claude session, or add a permission rule for
+  `mcp__Lovable__create_project`. Until then the email's Lovable button is the one click.
+- Ryan already used the John Chat Console himself (lead_chat_780236a8…, "website about bmw").
+- **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
+  then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
+- CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
+  adapters, follow-up nudges, Calendar booking, Supabase. Then Phase 3: Agent Router + Solution
+  Architect Agent.
+- **#1 bottleneck: get the Shopify store live** — until then revenue is $0 and every ad
+  dollar is premature (board meeting topic).
+- Decide BIO N:OV retail pricing (convene the board with live cost data).
+- TikTok Shop SG application — follow up.
+- Merge PR #15 to activate the Zaphiel brain for all future sessions.
+- Wire the board's monthly standing review routine (first Monday of month).
+- Fusion AI / AI Business OS: design exists; decide build vs park.
+
+Up: [[00 Home]]
