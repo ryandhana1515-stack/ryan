@@ -7,6 +7,10 @@ tags: [zaphiel, memory]
 ---
 # Open loops - next actions
 
+- **Ryan's order of play (2026-09-25 evening):** (1) top up n8n AI credits → (2) make the website
+  chain run end to end: customer → John → Website Builder → Lovable build → mock-up sent to the
+  customer on WhatsApp → (3) then the other agents. Blockers for (2): Meta WhatsApp Business
+  credential in n8n; Lovable build step needs Ryan's authorization (OAuth-only MCP).
 - **Top up n8n AI Gateway credits** (or add an Anthropic API key credential) — John and the
   Website Builder are on rule fallbacks since 2026-09-25 afternoon.
 - **Push branch `claude/inspiring-cori-j5wemu`** (two commits, incl. this one) — the session's
