@@ -16,11 +16,14 @@ const DIST = path.join(__dirname, 'dist');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
 // n8n data tables created for Phase 1 (project uFcEmgtYEFyGauyy on ryan1515.app.n8n.cloud)
-const TABLES = JSON.parse(read('database/n8n-data-tables.json')).tables;
+const TABLES_JSON = JSON.parse(read('database/n8n-data-tables.json'));
+const TABLES = TABLES_JSON.tables;
+TABLES.__sender_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.outbound_sender) || null;
 const agentManifest = JSON.parse(read('agents/sales-qualification/agent.json'));
 const outputSchema = JSON.stringify(JSON.parse(read('schemas/sales-qualification-output.schema.json')));
 const leadStatus = JSON.stringify(JSON.parse(read('schemas/lead-status.json')));
-const systemPrompt = read('prompts/sales-qualification.system.md').replace('{{OUTPUT_SCHEMA}}', outputSchema.trim());
+const companyContext = read('prompts/company-context.md').trim();
+const systemPrompt = companyContext + '\n\n' + read('prompts/sales-qualification.system.md').replace('{{OUTPUT_SCHEMA}}', outputSchema.trim());
 const userPrompt = read('prompts/sales-qualification.user.md');
 
 // Strip the Node-only module wrapper lines so the code runs inside the n8n sandbox.
@@ -43,7 +46,7 @@ const cfg = $('Workflow Config').first().json;
 const raw = $input.first().json || {};
 const body = (raw.body && typeof raw.body === 'object') ? raw.body : raw;
 const res = normalizeLead(body, { defaultTenant: cfg.default_tenant, defaultAiMode: cfg.default_ai_mode });
-return [{ json: { ok: res.ok, errors: res.errors, warnings: res.warnings, lead: res.lead, config: { model: cfg.model, notify_email: cfg.notify_email, agent: cfg.agent, agent_version: cfg.agent_version }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
+return [{ json: { ok: res.ok, errors: res.errors, warnings: res.warnings, lead: res.lead, config: { model: cfg.model, notify_email: cfg.notify_email, agent: cfg.agent, agent_version: cfg.agent_version, auto_send_low_risk: String(cfg.auto_send_low_risk) === 'true' }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
 `;
 
 const codeResolve = `// Merge the incoming lead with whatever we already know about it and build the prompt.
@@ -103,6 +106,9 @@ const finishedAt = new Date().toISOString();
 const latencyMs = Math.max(0, new Date(finishedAt).getTime() - new Date(ctx.now).getTime());
 const r = fin.result;
 const approvalNeeded = r.human_review_required || r.next_action === 'request_proposal_approval';
+const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
+const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
+const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -121,6 +127,7 @@ const response = {
   is_new_lead: ctx.is_new,
   test_mode: ctx.lead.test_mode,
   ai: { provider: fin.provider, model: fin.model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, validation_errors: fin.validation_errors, latency_ms: latencyMs, usage },
+  delivery: { auto_send: autoSend, channel: sendChannel, to: sendTo ? sendTo.replace(/(.{3}).+(.{2})/, '$1***$2') : null, mode: autoSend ? 'auto_send_low_risk' : (approvalNeeded ? 'awaiting_human_approval' : (ctx.lead.test_mode ? 'test_mode_no_send' : 'draft_only')) },
   status_change: fin.status_change,
   result: r,
   follow_up_task: followUpTask,
@@ -134,7 +141,8 @@ return [{ json: {
   validation_errors: fin.validation_errors, status_change: fin.status_change, audit: fin.audit,
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
-  approval_needed: approvalNeeded, response
+  approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
+  send_subject: 'Re: your enquiry to FusionTech AI', response
 } }];
 `;
 
@@ -179,13 +187,14 @@ const workflowConfig = node({
         { id: 'cfg-notify', name: 'notify_email', value: ${j(agentManifest.notify_email)}, type: 'string' },
         { id: 'cfg-tenant', name: 'default_tenant', value: ${j(agentManifest.default_tenant)}, type: 'string' },
         { id: 'cfg-aimode', name: 'default_ai_mode', value: 'live', type: 'string' },
+        { id: 'cfg-autosend', name: 'auto_send_low_risk', value: ${j(String(agentManifest.auto_send_low_risk))}, type: 'string' },
         { id: 'cfg-agent', name: 'agent', value: ${j(agentManifest.id)}, type: 'string' },
         { id: 'cfg-agentv', name: 'agent_version', value: ${j(agentManifest.version)}, type: 'string' }
       ] }
     },
     position: [220, 300]
   },
-  output: [{ model: ${j(agentManifest.model)}, notify_email: ${j(agentManifest.notify_email)}, default_tenant: ${j(agentManifest.default_tenant)}, default_ai_mode: 'live', agent: ${j(agentManifest.id)}, agent_version: ${j(agentManifest.version)}, body: {} }]
+  output: [{ model: ${j(agentManifest.model)}, notify_email: ${j(agentManifest.notify_email)}, default_tenant: ${j(agentManifest.default_tenant)}, default_ai_mode: 'live', auto_send_low_risk: 'true', agent: ${j(agentManifest.id)}, agent_version: ${j(agentManifest.version)}, body: {} }]
 });
 
 const normalizeLeadNode = node({
@@ -563,6 +572,56 @@ const createTask = node({
   output: [{ id: 1, task_id: 'task_x' }]
 });
 
+const autoSendGate = ifElse({
+  version: 2.3,
+  config: {
+    name: 'Auto-send Low-risk Reply?',
+    parameters: {
+      conditions: {
+        options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 },
+        conditions: [{ id: 'autosend', leftValue: expr("{{ ${F}.auto_send }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }],
+        combinator: 'and'
+      }
+    },
+    position: [3640, 300]
+  }
+});
+
+const sendReplyNow = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'Send Reply Now (Outbound Sender)',
+    onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once',
+      source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__sender_workflow_id || 'REPLACE_ME')}, cachedResultName: 'CEO Brain — Outbound Sender' },
+      workflowInputs: {
+        mappingMode: 'defineBelow',
+        value: {
+          tenant_id: expr("{{ ${F}.lead.tenant_id }}"),
+          lead_id: expr("{{ ${F}.lead.lead_id }}"),
+          message_id: expr("{{ ${F}.message_id }}"),
+          channel: expr("{{ ${F}.send_channel }}"),
+          to: expr("{{ ${F}.send_to }}"),
+          text: expr("{{ ${F}.result.recommended_reply }}"),
+          subject: expr("{{ ${F}.send_subject }}"),
+          test_mode: expr("{{ ${F}.lead.test_mode }}"),
+          actor: expr("{{ 'agent:' + ${F}.config.agent + '@' + ${F}.provider }}")
+        },
+        matchingColumns: [],
+        schema: ${j([['tenant_id','string'],['lead_id','string'],['message_id','string'],['channel','string'],['to','string'],['text','string'],['subject','string'],['test_mode','boolean'],['actor','string']].map(([id,type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))},
+        attemptToConvertTypes: false,
+        convertFieldsToString: false
+      },
+      options: { waitForSubWorkflow: true }
+    },
+    position: [3860, 160]
+  },
+  output: [{ sent: true, status: 'sent' }]
+});
+
 const needsHuman = ifElse({
   version: 2.3,
   config: {
@@ -574,7 +633,7 @@ const needsHuman = ifElse({
         combinator: 'and'
       }
     },
-    position: [3640, 300]
+    position: [4080, 300]
   }
 });
 
@@ -590,10 +649,10 @@ const notifyOwner = node({
       sendTo: expr("{{ ${F}.config.notify_email }}"),
       subject: expr("{{ (${F}.lead.test_mode ? '[TEST] ' : '') + 'CEO Brain approval needed: ' + (${F}.lead.contact_name ?? 'lead') + (${F}.lead.company_name ? ' @ ' + ${F}.lead.company_name : '') + ' [' + ${F}.result.lead_status + ']' }}"),
       emailType: 'html',
-      message: expr("{{ '<h2>' + ${F}.task.title + '</h2>' + '<p><b>Status:</b> ' + ${F}.status_change.from + ' → ' + ${F}.status_change.to + ' &nbsp; <b>Temperature:</b> ' + ${F}.result.lead_temperature + ' &nbsp; <b>Intent:</b> ' + ${F}.result.intent + '</p>' + '<p><b>Why a human:</b> ' + ${F}.result.escalation_reasons.join(', ') + '</p>' + '<p><b>Summary:</b> ' + ${F}.result.summary + '</p>' + '<p><b>Original message:</b><br>' + (${F}.lead.message ?? '') + '</p>' + '<p><b>Draft reply (NOT sent):</b><br>' + (${F}.result.recommended_reply || '(withheld by guardrail)') + '</p>' + '<p><b>Missing:</b> ' + ${F}.result.missing_information.join(', ') + '</p>' + '<p><b>Next action:</b> ' + ${F}.result.next_action + ' &nbsp; <b>Follow up by:</b> ' + (${F}.result.follow_up_at ?? '-') + '</p>' + '<p style=\"color:#888\">lead ' + ${F}.lead.lead_id + ' · run ' + ${F}.run_id + ' · ' + ${F}.provider + '/' + ${F}.model + ' · execution ' + ${F}.execution_id + '</p>' }}"),
+      message: expr("{{ '<h2>' + ${F}.task.title + '</h2>' + '<p><b>Status:</b> ' + ${F}.status_change.from + ' → ' + ${F}.status_change.to + ' &nbsp; <b>Temperature:</b> ' + ${F}.result.lead_temperature + ' &nbsp; <b>Intent:</b> ' + ${F}.result.intent + '</p>' + '<p><b>Why a human:</b> ' + ${F}.result.escalation_reasons.join(', ') + '</p>' + '<p><b>Summary:</b> ' + ${F}.result.summary + '</p>' + '<p><b>Original message:</b><br>' + (${F}.lead.message ?? '') + '</p>' + '<p><b>Draft reply (NOT sent):</b><br>' + (${F}.result.recommended_reply || '(withheld by guardrail)') + '</p>' + '<p><b>Missing:</b> ' + ${F}.result.missing_information.join(', ') + '</p>' + '<p><b>Next action:</b> ' + ${F}.result.next_action + ' &nbsp; <b>Follow up by:</b> ' + (${F}.result.follow_up_at ?? '-') + '</p>' + (${F}.result.recommended_reply && ${F}.send_channel ? '<p><a href=\\"${agentManifest.approve_url}?decision=approve&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#0a7d3c;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">APPROVE &amp; SEND via ' + ${F}.send_channel + '</a> &nbsp; <a href=\\"${agentManifest.approve_url}?decision=reject&message_id=' + ${F}.message_id + '&lead_id=' + ${F}.lead.lead_id + '\\" style=\\"background:#999;color:#fff;padding:10px 16px;text-decoration:none;border-radius:6px\\">Reject</a></p>' : '<p><i>No reply can be sent automatically (no draft or no email/WhatsApp channel). Handle manually.</i></p>') + '<p style=\\"color:#888\\">lead ' + ${F}.lead.lead_id + ' · run ' + ${F}.run_id + ' · ' + ${F}.provider + '/' + ${F}.model + ' · execution ' + ${F}.execution_id + '</p>' }}"),
       options: { appendAttribution: false, senderName: 'CEO Brain' }
     },
-    position: [3880, 200]
+    position: [4320, 200]
   },
   output: [{ id: 'gmail-id' }]
 });
@@ -608,7 +667,7 @@ const respondResult = node({
       responseBody: expr("{{ JSON.stringify($('Finalize & Validate Result').first().json.response) }}"),
       options: { responseCode: 200 }
     },
-    position: [4120, 300]
+    position: [4560, 300]
   },
   output: [{ ok: true }]
 });
@@ -633,7 +692,10 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(logAudit)
   .to(saveDraftReply)
   .to(createTask)
-  .to(needsHuman
+  .to(autoSendGate
+    .onTrue(sendReplyNow.to(needsHuman))
+    .onFalse(needsHuman))
+  .add(needsHuman
     .onTrue(notifyOwner.to(respondResult))
     .onFalse(respondResult))
   .add(noteIntro)
@@ -642,7 +704,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .group('1. Intake & validation', [workflowConfig, normalizeLeadNode, isLeadValid], { description: 'Reads the webhook body, normalizes contact fields, and gates on validity (invalid payloads get an HTTP 400 response).' })
   .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound], { description: 'Looks up the lead by dedupe key, merges known contact facts, upserts the lead row and logs the inbound message.' })
   .group('3. AI qualification', [rulesEngine, useLiveAi, claudeAgent, finalize], { description: 'Rule engine always computes a baseline; Claude extracts + classifies when ai_mode=live; strict schema validation, fallback and guardrails run on every result.' })
-  .group('4. Persist results & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, needsHuman, notifyOwner, respondResult], { description: 'Writes status, observability run, audit trail, draft reply and follow-up task; emails the owner when approval is required; returns the structured result.' });
+  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Writes status, run, audit, draft and task; auto-sends low-risk replies; emails approve/reject links when a human is needed; responds.' });
 `;
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
@@ -652,4 +714,20 @@ fs.writeFileSync(path.join(DIST, 'code-nodes', 'resolve-lead-identity.js'), code
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'rule-based-qualification.js'), codeRules);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'finalize-and-validate-result.js'), codeFinalize);
 fs.writeFileSync(path.join(DIST, 'system-prompt.rendered.md'), systemPrompt);
+const sdkStr = (re) => { const m = sdk.match(re); return m ? JSON.parse('"' + m[1] + '"') : null; };
+fs.writeFileSync(path.join(DIST, 'expected-params.json'), JSON.stringify({
+  workflow_config_assignments: [
+    { id: 'cfg-model', name: 'model', value: agentManifest.model, type: 'string' },
+    { id: 'cfg-notify', name: 'notify_email', value: agentManifest.notify_email, type: 'string' },
+    { id: 'cfg-tenant', name: 'default_tenant', value: agentManifest.default_tenant, type: 'string' },
+    { id: 'cfg-aimode', name: 'default_ai_mode', value: 'live', type: 'string' },
+    { id: 'cfg-autosend', name: 'auto_send_low_risk', value: String(agentManifest.auto_send_low_risk), type: 'string' },
+    { id: 'cfg-agent', name: 'agent', value: agentManifest.id, type: 'string' },
+    { id: 'cfg-agentv', name: 'agent_version', value: agentManifest.version, type: 'string' }
+  ],
+  gmail_message: '=' + sdkStr(/name: 'Notify Owner \(Gmail\)'[\s\S]*?message: expr\("((?:[^"\\]|\\.)*)"\)/),
+  gmail_subject: '=' + sdkStr(/name: 'Notify Owner \(Gmail\)'[\s\S]*?subject: expr\("((?:[^"\\]|\\.)*)"\)/),
+  system_prompt: systemPrompt,
+  sender_workflow_id: TABLES.__sender_workflow_id
+}, null, 2));
 console.log('built', path.relative(ROOT, path.join(DIST, 'lead-intake.sdk.ts')), sdk.length, 'chars');

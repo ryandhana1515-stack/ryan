@@ -4,7 +4,7 @@
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-09-25 (session: CEO Brain Phase 1 shipped; brain-to-Obsidian decided)
+Last updated: 2026-09-25 (session: FusionTech brain added; CEO Brain Phase 2 delivery + approval + WhatsApp adapter + daily brief)
 
 ---
 
@@ -62,10 +62,17 @@ Active workflows (ID — what it does):
   the email workflow reads the repo file)
 - `NOb10f0yUA8i8saA` **Board of Advisors — Meeting** (built 2026-08-08; see §4)
 - `5Lvs87v8qfVMoUiB` Zaphiel — Voice Brain (POST /webhook/zaphiel-brain; inactive draft)
-- `b7kbJpnKLN2uQxyn` **CEO Brain — Lead Intake (Phase 1)** — ACTIVE. POST
-  https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead → Sales Qualification Agent (Claude via
-  Gateway credits, rule-engine fallback) → ceo_* tables → approval email. Source of truth:
-  `ceo-brain/` in this repo (build.js generates it — never hand-edit its Code nodes). See §4g.
+- `b7kbJpnKLN2uQxyn` **CEO Brain — Lead Intake** — ACTIVE. POST
+  https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead → Sales Agent "John" (Claude via Gateway
+  credits, FusionTech context, rule-engine fallback) → ceo_* tables → auto-send low-risk reply
+  via the Outbound Sender, else approval email with APPROVE/Reject links. Source of truth:
+  `ceo-brain/` (build.js generates it — never hand-edit its Code nodes). See §4g.
+- `SAcnNxG1GWPwn3N7` CEO Brain — Outbound Sender (sub-workflow; email via Gmail live, WhatsApp
+  node removed until a WhatsApp Business Cloud credential exists)
+- `uQxHTTdEkazgKpRT` CEO Brain — Approve Reply (GET /webhook/ceo-brain/approve … links in emails)
+- `3IhIJ5IYsB7wQQSg` CEO Brain — WhatsApp Inbound (GET/POST /webhook/ceo-brain/whatsapp, verify
+  token ceo-brain-verify) — published, Meta NOT pointed at it yet
+- `Pew2PX1IcgdXqXr7` CEO Brain — Daily Brief (08:00 SGT → email; CEO Intelligence Agent v0)
 - Inactive/temp: `X5frUjOIdaMQPAbl` Louis Transcribe, `CyiN1kwx3bfjTQyW` +
   `r0IXsruqQ8kQ6NiU` art utilities, `c86AzvcNlDmPn5im` WABA subscribe.
 
@@ -250,10 +257,27 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   `ceo-brain/database/migrations/0001_init.sql`.
 - Tenant for Ryan's own business = `biogreen`. Approval emails go to ryandhana1515@gmail.com
   (Workflow Config node).
-- **Phase 2 is NOT started** — waits for Ryan's approval of Phase 1 (plan: ceo-brain/docs/phase-2-plan.md).
+- **Phase 2 (2026-09-25, Ryan: "never mind, do phase two")**: Outbound Sender, auto-send of
+  low-risk replies (`Workflow Config.auto_send_low_risk`, default true), owner approval links,
+  WhatsApp inbound adapter, Daily Brief — all published. Verified: execution 165 auto-sent John's
+  email reply to a demo lead; 164 emailed the first CEO brief. Default tenant is now `fusiontech`.
+- **John** = the Sales Agent persona (Ryan: "give John the brain"). Briefed from
+  `zaphiel/knowledge/fusiontech-master-brain.md` via `ceo-brain/prompts/company-context.md`.
+- **One blocker for WhatsApp**: n8n has no WhatsApp Business Cloud credential (the July sandbox
+  token in `eS8K8Si0VqToZajp` expired; never copy it). Ryan must create the credential (permanent
+  System User token + phone number id); then re-add the WhatsApp node in the sender and point
+  Meta's webhook at /webhook/ceo-brain/whatsapp.
+- Not in the repo: the four Phase 2 workflows' SDK source (the session's permission classifier
+  blocked writing the sender file). Export them from n8n when next touched.
 
 ## 5. Decisions log
 
+- 2026-09-25 — **FusionTech AI is the AI-automation company** (brand of the CEO Brain product);
+  its Master Company Brain v1.0 is approved knowledge at `zaphiel/knowledge/fusiontech-master-brain.md`.
+  The Sales Agent is named John and sells FusionTech's positioning (customized AI workforce +
+  company OS, never "a chatbot"; no prices, no guaranteed outcomes; third-party costs separate).
+- 2026-09-25 — Ryan approved Phase 2 start. AI may auto-send low-risk qualifying replies;
+  prices/proposals/refunds/contracts/legal/WON/LOST stay human-approved.
 - 2026-09-25 — **Zaphiel's brain moves to an Obsidian vault** (Ryan). Ryan sets the vault up;
   until he says "vault is ready", `zaphiel/memory.md` stays the source of truth. Plan + converter:
   `zaphiel/obsidian/` (vault lives inside this repo at `zaphiel/vault/`, synced by Obsidian Git;
@@ -275,6 +299,9 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 ## 6. Change log
 
+- 2026-09-25: FusionTech brain stored; Sales Agent v1.1.0 (John); Phase 2 workflows built and
+  published (Outbound Sender, Approve Reply, WhatsApp Inbound, Daily Brief); Lead Intake updated
+  in place (26 nodes) and verified byte-identical to the repo build.
 - 2026-09-24: **CEO Brain Phase 1 shipped** — `ceo-brain/` module, n8n workflow `b7kbJpnKLN2uQxyn`
   (24 nodes, published), 5 `ceo_*` data tables, Sales Qualification Agent with Claude + rule
   fallback, 22 tests, Postgres migration, docs. Discovered Gateway credits work again (§2b).
@@ -297,7 +324,9 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 - **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
   then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
-- CEO Brain: Phase 1 live; Phase 2 (WhatsApp in/out, approvals, Supabase) awaits Ryan's approval.
+- CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
+  adapters, follow-up nudges, Calendar booking, Supabase. Then Phase 3: Agent Router + Solution
+  Architect Agent.
 - **#1 bottleneck: get the Shopify store live** — until then revenue is $0 and every ad
   dollar is premature (board meeting topic).
 - Decide BIO N:OV retail pricing (convene the board with live cost data).

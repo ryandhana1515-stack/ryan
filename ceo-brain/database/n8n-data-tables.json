@@ -1,11 +1,33 @@
 {
-  "$comment": "Interim data layer: n8n Data Tables (no credentials needed). Created 2026-09-24 in project uFcEmgtYEFyGauyy on https://ryan1515.app.n8n.cloud. The Postgres/Supabase migration in database/migrations is the long-term target; column names match.",
+  "$comment": "Interim data layer: n8n Data Tables (no credentials needed). Created 2026-09-24 in project uFcEmgtYEFyGauyy on https://ryan1515.app.n8n.cloud. The Postgres/Supabase migration in database/migrations is the long-term target; column names match. Phase 2 (2026-09-25) added the workflow id map below.",
   "project_id": "uFcEmgtYEFyGauyy",
   "tables": {
-    "ceo_leads": { "id": "R78LlzNLIpVoy802", "purpose": "One row per lead (contact + company + current status). Dedupe key = lead_key." },
-    "ceo_messages": { "id": "eImH5AdVZEOW0t31", "purpose": "Every inbound message and every AI draft reply (direction inbound/outbound, status received/draft/draft_pending_approval/withheld/sent)." },
-    "ceo_agent_runs": { "id": "zoxuUjbgzs6iLIaU", "purpose": "Observability: one row per agent invocation (agent, model, provider, input ref, output JSON, success, latency, execution id)." },
-    "ceo_tasks": { "id": "sPnRGXe4VYDJLJHr", "purpose": "Follow-ups and approval requests for humans (requires_approval flag)." },
-    "ceo_audit_logs": { "id": "zjeuGe9AEgJS5MKg", "purpose": "Status transitions and other state changes with actor + reason." }
+    "ceo_leads": {
+      "id": "R78LlzNLIpVoy802",
+      "purpose": "One row per lead (contact + company + current status). Dedupe key = lead_key."
+    },
+    "ceo_messages": {
+      "id": "eImH5AdVZEOW0t31",
+      "purpose": "Every inbound message and every AI draft reply (direction inbound/outbound, status received/draft/draft_pending_approval/withheld/sent)."
+    },
+    "ceo_agent_runs": {
+      "id": "zoxuUjbgzs6iLIaU",
+      "purpose": "Observability: one row per agent invocation (agent, model, provider, input ref, output JSON, success, latency, execution id)."
+    },
+    "ceo_tasks": {
+      "id": "sPnRGXe4VYDJLJHr",
+      "purpose": "Follow-ups and approval requests for humans (requires_approval flag)."
+    },
+    "ceo_audit_logs": {
+      "id": "zjeuGe9AEgJS5MKg",
+      "purpose": "Status transitions and other state changes with actor + reason."
+    }
+  },
+  "workflows": {
+    "lead_intake": "b7kbJpnKLN2uQxyn",
+    "outbound_sender": "SAcnNxG1GWPwn3N7",
+    "whatsapp_inbound": "3IhIJ5IYsB7wQQSg",
+    "approve_reply": "uQxHTTdEkazgKpRT",
+    "daily_brief": "Pew2PX1IcgdXqXr7"
   }
 }

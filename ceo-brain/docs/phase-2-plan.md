@@ -1,6 +1,22 @@
-# Phase 2 (NOT started — awaiting approval of Phase 1)
+# Phase 2 — status 2026-09-25
 
 Goal: connect real channels in and out, keep every guardrail.
+
+| Item | Status |
+|---|---|
+| Outbound Sender sub-workflow (email now, WhatsApp when credential exists) | DONE `SAcnNxG1GWPwn3N7` |
+| Auto-send low-risk replies from Lead Intake (`auto_send_low_risk`) | DONE, verified execution 165 |
+| Approve / reject links in the owner email → Approve Reply workflow | DONE `uQxHTTdEkazgKpRT` |
+| WhatsApp inbound adapter (Meta Cloud API → Lead Intake with history) | BUILT `3IhIJ5IYsB7wQQSg`, waiting for credential + Meta webhook switch |
+| CEO Daily Brief (CEO Intelligence Agent v0) | DONE `Pew2PX1IcgdXqXr7`, 08:00 SGT |
+| Sales Agent has the FusionTech company brain, persona John | DONE (agent v1.1.0) |
+| Facebook/Instagram Lead Ads, website form, TikTok, respond.io, Gmail adapters | TODO |
+| Follow-up nudge scheduler from `ceo_tasks` | TODO (due follow-ups already appear in the Daily Brief) |
+| Google Calendar booking | TODO (needs a Google Calendar credential in n8n) |
+| Supabase | TODO (migration ready) |
+| Signed approval tokens, webhook header auth | TODO (Phase 3 hardening) |
+
+Original plan:
 
 1. **Inbound adapters** (see `integrations/README.md`): WhatsApp Cloud API (reuse workflow
    `eS8K8Si0VqToZajp`), Facebook/Instagram Lead Ads, website form, TikTok Lead Gen, respond.io,

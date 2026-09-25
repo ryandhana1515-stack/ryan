@@ -26,7 +26,8 @@ Rules that apply to all agents:
 
 | Agent | Status | Notes |
 |---|---|---|
-| `sales-qualification` | **Phase 1 — live** | Agent #1. Lead intake, extraction, classification, progressive questioning, draft reply. |
+| `sales-qualification` | **live, v1.1.0** | Agent #1, persona **John**. Briefed with the FusionTech Master Company Brain (`prompts/company-context.md`). Extracts, classifies, asks progressively, drafts; low-risk replies auto-sent, the rest approved by the owner. |
+| `ceo-intelligence` (v0, inside the Daily Brief workflow) | live | Agent #8. Writes the recommended-priorities section of the 08:00 brief from table numbers only. |
 | solution-architect | planned (Phase 2) | Turns a qualified lead into a solution outline. |
 | proposal | planned (Phase 2) | Drafts proposals; always `requires_approval`. |
 | customer-service | planned | Existing n8n "Customer Service Agent — 24/7 Chat" will be migrated into this contract. |

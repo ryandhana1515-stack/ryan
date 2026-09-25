@@ -1,9 +1,10 @@
-# CEO Brain — Phase 1: AI Lead & Sales Qualification Agent
+# CEO Brain — AI Lead & Sales Agent (Phase 1 + Phase 2)
 
 CEO Brain is the AI Company Operating System. Phase 1 is the foundation: a lead comes in from
 any channel, the AI understands it, qualifies it, drafts the next reply, schedules the follow-up,
-and asks a human whenever a real decision is needed. **Nothing is sent to a customer without a
-human.**
+and asks a human whenever a real decision is needed. Phase 2 (2026-09-25) added delivery: low-risk
+replies go out automatically by email (WhatsApp once you add the credential); anything involving
+prices, proposals, refunds, contracts or legal waits for your one-click approval.
 
 Plain-English summary: you POST a lead to one web address; a few seconds later you get back a
 neat JSON "report card" on that lead (what they want, what is missing, how hot they are, the
@@ -20,8 +21,12 @@ needs you, an email lands in your inbox.
   (14 s, ~2,900 tokens per lead).
 - **Gmail credential** in n8n — used for the approval email. Verified: a `[TEST]` email was sent.
 - **GitHub credential** in n8n (not used by Phase 1).
-- **The Phase 1 workflow, deployed and active**: `CEO Brain — Lead Intake (Phase 1)`, id
-  `b7kbJpnKLN2uQxyn`, endpoint `POST https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead`.
+- **Lead Intake, deployed and active**: `CEO Brain — Lead Intake`, id `b7kbJpnKLN2uQxyn`,
+  endpoint `POST https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead`. The agent is **John**,
+  FusionTech AI's sales consultant, briefed from `zaphiel/knowledge/fusiontech-master-brain.md`.
+- **Phase 2 workflows (all published)**: Outbound Sender `SAcnNxG1GWPwn3N7`, Approve Reply
+  `uQxHTTdEkazgKpRT`, WhatsApp Inbound `3IhIJ5IYsB7wQQSg`, Daily Brief `Pew2PX1IcgdXqXr7`.
+  See `workflows/README.md`.
 - **Five data tables** in n8n holding leads, messages, agent runs, tasks and audit logs.
 
 ## WHAT WAS CREATED (this folder)
@@ -66,7 +71,15 @@ bash tests/live-test.sh mock   # hits the live n8n webhook with the rule engine
 bash tests/live-test.sh live   # hits the live n8n webhook with Claude
 ```
 
-Verified today, on the deployed workflow:
+Verified on the deployed workflows (Phase 2, 2026-09-25):
+
+| Run | Input | Result |
+|---|---|---|
+| execution 165 | dental clinic lead, email channel, real mode | John qualified it, low-risk → **reply auto-sent by Gmail** (sender sub-execution 167, status `sent`), follow-up task in 48 h |
+| execution 164 | Daily Brief manual run | brief built from the tables, Claude wrote 5 priorities, email delivered |
+| execution 161 (Phase 1) | refund + lawyer | HUMAN_REVIEW, approval task, `[TEST]` email |
+
+Verified on the deployed workflow (Phase 1, 2026-09-24):
 
 | Run | Input | Result |
 |---|---|---|
@@ -79,7 +92,14 @@ step diffed them).
 
 ## WHAT CREDENTIALS ARE STILL MISSING
 
-For Phase 1: **none.** It runs on n8n Gateway credits (Claude) and the existing Gmail credential.
+For everything email-based: **none.** Claude runs on n8n Gateway credits; email goes through the
+existing Gmail credential.
+
+For WhatsApp (in and out): **one credential** — a Meta **WhatsApp Business Cloud** credential in
+n8n (permanent System User access token + the WhatsApp Business phone number ID). The old
+sandbox token in the July workflow expired after 24 h and must not be reused. Once created:
+(1) re-add the WhatsApp node to the Outbound Sender, (2) point Meta's webhook at
+`https://ryan1515.app.n8n.cloud/webhook/ceo-brain/whatsapp` with verify token `ceo-brain-verify`.
 
 For Phase 2 (only when you start it): Meta app/page token (Facebook & Instagram Lead Ads,
 WhatsApp Cloud API), TikTok Lead Gen token, respond.io token, Supabase project + service role
@@ -101,8 +121,8 @@ the repo.
 
 ## WHAT THE NEXT PHASE WILL BE
 
-See `docs/phase-2-plan.md`. In one line: connect real channels in (WhatsApp, Facebook/Instagram
-Lead Ads, website, TikTok, respond.io, Gmail) and out (approved replies, calendar bookings), add
-the approval endpoint and follow-up scheduler, move storage to Supabase, and put an Agent Router
-in front so the next agents (Solution Architect, Proposal, Customer Service …) plug in.
-**Phase 2 does not start until Phase 1 is approved.**
+Phase 2 is partly done (delivery, approval, WhatsApp adapter, daily brief). Still open in Phase 2:
+WhatsApp credential + Meta webhook switch-over, Facebook/Instagram Lead Ads and website-form
+adapters, automated follow-up nudges from `ceo_tasks`, Google Calendar booking, Supabase.
+Phase 3: Agent Router + Solution Architect Agent (turns a qualified lead into a scope), Lovable
+dashboard, Obsidian sync. See `docs/phase-2-plan.md` for the live checklist.

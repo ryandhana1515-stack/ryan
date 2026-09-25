@@ -147,4 +147,4 @@ const cfg = $('Workflow Config').first().json;
 const raw = $input.first().json || {};
 const body = (raw.body && typeof raw.body === 'object') ? raw.body : raw;
 const res = normalizeLead(body, { defaultTenant: cfg.default_tenant, defaultAiMode: cfg.default_ai_mode });
-return [{ json: { ok: res.ok, errors: res.errors, warnings: res.warnings, lead: res.lead, config: { model: cfg.model, notify_email: cfg.notify_email, agent: cfg.agent, agent_version: cfg.agent_version }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
+return [{ json: { ok: res.ok, errors: res.errors, warnings: res.warnings, lead: res.lead, config: { model: cfg.model, notify_email: cfg.notify_email, agent: cfg.agent, agent_version: cfg.agent_version, auto_send_low_risk: String(cfg.auto_send_low_risk) === 'true' }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];

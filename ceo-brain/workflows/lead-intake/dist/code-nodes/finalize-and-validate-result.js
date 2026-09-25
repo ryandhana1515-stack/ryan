@@ -198,6 +198,9 @@ const finishedAt = new Date().toISOString();
 const latencyMs = Math.max(0, new Date(finishedAt).getTime() - new Date(ctx.now).getTime());
 const r = fin.result;
 const approvalNeeded = r.human_review_required || r.next_action === 'request_proposal_approval';
+const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
+const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
+const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -216,6 +219,7 @@ const response = {
   is_new_lead: ctx.is_new,
   test_mode: ctx.lead.test_mode,
   ai: { provider: fin.provider, model: fin.model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, validation_errors: fin.validation_errors, latency_ms: latencyMs, usage },
+  delivery: { auto_send: autoSend, channel: sendChannel, to: sendTo ? sendTo.replace(/(.{3}).+(.{2})/, '$1***$2') : null, mode: autoSend ? 'auto_send_low_risk' : (approvalNeeded ? 'awaiting_human_approval' : (ctx.lead.test_mode ? 'test_mode_no_send' : 'draft_only')) },
   status_change: fin.status_change,
   result: r,
   follow_up_task: followUpTask,
@@ -229,5 +233,6 @@ return [{ json: {
   validation_errors: fin.validation_errors, status_change: fin.status_change, audit: fin.audit,
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
-  approval_needed: approvalNeeded, response
+  approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
+  send_subject: 'Re: your enquiry to FusionTech AI', response
 } }];

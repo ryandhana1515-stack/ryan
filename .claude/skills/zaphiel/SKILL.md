@@ -180,6 +180,9 @@ and lock one reference image FIRST, exactly like the hero-image rule in §9.
 - Change the agent: edit `ceo-brain/agents/sales-qualification/*`, `prompts/`, `schemas/`,
   run `npm test`, `node workflows/lead-intake/build.js`, then n8n `validate_workflow` +
   `update_workflow` (or recreate) with `dist/lead-intake.sdk.ts`. Never hand-edit Code nodes.
-- The agent DRAFTS only. Sending to a customer, prices, proposals, refunds, contracts and
-  WON/LOST are Ryan's — do not automate them without his explicit go.
+- Delivery (Phase 2): low-risk replies auto-send through `SAcnNxG1GWPwn3N7` (email live, WhatsApp
+  after the credential exists). Escalations wait for Ryan's APPROVE link (`uQxHTTdEkazgKpRT`).
+  Prices, proposals, refunds, contracts and WON/LOST always stay human-approved.
+- Company knowledge for the agents: `zaphiel/knowledge/fusiontech-master-brain.md` (derive, never
+  paraphrase the file). Daily brief: `Pew2PX1IcgdXqXr7` 08:00 SGT.
 

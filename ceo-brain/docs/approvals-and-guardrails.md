@@ -1,7 +1,9 @@
 # Approvals and guardrails
 
-The AI in Phase 1 can autonomously: extract facts, classify, draft a reply, recommend a status,
-create a follow-up task. It cannot send anything to a customer.
+The AI can autonomously: extract facts, classify, draft a reply, recommend a status, create a
+follow-up task, and (Phase 2) **send a low-risk reply** on email/WhatsApp when nothing escalated,
+the lead is not in test mode, and `auto_send_low_risk` is on. Everything escalated waits for the
+owner's APPROVE & SEND / Reject click (Approve Reply workflow).
 
 ## Always escalated to a human (task `requires_approval = true` + email)
 
@@ -22,6 +24,7 @@ irreversible customer commitments.
 
 ## Approving
 
-Phase 1 approval is manual: read the email / the `ceo_tasks` row, then act (reply on the
-channel yourself, or update the lead status in the `ceo_leads` table). Phase 2 adds an approve /
-reject endpoint that flips the draft message to `approved` and sends it via the channel adapter.
+Open the approval email and click **APPROVE & SEND** (sends the draft through the Outbound Sender,
+closes the lead's open tasks, writes the audit row) or **Reject** (draft marked rejected). To send an
+edited text instead, add `&reply=<your text>` to the approve link. Phase 3 replaces the bare link
+with a signed token.
