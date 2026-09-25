@@ -1,0 +1,25 @@
+{
+  "$comment": "Registry the training dashboard reads. Add a new agent here (and a playbook note) and it appears on the dashboard.",
+  "agents": [
+    {
+      "id": "john",
+      "name": "John",
+      "role": "Sales & WhatsApp Agent",
+      "description": "Answers every enquiry, qualifies the lead, asks the right questions, hands website requests to the Website Builder.",
+      "playbook": "zaphiel/vault/Knowledge/John — Sales playbook.md",
+      "chat": "john",
+      "workflow_id": "b7kbJpnKLN2uQxyn",
+      "status": "live"
+    },
+    {
+      "id": "website-builder",
+      "name": "Website Builder",
+      "role": "Website brief & Lovable build agent",
+      "description": "Turns a conversation into a build brief and a Lovable build prompt, then a mock-up for the customer.",
+      "playbook": "zaphiel/vault/Knowledge/Website Builder — playbook.md",
+      "chat": "website-builder",
+      "workflow_id": "hSTRGnHVsu6tMOmH",
+      "status": "live"
+    }
+  ]
+}
