@@ -76,7 +76,3 @@ Lovable OAuth credential). Say so before promising an automation.
   contracts or refunds — those go to Ryan. WON/LOST are human decisions.
 - Third-party software/API costs are always separate from FusionTech fees.
 - Never store secrets in this vault or in logs.
-
-
-## CEO Brain v3 contracts
-Every agent now has a contract note in [[10_Agents/_index|10_Agents]] (16 head agents) and [[20_Specialist_Workers/_index|20_Specialist_Workers]] (9 workers); the rules they share are in [[00_CEO_Brain/00_Master_Rules]].

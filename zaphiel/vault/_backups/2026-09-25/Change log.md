@@ -42,11 +42,3 @@ tags: [zaphiel, changelog]
   Lovable (MCP, OAuth) → Website Build Record → John sends the link; chat console shows the preview
   and treats public-page visitors as real leads. 40 tests passing. **Not yet live:** the Claude Code
   permission classifier refused the deployment steps; see Open loops.
-- 2026-09-25 — **CEO Brain v3, Phase 1 (vault).** Ryan's [[FusionTech AI — Build Prompt v3]] stored verbatim; backup in
-  `_backups/2026-09-25/`; new structure: `00_CEO_Brain` (master rules, architecture v3 with diagram, build backlog +
-  open questions, log pointers), `10_Agents` (16 head-agent contracts, MUST DO / MUST NOT DO from the prompt table,
-  phases, services, registries), `20_Specialist_Workers` (9), `30_Platform_Services` (11 + dev/staging/production),
-  `40_Registries` (Integration Registry with every connector `planned` until Ryan confirms; System-of-Record;
-  Agent Permission Matrix; KPI Dictionary), `50_Client_Onboarding` (8-step workflow, 13 discovery topics,
-  classification rules, data migration), `80_Clients/_TEMPLATE_Client`, `90_Templates` (5), `_sources/README`.
-  Why: merge Review v2 onto the blueprint without breaking what runs. Nothing existing was moved or renamed (ADR-1).
