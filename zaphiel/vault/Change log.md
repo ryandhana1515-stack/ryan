@@ -27,3 +27,9 @@ tags: [zaphiel, changelog]
   now chats with any registered agent; new vault notes: design standard, discovery playbook, product
   architecture, workforce roster, templates. Tests: 35 passing.
 
+- 2026-09-25 — **BMW website chain proven:** John (chat console, execution 224) → Website Builder brief →
+  mock-up built on Lovable ("Prestige Drive", project `e650eee1-4666-475f-95dc-0686284264fc`) → Website
+  Build Record (execution 229) marked the task `built` and emailed Ryan the preview. Website Builder
+  v2.0.2 deployed (automotive category, wider business-name detection). New **Chat with John public
+  page** (`FngKsJ2x0AaWOdJl`, /webhook/ceo-brain/chat) + embed snippet for FusionTech.com.sg
+  (`ceo-brain/website-chat/`). Tests: 36 passing. Still manual: the Lovable build step (see Open loops).

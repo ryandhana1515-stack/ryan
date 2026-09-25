@@ -23,6 +23,9 @@ exists: `Knowledge/AI Workforce — roster`.
   https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead. `test_mode:true` for anything not a real
   prospect; `ai_mode:"mock"` to avoid AI credits. Chat console (test):
   https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (`ny60ozvH8B4uNpcb`).
+  Public "Chat with John" page for customers: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat
+  (`FngKsJ2x0AaWOdJl`, source `ceo-brain/website-chat/build.js`; embed snippet for the company site
+  in `website-chat/embed-snippet.html`).
 - **Website Builder v2** `hSTRGnHVsu6tMOmH` (called by John's "Website Requested?" gate; two modes
   `sme` / `medical` decided by code from the customer's words) → brief with design direction,
   content rules, medical verification list, QA checklist, Lovable prompt → task → email with Lovable

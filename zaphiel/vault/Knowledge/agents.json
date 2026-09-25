@@ -20,7 +20,9 @@
       "playbook": "zaphiel/vault/Knowledge/John — Sales playbook.md",
       "chat": "john",
       "workflow_id": "b7kbJpnKLN2uQxyn",
-      "status": "live"
+      "status": "live",
+      "public_chat_page": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat",
+      "website_embed": "ceo-brain/website-chat/embed-snippet.html"
     },
     {
       "id": "website-builder",

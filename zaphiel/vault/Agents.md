@@ -34,10 +34,26 @@ prompt and builds in Lovable → **Website Build Record** gets the preview link 
 Sender** sends the mock-up to the customer on WhatsApp → Ryan gets a copy. Nothing is published
 to a live domain without Ryan.
 
-What is still needed for the chain to run end to end without anyone: n8n AI credits (John and the
-Website Builder currently answer from their rule engines), the Meta WhatsApp Business credential in
-n8n (WhatsApp in/out), and Ryan's authorization for the Lovable build step (Lovable only allows
-OAuth, so the build runs in a Claude session Ryan starts or approves once).
+**Proven end to end on 2026-09-25 (BMW demo):** a customer told John in the chat console "I'm Daniel
+from Prestige Motors, a BMW dealership… I want a premium website with test-drive booking and
+WhatsApp" → John handed it to the Website Builder (task `task_web_lead_chat_mcpsession1790361458590`)
+→ the mock-up was built on Lovable (project `e650eee1-4666-475f-95dc-0686284264fc`, preview
+https://id-preview--e650eee1-4666-475f-95dc-0686284264fc.lovable.app) → Website Build Record flipped
+the task to `built` and emailed Ryan the preview (execution 229). The customer send was skipped only
+because it was a test session with no phone or email.
+
+Customers can already talk to John from the web: public page
+https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat (n8n `FngKsJ2x0AaWOdJl`); the same chat bubble
+for FusionTech.com.sg is in `ceo-brain/website-chat/embed-snippet.html` (paste before `</body>`).
+
+What is still needed for the chain to run with no one touching anything: n8n AI credits (John and
+the Website Builder currently answer from their rule engines), the Meta WhatsApp Business credential
+in n8n (WhatsApp in/out), and the automatic Lovable build step. Today the build step runs in a Claude
+session (this one built the BMW demo). n8n's MCP Client node supports OAuth, so an unattended
+"Website Build Runner" workflow (brief → Lovable MCP `create_project` → wait → report to
+/webhook/ceo-brain/website-built) is possible once Ryan authorizes the Lovable OAuth credential in n8n
+once; Zaphiel's attempt to create that runner workflow was blocked by its permission system and needs
+Ryan's explicit go-ahead.
 
 ## Adding a new agent
 Create its playbook note under `Knowledge/`, add it to [[Knowledge/agents.json]] (id, name, role,
@@ -47,7 +63,8 @@ no dashboard change needed. Wire the playbook into the agent's prompt the way Jo
 ## What can actually act
 n8n holds two credentials: Gmail and GitHub. So the agents can think, write to the data tables,
 write to this vault, and email. WhatsApp needs the Meta credential; building on Lovable needs a
-Claude session with the Lovable connector. Say so before promising an automation.
+Claude session with the Lovable connector (or, once Ryan authorizes it, an n8n MCP Client node with a
+Lovable OAuth credential). Say so before promising an automation.
 
 ## Rules every agent follows
 - Never invent facts; unknown = null and ask. Never quote prices, guarantees, delivery dates,

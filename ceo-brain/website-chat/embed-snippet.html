@@ -1,0 +1,17 @@
+<!-- FusionTech AI — John chat widget. Paste before </body> on any page of FusionTech.com.sg. -->
+<link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+<style>
+  :root { --chat--color-primary:#0a7d3c; --chat--color-primary-shade-50:#096f35; --chat--color-primary-shade-100:#08622f; --chat--color-secondary:#141a1f; --chat--header--background:#141a1f; --chat--message--bot--background:#f0ede6; --chat--message--user--background:#0a7d3c; --chat--message--user--color:#fff; --chat--toggle--background:#0a7d3c; --chat--toggle--hover--background:#096f35; --chat--toggle--active--background:#08622f; --chat--window--width:400px; --chat--window--height:640px; }
+</style>
+<script type="module">
+  import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+  createChat({
+    webhookUrl: 'https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat',
+    mode: 'window',
+    showWelcomeScreen: false,
+    defaultLanguage: 'en',
+    initialMessages: ["Hi, I'm John from FusionTech AI. Tell me about your business and what you'd like to automate, or the website you have in mind."],
+    i18n: { en: { title: 'John — FusionTech AI', subtitle: 'AI sales consultant. Ask anything about automating your business.', footer: '', getStarted: 'Start', inputPlaceholder: 'Type your message…', closeButtonTooltip: 'Close' } },
+    metadata: { source: 'website_widget' }
+  });
+</script>
