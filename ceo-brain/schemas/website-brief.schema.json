@@ -312,7 +312,7 @@
     },
     "build_prompt": {
       "type": "string",
-      "maxLength": 3600,
+      "maxLength": 5400,
       "description": "Self-contained prompt for Lovable. Carries the design direction and the anti-generic rules. Unknown facts appear as [PLACEHOLDER: ...]; medical unknowns as [VERIFY WITH CLINIC]."
     },
     "confidence": {

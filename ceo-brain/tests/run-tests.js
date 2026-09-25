@@ -247,6 +247,40 @@ test('a returning lead is only handed off when the current message asks for a si
   assert.strictEqual(run.fin.website_requested, false);
 });
 
+test('greeting: John introduces FusionTech, no escalation', () => {
+  const run = simulate({ name: 'Visitor', channel: 'web_chat', source: 'website', message: 'hi', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's1' } });
+  assert.ok(/John from FusionTech AI/.test(run.fin.result.recommended_reply));
+  assert.strictEqual(run.fin.result.human_review_required, false);
+  assert.strictEqual(run.fin.website_requested, false);
+});
+test('"what do you do?" gets the FusionTech answer', () => {
+  const run = simulate({ name: 'Visitor', channel: 'web_chat', source: 'website', message: 'What do you guys do?', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's2' } });
+  assert.ok(/AI workforce/.test(run.fin.result.recommended_reply) && /websites/.test(run.fin.result.recommended_reply));
+  assert.strictEqual(run.fin.result.human_review_required, false);
+});
+test('website intake: mock-up ask → John asks for the details, no hand-off yet', () => {
+  const run = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'Can you give me a mock-up of a website you can build for me?', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's3' } });
+  assert.strictEqual(run.fin.website_intake.topic, true);
+  assert.strictEqual(run.fin.website_intake.ready, false);
+  assert.strictEqual(run.fin.website_requested, false);
+  assert.ok(/first mock-up built for you/.test(run.fin.result.recommended_reply) && /name of your business/.test(run.fin.result.recommended_reply));
+});
+test('website intake: details given in later turns → hand-off fires once, contact saved', () => {
+  const history = [
+    { role: 'customer', content: 'Can you give me a mock-up of a website?' },
+    { role: 'agent', content: 'Hi Daniel, happy to get a first mock-up built for you. A few quick details: What is the name of your business? What does the business do? What should visitors be able to do?' }
+  ];
+  const run = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'We are Prestige Motors, a BMW dealership in Singapore. Customers should be able to book a test drive and WhatsApp us. Send it to daniel@prestige.sg', conversation_history: history, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's4' } });
+  assert.strictEqual(run.fin.website_intake.ready, true);
+  assert.strictEqual(run.fin.website_requested, true);
+  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
+  assert.strictEqual(run.fin.contact_found.email, 'daniel@prestige.sg');
+  assert.ok(/building your first mock-up/.test(run.fin.result.recommended_reply));
+  const history2 = history.concat([{ role: 'customer', content: 'We are Prestige Motors…' }, { role: 'agent', content: run.fin.result.recommended_reply }]);
+  const again = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'Great, thanks!', conversation_history: history2, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's4' } });
+  assert.strictEqual(again.fin.website_requested, false, 'no second build for the same lead');
+  assert.strictEqual(again.fin.website_intake.build_started, true);
+});
 test('compose system prompt: vault notes are injected live, fallback when unreadable', () => {
   const b64 = (t) => Buffer.from(t, 'utf8').toString('base64');
   const withVault = runCodeNode('compose-system-prompt.js', [{ json: {} }], Object.assign({}, outputs, {
@@ -275,10 +309,10 @@ test('fallback brief for the logistics lead validates against the schema', () =>
   assert.strictEqual(r.brief.primary_goal, 'leads');
   assert.ok(r.brief.integrations.includes('WhatsApp click-to-chat'));
   assert.ok(r.brief.pages.length >= 3);
-  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 3400);
+  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 5200);
   assert.strictEqual(r.brief.mode, 'sme');
   assert.strictEqual(r.brief.industry_category, 'logistics');
-  assert.ok(r.build_prompt.includes('Never use:') && /purple\/blue gradient/.test(r.build_prompt), 'anti-generic rules must be in the prompt');
+  assert.ok(r.build_prompt.includes('Never use:') && /navy-to-purple SaaS gradient/.test(r.build_prompt) && /Photo-led/.test(r.build_prompt), 'anti-generic + cinematic rules must be in the prompt');
   assert.ok(r.build_prompt.includes('Typography:'), 'design direction must be in the prompt');
   assert.ok(r.brief.qa_checklist.length >= 15 && r.brief.verification_required.length === 0);
   assert.ok(r.lovable_url.startsWith('https://lovable.dev/#prompt='));
@@ -311,7 +345,10 @@ test('BMW dealership: business name from "I\'m Daniel from Prestige Motors", aut
   assert.strictEqual(r.brief.industry_category, 'automotive');
   assert.strictEqual(r.brief.mode, 'sme');
   assert.strictEqual(r.brief.primary_goal, 'bookings');
-  assert.ok(/Prestige Motors/.test(r.build_prompt) && /showroom-first/.test(r.build_prompt));
+  assert.ok(/Prestige Motors/.test(r.build_prompt) && /film-like/.test(r.build_prompt));
+  assert.strictEqual(r.ready_to_build, true);
+  assert.strictEqual(r.image_shots.length, 3);
+  assert.ok(/BMW/.test(r.image_shots[0].prompt) && /no text, no logos/.test(r.image_shots[0].prompt));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
 });
 test('dental clinic → medical mode: doctor/treatment pages, verification list, medical QA, no fabricated claims', () => {

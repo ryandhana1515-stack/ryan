@@ -3,19 +3,20 @@
 // produces the SAME schema as the LLM, a validator, design intelligence, a QA checklist and the
 // Lovable build-prompt builder. Inlined into the n8n Code nodes by workflows/website-builder/build.js.
 // Keep it dependency-free and ES5-compatible (n8n Code node sandbox).
-var WB_VERSION = 'website-builder-2.0.2';
+var WB_VERSION = 'website-builder-2.1.0';
 var WB_SCHEMA_VERSION = '2.0';
 var WB_MODES = ['sme', 'medical'];
 var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_app', 'portal', 'other'];
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
 var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
-var WB_MAX_PROMPT = 3400;
+var WB_MAX_PROMPT = 5200;
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
 
 // The look every generic AI site has. Every build prompt forbids it and every QA pass checks for it.
 var WB_ANTI_GENERIC = [
-  'dark navy background with a purple/blue gradient',
+  'the default navy-to-purple SaaS gradient with nothing behind it',
+  'flat black or dark grey boxes and empty dark panels instead of photography',
   'random glowing orbs or blurred colour blobs',
   'generic frosted-glass cards',
   'irrelevant stock photography',
@@ -23,6 +24,15 @@ var WB_ANTI_GENERIC = [
   'three identical feature boxes in a row',
   'generic SaaS landing-page layout',
   'the same font pairing as every other AI site'
+];
+// Ryan's standard (2026-09-25): a mock-up must look cinematic and alive, never a set of boxes.
+var WB_CINEMATIC = [
+  'Photo-led: a full-bleed cinematic photograph (or looping video still) in the hero and at the top of every major section; the imagery carries the page.',
+  'Colour with depth: rich colour pulled from the imagery, cinematic gradient overlays (dark-to-transparent, brand-tinted) for legibility and mood; never a flat single-colour block.',
+  'Large, confident display typography over the imagery; short lines; generous spacing.',
+  'Motion: slow ken-burns or parallax on hero imagery, staggered reveal on scroll, hover lift and image zoom on cards, smooth anchor scrolling.',
+  'Every section has a visual: photo, product/vehicle shot, showroom, team or detail; text-only sections are not allowed except legal.',
+  'Placeholders for the customer\'s own photos are labelled, but the mock-up itself ships with the generated photography so it already looks finished.'
 ];
 
 // Design intelligence: a defensible visual direction per business category. The model may refine
@@ -40,7 +50,7 @@ var WB_DESIGN = {
   local_business: { personality: 'welcoming, genuine, nearby', typography: 'warm sans, larger body text', layout: 'single clear path: what, where, when, how to contact; map and hours above the fold on mobile', imagery: 'the actual shop, owners, products', motion: 'none needed', palette: 'drawn from the shop front or logo' },
   food_beverage: { personality: 'appetising, lively, textured', typography: 'characterful display face for headings with a simple body', layout: 'menu-first, photography-heavy, reservations/orders one tap away', imagery: 'the food and the room, shot warm', motion: 'gentle image reveals', palette: 'rich, from the cuisine (deep greens, terracotta, cream)' },
   logistics: { personality: 'reliable, fast, transparent', typography: 'condensed sans headings, tabular numerals for tracking numbers and times', layout: 'action-first: quote and tracking forms in the hero, coverage map, process timeline', imagery: 'fleet, warehouse, real operations', motion: 'a tracking-timeline animation, otherwise minimal', palette: 'dark text on white with one high-visibility accent' },
-  automotive: { personality: 'premium, precise, confident', typography: 'wide geometric sans for headings (e.g. Manrope) with a neutral grotesque body (e.g. Inter), tabular numerals for specs', layout: 'showroom-first: full-width hero with one model and one action, model gallery grid, showroom, team, booking', imagery: 'the dealership\'s own showroom and model photography; no stock cars', motion: 'restrained: hover lift on model cards, subtle reveal on scroll', palette: 'charcoal, off-white and one cool metallic accent; no gradients' },
+  automotive: { personality: 'cinematic, premium, exhilarating', typography: 'wide geometric display sans for headings (e.g. Manrope / Sora) with a clean grotesque body (e.g. Inter), tabular numerals for specs', layout: 'film-like: full-bleed hero of the car with a cinematic gradient overlay and one action (Book a test drive); model showcase with large imagery and horizontal scroll; showroom and service sections with photography; team; booking; WhatsApp bar on mobile', imagery: 'cinematic photography of the actual models and showroom (dusk light, wet asphalt reflections, studio rim light); generated hero and section imagery until the dealership supplies its own; no clip-art cars', motion: 'ken-burns on the hero, parallax on section imagery, staggered reveal, hover zoom on model cards', palette: 'deep charcoal into midnight blue gradients with a warm metallic (champagne / brushed steel) accent and bright white type; colour comes from the photography, never flat black panels' },
   healthcare: { personality: 'clinical, calm, reassuring', typography: 'clean humanist sans (e.g. Source Sans / Nunito Sans) with excellent legibility, larger body size', layout: 'patient-first: doctors, treatments, locations and appointment booking within one scroll; information architecture over decoration', imagery: 'the real clinic, real practitioners (with consent), clean interiors; no stock models in white coats', motion: 'minimal; never on medical content', palette: 'soft neutrals with one calm accent (teal, sage or deep blue as text/buttons); high contrast for readability' },
   other: { personality: 'clear, credible, specific to the business', typography: 'a deliberate pairing chosen for the brand, not a default', layout: 'intentional hierarchy: one message, one action per section', imagery: 'the actual business only', motion: 'only where it helps', palette: 'chosen from the brand or business, never a default gradient' }
 };
@@ -302,6 +312,7 @@ function wbBuildPrompt(brief, input) {
   lines.push('Build a premium ' + brief.site_type.replace(/_/g, ' ') + ' for ' + name + ' (' + industry + ', Singapore). It must look like an agency-grade site produced by a brand strategist, UX/UI designer, copywriter, art director and front-end engineer — never an AI template.');
   lines.push('Primary goal: ' + brief.primary_goal + (brief.audience ? '. Audience: ' + brief.audience : '') + '.');
   lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: ' + d.motion + '. Palette: ' + d.palette + '.');
+  lines.push('Look and feel (mandatory): ' + WB_CINEMATIC.join(' '));
   lines.push('Never use: ' + WB_ANTI_GENERIC.join('; ') + '.');
   lines.push('Pages: ' + brief.pages.map(function (p) { return p.name + (p.purpose ? ' (' + p.purpose + ')' : ''); }).join('; ') + '.');
   if (brief.features.length) lines.push('Features: ' + brief.features.join('; ') + '.');
@@ -317,6 +328,47 @@ function wbBuildPrompt(brief, input) {
   var prompt = lines.join('\n');
   if (prompt.length > WB_MAX_PROMPT) prompt = prompt.slice(0, WB_MAX_PROMPT - 1) + '…';
   return prompt;
+}
+/** Photography the mock-up ships with: 3 cinematic shots per site, generated by the build runner (Higgsfield / Kling). No text, logos or plates in the images. */
+function wbImageShots(brief, input) {
+  input = input || {};
+  var said = wbText(input);
+  var brand = (said.match(/\b(bmw|mercedes(?:-benz)?|audi|toyota|honda|tesla|porsche|lexus|hyundai|kia|mazda|volvo|nissan)\b/i) || [null])[0];
+  var cat = brief.industry_category;
+  var industry = brief.industry || cat.replace(/_/g, ' ');
+  var name = brief.business_name || industry;
+  var base = ', Singapore, photorealistic, cinematic lighting, shallow depth of field, editorial photography, 35mm, no text, no logos, no watermarks, no license plates';
+  var shots;
+  if (cat === 'automotive') {
+    var car = brand ? brand.toUpperCase() : 'premium car';
+    shots = [
+      { key: 'hero', aspect_ratio: '16:9', prompt: 'Cinematic wide shot of a new ' + car + ' in a glass showroom at dusk, city lights reflecting on wet asphalt outside, dramatic rim lighting on the bodywork, deep charcoal and midnight blue tones with warm metallic highlights' + base },
+      { key: 'section', aspect_ratio: '16:9', prompt: 'Low-angle three-quarter view of a ' + car + ' driving through Singapore at blue hour, motion blur on the road, headlights on, cinematic colour grade' + base },
+      { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail of a ' + car + ' interior, leather and stitching, ambient cabin lighting, premium showroom mood' + base }
+    ];
+  } else if (brief.mode === 'medical') {
+    shots = [
+      { key: 'hero', aspect_ratio: '16:9', prompt: 'Calm modern clinic reception with warm natural light, soft neutrals with one sage accent, plants, clean lines, empty of people' + base },
+      { key: 'section', aspect_ratio: '16:9', prompt: 'Bright treatment room in a modern Singapore clinic, clean equipment, soft daylight, reassuring atmosphere, no people' + base },
+      { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up of a clinician\'s hands in a modern clinic setting, gloves, soft light, professional and calm, face not visible' + base }
+    ];
+  } else {
+    var d = brief.design_direction;
+    shots = [
+      { key: 'hero', aspect_ratio: '16:9', prompt: 'Cinematic wide establishing shot for a ' + industry + ' business (' + name + '): ' + d.imagery + '; mood ' + d.brand_personality + '; palette ' + d.palette + base },
+      { key: 'section', aspect_ratio: '16:9', prompt: 'Environmental photograph showing the work of a ' + industry + ' business in Singapore, people at work seen from behind or at distance, natural light, ' + d.brand_personality + base },
+      { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail shot related to ' + industry + ' (tools, product, texture or space), shallow depth of field, ' + d.palette + base }
+    ];
+  }
+  return shots;
+}
+/** The build starts automatically when the brief names the business and what the site is for (Ryan, 2026-09-25: no approvals). */
+function wbReadyToBuild(brief) {
+  var missing = [];
+  if (!brief.business_name) missing.push('business_name');
+  if (!brief.industry && brief.industry_category === 'other') missing.push('industry');
+  if (brief.site_type === 'other') missing.push('site_type');
+  return { ready: missing.length === 0, missing: missing };
 }
 function wbLovableUrl(prompt) { return WB_LOVABLE_BASE + encodeURIComponent(prompt); }
 
@@ -375,8 +427,12 @@ function finalizeBrief(opts) {
       brief.build_prompt = wbBuildPrompt(brief, input);
     }
   }
+  var readiness = wbReadyToBuild(brief);
   return {
     brief: brief,
+    ready_to_build: readiness.ready,
+    missing_for_build: readiness.missing,
+    image_shots: wbImageShots(brief, input),
     provider: fallbackUsed ? 'fallback' : 'anthropic',
     fallback_used: fallbackUsed,
     fallback_reason: fallbackReason,
@@ -387,4 +443,4 @@ function finalizeBrief(opts) {
 }
 
 // ---- Node module wrapper (stripped by build.js) ----
-module.exports = { WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief };
+module.exports = { WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief };

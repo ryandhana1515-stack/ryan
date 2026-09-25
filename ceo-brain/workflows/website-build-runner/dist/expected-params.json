@@ -1,0 +1,14 @@
+{
+  "record_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/website-built",
+  "lovable": {
+    "workspace_id": "zjVuSnHzhPWFroVpa2KX",
+    "mcp_endpoint": "https://mcp.lovable.dev",
+    "$comment": "Ryan's Lovable workspace id (an identifier, not a secret). The OAuth credential lives only in n8n."
+  },
+  "credentials": [
+    "Higgsfield API (httpHeaderAuth)",
+    "Kling API (httpHeaderAuth)",
+    "Lovable MCP (OAuth2)"
+  ],
+  "workflow_id": null
+}

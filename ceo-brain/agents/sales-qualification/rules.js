@@ -3,7 +3,12 @@
 // same schema as the LLM (schemas/sales-qualification-output.schema.json).
 // Pure functions, no I/O, no require().
 
-var RB_VERSION = 'rules-v1';
+var RB_VERSION = 'rules-v2';
+// Conversation openers John must handle himself (no escalation): greetings and "what do you do?"
+var RB_GREETING = /^\s*(hi|hello|hey|yo|hai|halo|good (morning|afternoon|evening)|hi there|hello there|hey there)[\s!.,?]*(john|there)?[\s!.,?]*$/i;
+var RB_ABOUT = /(what (do|does|can) (you|u|fusiontech|fusion tech|your company|your team)( guys)? (do|offer|build|help|make)|what is (fusiontech|fusion tech|this|the ceo brain)|tell me (more )?about (you|yourself|fusiontech|fusion tech|your (company|services))|what can you (do|help|build)|how (can|do) you help|what (kind|type|sort)s? of websites?|what (websites?|services?|products?) (do|can) you|what are your services|what do you (offer|sell|build|specialise in|specialize in)|what.?s your problem|how does (it|this) work|what should i do|help me)/i;
+var RB_ABOUT_REPLY = 'FusionTech AI builds an AI workforce around the way your business already works. We connect what you use today (WhatsApp, email, spreadsheets, CRM, accounting, Facebook, Instagram, TikTok, your website and calendar) so every enquiry gets answered and followed up, bookings and quotes happen without chasing, and you can see what is going on. We also build the websites and web apps that sit in front of it: business websites, landing pages, online stores, booking sites, customer portals and web apps, all designed to look premium and cinematic, and you get a first mock-up to react to before anything is decided.';
+var RB_GREETING_REPLY = 'I am John from FusionTech AI. We build AI agents and automation around how your business already runs, plus the websites and web apps that go with it. What kind of business do you run, and what would you like to take off your plate?';
 
 var RB_INDUSTRY = [
   [/property|real estate|realtor|agency with .*agents|condo|hdb|landed/i, 'real_estate'],
@@ -144,11 +149,14 @@ function classifyWithRules(lead) {
   if (/(follow[- ]?up).*(manual|whatsapp|call|excel|nobody|don't|do not)/i.test(text)) extracted.current_follow_up_process = 'manual (as described by prospect)';
 
   // Intent
+  var isGreeting = RB_GREETING.test(msg);
+  var isAbout = RB_ABOUT.test(msg);
   var intent = 'unclear';
   if (RB_SPAM.test(text) || RB_VENDOR.test(text)) intent = RB_VENDOR.test(text) && !RB_SPAM.test(text) ? 'vendor_or_job_pitch' : 'spam';
   else if (RB_PARTNER.test(text)) intent = 'partnership';
   else if (RB_SUPPORT.test(text)) intent = 'support_request';
   else if (extracted.desired_automation.length || /\b(ai|automat|chatbot|bot)\b/i.test(text)) intent = 'ai_automation_enquiry';
+  else if (isAbout) intent = 'ai_automation_enquiry';
   else if (RB_PRICING.test(text)) intent = 'pricing_enquiry';
   if (intent === 'unclear' && RB_PRICING.test(text)) intent = 'pricing_enquiry';
 
@@ -175,7 +183,7 @@ function classifyWithRules(lead) {
   var escalation = [];
   var riskM = msg.match(RB_RISKY);
   if (riskM) escalation.push('customer_mentions_' + riskM[0].toLowerCase().replace(/\s+/g, '_'));
-  if (intent === 'unclear' && temperature === 'cold' && !RB_NOT_INTERESTED.test(text)) escalation.push('intent_unclear');
+  if (intent === 'unclear' && temperature === 'cold' && !RB_NOT_INTERESTED.test(text) && !isGreeting && !isAbout) escalation.push('intent_unclear');
   if (intent === 'support_request') escalation.push('existing_customer_support_request');
   if (intent === 'partnership') escalation.push('partnership_requires_human');
   var humanReview = escalation.length > 0;
@@ -215,6 +223,10 @@ function classifyWithRules(lead) {
   else if (status === 'PROPOSAL_REQUIRED') reply = greet + ack + 'We will prepare a tailored proposal and come back to you with the details. ' + (questions.length ? 'To scope it correctly: ' + questions.slice(0, 2).join(' ') : '');
   else if (status === 'HOT') reply = greet + ack + 'The fastest way forward is a short discovery call to map your current process. ' + (questions.length ? 'Before that, two quick questions: ' + questions.slice(0, 2).join(' ') : 'When would suit you this week?');
   else reply = greet + ack + 'To point you in the right direction, a few quick questions: ' + questions.join(' ');
+  if (intent !== 'spam' && status !== 'HUMAN_REVIEW' && status !== 'PROPOSAL_REQUIRED') {
+    if (isAbout) reply = greet + RB_ABOUT_REPLY + ' ' + (questions.length ? questions[0] : 'What kind of business do you run?');
+    else if (isGreeting) reply = greet.replace(/, $/, '! ').replace(/^Hi, $/, 'Hi! ') + RB_GREETING_REPLY;
+  }
   reply = reply.replace(/\s+/g, ' ').trim();
 
   var summary = (extracted.contact_name || 'Prospect') + (extracted.company_name ? ' from ' + extracted.company_name : '') + (extracted.industry ? ' (' + rbHumanize(extracted.industry) + ')' : '') + (extracted.company_size !== null ? ', ' + extracted.company_size + ' people' : '') + '. ' + (extracted.problem ? 'Pain: ' + extracted.problem + ' ' : '') + (extracted.desired_automation.length ? 'Wants: ' + extracted.desired_automation.map(rbHumanize).join(', ') + '.' : 'Desired automation not stated.');
@@ -225,6 +237,7 @@ function classifyWithRules(lead) {
   if (hasWant) confidence += 0.1;
   if (extracted.company_size !== null) confidence += 0.05;
   if (intent === 'spam') confidence = 0.6;
+  if (isGreeting || isAbout) confidence = Math.max(confidence, 0.6); // handled openers, never 'low confidence'
   confidence = Math.min(0.9, Math.round(confidence * 100) / 100);
 
   return {
