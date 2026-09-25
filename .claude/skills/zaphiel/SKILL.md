@@ -168,3 +168,32 @@ pattern, the shot rhythm, the on-screen text cadence and the character look, the
 reference is an AI persona that reappears across many videos, the thing holding it together
 is a character sheet — call `get_workflow_instructions` with `{ workflow: "character-sheet" }`
 and lock one reference image FIRST, exactly like the hero-image rule in §9.
+
+## 11. CEO Brain — lead & sales agent (added 2026-09-24)
+
+- Feed any lead in: n8n connector `execute_workflow` on `b7kbJpnKLN2uQxyn` (trigger node
+  "Lead Webhook", webhookData.body per `ceo-brain/schemas/lead-input.schema.json`), or POST to
+  https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead. Use `test_mode:true` for anything
+  that is not a real prospect; `ai_mode:"mock"` to avoid AI credits.
+- Read results: data tables `ceo_leads` / `ceo_tasks` (rows with `requires_approval=true` are
+  waiting for Ryan) / `ceo_agent_runs` (model, latency, fallback_reason).
+- Change the agent: edit `ceo-brain/agents/sales-qualification/*`, `prompts/`, `schemas/`,
+  run `npm test`, `node workflows/lead-intake/build.js`, then n8n `validate_workflow` +
+  `update_workflow` (or recreate) with `dist/lead-intake.sdk.ts`. Never hand-edit Code nodes.
+- Delivery (Phase 2): low-risk replies auto-send through `SAcnNxG1GWPwn3N7` (email live, WhatsApp
+  after the credential exists). Escalations wait for Ryan's APPROVE link (`uQxHTTdEkazgKpRT`).
+  Prices, proposals, refunds, contracts and WON/LOST always stay human-approved.
+- Company knowledge for the agents: `zaphiel/knowledge/fusiontech-master-brain.md` (derive, never
+  paraphrase the file). Daily brief: `Pew2PX1IcgdXqXr7` 08:00 SGT.
+- **Talk to John yourself** (test console, nothing goes to customers):
+  https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat — workflow
+  `ny60ozvH8B4uNpcb`; every message is a real Lead Intake run in test_mode with memory per chat session.
+- **Website Builder (Agent #2)** `hSTRGnHVsu6tMOmH`: Lead Intake hands off automatically when the
+  customer asks for a website / landing page / online store / web app / portal. It emails Ryan the
+  brief with an **OPEN IN LOVABLE** button (Build-with-URL, prompt prefilled). Clicking it and pressing
+  Send in Lovable IS the approval; nothing is built otherwise. Source: `ceo-brain/agents/website-builder/`,
+  `ceo-brain/workflows/website-builder/build.js`.
+- **AI credits**: if `ceo_agent_runs.provider` shows `rules` / `fallback` with error "Payment required",
+  the n8n AI Gateway credits are exhausted — the agents keep working on their deterministic fallbacks
+  but replies are generic. Ryan tops up n8n credits (or adds an Anthropic API key credential).
+

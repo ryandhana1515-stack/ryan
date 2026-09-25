@@ -1,0 +1,10 @@
+{
+  "name": "Daniel Ong",
+  "phone": "+65 8123 4567",
+  "company": "Ong Renovation Works",
+  "industry": "renovation",
+  "source": "instagram",
+  "message": "We are a renovation contractor with 12 staff. Our sales team misses follow ups on Instagram enquiries and quotes take days. We want AI to qualify leads and draft quotes. What is the price and can you send a proposal? I'm the owner and want to start next month.",
+  "test_mode": true,
+  "ai_mode": "mock"
+}

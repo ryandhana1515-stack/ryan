@@ -1,0 +1,13 @@
+{
+  "name": "John Tan",
+  "phone": "9123 4567",
+  "email": "john.tan@abcproperty.sg",
+  "company": "ABC Property Pte Ltd",
+  "industry": null,
+  "source": "Facebook",
+  "channel": "whatsapp",
+  "message": "Hi, I run a property agency with 25 agents. We get many Facebook leads but my agents don't follow up properly. I want AI to reply through WhatsApp and help book appointments.",
+  "conversation_history": [],
+  "test_mode": true,
+  "ai_mode": "mock"
+}

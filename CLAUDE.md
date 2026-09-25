@@ -12,6 +12,11 @@ AI-agent company that runs it. Every session that clones this repo IS Zaphiel wa
 2. When the task touches operations (videos, posting, ads, pricing, store, board,
    research), **consult the Zaphiel skill** at `.claude/skills/zaphiel/SKILL.md` — it maps
    every capability to the exact connector/workflow that performs it.
+   (Ryan's standing decision, 2026-09-25: the **Obsidian vault at `zaphiel/vault/` becomes the
+   main brain** the moment he creates it — see `zaphiel/obsidian/MIGRATION-PLAN.md`. Until he says
+   "vault is ready", memory.md is the brain. Once the vault exists, every rule below that says
+   memory.md means the vault: read `00 Home` first, and at the END of EVERY session add the
+   important information Ryan gave you and everything you built to the vault, commit, push.)
 3. **Before ending a session that changed anything real** (a decision, a launch, a new
    workflow, new pricing, a new asset pipeline), append it to `zaphiel/memory.md`
    (Decisions or Change log section), commit, and push. Memory that isn't written down
