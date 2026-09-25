@@ -28,3 +28,18 @@ Open the approval email and click **APPROVE & SEND** (sends the draft through th
 closes the lead's open tasks, writes the audit row) or **Reject** (draft marked rejected). To send an
 edited text instead, add `&reply=<your text>` to the approve link. Phase 3 replaces the bare link
 with a signed token.
+
+
+## Website builds (Agent #2) — what is automatic and what is not (2026-09-25)
+
+- Automatic today: brief, Lovable build prompt, `website_build` task, owner email with the prompt
+  prefilled in a Lovable link, and the **Website Build Record** endpoint (`RVPBGpBzj2SUQlgX`) that
+  flips the task to `built` / `build_failed` / `skipped_test_mode` and emails the preview.
+- Not automatic yet: **pressing "build" in Lovable**. Lovable's MCP server is OAuth-only (no API
+  key), so n8n cannot call it; only a Claude session holding the Lovable connector can create a
+  project, and each project consumes Lovable credits. Ryan asked for zero-click builds; the Claude
+  Code permission system refused, in the build session, both the demo build and the creation of an
+  unattended hourly routine that would spend credits ("Real-World Transactions", "Create Unsafe
+  Agents"). That authorization has to come from Ryan himself (a Routine he starts, or a permission
+  rule he adds). Chat-console leads (`lead_chat_*`) and `test_mode` leads must never be built.
+- Always human: publishing to a live domain (`deploy_project`) and sending the mock-up to the customer.

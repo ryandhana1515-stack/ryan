@@ -8,6 +8,7 @@
 | **CEO Brain — WhatsApp Inbound** | `3IhIJ5IYsB7wQQSg` | `GET/POST /webhook/ceo-brain/whatsapp` (Meta verify token `ceo-brain-verify`) | published; Meta is NOT pointed at it yet |
 | **CEO Brain — Daily Brief** | `Pew2PX1IcgdXqXr7` | daily 08:00 SGT | published; first run emailed 2026-09-25 |
 | **CEO Brain — Website Builder** | `hSTRGnHVsu6tMOmH` | sub-workflow (called by Lead Intake's "Website Requested?" gate, fire-and-forget) | published; verified 2026-09-25 (execution 176: brief → task → email with Open-in-Lovable link). Source: `website-builder/build.js` |
+| **CEO Brain — Website Build Record** | `RVPBGpBzj2SUQlgX` | `POST /webhook/ceo-brain/website-built` {task_id, lead_id, status built\|build_failed\|skipped_test_mode, project_id, preview_url, editor_url, notes, actor} | published; verified 2026-09-25 (execution 184). Updates the `website_build` task, audits, emails the owner the preview. Endpoint for whichever agent session performs the Lovable build |
 | **CEO Brain — John Chat Console** | `ny60ozvH8B4uNpcb` | hosted chat https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat | published; verified 2026-09-25 (execution 177). Source: `john-chat-console/workflow.sdk.ts` |
 
 ## How the pieces talk

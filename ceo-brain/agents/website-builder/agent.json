@@ -19,7 +19,9 @@
   "builder": {
     "tool": "Lovable",
     "mechanism": "Build-with-URL (https://lovable.dev/#prompt=<encoded build_prompt>) — no API key; the human clicking the link and pressing Send in Lovable IS the approval. The Lovable REST API cannot create AI projects (MCP-only), so nothing is created automatically.",
-    "human_approval": "always (task_type website_build, requires_approval=true)"
+    "human_approval": "always (task_type website_build, requires_approval=true)",
+    "record_endpoint": "POST https://ryan1515.app.n8n.cloud/webhook/ceo-brain/website-built (workflow RVPBGpBzj2SUQlgX) — the session that performs the Lovable build reports {task_id, lead_id, status, project_id, preview_url, editor_url}; the task flips to built/build_failed/skipped_test_mode and the owner is emailed the preview",
+    "automation_status": "Ryan asked (2026-09-25) for fully automatic builds with no clicks. Lovable's MCP is OAuth-only, so only a Claude session holding the Lovable connector can create projects. Creating such an unattended, credit-spending routine (and the demo build itself) was refused by the Claude Code permission system in the build session; it needs Ryan's own authorization (see docs/approvals-and-guardrails.md)."
   },
   "notify_email": "ryandhana1515@gmail.com",
   "may_autonomously": [

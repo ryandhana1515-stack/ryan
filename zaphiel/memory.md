@@ -76,6 +76,8 @@ Active workflows (ID — what it does):
 - `hSTRGnHVsu6tMOmH` **CEO Brain — Website Builder** (Agent #2; called by Lead Intake when a
   customer asks for a website/web app → brief + Lovable build prompt → approval task → email with
   OPEN IN LOVABLE button; source `ceo-brain/workflows/website-builder/build.js`)
+- `RVPBGpBzj2SUQlgX` CEO Brain — Website Build Record (POST /webhook/ceo-brain/website-built; the
+  agent session that builds on Lovable reports here → task built/failed/skipped + preview email)
 - `ny60ozvH8B4uNpcb` **CEO Brain — John Chat Console** — hosted chat to test John:
   https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (test_mode)
 - Inactive/temp: `X5frUjOIdaMQPAbl` Louis Transcribe, `CyiN1kwx3bfjTQyW` +
@@ -335,6 +337,9 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   requests; rules engine tags `website_build`; lead webhook `ignoreBots` removed; Obsidian
   builder copies `zaphiel/knowledge/*.md` verbatim; CLAUDE.md carries the "vault = main brain,
   append every session" rule. Gateway credits found exhausted ("Payment required").
+- 2026-09-25 (session 2, later): Ryan wants zero-click website builds. Built **Website Build Record**
+  `RVPBGpBzj2SUQlgX` (task update + audit + preview email; verified). The Lovable build step and the
+  hourly Zaphiel Routine were blocked by the permission classifier — needs Ryan's authorization (§7).
 - 2026-09-25: FusionTech brain stored; Sales Agent v1.1.0 (John); Phase 2 workflows built and
   published (Outbound Sender, Approve Reply, WhatsApp Inbound, Daily Brief); Lead Intake updated
   in place (26 nodes) and verified byte-identical to the repo build.
@@ -362,7 +367,14 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
   Website Builder are on rule fallbacks since 2026-09-25 afternoon.
 - **Push branch `claude/inspiring-cori-j5wemu`** (two commits, incl. this one) — the session's
   permission classifier blocked `git push`; Ryan pushes, PR #20 updates, merge = brain update.
-- Try the John Chat Console; when a website is requested, click OPEN IN LOVABLE in the email.
+- **Zero-click website builds (Ryan 2026-09-25: "the AI agents do it all, I just sit and relax")**:
+  Lovable MCP is OAuth-only → only a Claude session with the Lovable connector can build; the build
+  session's permission system refused the demo build and the unattended hourly Routine. Needs Ryan's
+  own authorization: start the "Website Build Routine" (hourly; reads open website_build tasks,
+  skips test/chat leads, create_project on workspace zjVuSnHzhPWFroVpa2KX, reports to
+  /webhook/ceo-brain/website-built) from his own Claude session, or add a permission rule for
+  `mcp__Lovable__create_project`. Until then the email's Lovable button is the one click.
+- Ryan already used the John Chat Console himself (lead_chat_780236a8…, "website about bmw").
 - **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
   then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
 - CEO Brain Phase 2 remaining: WhatsApp credential + Meta webhook switch, Lead Ads/website
