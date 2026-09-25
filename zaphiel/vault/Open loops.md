@@ -8,8 +8,9 @@ tags: [zaphiel, open-loops]
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
 - **Ryan:** authorize the Lovable build step once (routine or permission) so the website chain runs
   with no clicks. Lovable's MCP is OAuth-only; this session's permission system refused to start it.
-- **Zaphiel:** training dashboard (talk to each agent by voice or text, "when a customer says X, do
-  Y" written straight into the playbook notes), linked to this vault. In progress.
+- **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),
+  enter the PIN, allow the microphone, and change the PIN in n8n ("CEO Brain — Trainer API" →
+  Trainer Config node) from the repo default.
 - **Zaphiel:** wire [[Knowledge/Website Builder — playbook]] into the Website Builder at run time
   (same pattern as John).
 - **Zaphiel:** after credits: run a real conversation, confirm John answers with Claude and the

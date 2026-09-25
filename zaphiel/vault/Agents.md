@@ -20,6 +20,8 @@ John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1
 | **Vault Writer** | After every conversation turn writes the lead note (`Leads/`) and company note (`Companies/`) into this vault | `tVvSWjOubwBNLi88` |
 | **Daily Brief** (CEO Intelligence Agent) | 08:00 SGT email: what happened, what needs Ryan | `Pew2PX1IcgdXqXr7` |
 | **John Chat Console** | Test page to talk to John as a prospect: https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat | `ny60ozvH8B4uNpcb` |
+| **Training Room** (dashboard) | Ryan's training app: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard — lists every agent in [[Knowledge/agents.json]] plus the brain; talk to an agent by voice or text, teach it ("when a customer says X, then …" → written into its playbook note here), read its playbook live | `AM59goLdbt0clv8q` |
+| **Trainer API** | Backend of the Training Room (POST /webhook/ceo-brain/trainer, PIN-protected): reads the registry + playbooks from this vault, appends lessons to the playbook notes, relays chat to John / the Website Builder | `zKqlk05WShUOrojw` |
 
 ## The website chain Ryan wants (target)
 Customer on WhatsApp → **John** understands "build me a website" → **Website Builder** writes the
@@ -31,6 +33,11 @@ What is still needed for the chain to run end to end without anyone: n8n AI cred
 Website Builder currently answer from their rule engines), the Meta WhatsApp Business credential in
 n8n (WhatsApp in/out), and Ryan's authorization for the Lovable build step (Lovable only allows
 OAuth, so the build runs in a Claude session Ryan starts or approves once).
+
+## Adding a new agent
+Create its playbook note under `Knowledge/`, add it to [[Knowledge/agents.json]] (id, name, role,
+playbook path, chat type, workflow id) and it appears in the Training Room on the next page load —
+no dashboard change needed. Wire the playbook into the agent's prompt the way John's is.
 
 ## What can actually act
 n8n holds two credentials: Gmail and GitHub. So the agents can think, write to the data tables,
