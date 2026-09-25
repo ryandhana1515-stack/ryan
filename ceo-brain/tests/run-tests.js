@@ -304,6 +304,16 @@ test('invalid model output falls back with the reason recorded', () => {
   assert.ok(String(r.fallback_reason).startsWith('schema_invalid'));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
 });
+test('BMW dealership: business name from "I\'m Daniel from Prestige Motors", automotive direction', () => {
+  const input = { company_name: null, industry: null, contact_name: 'Daniel', message: "Hi John, I'm Daniel from Prestige Motors, we are a BMW dealership in Singapore with 12 sales staff. I want a premium website where customers can browse our BMW models, book a test drive, and WhatsApp us.", conversation: [], sales_summary: '', extracted: {} };
+  const r = wb.finalizeBrief({ error: 'model_error: simulated', input });
+  assert.strictEqual(r.brief.business_name, 'Prestige Motors');
+  assert.strictEqual(r.brief.industry_category, 'automotive');
+  assert.strictEqual(r.brief.mode, 'sme');
+  assert.strictEqual(r.brief.primary_goal, 'bookings');
+  assert.ok(/Prestige Motors/.test(r.build_prompt) && /showroom-first/.test(r.build_prompt));
+  assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+});
 test('dental clinic → medical mode: doctor/treatment pages, verification list, medical QA, no fabricated claims', () => {
   const input = { company_name: null, industry: null, contact_name: 'Dr Tan', message: 'We are a dental clinic in Bishan with 3 dentists. Patients keep calling to book; we want a website where they can book appointments and read about our treatments.', conversation: [], sales_summary: '', extracted: {} };
   const r = wb.finalizeBrief({ error: 'model_error: simulated', input });

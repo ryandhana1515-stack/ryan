@@ -29,11 +29,12 @@ how it is built: [[Knowledge/CEO Brain — product architecture]]; the twelve ag
 - **Outbound Sender** (`SAcnNxG1GWPwn3N7`), **Approve Reply** (`uQxHTTdEkazgKpRT`), **WhatsApp
   Inbound** (`3IhIJ5IYsB7wQQSg`), **Vault Writer** (`tVvSWjOubwBNLi88`), **Daily Brief**
   (`Pew2PX1IcgdXqXr7`), **John Chat Console** (`ny60ozvH8B4uNpcb`), **Trainer API**
-  (`zKqlk05WShUOrojw`), **Training Room** dashboard (`AM59goLdbt0clv8q`).
+  (`zKqlk05WShUOrojw`), **Training Room** dashboard (`AM59goLdbt0clv8q`), **Chat with John public
+  page** (`FngKsJ2x0AaWOdJl`, https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat).
 - Data: n8n tables `ceo_leads`, `ceo_messages`, `ceo_agent_runs`, `ceo_tasks`, `ceo_audit_logs`,
   `ceo_company_maps`. Long-term CRM/ERP schema (39 tables, tenant isolation with RLS) designed in
   `ceo-brain/database/migrations/002_crm_erp_core.sql`.
-- Code: `ceo-brain/` in this repo (agents, prompts, schemas, generators, 35 tests). Every Code node in
+- Code: `ceo-brain/` in this repo (agents, prompts, schemas, generators, 36 tests). Every Code node in
   n8n is generated from there; nothing is hand-edited in n8n.
 
 ## Guardrails (code, not prompt)

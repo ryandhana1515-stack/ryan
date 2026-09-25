@@ -59,6 +59,7 @@
         "food_beverage",
         "logistics",
         "healthcare",
+        "automotive",
         "other"
       ]
     },
