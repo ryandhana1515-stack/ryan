@@ -4,7 +4,7 @@
 > Rules: newest entry wins; never delete history (strike through and date instead);
 > facts here outrank the static account skill when they disagree.
 
-Last updated: 2026-09-24 (session: CEO Brain Phase 1 — AI Lead & Sales Qualification Agent)
+Last updated: 2026-09-25 (session: CEO Brain Phase 1 shipped; brain-to-Obsidian decided)
 
 ---
 
@@ -254,6 +254,11 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 ## 5. Decisions log
 
+- 2026-09-25 — **Zaphiel's brain moves to an Obsidian vault** (Ryan). Ryan sets the vault up;
+  until he says "vault is ready", `zaphiel/memory.md` stays the source of truth. Plan + converter:
+  `zaphiel/obsidian/` (vault lives inside this repo at `zaphiel/vault/`, synced by Obsidian Git;
+  n8n reads it through the GitHub credential; Claude sessions through the clone). CEO Brain
+  Phase 2 stays on hold.
 - 2026-09-24 — CEO Brain architecture: repo `ceo-brain/` is the source of truth, n8n is the
   runtime, agents return schema-validated JSON, guardrails live in code not prompts, the rule
   engine always runs as baseline/fallback, every row is tenant-scoped. AI drafts; humans send.
@@ -290,6 +295,9 @@ Ryan's second product line: an AI Lead & Sales Agent platform (multi-client SaaS
 
 ## 7. Open loops / next actions
 
+- **Obsidian vault**: waiting for Ryan to create it (steps in `zaphiel/obsidian/MIGRATION-PLAN.md`);
+  then run `node zaphiel/obsidian/build-vault.js` and retire memory.md.
+- CEO Brain: Phase 1 live; Phase 2 (WhatsApp in/out, approvals, Supabase) awaits Ryan's approval.
 - **#1 bottleneck: get the Shopify store live** — until then revenue is $0 and every ad
   dollar is premature (board meeting topic).
 - Decide BIO N:OV retail pricing (convene the board with live cost data).
