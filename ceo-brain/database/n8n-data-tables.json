@@ -31,6 +31,14 @@
     "daily_brief": "Pew2PX1IcgdXqXr7",
     "website_builder": "hSTRGnHVsu6tMOmH",
     "john_chat_console": "ny60ozvH8B4uNpcb",
-    "website_build_record": "RVPBGpBzj2SUQlgX"
+    "website_build_record": "RVPBGpBzj2SUQlgX",
+    "vault_writer": "tVvSWjOubwBNLi88"
+  },
+  "github": {
+    "owner": "ryandhana1515-stack",
+    "repo": "ryan",
+    "credential_id": "lZqYskCh7zVfXsc7",
+    "credential_name": "GitHub account",
+    "$comment": "n8n GitHub OAuth credential used to read the Obsidian vault at run time and to write lead/company notes into it"
   }
 }
