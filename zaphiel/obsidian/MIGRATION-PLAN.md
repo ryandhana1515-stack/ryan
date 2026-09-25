@@ -16,13 +16,16 @@ The vault lives INSIDE this repo. That is the whole trick: Obsidian edits a fold
 Obsidian Git plugin (or Ryan's own git push) syncs it, and every Claude session and every n8n
 workflow already reach the repo. No new credential, no new service.
 
-## What Ryan does (one time, ~10 minutes)
+## What Ryan does (one time, ~5 minutes) — updated 2026-09-25
 
-1. Install Obsidian. Create a new vault, choosing the folder `zaphiel/vault` inside a local clone
-   of this repo (or open that folder as a vault).
-2. Install the community plugin **Obsidian Git** and enable auto-pull/auto-commit (every 10 min
-   is fine). Its git remote is this repo, branch = the default branch.
-3. Tell Zaphiel "vault is ready". Then step 4 runs.
+The vault already exists in this repo at `zaphiel/vault/` (generated notes + the FusionTech brain) and
+the **Obsidian Git** plugin is pre-installed and pre-configured inside it (auto pull / commit / push
+every 10 minutes). So:
+
+1. Install **GitHub Desktop**, sign in, File → Clone repository → `ryandhana1515-stack/ryan`.
+2. In Obsidian: Open another vault → **Open folder as vault** → choose `ryan/zaphiel/vault`.
+   Click "Trust author and enable plugins" when asked. Git sync is now running.
+3. Tell Zaphiel "vault is ready".
 
 ## What Zaphiel does when the vault is ready
 
