@@ -40,7 +40,8 @@
     "trainer_api": "zKqlk05WShUOrojw",
     "training_dashboard": "AM59goLdbt0clv8q",
     "discovery_console": "9TnzsgPGRatMaQI3",
-    "website_chat": "FngKsJ2x0AaWOdJl"
+    "website_chat": "FngKsJ2x0AaWOdJl",
+    "website_build_runner": ""
   },
   "github": {
     "owner": "ryandhana1515-stack",
@@ -48,5 +49,10 @@
     "credential_id": "lZqYskCh7zVfXsc7",
     "credential_name": "GitHub account",
     "$comment": "n8n GitHub OAuth credential used to read the Obsidian vault at run time and to write lead/company notes into it"
+  },
+  "lovable": {
+    "workspace_id": "zjVuSnHzhPWFroVpa2KX",
+    "mcp_endpoint": "https://mcp.lovable.dev",
+    "$comment": "Ryan's Lovable workspace id (an identifier, not a secret). The OAuth credential lives only in n8n."
   }
 }

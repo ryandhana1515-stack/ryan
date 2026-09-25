@@ -30,16 +30,25 @@ edited text instead, add `&reply=<your text>` to the approve link. Phase 3 repla
 with a signed token.
 
 
-## Website builds (Agent #2) — what is automatic and what is not (2026-09-25)
+## Website builds (Agent #2) — automatic mock-ups (Ryan's decision, 2026-09-25)
 
-- Automatic today: brief, Lovable build prompt, `website_build` task, owner email with the prompt
-  prefilled in a Lovable link, and the **Website Build Record** endpoint (`RVPBGpBzj2SUQlgX`) that
-  flips the task to `built` / `build_failed` / `skipped_test_mode` and emails the preview.
-- Not automatic yet: **pressing "build" in Lovable**. Lovable's MCP server is OAuth-only (no API
-  key), so n8n cannot call it; only a Claude session holding the Lovable connector can create a
-  project, and each project consumes Lovable credits. Ryan asked for zero-click builds; the Claude
-  Code permission system refused, in the build session, both the demo build and the creation of an
-  unattended hourly routine that would spend credits ("Real-World Transactions", "Create Unsafe
-  Agents"). That authorization has to come from Ryan himself (a Routine he starts, or a permission
-  rule he adds). Chat-console leads (`lead_chat_*`) and `test_mode` leads must never be built.
-- Always human: publishing to a live domain (`deploy_project`) and sending the mock-up to the customer.
+Ryan's rule: a customer who asks John for a mock-up gets asked for the details (business name, what
+the business does, what the site must do, where to send the link); once John has them the Website
+Builder builds automatically and John sends the preview link. **No approval click anywhere.**
+Guardrails in code: one build per lead (`Decide Build`), a daily cap of 12 builds, no build until the
+four details are known, nothing published to a live domain, no prices or guarantees in copy.
+
+State of the code (repo, tests green):
+- `agents/website-builder/intake.js` — John's intake gate (inlined into Lead Intake).
+- `agents/sales-qualification/rules.js` v2 — greeting / "what do you do" answers, never escalated.
+- `agents/website-builder/brief.js` v2.1 — cinematic, photo-led standard; image shot list; readiness.
+- `workflows/website-builder/build.js` — Decide Build → Start Website Build Runner.
+- `workflows/website-build-runner/build.js` — Higgsfield/Kling photography → Lovable MCP → Build Record.
+- `workflows/john-chat-console/workflow.sdk.ts` — public-page visitors are real leads; preview link in chat.
+
+State in n8n: the Website Build Runner (`7sEuGyU6IjJsSaKL`) exists but is not wired into the Website
+Builder and not published; Lead Intake, Website Builder and the chat console still run the previous
+versions. Claude Code's permission classifier refused the deployment steps ("Create Unsafe Agents").
+Ryan lifts that with a permission rule in his Claude Code settings; then a session redeploys from the
+generators (`node workflows/*/build.js` → n8n MCP update/publish). Credentials the runner needs, set
+once in n8n: Higgsfield API, Kling API, Lovable MCP (OAuth2). Always human: publishing to a live domain.

@@ -43,6 +43,20 @@ function inline(file) {
 const normalizeSrc = inline('agents/sales-qualification/normalize.js');
 const rulesSrc = inline('agents/sales-qualification/rules.js');
 const postprocessSrc = inline('agents/sales-qualification/postprocess.js');
+// Only the detection helpers the website intake needs (top-level `var`/`function` blocks by name).
+function pick(file, names) {
+  const src = inline(file);
+  const lines = src.split('\n');
+  const blocks = {}; let cur = null;
+  for (const l of lines) {
+    const m = l.match(/^(?:var|function)\s+([A-Za-z_$][\w$]*)/);
+    if (m) { cur = m[1]; blocks[cur] = []; }
+    if (cur) blocks[cur].push(l);
+  }
+  return names.map((n) => { if (!blocks[n]) throw new Error('pick: ' + n + ' not found in ' + file); return blocks[n].join('\n'); }).join('\n');
+}
+const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
+const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -87,6 +101,8 @@ return [{ json: { source: 'rules', provider: 'rules', model: RB_VERSION, reason:
 const codeFinalize = `var CB_OUTPUT_SCHEMA = ${outputSchema.trim()};
 var CB_LEAD_STATUS = ${leadStatus.trim()};
 ${postprocessSrc}
+${briefSrc}
+${intakeSrc}
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
 const ctx = $('Resolve Lead Identity').first().json;
@@ -114,11 +130,16 @@ const approvalNeeded = r.human_review_required || r.next_action === 'request_pro
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
 const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
-// Hand-offs to other agents. Website Builder: the CURRENT customer message asks for a site (or a brand-new lead whose desired automation includes it).
-const WEBSITE_RE = /\\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\\b/i;
-const wantsSiteNow = WEBSITE_RE.test(String(ctx.lead.message || ''));
-const wantsSiteExtracted = (r.extracted.desired_automation || []).some((a) => /website|web ?app|landing/i.test(String(a)));
-const websiteRequested = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch' && (wantsSiteNow || (ctx.is_new && wantsSiteExtracted));
+// Website intake + hand-off (Ryan, 2026-09-25: zero approvals). When the customer asks for a site or a
+// mock-up, John collects the four details; once he has them the Website Builder is called and builds.
+const notPitch = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch';
+const histAll = Array.isArray(ctx.lead.conversation_history) ? ctx.lead.conversation_history : [];
+const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_name: ctx.lead.company_name || r.extracted.company_name, industry: ctx.lead.industry || r.extracted.industry, contact_name: ctx.lead.contact_name || r.extracted.contact_name, phone: ctx.lead.phone, email: ctx.lead.email, channel: ctx.lead.channel, extracted: r.extracted });
+const buildStarted = wbBuildAlreadyStarted(histAll);
+const websiteTopic = notPitch && intake.topic;
+const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+if (websiteTopic && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
   task_id: cbMakeId('task'),
@@ -144,6 +165,7 @@ const response = {
   follow_up_task: followUpTask,
   audit: fin.audit,
   handoffs,
+  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -154,7 +176,8 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
+  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];
 `;
 
@@ -505,6 +528,8 @@ const updateLeadStatus = node({
           extracted_json: expr('{{ JSON.stringify($json.result.extracted) }}'),
           company_name: expr('{{ $json.lead.company_name ?? $json.result.extracted.company_name ?? "" }}'),
           industry: expr('{{ $json.lead.industry ?? $json.result.extracted.industry ?? "" }}'),
+          email: expr('{{ $json.lead.email || $json.contact_found.email || "" }}'),
+          phone: expr('{{ $json.lead.phone || $json.contact_found.phone || "" }}'),
           updated_by: expr('{{ "agent:" + $json.config.agent + "@" + $json.provider }}'),
           last_contact_at: expr('{{ $json.finished_at }}')
         },
@@ -731,8 +756,8 @@ const callWebsiteBuilder = node({
           contact_name: expr("{{ ${F}.lead.contact_name ?? '' }}"),
           company_name: expr("{{ ${F}.lead.company_name ?? '' }}"),
           industry: expr("{{ ${F}.lead.industry ?? ${F}.result.extracted.industry ?? '' }}"),
-          email: expr("{{ ${F}.lead.email ?? '' }}"),
-          phone: expr("{{ ${F}.lead.phone ?? '' }}"),
+          email: expr("{{ ${F}.lead.email || ${F}.contact_found.email || '' }}"),
+          phone: expr("{{ ${F}.lead.phone || ${F}.contact_found.phone || '' }}"),
           channel: expr("{{ ${F}.lead.channel }}"),
           message: expr("{{ ${F}.lead.message ?? '' }}"),
           conversation_json: expr("{{ JSON.stringify(${F}.lead.conversation_history ?? []) }}"),

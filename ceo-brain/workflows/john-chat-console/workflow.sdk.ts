@@ -7,6 +7,7 @@ import { workflow, node, trigger, sticky, expr } from '@n8n/workflow-sdk';
 
 const LEAD_WEBHOOK = 'https://ryan1515.app.n8n.cloud/webhook/ceo-brain/lead';
 const MESSAGES_TABLE = { __rl: true, mode: 'id', value: 'eImH5AdVZEOW0t31', cachedResultName: 'ceo_messages' };
+const TASKS_TABLE = { __rl: true, mode: 'id', value: 'sPnRGXe4VYDJLJHr', cachedResultName: 'ceo_tasks' };
 
 const chat = trigger({
   type: '@n8n/n8n-nodes-langchain.chatTrigger',
@@ -44,8 +45,12 @@ const buildPayload = node({
 const sessionId = String(inp.sessionId || ('anon' + Date.now().toString(36)));
 const short = sessionId.replace(/[^a-z0-9]/gi, '').toLowerCase().slice(0, 24) || 'anon';
 const text = String(inp.chatInput || '').trim();
+// Visitors on the public "Chat with John" page / FusionTech.com.sg widget are REAL leads (metadata.source
+// = website_widget); the hosted console and Training Room sessions stay in test mode.
+const realVisitor = !!(inp.metadata && inp.metadata.source === 'website_widget');
 return [{ json: {
   session_id: sessionId,
+  real_visitor: realVisitor,
   lead_id: 'lead_chat_' + short,
   text,
   payload: {
@@ -55,7 +60,7 @@ return [{ json: {
     source: 'website',
     channel: 'web_chat',
     message: text,
-    test_mode: true,
+    test_mode: !realVisitor,
     ai_mode: 'live'
   }
 } }];`
@@ -129,6 +134,30 @@ const askJohn = node({
   output: [{ ok: true, lead_id: 'lead_chat_abc123', result: { lead_status: 'QUALIFYING', lead_temperature: 'warm', next_action: 'ask_qualifying_questions', recommended_reply: 'Thanks…', human_review_required: false, escalation_reasons: [] }, delivery: { mode: 'test_mode_no_send' }, handoffs: [], ai: { provider: 'anthropic', fallback_used: false } }]
 });
 
+const loadWebsiteTask = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: 'Load Website Task',
+    alwaysOutputData: true,
+    onError: 'continueRegularOutput',
+    parameters: {
+      resource: 'row',
+      operation: 'get',
+      dataTableId: TASKS_TABLE,
+      matchType: 'allConditions',
+      filters: { conditions: [
+        { keyName: 'lead_id', condition: 'eq', keyValue: expr("{{ $('Build Lead Payload').item.json.lead_id }}") },
+        { keyName: 'task_type', condition: 'eq', keyValue: 'website_build' }
+      ] },
+      returnAll: false,
+      limit: 1
+    },
+    position: [1100, 300]
+  },
+  output: [{ id: 1, lead_id: 'lead_chat_abc123', task_type: 'website_build', status: 'built', payload_json: '{"preview_url":"https://id-preview--x.lovable.app"}' }]
+});
+
 const formatReply = node({
   type: 'n8n-nodes-base.code',
   version: 2,
@@ -137,7 +166,16 @@ const formatReply = node({
     parameters: {
       mode: 'runOnceForAllItems',
       language: 'javaScript',
-      jsCode: `const r = ($input.first() && $input.first().json) || {};
+      jsCode: `const r = $('Ask John (Lead Intake)').first().json || {};
+const base = $('Build Lead Payload').first().json;
+const taskRows = $input.all().map((i) => i.json).filter((t) => t && t.task_type === 'website_build' && t.lead_id === base.lead_id);
+let mockup = '';
+if (taskRows.length) {
+  const t = taskRows[0];
+  let payload = {}; try { payload = JSON.parse(t.payload_json || '{}'); } catch (e) { payload = {}; }
+  if (t.status === 'built' && payload.preview_url) mockup = '\\n\\nYour mock-up is ready: ' + payload.preview_url + '\\nIt is a first draft to react to; tell me what you would change.';
+  else if (t.status === 'building') mockup = '\\n\\n(Your mock-up is being built right now; I will send the link as soon as it is ready.)';
+}
 if (!r.ok) {
   const why = Array.isArray(r.errors) ? r.errors.join(', ') : (r.error && (r.error.message || r.error)) || 'no response';
   return [{ json: { output: 'John could not process that message (' + String(why) + '). Please try again.' } }];
@@ -152,15 +190,15 @@ const bits = [res.lead_status, res.lead_temperature, res.next_action];
 if (r.delivery && r.delivery.mode) bits.push(r.delivery.mode);
 if (Array.isArray(r.handoffs) && r.handoffs.length) bits.push('handoff → ' + r.handoffs.join(', '));
 if (r.ai) bits.push((r.ai.provider || '') + (r.ai.fallback_used ? ' fallback' : ''));
-const meta = '\\n\\n— console · ' + bits.filter(Boolean).join(' · ');
-return [{ json: { output: text + meta } }];`
+const meta = base.real_visitor ? '' : '\\n\\n— console · ' + bits.filter(Boolean).join(' · ');
+return [{ json: { output: text + mockup + meta } }];`
     },
-    position: [1100, 300]
+    position: [1320, 300]
   },
   output: [{ output: 'Thanks…\n\n— console · QUALIFYING · warm · ask_qualifying_questions' }]
 });
 
-const note = sticky('## CEO Brain — John Chat Console\nHosted chat page to test John as a prospect. Each message → real Lead Intake (test_mode, nothing sent to customers) → John\'s reply + a one-line console status. Previous turns are reloaded from ceo_messages by lead id, so multi-turn conversations work.\n\nWebsite requests trigger the Website Builder hand-off and an approval email with an Open-in-Lovable link.\n\nSource of truth: repo ryan/ceo-brain/workflows/john-chat-console/workflow.sdk.ts', [chat, buildPayload, loadHistory], { color: 4 });
+const note = sticky('## CEO Brain — John Chat Console\nHosted chat page to test John as a prospect. Each message → real Lead Intake (test_mode, nothing sent to customers) → John\'s reply + a one-line console status. Previous turns are reloaded from ceo_messages by lead id, so multi-turn conversations work.\n\nWebsite / mock-up requests: John collects the details, the Website Builder + Build Runner build the mock-up automatically, and the preview link shows up in this chat and goes to the customer\'s WhatsApp/email. Visitors from the public page (metadata.source = website_widget) are real leads.\n\nSource of truth: repo ryan/ceo-brain/workflows/john-chat-console/workflow.sdk.ts', [chat, buildPayload, loadHistory], { color: 4 });
 
 export default workflow('ceo-brain-john-chat-console', 'CEO Brain — John Chat Console')
   .add(chat)
@@ -168,7 +206,8 @@ export default workflow('ceo-brain-john-chat-console', 'CEO Brain — John Chat 
   .to(loadHistory)
   .to(composeRequest)
   .to(askJohn)
+  .to(loadWebsiteTask)
   .to(formatReply)
   .add(note)
   .group('1. Session & memory', [buildPayload, loadHistory, composeRequest], { description: 'Builds the test lead payload from the chat session and reloads previous turns from ceo_messages.' })
-  .group('2. Ask John', [askJohn, formatReply], { description: 'Calls the live Lead Intake webhook and formats John\'s reply plus a console status line.' });
+  .group('2. Ask John', [askJohn, loadWebsiteTask, formatReply], { description: 'Calls the live Lead Intake webhook, checks whether this lead\'s mock-up is built, and formats John\'s reply (+ console status line in test sessions).' });

@@ -174,6 +174,145 @@ function finalizeResult(input) {
   }
   return { result: result, valid: true, provider: provider, model: model, fallback_used: fallbackUsed, fallback_reason: fallbackReason, validation_errors: validationErrors, status_change: statusChange, audit: notes, postprocess_version: PP_VERSION };
 }
+function wbStr(v, max) {
+  if (v === undefined || v === null) return null;
+  var s = String(v).replace(/\s+/g, ' ').trim();
+  if (!s) return null;
+  return max && s.length > max ? s.slice(0, max) : s;
+}
+var WB_MEDICAL_RE = /\b(doctor|doctors|dr\.?|clinic|clinics|dental|dentist|orthodont|aesthetic (clinic|practice)|medical|physician|specialist|surgeon|surgery|healthcare|health care|hospital|physio(therapy)?|chiropract|tcm|traditional chinese medicine|dermatolog|paediatric|pediatric|gynae|gynec|cardiolog|oncolog|ophthalmolog|optometr|patients?)\b/i;
+function wbDetectMode(text, industry) {
+  var t = String(text || '') + ' ' + String(industry || '');
+  return WB_MEDICAL_RE.test(t) ? 'medical' : 'sme';
+}
+var WB_CATEGORY_RULES = [
+  ['healthcare', WB_MEDICAL_RE],
+  ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
+  ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
+  ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
+  ['food_beverage', /\b(restaurant|cafe|café|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b)\b/i],
+  ['logistics', /\b(logistic|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
+  ['home_services', /\b(plumb|electric(ian|al)|aircon|air-con|renovat|contractor|cleaning|pest|handyman|mover|moving|landscap|roofing|painter)\b/i],
+  ['education', /\b(tuition|tutor|school|academy|course|training centre|enrichment|students?|learning|kindergarten|preschool)\b/i],
+  ['retail', /\b(retail|shop|store|boutique|products?|merchandise|e-?commerce|online store)\b/i],
+  ['technology', /\b(software|saas|app\b|platform|startup|tech|it services|cybersecurity|cloud)\b/i],
+  ['consulting', /\b(consult(ing|ant|ancy)|advisory|advisor|strategy firm)\b/i],
+  ['professional_services', /\b(law firm|lawyer|legal|accountant|accounting firm|audit|tax|architect|engineering firm|insurance|financial advis|corporate secretar)\b/i],
+  ['b2b', /\b(manufactur|factory|wholesale|supplier|distributor|industrial|b2b|oem|fabricat|precision)\b/i]
+];
+function wbDetectCategory(text, industry) {
+  var t = String(text || '') + ' ' + String(industry || '');
+  for (var i = 0; i < WB_CATEGORY_RULES.length; i++) if (WB_CATEGORY_RULES[i][1].test(t)) return WB_CATEGORY_RULES[i][0];
+  return /\b(local|neighbourhood|neighborhood|heartland)\b/i.test(t) ? 'local_business' : 'other';
+}
+function wbDetectSiteType(text) {
+  if (/online store|e-?commerce|sell (products )?online|shop online|webshop|checkout/i.test(text)) return 'online_store';
+  if (/landing page/i.test(text)) return 'landing_page';
+  if (/customer portal|client portal|patient portal|\bportal\b/i.test(text)) return 'portal';
+  if (/web ?app|dashboard|log ?in|track(ing)? (shipments|orders|deliver)|booking system|online system/i.test(text)) return 'web_app';
+  if (/web ?site|homepage|web ?page/i.test(text)) return 'business_website';
+  return 'other';
+}
+function wbDetectGoal(text, mode) {
+  if (mode === 'medical' && /book|appointment|consult/i.test(text)) return 'bookings';
+  if (/book(ing)?|appointment|reserv/i.test(text)) return 'bookings';
+  if (/sell|order|checkout|online store|e-?commerce/i.test(text)) return 'sales';
+  if (/enquir|inquir|lead|quote|quotation|contact us|whatsapp|request/i.test(text)) return 'leads';
+  if (/support|faq|help ?desk/i.test(text)) return 'support';
+  if (/information|about us|showcase|portfolio|brochure/i.test(text)) return 'information';
+  return mode === 'medical' ? 'bookings' : 'leads';
+}
+function wbGuessBusinessName(input, text) {
+  if (input.company_name) return wbStr(input.company_name, 160);
+  var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.\n]| and | with | that | in | based |; )/);
+  return m ? wbStr(m[1], 160) : null;
+}
+var WI_VERSION = 'website-intake-1.0.0';
+var WI_WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
+var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test drive|reserv\w*|sell|selling|order|orders|checkout|shop online|enquir\w*|inquir\w*|quote|quotes|quotation|contact us|whatsapp|showcase|portfolio|brochure|browse|catalogue|catalog|menu|sign ?up|register|apply|download|learn about|information about|about us|our services|services page|pages?)\b/i;
+var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;
+var WI_STARTED_MARK = 'building your first mock-up';
+function wiClean(v, max) {
+  if (v === undefined || v === null) return null;
+  var s = String(v).replace(/\s+/g, ' ').trim();
+  return s ? (max ? s.slice(0, max) : s) : null;
+}
+function wiCustomerText(history, message) {
+  var parts = [];
+  var h = Array.isArray(history) ? history : [];
+  for (var i = 0; i < h.length; i++) if (h[i] && h[i].role !== 'agent' && h[i].content) parts.push(String(h[i].content));
+  if (message) parts.push(String(message));
+  return parts.join('\n');
+}
+function wiAgentText(history) {
+  var parts = [];
+  var h = Array.isArray(history) ? history : [];
+  for (var i = 0; i < h.length; i++) if (h[i] && h[i].role === 'agent' && h[i].content) parts.push(String(h[i].content));
+  return parts.join('\n');
+}
+/**
+ * wbIntake({ text | history+message, company_name, industry, contact_name, phone, email, channel, extracted })
+ *  -> { topic, ready, missing, questions, reply, details, email, phone }
+ */
+function wbIntake(o) {
+  o = o || {};
+  var text = typeof o.text === 'string' ? o.text : wiCustomerText(o.history, o.message);
+  var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
+  var topic = typeof o.text === 'string' ? WI_WEBSITE_RE.test(text) : (WI_WEBSITE_RE.test(String(o.message || '')) || wbIntakeInProgress(o.history));
+  var mode = wbDetectMode(text, o.industry || ex.industry);
+  var category = wbDetectCategory(text, o.industry || ex.industry);
+  var businessName = wiClean(o.company_name, 160) || wiClean(ex.company_name, 160) || wbGuessBusinessName({}, text);
+  var industry = wiClean(o.industry, 80) || wiClean(ex.industry, 80) || (category !== 'other' ? category.replace(/_/g, ' ') : null);
+  var siteType = wbDetectSiteType(text);
+  var purposeKnown = WI_PURPOSE_RE.test(text) && siteType !== 'other';
+  var goal = wbDetectGoal(text, mode);
+  var emailInText = (text.match(WI_EMAIL_RE) || [null])[0];
+  var phoneInText = (text.match(WI_PHONE_RE) || [null])[0];
+  var email = wiClean(o.email) || (emailInText ? emailInText.toLowerCase() : null);
+  var phone = wiClean(o.phone) || (phoneInText ? phoneInText.replace(/[\s-]/g, '') : null);
+  if (phone && !/^\+/.test(phone)) phone = '+65' + phone.replace(/^65/, '');
+  var contactKnown = !!(email || phone || o.channel === 'whatsapp');
+  var missing = [];
+  if (!businessName) missing.push('business_name');
+  if (!industry) missing.push('industry');
+  if (!purposeKnown) missing.push('site_purpose');
+  if (!contactKnown) missing.push('contact');
+  var noun = mode === 'medical' ? 'clinic' : 'business';
+  var q = {
+    business_name: 'What is the name of your ' + noun + '?',
+    industry: 'What does the ' + noun + ' do, and who are your customers?',
+    site_purpose: 'What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?',
+    contact: 'Which WhatsApp number or email should I send the mock-up link to?'
+  };
+  var questions = [];
+  for (var i = 0; i < missing.length && questions.length < 3; i++) questions.push(q[missing[i]]);
+  var ready = topic && missing.length === 0;
+  var first = wiClean(o.contact_name) ? String(o.contact_name).trim().split(' ')[0] : null;
+  var greet = first ? 'Hi ' + first + ', ' : 'Hi, ';
+  var reply;
+  if (!topic) reply = '';
+  else if (ready) {
+    var to = phone ? phone : (email ? email : 'this chat');
+    reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now; I will send the link to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
+  } else {
+    reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
+  }
+  return {
+    version: WI_VERSION, topic: topic, ready: ready, missing: missing, questions: questions,
+    reply: reply.replace(/\s+/g, ' ').trim(),
+    details: { business_name: businessName, industry: industry, site_type: siteType, goal: goal, category: category, mode: mode },
+    email: email, phone: phone
+  };
+}
+/** True when John already asked the intake questions in an earlier turn. */
+function wbIntakeInProgress(history) {
+  return wiAgentText(history).toLowerCase().indexOf('first mock-up built for you') !== -1;
+}
+/** True when John already told this customer the build has started (marker in an agent turn). */
+function wbBuildAlreadyStarted(history) {
+  return wiAgentText(history).toLowerCase().indexOf(WI_STARTED_MARK) !== -1;
+}
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
 const ctx = $('Resolve Lead Identity').first().json;
@@ -201,11 +340,16 @@ const approvalNeeded = r.human_review_required || r.next_action === 'request_pro
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
 const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
-// Hand-offs to other agents. Website Builder: the CURRENT customer message asks for a site (or a brand-new lead whose desired automation includes it).
-const WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\b/i;
-const wantsSiteNow = WEBSITE_RE.test(String(ctx.lead.message || ''));
-const wantsSiteExtracted = (r.extracted.desired_automation || []).some((a) => /website|web ?app|landing/i.test(String(a)));
-const websiteRequested = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch' && (wantsSiteNow || (ctx.is_new && wantsSiteExtracted));
+// Website intake + hand-off (Ryan, 2026-09-25: zero approvals). When the customer asks for a site or a
+// mock-up, John collects the four details; once he has them the Website Builder is called and builds.
+const notPitch = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch';
+const histAll = Array.isArray(ctx.lead.conversation_history) ? ctx.lead.conversation_history : [];
+const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_name: ctx.lead.company_name || r.extracted.company_name, industry: ctx.lead.industry || r.extracted.industry, contact_name: ctx.lead.contact_name || r.extracted.contact_name, phone: ctx.lead.phone, email: ctx.lead.email, channel: ctx.lead.channel, extracted: r.extracted });
+const buildStarted = wbBuildAlreadyStarted(histAll);
+const websiteTopic = notPitch && intake.topic;
+const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+if (websiteTopic && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
   task_id: cbMakeId('task'),
@@ -231,6 +375,7 @@ const response = {
   follow_up_task: followUpTask,
   audit: fin.audit,
   handoffs,
+  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -241,5 +386,6 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
+  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];

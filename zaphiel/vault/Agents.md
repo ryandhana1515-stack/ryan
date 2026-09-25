@@ -42,6 +42,11 @@ https://id-preview--e650eee1-4666-475f-95dc-0686284264fc.lovable.app) → Websit
 the task to `built` and emailed Ryan the preview (execution 229). The customer send was skipped only
 because it was a test session with no phone or email.
 
+**2026-09-25, later:** Ryan rejected the first mock-up (flat black boxes, no photography) and set the
+zero-approval flow. The repo now has it end to end (John intake → Website Builder v2.1 cinematic
+standard → **Website Build Runner** with Higgsfield/Kling photography + Lovable → Build Record → John
+sends the link). Deployment is blocked by Claude Code's permission classifier; see Open loops.
+
 Customers can already talk to John from the web: public page
 https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat (n8n `FngKsJ2x0AaWOdJl`); the same chat bubble
 for FusionTech.com.sg is in `ceo-brain/website-chat/embed-snippet.html` (paste before `</body>`).
