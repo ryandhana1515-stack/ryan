@@ -12,3 +12,8 @@ tags: [zaphiel, changelog]
   ("vault is ready"); vault trimmed to FusionTech AI only; how-to notes for WhatsApp and training.
 - 2026-09-25 — Found: n8n AI Gateway credits exhausted ("Payment required"); agents answer from
   their rule engines until Ryan tops up.
+- 2026-09-25 — Training Room shipped: hosted dashboard (n8n `AM59goLdbt0clv8q`,
+  /webhook/ceo-brain/dashboard) + Trainer API (`zKqlk05WShUOrojw`). Agents come from
+  `Knowledge/agents.json`; teaching writes "Lessons learned" lines into the playbook notes here;
+  chat relays to John (chat console) and the Website Builder (brief). First taught line landed in
+  John's playbook from the dashboard (commit 880ec38). Voice via the browser (Web Speech API).

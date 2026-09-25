@@ -19,7 +19,8 @@ money, contracts, publishing or refunds waits for Ryan.
   customer through the Outbound Sender (WhatsApp when the credential exists, else email) → copy to Ryan.
 - **Outbound Sender** (`SAcnNxG1GWPwn3N7`), **Approve Reply** (`uQxHTTdEkazgKpRT`), **WhatsApp
   Inbound** (`3IhIJ5IYsB7wQQSg`), **Vault Writer** (`tVvSWjOubwBNLi88`), **Daily Brief**
-  (`Pew2PX1IcgdXqXr7`), **John Chat Console** (`ny60ozvH8B4uNpcb`).
+  (`Pew2PX1IcgdXqXr7`), **John Chat Console** (`ny60ozvH8B4uNpcb`), **Trainer API**
+  (`zKqlk05WShUOrojw`), **Training Room** dashboard (`AM59goLdbt0clv8q`).
 - Data: n8n tables `ceo_leads`, `ceo_messages`, `ceo_agent_runs`, `ceo_tasks`, `ceo_audit_logs`.
 - Code: `ceo-brain/` in this repo (agents, prompts, schemas, generators, 29 tests). Every Code node in
   n8n is generated from there; nothing is hand-edited in n8n.
@@ -28,6 +29,12 @@ money, contracts, publishing or refunds waits for Ryan.
 Never invent facts. Never quote prices, guarantees, delivery dates, contracts or refunds — those go
 to Ryan. WON/LOST are human decisions. Nothing is published to a live domain without Ryan.
 Third-party costs are always separate from FusionTech fees. No secrets in the vault or logs.
+
+## Train the agents (Training Room)
+https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard — every agent in [[Knowledge/agents.json]]
+plus the brain. Talk by voice or text, teach ("when a customer says X, then …") straight into the
+playbook notes in this vault, read each playbook live. PIN: the Trainer Config node of the n8n
+workflow "CEO Brain — Trainer API". See [[Knowledge/_How to train the agents]].
 
 ## Test John yourself
 https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (test mode:

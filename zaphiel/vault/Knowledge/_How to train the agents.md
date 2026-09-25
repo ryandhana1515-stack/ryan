@@ -12,7 +12,25 @@ Every agent is three layers. You train the first two yourself in Obsidian; the t
 | **Playbook** — e.g. [[Knowledge/John — Sales playbook]] | How to behave: tone, answers to common questions, lessons learned | You and the agents | John's next message (live) |
 | **Guardrails** — code in the repo (`ceo-brain/`) | JSON output schema, "never quote prices", human-only decisions, hand-off rules | Zaphiel, when you ask | After a redeploy (Zaphiel does it) |
 
-## Training John (the WhatsApp / sales agent)
+## The fast way: the Training Room
+Open https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard (Chrome or Safari, phone or
+laptop). First time: tap the settings icon, enter the PIN (it lives in n8n → "CEO Brain — Trainer
+API" → Trainer Config node; the repo default is `fusiontech-trainer`, change it there), and allow
+the microphone when the browser asks.
+
+- **Talk** — pick an agent, hold the mic button or type, and speak to it as a customer would. Turn on
+  "Read replies aloud" to hear the answer. John replies through his chat console (test mode, nothing
+  reaches a real customer); the Website Builder replies with the brief it would build from.
+- **Teach** — "When a customer says …" / "then <agent> should …", by voice or typing. Save writes
+  one dated line under **Lessons learned** in that agent's playbook note in this vault (commit
+  `vault: training for <Agent> (dashboard)`). The agent follows it on its next message. "Recently
+  taught" shows the last lines so you can check what stuck.
+- **Playbook** — the live note, exactly what the agent reads.
+- **Brain** — the master company brain; company facts belong there, not in a playbook.
+
+Every agent listed in [[Knowledge/agents.json]] shows up automatically; new agents are added there.
+
+## Training John (the WhatsApp / sales agent) — the manual way
 1. **Talk to him** as a prospect in the chat console
    (https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat).
 2. **Read what he did**: the conversation and the facts he extracted appear in `Leads/Test/…`
