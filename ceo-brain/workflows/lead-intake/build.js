@@ -131,6 +131,9 @@ if (provider === 'rules' && !fin.fallback_reason) fin.fallback_reason = fallback
 const finishedAt = new Date().toISOString();
 const latencyMs = Math.max(0, new Date(finishedAt).getTime() - new Date(ctx.now).getTime());
 const r = fin.result;
+// John never says "I don't know" (Ryan, 2026-09-26): if the AI reply does, use the rule engine's reply, which always answers.
+const JOHN_DONT_KNOW = /\\b(i|we) (really )?(don'?t|do not|dont) (know|have (that|this|the|any) (info|information|answer|details))\\b|\\b(i|we)('m|'re| am| are) (not sure|unsure|unable to (answer|say|help))\\b|\\bno idea\\b|\\b(i|we) (can'?t|cannot) (answer|say|help with) (that|this)\\b/i;
+if (fin.provider !== 'rules' && r.recommended_reply && JOHN_DONT_KNOW.test(r.recommended_reply) && rulesResult && rulesResult.recommended_reply) { r.recommended_reply = rulesResult.recommended_reply; fin.audit.push('reply_replaced:dont_know'); }
 const approvalNeeded = r.human_review_required || r.next_action === 'request_proposal_approval';
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);

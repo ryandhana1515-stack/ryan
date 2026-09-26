@@ -773,6 +773,63 @@ test('Lead Intake: no ATLAS question on a reply that waits for approval', () => 
   assert.strictEqual(run.fin.approval_needed, true);
   assert.strictEqual(run.fin.atlas_question, null);
 });
+
+console.log('\n[15] John always has an answer (Ryan, 2026-09-26: "he can\'t say I don\'t know")');
+const rbx = require('../agents/sales-qualification/rules.js');
+const FAQ_SAMPLES = {
+  speak_human: 'Can I speak to a real person?', are_you_ai: 'Are you a bot?', pricing: 'How much does it cost?', timeline: 'How long does it take?',
+  process: 'How does it work?', more_info: 'How can I get more info on this?', chatbot: 'Is this just a chatbot?', existing_software: 'Do we need to change our CRM?',
+  whatsapp: 'Does it work with WhatsApp?', websites: 'Do you do sales funnels?', examples: 'Can I see examples of your work?', location: 'Where are you based?',
+  industries: 'Do you work with clinics?', data_security: 'Is my data safe?', results: 'Will it really work for my business?', staff: 'Will it replace my staff?',
+  support: 'What about maintenance after launch?', marketing: 'Can you do marketing too?', customer_service: 'Can it answer customers after hours?', booking: 'Can it book appointments?',
+  finance: 'Can it do accounting stuff like Xero?', tech: 'What AI do you use?', ceo_brain: 'What is the CEO Brain?', different: 'Why should I choose you?', trial: 'Is there a demo?', ease: 'Is it hard to use for my staff?'
+};
+test('every answer-bank topic has a sample, is recognised, and answers it as John', () => {
+  assert.deepStrictEqual(Object.keys(FAQ_SAMPLES).sort(), rbx.RB_FAQ.map((t) => t.key).sort(), 'one sample per topic');
+  Object.keys(FAQ_SAMPLES).forEach((k) => {
+    const topics = rbx.rbFaqTopics(FAQ_SAMPLES[k]).map((t) => t.key);
+    assert.strictEqual(topics[0], k, FAQ_SAMPLES[k] + ' -> ' + topics.join(','));
+  });
+});
+test('every answer passes the reply guardrails end to end (no price, guarantee, refund, contract or credential words; never parked)', () => {
+  Object.keys(FAQ_SAMPLES).forEach((k) => {
+    const lead = normalizeLead({ name: 'Ken Lim', phone: '91234567', message: FAQ_SAMPLES[k], test_mode: true, ai_mode: 'mock' }).lead;
+    const rr = classifyWithRules(lead);
+    const fin = finalizeResult({ lead, previous_status: 'NEW', provider: 'rules', model: 'rules', result: rr, rules_result: rr });
+    const blocked = fin.result.escalation_reasons.filter((x) => /^reply_/.test(x));
+    assert.deepStrictEqual(blocked, [], k + ' blocked: ' + blocked.join(','));
+    if (k !== 'finance') assert.strictEqual(fin.result.human_review_required, false, k + ' parked for a human: ' + fin.result.escalation_reasons.join(','));
+    assert.ok(fin.result.recommended_reply.length > 40, k + ' reply too short');
+    assert.ok(!/\b(i|we) (don'?t|do not) know\b|not sure/i.test(fin.result.recommended_reply), k + ' says it does not know');
+  });
+});
+test('holding replies for Ryan-only topics are helpful and pass the guardrails too', () => {
+  ['Can we get a discount?', 'I want a refund', 'What are the payment terms?', 'Is there a contract lock-in?', 'This is a scam', 'Do you guarantee results?'].forEach((m) => {
+    const lead = normalizeLead({ name: 'Ken Lim', phone: '91234567', message: m, test_mode: true, ai_mode: 'mock' }).lead;
+    const rr = classifyWithRules(lead);
+    assert.strictEqual(rr.human_review_required, true, m);
+    assert.ok(/Ryan/.test(rr.recommended_reply) && !/review your message/.test(rr.recommended_reply), m + ' -> ' + rr.recommended_reply);
+    const fin = finalizeResult({ lead, previous_status: 'NEW', provider: 'rules', model: 'rules', result: rr, rules_result: rr });
+    assert.deepStrictEqual(fin.result.escalation_reasons.filter((x) => /^reply_/.test(x)), [], m);
+  });
+});
+test('unclear or fact-only messages get a real reply, not a hand-off', () => {
+  ['ok', 'we use excel and whatsapp', 'hmm'].forEach((m) => {
+    const rr = classifyWithRules({ message: m, conversation_history: [], contact_name: 'Ken Lim' });
+    assert.strictEqual(rr.human_review_required, false, m + ': ' + rr.escalation_reasons.join(','));
+    assert.ok(rr.recommended_reply.length > 60, m);
+  });
+});
+test('Lead Intake: an AI reply that says "I don\'t know" is replaced by John\'s answer', () => {
+  const raw = fs.readFileSync(path.join(__dirname, 'fixtures', 'ai-raw-fenced.txt'), 'utf8');
+  const obj = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+  obj.recommended_reply = 'Hi John, I don\'t know that yet, sorry. Someone will get back to you.';
+  const p = Object.assign({}, fx('john-tan.json'), { ai_mode: 'live', message: 'How can I get more info on this?' });
+  const run = simulate(p, { modelText: JSON.stringify(obj) });
+  assert.strictEqual(run.fin.provider, 'anthropic');
+  assert.ok(!/don't know/i.test(run.fin.result.recommended_reply), run.fin.result.recommended_reply);
+  assert.ok(run.fin.audit.includes('reply_replaced:dont_know'));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

@@ -3,7 +3,7 @@
 // same schema as the LLM (schemas/sales-qualification-output.schema.json).
 // Pure functions, no I/O, no require().
 
-var RB_VERSION = 'rules-v2';
+var RB_VERSION = 'rules-v3';
 // Conversation openers John must handle himself (no escalation): greetings and "what do you do?"
 var RB_GREETING = /^\s*(hi|hello|hey|yo|hai|halo|good (morning|afternoon|evening)|hi there|hello there|hey there)[\s!.,?]*(john|there)?[\s!.,?]*$/i;
 var RB_ABOUT = /(what (do|does|can) (you|u|fusiontech|fusion tech|your company|your team)( guys)? (do|offer|build|help|make)|what is (fusiontech|fusion tech|this|the ceo brain)|tell me (more )?about (you|yourself|fusiontech|fusion tech|your (company|services))|what can you (do|help|build)|how (can|do) you help|what (kind|type|sort)s? of websites?|what (websites?|services?|products?) (do|can) you|what are your services|what do you (offer|sell|build|specialise in|specialize in)|what.?s your problem|how does (it|this) work|what should i do|help me)/i;
@@ -101,6 +101,83 @@ var RB_QUESTIONS = {
 };
 var RB_QUESTION_PRIORITY = ['problem', 'lead_sources', 'current_follow_up_process', 'current_tools', 'uses_whatsapp', 'desired_automation', 'company_size', 'desired_outcome', 'timeline', 'accounting_or_erp', 'decision_maker', 'budget'];
 
+// ---- John's answer bank (Ryan, 2026-09-26: "John knows everything and knows how to reply; never 'I don't know'") ----
+// Facts come only from the Master Company Brain and the playbook. No prices, dates, guarantees or client names.
+// Each answer must pass the reply guardrails (no price, guarantee, refund, contract, credential words).
+var RB_QFORM = /\?|^\s*(can|could|do|does|did|is|are|will|would|how|what|which|who|where|when|why|may|should|any|got|have you|you guys|u guys)\b/i;
+var RB_FAQ = [
+  { key: 'speak_human', title: 'Wants a person or a call', re: /\b(speak|talk|chat)\s+(to|with)\s+(a |an |the )?(human|person|someone|somebody|real person|ryan|boss|manager|founder|owner|team|salesperson|sales person)\b|\b(can|could) (someone|somebody|you|ryan) call\b|\bcall me\b(?!\s+(back\s+)?(later|tomorrow|next))|\b(zoom|google meet|teams call|meet up|meet in person)\b/i, action: 'book_discovery_call',
+    answer: 'Of course. Ryan, our founder, can speak with you directly.', q: 'What is the best number to reach you, and what time suits you?' },
+  { key: 'are_you_ai', title: 'Is this a bot / a real person?', re: /\b(are|r) (you|u) (a |an )?(bot|robot|ai|human|real|real person|person)\b|\b(talking|speaking|chatting) (to|with) (a |an )?(bot|robot|ai|human|real person)\b|\bis this (a |an )?(bot|ai|real person|human)\b/i,
+    answer: 'I am John, FusionTech\'s AI sales assistant, the same kind of agent we build for our clients. Ryan, our founder, and the team are right behind me and step in whenever something needs a person.' },
+  { key: 'pricing', title: 'How much does it cost?', re: /\b(how much|price|prices|pricing|cost|costs|fee|fees|charges?|rates?|quotation|quote|expensive|affordable|afford|package|packages)\b/i,
+    answer: 'Every project is priced to the workflow we automate, so we scope it first instead of giving a number that may not fit. Most businesses start with one high-value workflow, such as answering and following up every enquiry, and expand once it proves itself. Software costs from other providers are always shown separately from our fees, and Ryan sends a tailored proposal after a short discovery.', q: 'Which part of your business would you want sorted first?' },
+  { key: 'timeline', title: 'How long does it take?', re: /\b(how long|how fast|how quickly|how soon|turnaround|time ?frame|when can (it|you|we|i))\b/i,
+    answer: 'We start with one workflow, build and test it, and switch it on before adding the next, so you see results early instead of waiting for one big project. A first website mock-up usually comes back in about 15 minutes. The schedule for your full setup comes with the proposal once we know what is involved.' },
+  { key: 'process', title: 'How does it work / how do I start?', re: /\bhow (does|do|would) (it|this|that|you) work\b|\b(what('s| is) the process|next steps?|get(ting)? started|how (do|can) (i|we) (start|begin|proceed|sign up)|how to start)\b/i,
+    answer: 'It works in five steps: we understand how your business runs today, design the setup around it, build it, test it with you, then switch it on and keep improving it. You approve each step, and existing tools stay where they work.', q: 'What kind of business do you run, and what would you most like to take off your plate?' },
+  { key: 'more_info', title: 'Can I get more info?', re: /\b(more (info|information|details)|tell me more|send (me )?(some |more )?(details|info|information|brochure)|brochure|how can i (get|find out|learn|know) more|know more|find out more|learn more|what else)\b/i,
+    answer: 'Happy to. In short, we build an AI workforce around how your business already runs: every enquiry on WhatsApp, email or your website gets answered and followed up, your tools are connected, and you see everything in one place. We also build the website or sales funnel in front of it, and the quickest way to see it is on your own business.', q: 'What does your business do, and what takes up most of your team\'s time?' },
+  { key: 'chatbot', title: 'Is this just a chatbot?', re: /\b(chat ?bots?|just a bot|like chatgpt)\b/i, needsQ: true,
+    answer: 'It is more than a chatbot. A chatbot only answers messages; we build AI agents that do the work around them: they qualify enquiries, update your CRM, follow up on time, book appointments and report to you, with a person approving anything important.' },
+  { key: 'existing_software', title: 'Do we have to change our software?', re: /\b(change|replace|switch|migrate)\b.{0,20}\b(software|system|systems|crm|tools?|apps?)\b|\b(integrat\w*|connect (to|with)|compatible|work with (my|our) (existing|current)|hubspot|salesforce|zoho|pipedrive|gohighlevel|shopify|google sheets|excel|odoo|sap)\b/i, needsQ: true,
+    answer: 'You do not have to replace what already works. Wherever it is practical we connect the systems you already use, like your CRM, spreadsheets, accounting software, calendar and WhatsApp, and our systems architect checks each connection properly before anything is built.' },
+  { key: 'whatsapp', title: 'Does it work with WhatsApp?', re: /\bwhats ?app\b/i, needsQ: true,
+    answer: 'Yes. WhatsApp is usually where it starts: every enquiry gets an instant, helpful reply, follow-ups go out on time, and each conversation is saved to your CRM, using the official WhatsApp Business setup.' },
+  { key: 'websites', title: 'Do you build websites, funnels, stores, 3D sites?', re: /\b(funnels?|landing pages?|sales pages?|online stores?|e-?commerce|web ?apps?|portals?|3d|three[- ]d|animat\w*|scroll(ing)? (effect|animation)s?|websites?)\b/i, needsQ: true,
+    answer: 'Yes. We build business websites, landing pages and full sales funnels, online stores, booking sites, customer portals and web apps, including premium 3D and cinematic scroll-animated sites, and they connect to your WhatsApp and CRM so every visitor who enquires gets followed up.' },
+  { key: 'examples', title: 'Can I see examples / past work?', re: /\b(examples?|portfolio|case stud\w*|past (work|projects|clients)|samples?|show me|who have you worked|references|previous (work|projects|clients)|your clients)\b/i,
+    answer: 'The best example is one made for your own business: we can have a first website mock-up made for you to look at, and you are chatting with one of our AI agents right now. For past projects, Ryan walks you through them personally on a call.' },
+  { key: 'location', title: 'Where are you based?', re: /\b(where are (you|u)|based (in|at)|located|your (office|address)|overseas|outside singapore|malaysia|international|other countries)\b/i,
+    answer: 'We are based in Singapore and work with businesses in Singapore and beyond. Everything is set up and supported online, so location is not a barrier.' },
+  { key: 'industries', title: 'Do you work with my industry?', re: /\b(which|what) industr\w*|\bmy (industry|line of business)\b|\b(do you|can you|does (it|this)|will (it|this)|is (it|this)) (work|help|do|suit\w*|good|suitable)\b.{0,25}\b(clinics?|dental|dentists?|doctors?|property|real estate|agents?|agenc(y|ies)|construction|contractors?|renovation|interior design\w*|retail|shops?|stores?|restaurants?|f&b|cafes?|bakeries|logistics|schools?|tuition|educat\w*|salons?|spas?|beauty|car (dealers?|dealerships?)|dealerships?|workshops?|manufactur\w*|factor(y|ies)|insurance|accounting firms?|law firms?|small business(es)?|smes?|startups?|companies like (mine|ours)|business(es)? like (mine|ours))\b/i,
+    answer: 'Yes. It fits any business that handles enquiries, customers and follow-ups, from property agencies and clinics to construction, retail, F&B, logistics and professional services, and we design it around how your business actually runs rather than forcing a template.' },
+  { key: 'data_security', title: 'Is my data safe?', re: /\b(data|privacy|pdpa|secure|security|safe|confidential|hack\w*|leak\w*)\b/i, needsQ: true,
+    answer: 'Your data stays yours. Each client\'s setup is kept separate from every other client, access is limited to what each part needs, important actions are logged, and anything sensitive needs a person\'s approval. We never ask for your logins in a chat; connections use proper secure sign-ins.' },
+  { key: 'results', title: 'Will it work / what results?', re: /\b(results?|roi|return on|will it (really )?work(?!\s+(with|on)\b)|does it (really )?work(?!\s+(with|on)\b)|worth it|increase (my |our )?(sales|revenue|leads)|more (sales|leads|customers))\b/i, needsQ: true,
+    answer: 'We do not promise financial outcomes, because they depend on many things outside the system. What we measure from the first 30 days is concrete: how many enquiries were answered and how fast, follow-ups completed, appointments booked and hours saved.' },
+  { key: 'staff', title: 'Will it replace my staff?', re: /\b(replace (my|our|the) (staff|team|employees|people|workers)|lay ?offs?|lose (their|my) jobs?|still need (my|our) (staff|team))\b/i,
+    answer: 'It is built to support your team, not replace it: the AI takes the repetitive admin, instant replies and follow-ups, so your people spend their time on customers and closing work.' },
+  { key: 'support', title: 'What about support after launch?', re: /\b(maintenance|maintain|after (launch|it'?s built|setup|set up)|if something (breaks|goes wrong)|ongoing support|who (fixes|maintains|supports))\b/i,
+    answer: 'We stay with you after launch: onboarding for your team, support, and ongoing improvement as your business changes. The support arrangement is part of your proposal.' },
+  { key: 'marketing', title: 'Do you do marketing and ads?', re: /\b(marketing|ads|advertis\w*|social media|facebook ads|tiktok ads|instagram ads|content creation|campaigns?)\b/i, needsQ: true,
+    answer: 'Yes, as part of the system. Our marketing agent researches your market and competitors, drafts ad ideas, landing pages and social content for your approval, and reports how campaigns perform, while every lead the ads bring in is answered and followed up automatically.' },
+  { key: 'customer_service', title: 'Can it handle customer service?', re: /\b(customer service|customer support|faqs?|answer (my )?(customers|questions)|after[- ]?hours|24\/7|24 hours|round the clock|at night)\b/i,
+    answer: 'Yes. A customer service agent answers approved FAQs any time of day, looks up customer details where allowed, opens tickets and hands anything sensitive to your team with a summary, so nobody waits for a reply.' },
+  { key: 'booking', title: 'Can it book appointments?', re: /\b(appointments?|bookings?|schedul\w*|calendar|reservations?)\b/i, needsQ: true,
+    answer: 'Yes. The agent can check availability and book appointments into your calendar where you allow it, send reminders before the visit, and follow up no-shows.' },
+  { key: 'finance', title: 'Can it help with invoices and accounting?', re: /\b(accounting|xero|quickbooks|bookkeeping|finance)\b/i, needsQ: true,
+    answer: 'Yes. A finance assistant can track what is outstanding, send reminders and give you a clear summary, and it never moves money or changes financial records without a person approving it.' },
+  { key: 'tech', title: 'Which AI / technology do you use?', re: /\b(which|what) (ai|technology|tech|tools|platform|platforms|models?|software) (do|does|are) (you|u)\b|\b(chatgpt|claude|openai|n8n|lovable)\b/i,
+    answer: 'We build with leading AI models such as Claude and ChatGPT, n8n to connect your systems and run the workflows, and Lovable for websites and apps, choosing what fits your setup rather than locking you into one tool.' },
+  { key: 'ceo_brain', title: 'What is the CEO Brain / dashboard?', re: /\b(ceo brain|daily brief|dashboard|see everything|management report\w*)\b/i,
+    answer: 'The CEO Brain sits above everything we connect. Each morning it tells you what happened, which leads need attention and what to focus on, and you can simply ask it questions like which leads have not been followed up.' },
+  { key: 'different', title: 'Why you / how are you different?', re: /\b(different from|difference|why (should (i|we) )?(choose|pick|go with|use|trust) (you|fusiontech|your (company|team))|why (you|fusiontech)\b|what makes you|compared (to|with)|better than|other agencies|why fusiontech)\b/i,
+    answer: 'Most providers sell a single tool; we connect your whole company. We diagnose first, design around your real workflow, build and test it with you, then keep improving it, so you end up with one connected system instead of more disconnected apps.' },
+  { key: 'trial', title: 'Free trial / demo?', re: /\b(free trial|trial|demo|try it|test it out|see it (in action|working))\b/i,
+    answer: 'You are trying it right now: I am one of the agents we build. For your own business, the quickest look is a first website mock-up, and Ryan can walk you through a live setup of the workflow you care about.' },
+  { key: 'ease', title: 'Is it hard to use?', re: /\b(hard to use|difficult|complicated|easy to use|user[- ]friendly|not (very )?(tech|technical)|need training|learn to use)\b/i,
+    answer: 'Your team does not need to be technical. We set everything up around the way they already work, train them during onboarding, and most of it runs quietly in the background on WhatsApp, email and the tools they know.' }
+];
+// When a customer raises something only Ryan decides, John still answers helpfully (the reply waits for Ryan's OK).
+var RB_HOLDING = [
+  [/\b(contract|agreement|terms|lock[- ]?in|sign)\b/i, 'Ryan handles all paperwork and terms personally, so I have passed your question to him and he will reply to you directly.'],
+  [/\b(refund|money back|chargeback)\b/i, 'I have passed this straight to Ryan, who handles these matters personally, and he will get back to you directly.'],
+  [/\b(discount|cheapest|cheaper|best price|promo)\b/i, 'Ryan prepares every proposal personally, including how it is structured, so I have passed your question to him.'],
+  [/\b(deposit|payment terms|pay(ment)?|instal+ments?)\b/i, 'Payment arrangements come with Ryan\'s proposal, so I have passed your question to him and he will reply directly.'],
+  [/\b(guarantee\w*)\b/i, 'We do not promise financial outcomes, but Ryan will walk you through exactly what we measure. I have passed your question to him.'],
+  [/\b(lawyer|legal|sue|complain\w*|angry|scam)\b/i, 'I am sorry to hear that. I have passed your message straight to Ryan, our founder, and he will personally get back to you.']
+];
+/** Which FAQ topics does this message ask about? Most specific first; at most two. */
+function rbFaqTopics(msg) {
+  var m = String(msg || ''); if (!m.trim()) return [];
+  var q = RB_QFORM.test(m);
+  var out = [];
+  for (var i = 0; i < RB_FAQ.length && out.length < 2; i++) { var t = RB_FAQ[i]; if (t.needsQ && !q) continue; if (t.re.test(m)) out.push(t); }
+  return out;
+}
+function rbHoldingReply(msg) { for (var i = 0; i < RB_HOLDING.length; i++) if (RB_HOLDING[i][0].test(String(msg || ''))) return RB_HOLDING[i][1]; return 'I have passed your message to Ryan, our founder, so he can answer it personally.'; }
+
 /**
  * classifyWithRules(lead) -> SalesQualificationResult (schema 1.0)
  * lead: the normalized lead object from normalize.js
@@ -150,6 +227,7 @@ function classifyWithRules(lead) {
 
   // Intent
   var isGreeting = RB_GREETING.test(msg);
+  var faq = rbFaqTopics(msg);
   var isAbout = RB_ABOUT.test(msg);
   var intent = 'unclear';
   if (RB_SPAM.test(text) || RB_VENDOR.test(text)) intent = RB_VENDOR.test(text) && !RB_SPAM.test(text) ? 'vendor_or_job_pitch' : 'spam';
@@ -159,6 +237,9 @@ function classifyWithRules(lead) {
   else if (isAbout) intent = 'ai_automation_enquiry';
   else if (RB_PRICING.test(text)) intent = 'pricing_enquiry';
   if (intent === 'unclear' && RB_PRICING.test(text)) intent = 'pricing_enquiry';
+  if (intent === 'unclear' && faq.length) intent = 'ai_automation_enquiry';
+  var hasFacts = !!(extracted.industry || extracted.company_size !== null || extracted.current_tools.length || extracted.lead_sources.length || extracted.accounting_or_erp.length || extracted.problem || extracted.desired_outcome || lead.company_name);
+  if (intent === 'unclear' && hasFacts) intent = 'ai_automation_enquiry';
 
   // Missing information
   var missing = [];
@@ -183,7 +264,7 @@ function classifyWithRules(lead) {
   var escalation = [];
   var riskM = msg.match(RB_RISKY);
   if (riskM) escalation.push('customer_mentions_' + riskM[0].toLowerCase().replace(/\s+/g, '_'));
-  if (intent === 'unclear' && temperature === 'cold' && !RB_NOT_INTERESTED.test(text) && !isGreeting && !isAbout) escalation.push('intent_unclear');
+  // Unclear messages are answered with a friendly clarifying question, never parked (Ryan, 2026-09-26: John always replies).
   if (intent === 'support_request') escalation.push('existing_customer_support_request');
   if (intent === 'partnership') escalation.push('partnership_requires_human');
   var humanReview = escalation.length > 0;
@@ -200,6 +281,7 @@ function classifyWithRules(lead) {
   else if (temperature === 'hot') { status = 'HOT'; nextAction = 'book_discovery_call'; }
   else if (keyKnown) { status = 'QUALIFIED'; nextAction = 'ask_qualifying_questions'; }
   else if (RB_CALL_LATER.test(text)) { status = 'FOLLOW_UP'; nextAction = 'schedule_follow_up'; }
+  if (!humanReview && status !== 'PROPOSAL_REQUIRED' && faq.some(function (t) { return t.action === 'book_discovery_call'; })) nextAction = 'book_discovery_call';
 
   // Progressive questions (max 3)
   var questions = [];
@@ -216,16 +298,22 @@ function classifyWithRules(lead) {
   if (extracted.company_size !== null && extracted.industry) ack = 'thanks for reaching out. A ' + rbHumanize(extracted.industry) + ' business with ' + extracted.company_size + ' people' + (extracted.desired_automation.length ? ' looking at ' + rbHumanize(extracted.desired_automation[0]) : '') + ' is exactly the kind of setup we work on. ';
   else if (extracted.desired_automation.length) ack = 'thanks for reaching out about ' + rbHumanize(extracted.desired_automation[0]) + '. ';
   else ack = 'thanks for getting in touch. ';
+  var rbLower = function (a) { return /^(I|I'm|Ryan|FusionTech|WhatsApp|Claude|ChatGPT)\b/.test(a) ? a : a.charAt(0).toLowerCase() + a.slice(1); };
   var reply = '';
   if (intent === 'spam') reply = '';
   else if (nextAction === 'close_lost') reply = '';
-  else if (status === 'HUMAN_REVIEW') reply = greet + ack + 'A member of our team will review your message personally and come back to you shortly.';
+  else if (status === 'HUMAN_REVIEW') reply = greet + (riskM ? rbHoldingReply(msg) : ack + 'I have passed your message to Ryan, our founder, so he can answer it personally.');
   else if (status === 'PROPOSAL_REQUIRED') reply = greet + ack + 'We will prepare a tailored proposal and come back to you with the details. ' + (questions.length ? 'To scope it correctly: ' + questions.slice(0, 2).join(' ') : '');
   else if (status === 'HOT') reply = greet + ack + 'The fastest way forward is a short discovery call to map your current process. ' + (questions.length ? 'Before that, two quick questions: ' + questions.slice(0, 2).join(' ') : 'When would suit you this week?');
   else reply = greet + ack + 'To point you in the right direction, a few quick questions: ' + questions.join(' ');
   if (intent !== 'spam' && status !== 'HUMAN_REVIEW' && status !== 'PROPOSAL_REQUIRED') {
-    if (isAbout) reply = greet + RB_ABOUT_REPLY + ' ' + (questions.length ? questions[0] : 'What kind of business do you run?');
+    if (faq.length) {
+      var ownQ = null; for (var t = 0; t < faq.length; t++) if (faq[t].q) { ownQ = faq[t].q; break; }
+      reply = greet + rbLower(faq.map(function (x) { return x.answer; }).join(' ')) + ' ' + (ownQ || (questions.length ? questions[0] : 'What kind of business do you run?'));
+    }
+    else if (isAbout) reply = greet + RB_ABOUT_REPLY + ' ' + (questions.length ? questions[0] : 'What kind of business do you run?');
     else if (isGreeting) reply = greet.replace(/, $/, '! ').replace(/^Hi, $/, 'Hi! ') + RB_GREETING_REPLY;
+    else if (intent === 'unclear' && !RB_NOT_INTERESTED.test(text)) reply = greet + 'happy to help. I am John from FusionTech AI, and we build AI agents and automation around how your business already runs, plus the websites and web apps that go with it. What kind of business do you run, and what would you like to take off your plate?';
   }
   reply = reply.replace(/\s+/g, ' ').trim();
 
@@ -237,7 +325,7 @@ function classifyWithRules(lead) {
   if (hasWant) confidence += 0.1;
   if (extracted.company_size !== null) confidence += 0.05;
   if (intent === 'spam') confidence = 0.6;
-  if (isGreeting || isAbout) confidence = Math.max(confidence, 0.6); // handled openers, never 'low confidence'
+  if (isGreeting || isAbout || faq.length || (intent === 'unclear' && !humanReview)) confidence = Math.max(confidence, 0.6); // handled openers, never 'low confidence'
   confidence = Math.min(0.9, Math.round(confidence * 100) / 100);
 
   return {
@@ -259,4 +347,4 @@ function classifyWithRules(lead) {
   };
 }
 
-module.exports = { classifyWithRules: classifyWithRules, RB_VERSION: RB_VERSION };
+module.exports = { classifyWithRules: classifyWithRules, RB_VERSION: RB_VERSION, RB_FAQ: RB_FAQ, RB_HOLDING: RB_HOLDING, rbFaqTopics: rbFaqTopics, rbHoldingReply: rbHoldingReply };

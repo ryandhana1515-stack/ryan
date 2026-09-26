@@ -169,4 +169,13 @@ tags: [zaphiel, changelog]
   research, most high-converting 3D sales sites, realistic anatomy for doctors; "I will pay the gateway later. Just
   wait."). Found: every Website Intelligence search has failed since the credits ran out, and free search engines
   block n8n. Nothing changed live; plan in [[Open loops]]. Temporary probe workflow archived.
+- 2026-09-26 (night) — **John always has an answer** (Ryan: "John knows everything and knows how to reply… he can't
+  say I don't know"). New answer bank of 26 customer questions (more info, price, how long, how it works, is it a
+  bot, talk to a person, examples, WhatsApp, funnels/3D sites, software, data safety, results, staff, support,
+  marketing, customer service, bookings, finance, which AI, CEO Brain, why us, demo, ease of use, location, industries)
+  in John's backup mode (rules-v3) and in his live playbook ([[Knowledge/John — Sales playbook]]), all from the Master
+  Company Brain. Price, paperwork, payment, discount, refund and complaint questions get a helpful reply that says
+  Ryan handles it personally (still held for Ryan's OK). Unclear messages get a friendly reply instead of being parked.
+  A guard swaps any AI reply that says "I don't know" / "I'm not sure" for John's answer. John's AI rules now answer
+  general price and timing questions instead of parking them. Tests 68/68; deployed and verified live (execution 376).
 
