@@ -6,19 +6,19 @@ tags: [zaphiel, open-loops]
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
 - **Ryan (to test John on WhatsApp):** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Until then test John at https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat. Then
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
-- **Ryan — make the automatic mock-up chain live (3 things, once).**
-  1. Permission: Claude Code's auto-mode classifier refused to deploy the chain ("Create Unsafe
-     Agents") four times on 2026-09-25, even after Ryan said he had settled it. Add a permission rule
-     in the Claude Code settings for this environment that allows it (the refusal text says exactly
-     that), then say "deploy the automatic mock-up chain". Everything is already written and tested in
-     the repo; the runner workflow `7sEuGyU6IjJsSaKL` already exists in n8n, unwired and unpublished.
-  2. Credentials in n8n (never in the repo): "Higgsfield API" (Header Auth: Authorization = Key
-     <key id>:<secret>, from console.higgsfield.ai), "Kling API" (Header Auth: Authorization = Bearer
-     <API key>, from kling.ai/dev/api-key), "Lovable MCP (OAuth2)" (MCP Client OAuth2 for
-     https://mcp.lovable.dev, sign in once). Open the runner workflow and select them on the
-     Higgsfield / Kling / Lovable nodes.
-  3. n8n AI credits, so John talks with Claude instead of the rule engine (the rule engine now greets
-     and explains FusionTech, but a real conversation needs the model).
+- **Ryan — make the automatic mock-up chain live (credentials in n8n, once; 2026-09-26: the chain itself is
+  deployed and verified, Website Builder v2.2 `hSTRGnHVsu6tMOmH`).** Zaphiel guides step by step. In n8n
+  (https://ryan1515.app.n8n.cloud → Credentials → Create):
+  1. "Lovable MCP (OAuth2)" — type *MCP Client (OAuth2) API*, server URL https://mcp.lovable.dev, press Connect
+     and sign in to Lovable. **This one unblocks the build**: the runner `7sEuGyU6IjJsSaKL` cannot be published
+     without it, and n8n refuses to publish the Website Builder's "Start Website Build Runner" node until the runner
+     is published (the node is disabled meanwhile; everything else is live).
+  2. "Higgsfield API" — type *Header Auth*, name `Authorization`, value `Key <key id>:<secret>` (from
+     console.higgsfield.ai). 3. "Kling API" — *Header Auth*, `Authorization` = `Bearer <API key>` (kling.ai/dev/api-key).
+     4. "Higgsfield MCP (OAuth2)" for variation A (the cinematic scroll film site).
+  Then tell Zaphiel "credentials added": Zaphiel assigns them to the runner nodes, publishes the runner, re-enables
+  the node, republishes the Website Builder and runs one real test from John to two mock-up links.
+  Keys are typed only into n8n's credential screen, never pasted into chat or the repo.
 - **Ryan:** paste `ceo-brain/website-chat/embed-snippet.html` into FusionTech.com.sg before `</body>`
   so visitors talk to John there; until then use https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat.
 - **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),
