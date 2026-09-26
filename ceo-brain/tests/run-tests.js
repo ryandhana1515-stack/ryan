@@ -658,6 +658,39 @@ test('John hands a funnel request to the website chain, and the rules tag it web
   assert.strictEqual(run.fin.website_requested, true);
 });
 
+console.log('\n[12] John\'s judgement: talking about websites never starts a build (Ryan, 2026-09-26)');
+test('capability question → John answers and offers a mock-up; no intake questions, no hand-off', () => {
+  const run = simulate({ name: 'Mei', channel: 'web_chat', source: 'website', message: 'What type of websites can you build?', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 'j1' } });
+  assert.strictEqual(run.fin.website_intake.intent, false);
+  assert.strictEqual(run.fin.website_requested, false);
+  assert.ok(!/name of your business/.test(run.fin.result.recommended_reply), 'must not jump into mock-up questions');
+  assert.ok(/landing pages|websites/.test(run.fin.result.recommended_reply), 'answers the question');
+  assert.ok(/first mock-up made for your business/.test(run.fin.result.recommended_reply), 'offers, customer decides');
+});
+test('business details + a website complaint but no request → no build', () => {
+  const run = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'We are Prestige Motors, a BMW dealership in Singapore. Our website gets no enquiries for test drives. Email me at daniel@prestige.sg', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 'j2' } });
+  assert.strictEqual(run.fin.website_requested, false);
+  assert.strictEqual(run.fin.website_intake.intent, false);
+});
+test('customer says yes to John\'s offer → intake starts; details → build', () => {
+  const history = [
+    { role: 'customer', content: 'What type of websites can you build?' },
+    { role: 'agent', content: 'We build business websites, landing pages and sales funnels. Would you like me to have a first mock-up made for your business, so you can see it before deciding anything?' }
+  ];
+  const yes = simulate({ name: 'Mei', channel: 'web_chat', source: 'website', message: 'Yes please', conversation_history: history, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 'j3' } });
+  assert.strictEqual(yes.fin.website_intake.intent, true);
+  assert.strictEqual(yes.fin.website_requested, false);
+  assert.ok(/first mock-up built for you/.test(yes.fin.result.recommended_reply));
+  const h2 = history.concat([{ role: 'customer', content: 'Yes please' }, { role: 'agent', content: yes.fin.result.recommended_reply }]);
+  const details = simulate({ name: 'Mei', channel: 'web_chat', source: 'website', message: 'We are Sunrise Bakery, a bakery in Tampines. Customers should order cakes online. Send it to mei@sunrise.sg', conversation_history: h2, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 'j3' } });
+  assert.strictEqual(details.fin.website_requested, true);
+});
+test('wiAsksForBuild: requests vs questions', () => {
+  const w = require('../agents/website-builder/intake.js');
+  ['Can you build me a website?', 'Can you build a website for my bakery?', 'I want a sales funnel', 'We need a new website', 'Send me a mock-up', 'help me build a landing page'].forEach((m) => assert.strictEqual(w.wiAsksForBuild(m), true, m));
+  ['What type of websites can you build?', 'Do you make funnels?', 'Can you build a website?', 'how much is a website?', 'Our website gets no enquiries'].forEach((m) => assert.strictEqual(w.wiAsksForBuild(m), false, m));
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
