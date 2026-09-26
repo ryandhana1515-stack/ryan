@@ -870,6 +870,16 @@ test('every agent parses a fenced JSON answer that itself contains a ``` block (
     assert.strictEqual(fn('no json here'), null, name);
   }
 });
+test('a rich research plan never pushes the 3D motion or the anatomy visual out of the Lovable prompt (execution 390)', () => {
+  const long = (w, n) => Array.from({ length: n }, (_, i) => w + ' ' + i + ' ' + 'x'.repeat(300));
+  const plan = { brief: { primary_cta: 'Book a Heart Screening Consultation', target_customers: long('buyer', 3), customer_objections: long('objection', 4), homepage_conversion_flow: long('section', 9), funnel_plan: long('step', 8), conversion_strategy: long('rule', 8), placeholders_required: long('ph', 8), motion_3d_direction: 'A photorealistic 3D human heart scrubbed by scroll. ' + 'm'.repeat(900), medical_visual_direction: 'Specialty: cardiology. Use photorealistic, medically accurate anatomy: a realistic beating human heart with blood flowing. ' + 'v'.repeat(900) } };
+  const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: JSON.stringify(plan) } });
+  const p = out.build_prompt;
+  assert.ok(p.length <= wb.WB_MAX_PROMPT, p.length);
+  const sec = p.slice(p.indexOf(wb.WB_STRATEGY_MARK));
+  for (const k of ['Primary CTA everywhere', '3D and scroll motion', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
+  assert.ok(/Never a cartoon/.test(sec) && /Build a premium/.test(p), 'strategy complete and the base prompt still leads');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

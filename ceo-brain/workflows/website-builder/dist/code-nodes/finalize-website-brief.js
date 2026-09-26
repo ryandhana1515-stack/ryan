@@ -5,7 +5,7 @@ var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_ap
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
 var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'construction', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
-var WB_MAX_PROMPT = 9000;
+var WB_MAX_PROMPT = 12000;
 var WB_STRATEGY_MARK = 'STRATEGY FROM WEBSITE INTELLIGENCE (follow it):';
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
 var WB_ANTI_GENERIC = [
@@ -303,27 +303,30 @@ function wbResearchPlan(input) {
 }
 /** True when the plan carries a real anatomy visual (a specialty), not the general-practice "no anatomy renders" line. */
 function wbHasAnatomy(plan) { return !!(plan && plan.medical_visual_direction && /photoreal/i.test(plan.medical_visual_direction) && !/no anatomy renders/i.test(plan.medical_visual_direction)); }
-/** The strategy section appended to every Lovable prompt, so the build follows the research deterministically. */
+/** The strategy section appended to every Lovable prompt, so the build follows the research deterministically.
+ *  Most important first (CTA, 3D motion, medical visual, funnel), every line capped, so a rich plan never pushes the
+ *  3D and anatomy instructions out (execution 390: the section was cut after the objections line). */
+function wbCap(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 function wbStrategySection(plan) {
   if (!plan) return '';
   var L = [WB_STRATEGY_MARK];
   if (plan.primary_cta) L.push('- Primary CTA everywhere: "' + plan.primary_cta + '"' + (plan.secondary_cta ? '; secondary: "' + plan.secondary_cta + '"' : '') + '.');
-  if (plan.target_customers.length) L.push('- Buyer: ' + plan.target_customers.join('; ') + '.');
-  if (plan.homepage_conversion_flow.length) L.push('- Homepage section order: ' + plan.homepage_conversion_flow.join(' > ') + '.');
-  if (plan.funnel_plan.length) L.push('- Funnel (build these pages and steps): ' + plan.funnel_plan.join(' | '));
-  if (plan.conversion_strategy.length) L.push('- High-conversion rules: ' + plan.conversion_strategy.join('; ') + '.');
-  if (plan.customer_objections.length) L.push('- Answer these objections on the page: ' + plan.customer_objections.join('; ') + '.');
-  if (plan.motion_3d_direction) L.push('- 3D and scroll motion: ' + plan.motion_3d_direction + ' Use scroll-linked animation (e.g. framer-motion / GSAP ScrollTrigger); respect prefers-reduced-motion.');
-  if (wbHasAnatomy(plan)) L.push('- Medical visual (hero): ' + plan.medical_visual_direction + ' Use it as a full-bleed looping hero video (the generated film/photo from the build runner; until it is attached, a placeholder slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly 3D model.');
-  else if (plan.medical_visual_direction) L.push('- Medical visuals: ' + plan.medical_visual_direction);
-  if (plan.placeholders_required.length) L.push('- Placeholders to label clearly: ' + plan.placeholders_required.join('; ') + '.');
+  if (plan.motion_3d_direction) L.push(wbCap('- 3D and scroll motion: ' + plan.motion_3d_direction, 650) + ' Use scroll-linked animation (e.g. framer-motion / GSAP ScrollTrigger); respect prefers-reduced-motion.');
+  if (wbHasAnatomy(plan)) L.push(wbCap('- Medical visual (hero): ' + plan.medical_visual_direction, 750) + ' Use it as a full-bleed looping hero video (the generated film/photo from the build runner; until it is attached, a placeholder slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly 3D model.');
+  else if (plan.medical_visual_direction) L.push(wbCap('- Medical visuals: ' + plan.medical_visual_direction, 500));
+  if (plan.funnel_plan.length) L.push(wbCap('- Funnel (build these pages and steps): ' + plan.funnel_plan.join(' | '), 1300));
+  if (plan.homepage_conversion_flow.length) L.push(wbCap('- Homepage section order: ' + plan.homepage_conversion_flow.join(' > '), 1000));
+  if (plan.conversion_strategy.length) L.push(wbCap('- High-conversion rules: ' + plan.conversion_strategy.join('; '), 1000));
+  if (plan.target_customers.length) L.push(wbCap('- Buyer: ' + plan.target_customers.join('; '), 350));
+  if (plan.customer_objections.length) L.push(wbCap('- Answer these objections on the page: ' + plan.customer_objections.join('; '), 450));
+  if (plan.placeholders_required.length) L.push(wbCap('- Placeholders to label clearly: ' + plan.placeholders_required.join('; '), 400));
   return L.join('\n');
 }
 /** Append the strategy section to a build prompt (once), keeping the total under WB_MAX_PROMPT by trimming the base, never the strategy. */
 function wbWithStrategy(prompt, plan) {
   prompt = String(prompt || '');
   if (!plan || prompt.indexOf(WB_STRATEGY_MARK) !== -1) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
-  var sec = wbStrategySection(plan).slice(0, Math.floor(WB_MAX_PROMPT / 2));
+  var sec = wbStrategySection(plan);
   var room = WB_MAX_PROMPT - sec.length - 1;
   if (prompt.length > room) prompt = prompt.slice(0, room - 1) + '…';
   return prompt + '\n' + sec;
