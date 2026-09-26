@@ -34,6 +34,12 @@ exists: `Knowledge/AI Workforce — roster`.
   `RVPBGpBzj2SUQlgX`: POST /webhook/ceo-brain/website-built {task_id, lead_id, status
   built|build_failed|skipped_test_mode, project_id, preview_url, editor_url, notes, actor} → task
   updated, mock-up sent to the customer via the Outbound Sender, copy to Ryan.
+- **ATLAS — EDG & CRM Systems Architect**: n8n `9XQWSgTBszRc0Jxj` (called by John's "EDG Needed?"
+  gate, once per lead; source `ceo-brain/workflows/atlas/build.js` + `agents/atlas/atlas.js`) runs
+  DESIGN mode to checkpoint 1 → files 00/01/02/14/15 in `zaphiel/vault/80_Clients/<slug>/edg/`
+  (test leads under `80_Clients/_Test/`), `edg_design` approval task, email to Ryan, event
+  `edg.checkpoint_1`. Everything after checkpoint 1 (architecture, build spec, BUILD, AUDIT) runs in
+  Claude Code with the `atlas` subagent (`.claude/agents/atlas.md`, all tools) once Ryan confirms.
 - **Training Room** `AM59goLdbt0clv8q`: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents

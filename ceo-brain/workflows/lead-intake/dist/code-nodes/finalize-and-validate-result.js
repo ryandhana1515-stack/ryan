@@ -348,6 +348,25 @@ function wbIntakeInProgress(history) {
 function wbBuildAlreadyStarted(history) {
   return wiAgentText(history).toLowerCase().indexOf(WI_STARTED_MARK) !== -1;
 }
+function atStr(v, max) {
+  if (v === undefined || v === null) return '';
+  var s = String(v).replace(/\s+/g, ' ').trim();
+  return max && s.length > max ? s.slice(0, max) : s;
+}
+function atArr(v) { return Array.isArray(v) ? v.map(function (x) { return atStr(x, 200); }).filter(Boolean) : []; }
+var AT_EXPLICIT = /\b(crm|edg|pipeline|automat\w*|workflow|integrat\w*|dashboard|erp|ai agents?|operating system|lead management|follow[- ]?up system)\b/i;
+function atNeeded(o) {
+  o = o || {};
+  var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
+  var company = atStr(o.company_name || ex.company_name, 160);
+  if (!company) return false;
+  var wants = atArr(ex.desired_automation).filter(function (w) { return w !== 'website_build'; });
+  var said = [o.message || '', o.history_text || ''].join('\n');
+  var systemsNeed = wants.length > 0 || AT_EXPLICIT.test(said);
+  if (!systemsNeed) return false;
+  var knowsToday = !!(atStr(ex.problem) || atStr(ex.current_follow_up_process) || atArr(ex.current_tools).length || atArr(ex.accounting_or_erp).length);
+  return knowsToday;
+}
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
 const ctx = $('Resolve Lead Identity').first().json;
@@ -383,11 +402,14 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+// ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
+const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\n');
+const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
 else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
-const handoffs = websiteRequested ? ['website-builder'] : [];
+const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -413,6 +435,7 @@ const response = {
   audit: fin.audit,
   handoffs,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
+  edg_requested: edgRequested,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -423,6 +446,6 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, handoffs, response,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];

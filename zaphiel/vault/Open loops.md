@@ -49,3 +49,10 @@ tags: [zaphiel, open-loops]
 - Next: John reads open `website.info_needed` tasks and asks the customer in his own voice; Build Record sends
   `MOCKUP_READY` to John.
 - **Ryan (decision):** OK the plan to merge ATLAS into [[10_Agents/07_CRM_Architect]] (ATLAS becomes the upgraded 07; plan given in chat 2026-09-26). Until then ATLAS runs from `.claude/agents/atlas.md` and the 07 note still shows the old CRM Architect.
+- **Ryan:** top up n8n AI (Gateway) credits. Without them ATLAS, like John, runs on its rule fallback: it writes the
+  checkpoint-1 files from John's facts only (no real systems thinking) — verified 2026-09-26, Claude answered
+  "Payment required".
+- **Zaphiel (next session):** ATLAS checkpoint 1 → 2 is manual for now: after Ryan confirms in the Approval Inbox, run
+  the `atlas` subagent in Claude Code on `80_Clients/<company>/edg/` to continue. Later: John reads
+  `14_report_to_john.md` and asks ATLAS's questions himself.
+
