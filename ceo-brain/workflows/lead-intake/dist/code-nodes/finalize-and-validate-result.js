@@ -228,12 +228,43 @@ function wbGuessBusinessName(input, text) {
   var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.\n]| and | with | that | in | based |; )/);
   return m ? wbStr(m[1], 160) : null;
 }
-var WI_VERSION = 'website-intake-1.1.0';
-var WI_WEBSITE_RE = /\b(website|web ?site|landing page|(sales |lead |marketing )?funnels?|sales page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
+var WI_VERSION = 'website-intake-1.2.0';
+var WI_WEBSITE_RE = /\b(websites?|web ?sites?|landing pages?|(sales |lead |marketing )?funnels?|sales pages?|web ?apps?|online stores?|e-?commerce (sites?|stores?|websites?)|web portals?|customer portals?|homepages?|web ?pages?|mock-?ups?|mockups?)\b/i;
 var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test drive|reserv\w*|sell|selling|order|orders|checkout|shop online|enquir\w*|inquir\w*|quote|quotes|quotation|contact us|whatsapp|showcase|portfolio|brochure|browse|catalogue|catalog|menu|sign ?up|register|apply|download|learn about|information about|about us|our services|services page|pages?)\b/i;
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;
 var WI_STARTED_MARK = 'building your first mock-up';
+var WI_OFFER_MARK = 'first mock-up made for your business';
+var WI_OFFER = 'Would you like me to have a first mock-up made for your business, so you can see it before deciding anything?';
+var WI_SITE_NOUN = '(websites?|web ?sites?|sites?|funnels?|landing pages?|sales pages?|web ?apps?|online stores?|e-?commerce (site|store)|portals?|web ?pages?|homepages?)';
+var WI_ASK_RES = [
+  /\bmock-?ups?\b|\bmockups?\b/i,
+  new RegExp('\\b(build|make|create|design|develop|do|set up|redo|redesign|revamp|rebuild|upgrade|get)\\b[^.?!\\n]{0,40}\\b(me|us|my|our|a|an|new)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
+  new RegExp('\\b(i|we)(\\s|\'m\\s|\'d\\s|\\s+am\\s|\\s+are\\s|\\s+would\\s)*(like|want|need|looking for|wanna|want to get|need to get|interested in)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
+  /\b(help)\s+(me|us)\s+(build|make|create|design|get|with)\b/i
+];
+var WI_CAPABILITY_Q = /^\s*(can|could|do|does|would|will|what|which|how|are|is|have)\b/i;
+var WI_PERSONAL = /\b(me|us|my|our|mine|ours)\b/i;
+var WI_YES = /^\s*(yes|yeah|yep|ya|yup|ok|okay|sure|please|pls|go ahead|let'?s do it|do it|sounds good|why not|alright|can)\b/i;
+/** Did the customer ask for a build in THIS message? Pure question about what we do does not count. */
+function wiAsksForBuild(message) {
+  var m = String(message || '');
+  if (!m.trim()) return false;
+  var hit = false;
+  for (var i = 0; i < WI_ASK_RES.length; i++) if (WI_ASK_RES[i].test(m)) { hit = true; break; }
+  if (!hit) return false;
+  if (/\bmock-?ups?\b|\bmockups?\b/i.test(m) && !WI_CAPABILITY_Q.test(m)) return true;
+  if (WI_CAPABILITY_Q.test(m) && !WI_PERSONAL.test(m)) return false;
+  return true;
+}
+/** True when John's last turn offered a mock-up and the customer now says yes. */
+function wiAcceptedOffer(history, message) {
+  var h = Array.isArray(history) ? history : [];
+  for (var i = h.length - 1; i >= 0; i--) {
+    if (h[i] && h[i].role === 'agent') return String(h[i].content || '').toLowerCase().indexOf(WI_OFFER_MARK) !== -1 && WI_YES.test(String(message || ''));
+  }
+  return false;
+}
 function wiClean(v, max) {
   if (v === undefined || v === null) return null;
   var s = String(v).replace(/\s+/g, ' ').trim();
@@ -261,6 +292,8 @@ function wbIntake(o) {
   var text = typeof o.text === 'string' ? o.text : wiCustomerText(o.history, o.message);
   var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
   var topic = typeof o.text === 'string' ? WI_WEBSITE_RE.test(text) : (WI_WEBSITE_RE.test(String(o.message || '')) || wbIntakeInProgress(o.history));
+  var intent = typeof o.text === 'string' ? wiAsksForBuild(text) : (wiAsksForBuild(o.message) || wbIntakeInProgress(o.history) || wiAcceptedOffer(o.history, o.message));
+  if (intent) topic = true;
   var mode = wbDetectMode(text, o.industry || ex.industry);
   var category = wbDetectCategory(text, o.industry || ex.industry);
   var businessName = wiClean(o.company_name, 160) || wiClean(ex.company_name, 160) || wbGuessBusinessName({}, text);
@@ -288,11 +321,12 @@ function wbIntake(o) {
   };
   var questions = [];
   for (var i = 0; i < missing.length && questions.length < 3; i++) questions.push(q[missing[i]]);
-  var ready = topic && missing.length === 0;
+  var ready = intent && missing.length === 0;
   var first = wiClean(o.contact_name) ? String(o.contact_name).trim().split(' ')[0] : null;
   var greet = first ? 'Hi ' + first + ', ' : 'Hi, ';
   var reply;
   if (!topic) reply = '';
+  else if (!intent) reply = '';
   else if (ready) {
     var to = phone ? phone : (email ? email : 'this chat');
     reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now, in two versions for you to compare: a photo-led site and a cinematic scroll film site (our premium option). I will send both links to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
@@ -300,7 +334,7 @@ function wbIntake(o) {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
   }
   return {
-    version: WI_VERSION, topic: topic, ready: ready, missing: missing, questions: questions,
+    version: WI_VERSION, topic: topic, intent: intent, ready: ready, offer: WI_OFFER, missing: missing, questions: questions,
     reply: reply.replace(/\s+/g, ' ').trim(),
     details: { business_name: businessName, industry: industry, site_type: siteType, goal: goal, category: category, mode: mode },
     email: email, phone: phone
@@ -349,7 +383,9 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 const websiteRequested = websiteTopic && intake.ready && !buildStarted;
-if (websiteTopic && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+// John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
+if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
@@ -376,7 +412,7 @@ const response = {
   follow_up_task: followUpTask,
   audit: fin.audit,
   handoffs,
-  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
+  website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -388,5 +424,5 @@ return [{ json: {
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
   send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
-  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
+  website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];

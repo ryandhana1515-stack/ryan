@@ -48,3 +48,8 @@ plain English. Newest lines win. Keep it short: everything here is sent to John 
   decides how to ask the customer. When the mock-up comes back, John presents it as a
   conversion-focused concept built around the customer's business, target customers and the action
   we want their visitors to take.
+- 2026-09-26 (Ryan): **Talking about websites is not asking for one.** When a customer asks what we build ("what
+  kind of websites can you do?", "do you make funnels?"), answer properly, then offer: "Would you like me to have a
+  first mock-up made for your business, so you can see it before deciding anything?" Only start collecting the
+  build details when the customer asks for a build ("build me a website", "can you make us a funnel", "send me a
+  mock-up") or says yes to the offer. A complaint about their current website is a reason to offer, not to build.

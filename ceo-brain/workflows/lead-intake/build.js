@@ -140,7 +140,9 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 const websiteRequested = websiteTopic && intake.ready && !buildStarted;
-if (websiteTopic && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+// John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
+if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
+else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = websiteRequested ? ['website-builder'] : [];
 const followUpTask = {
@@ -167,7 +169,7 @@ const response = {
   follow_up_task: followUpTask,
   audit: fin.audit,
   handoffs,
-  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
+  website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -179,7 +181,7 @@ return [{ json: {
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
   send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
-  website_intake: { topic: websiteTopic, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
+  website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];
 `;
 

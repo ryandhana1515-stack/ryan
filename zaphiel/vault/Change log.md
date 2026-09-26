@@ -131,3 +131,11 @@ tags: [zaphiel, changelog]
   Deployed Lead Intake + Website Builder, tests 52/52. Verified live: Lead Intake 335 → Website Intelligence 337 →
   Website Builder 338 (construction, landing_page, build, film_brief stored) → Orchestrator 339. Test lead, so no
   build credits. Gateway AI credits are still $0: every agent runs on its rule fallback until Ryan tops up.
+- 2026-09-26 (late) — **John's judgement: questions are answered, builds start only on request** (Ryan: "only when
+  the customer actually wants to build a mock-up"). Intake 1.2.0: a build needs an explicit ask ("build me…",
+  "we need a new website", "send me a mock-up") or a yes to John's mock-up offer; capability questions get an
+  answer plus the offer; a complaint about an existing site never triggers a build. John's prompt says the same.
+  Also fixed: plural "websites" was not recognised. Tests 56/56. Lead Intake deployed and verified live (execution
+  340: "What type of websites can you build?" → answer + offer, no hand-off). John playbook lesson added. The Website
+  Builder's copy of the company description (same wording change) syncs on its next deploy; it does not affect
+  decisions.
