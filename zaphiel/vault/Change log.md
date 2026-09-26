@@ -159,4 +159,7 @@ tags: [zaphiel, changelog]
   `_backups/2026-09-26/`. Boundaries set with Discovery (01), Workflow Automation (09), Data/BI (14),
   Security/QA (15); linked to the nine notes Ryan listed. John's note (02) has the two-way hand-off; the permission
   matrix row and the agent index updated. Decision recorded as ADR-4.
+- 2026-09-26 (night) — **Ryan sees ATLAS's questions first** (Ryan: "i see first"). John asks them only after Ryan
+  approves the checkpoint. Recorded in ADR-4, the ATLAS note (07), John's note (02) and Open loops. No code change:
+  the live system already works this way (the questions go to Ryan by email and the Approval Inbox only).
 

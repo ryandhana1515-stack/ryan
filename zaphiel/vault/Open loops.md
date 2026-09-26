@@ -53,6 +53,6 @@ tags: [zaphiel, open-loops]
   checkpoint-1 files from John's facts only (no real systems thinking) — verified 2026-09-26, Claude answered
   "Payment required".
 - **Zaphiel (next session):** ATLAS checkpoint 1 → 2 is manual for now: after Ryan confirms in the Approval Inbox, run
-  the `atlas` subagent in Claude Code on `80_Clients/<company>/edg/` to continue. Later: John reads
-  `14_report_to_john.md` and asks ATLAS's questions himself.
+  the `atlas` subagent in Claude Code on `80_Clients/<company>/edg/` to continue. Later: once Ryan approves a checkpoint, John reads `14_report_to_john.md` and asks ATLAS's
+  questions (Ryan sees them first — decided 2026-09-26).
 
