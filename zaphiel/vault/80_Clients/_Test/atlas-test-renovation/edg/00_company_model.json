@@ -1,0 +1,142 @@
+{
+  "schema": "atlas.company_model.v1",
+  "generated_by": "atlas-n8n-1.0.0",
+  "mode": "DESIGN",
+  "checkpoint": 1,
+  "company": {
+    "name": {
+      "value": "ATLAS Test Renovation Pte Ltd",
+      "label": "CLIENT-PROVIDED"
+    },
+    "industry": {
+      "value": "renovation",
+      "label": "CLIENT-PROVIDED"
+    },
+    "size_people": {
+      "value": 12,
+      "label": "CLIENT-PROVIDED"
+    },
+    "location": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "website": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "contact": {
+    "name": {
+      "value": "Ken Test",
+      "label": "CLIENT-PROVIDED"
+    },
+    "email": {
+      "value": "ken.test@atlas-test.example",
+      "label": "CLIENT-PROVIDED"
+    },
+    "phone": {
+      "value": "+6590001234",
+      "label": "CLIENT-PROVIDED"
+    },
+    "decision_maker": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "acquisition": {
+    "lead_sources": {
+      "value": [
+        "facebook"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "monthly_lead_volume": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "attribution": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "sales": {
+    "follow_up_process": {
+      "value": "manual (as described by prospect)",
+      "label": "CLIENT-PROVIDED"
+    },
+    "pipeline_stages": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "salespeople": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "tools": {
+    "current_tools": {
+      "value": [
+        "Spreadsheets"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "accounting_or_erp": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "uses_whatsapp": {
+      "value": true,
+      "label": "CLIENT-PROVIDED"
+    },
+    "uses_email": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "problems": {
+    "stated_problem": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "goals": {
+    "desired_automation": {
+      "value": [
+        "lead_follow_up",
+        "quote_generation",
+        "crm_sync"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "desired_outcome": {
+      "value": "We want a CRM with automated follow-ups.",
+      "label": "CLIENT-PROVIDED"
+    },
+    "timeline": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "budget": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "operations": {
+    "delivery": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "payments": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "customer_service": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "reporting": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  }
+}
