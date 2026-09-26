@@ -1,4 +1,4 @@
-import { workflow, node, trigger, sticky, ifElse, expr } from '@n8n/workflow-sdk';
+import { workflow, node, trigger, sticky, ifElse, expr, languageModel } from '@n8n/workflow-sdk';
 
 const leadWebhook = trigger({
   type: 'n8n-nodes-base.webhook',
@@ -20,7 +20,7 @@ const workflowConfig = node({
       mode: 'manual',
       includeOtherFields: true,
       assignments: { assignments: [
-        { id: 'cfg-model', name: 'model', value: "claude-sonnet-4-6", type: 'string' },
+        { id: 'cfg-model', name: 'model', value: "claude-sonnet-5", type: 'string' },
         { id: 'cfg-notify', name: 'notify_email', value: "ryandhana1515@gmail.com", type: 'string' },
         { id: 'cfg-tenant', name: 'default_tenant', value: "fusiontech", type: 'string' },
         { id: 'cfg-aimode', name: 'default_ai_mode', value: 'live', type: 'string' },
@@ -31,7 +31,7 @@ const workflowConfig = node({
     },
     position: [220, 300]
   },
-  output: [{ model: "claude-sonnet-4-6", notify_email: "ryandhana1515@gmail.com", default_tenant: "fusiontech", default_ai_mode: 'live', auto_send_low_risk: 'true', agent: "sales-qualification", agent_version: "1.1.0", body: {} }]
+  output: [{ model: "claude-sonnet-5", notify_email: "ryandhana1515@gmail.com", default_tenant: "fusiontech", default_ai_mode: 'live', auto_send_low_risk: 'true', agent: "sales-qualification", agent_version: "1.1.0", body: {} }]
 });
 
 const normalizeLeadNode = node({
@@ -241,28 +241,37 @@ const composePrompt = node({
   output: [{ system_prompt: 'You are John...', brain_source: 'vault:brain+playbook', brain_chars: 17000, playbook_chars: 2000 }]
 });
 
+// Claude 5 models think by default and the plain Anthropic node cannot turn that off: the thinking used up
+// max_tokens and took ~45 s (execution 381). John answers chat, so he runs through a chain whose Anthropic
+// chat model has thinking switched off — fast, text-only replies (2026-09-26).
+const johnModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: "Claude Sonnet 5 (John, thinking off)",
+    parameters: {
+      model: { __rl: true, mode: 'list', value: "claude-sonnet-5", cachedResultName: "Claude Sonnet 5" },
+      options: { maxTokensToSample: 4000, thinkingMode: 'disabled' }
+    },
+    position: [2860, 300]
+  }
+});
+
 const claudeAgent = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'Sales Qualification Agent (Claude)',
     onError: 'continueErrorOutput',
     parameters: {
-      resource: 'text',
-      operation: 'message',
-      modelId: { __rl: true, mode: 'list', value: "claude-sonnet-4-6", cachedResultName: "Claude Sonnet 4.6" },
-      messages: { values: [{ role: 'user', content: expr("{{ $('Resolve Lead Identity').item.json.user_prompt }}") }] },
-      simplify: true,
-      options: {
-        system: expr("{{ $('Compose System Prompt').first().json.system_prompt }}"),
-        maxTokens: 2500,
-        temperature: 0.1,
-        includeMergedResponse: true
-      }
+      promptType: 'define',
+      text: expr("{{ $('Resolve Lead Identity').item.json.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose System Prompt').first().json.system_prompt }}") }] }
     },
+    subnodes: { model: johnModel },
     position: [2860, 100]
   },
-  output: [{ text: '{"schema_version":"1.0","lead_status":"QUALIFYING"}', model: 'claude-sonnet-4-6', usage: { input_tokens: 1, output_tokens: 1 } }]
+  output: [{ text: '{"schema_version":"1.0","lead_status":"QUALIFYING"}' }]
 });
 
 const rulesEngine = node({

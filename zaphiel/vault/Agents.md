@@ -28,6 +28,12 @@ John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1
 | **Training Room** (dashboard) | Ryan's training app: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard — lists every agent in [[Knowledge/agents.json]] plus the brain; talk to an agent by voice or text, teach it ("when a customer says X, then …" → written into its playbook note here), read its playbook live | `AM59goLdbt0clv8q` |
 | **Trainer API** | Backend of the Training Room (POST /webhook/ceo-brain/trainer, PIN-protected): reads the registry + playbooks from this vault, appends lessons to the playbook notes, relays chat to John / the Website Builder / any agent with a `chat_url` in the registry (Discovery) | `zKqlk05WShUOrojw` |
 
+**Models (2026-09-26, see [[Decisions]]):** John, ATLAS, Discovery = Claude Sonnet 5 (thinking off, fast chat);
+Website Intelligence, Website Builder = Claude Fable 5.1 (thinking on, premium plans and builds). All through n8n
+Gateway credits; when the credits run out every agent answers from its rule backup. Website Intelligence now plans
+the funnel, the sales strategy, 3D/scroll motion and realistic medical anatomy; the builder follows that plan in
+every Lovable prompt; the Build Worker makes the anatomy video for specialist clinics.
+
 ## The twelve-agent workforce
 The full roster Ryan defined and what exists today: [[Knowledge/AI Workforce — roster]]. Product
 architecture (CEO Brain modules, CRM/ERP layer, build pipeline): [[Knowledge/CEO Brain — product architecture]].

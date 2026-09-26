@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "description": "Agent #1 of the AI workforce. Converts an ordinary conversation with a business owner into the Client Digital Company Map (company, customers, sales, marketing, communication, software, operations, customer service, finance, team, management, automation signals, data sources with the discovery checklist). Progressive questions (max two per reply), never 'send us all your data': it finds where information lives and plans connect / import / index / summarize / leave-in-place. When discovery is complete it writes the Company Map and a proposal DRAFT (no pricing) into the vault for Ryan's review.",
   "provider": "anthropic",
-  "model": "claude-sonnet-4-6",
-  "model_display_name": "Claude Sonnet 4.6",
-  "temperature": 0.2,
-  "max_tokens": 3500,
+  "model": "claude-sonnet-5",
+  "model_display_name": "Claude Sonnet 5",
+  "max_tokens": 6000,
   "prompts": {
     "system": "prompts/company-discovery.system.md",
     "user": "prompts/company-discovery.user.md"
@@ -43,5 +42,6 @@
     "store secrets"
   ],
   "console_url": "https://ryan1515.app.n8n.cloud/webhook/40d1b87c-1ec4-4534-ac80-bbdeef475d23/chat",
-  "workflow_id": "9TnzsgPGRatMaQI3"
+  "workflow_id": "9TnzsgPGRatMaQI3",
+  "thinking": "disabled"
 }

@@ -63,6 +63,15 @@ exists: `Knowledge/AI Workforce — roster`.
   n8n `update_workflow` (setNodeParameter on the generated Code nodes; verify against `dist/`) or
   `create_workflow_from_code` for a new workflow (no `Object.assign`, no array methods, no
   `switch.case` in SDK code), then publish and verify with one real execution.
+- Models (2026-09-26): model, max_tokens, thinking and streaming come from each `agents/*/agent.json`.
+  Claude runs through a Basic LLM Chain (`chainLlm` 1.9) + Anthropic Chat Model (`lmChatAnthropic` 1.6)
+  node — the plain Anthropic node cannot switch Claude 5's default thinking off. John, ATLAS and
+  Discovery: Sonnet 5, thinking disabled. Website Intelligence and Website Builder: Fable 5.1, adaptive
+  thinking (effort medium), streaming, 32k tokens. Claude 5 models reject `temperature`/`top_p`/`top_k`.
+- Website Intelligence → creator: WI's brief (funnel_plan, conversion_strategy, motion_3d_direction,
+  medical_visual_direction) travels in `research_json`; `wbWithStrategy` always appends it to the
+  Lovable prompt, and specialist clinics get a photoreal anatomy hero shot + looping video (build worker
+  step e2).
 - New agent: a folder under `ceo-brain/agents/` (manifest, prompts, schema, rules fallback,
   guardrails in code), a playbook note under `Knowledge/`, an entry in `Knowledge/agents.json`
   (with `chat_url` if it has a console), a row in `Agents.md`, the workflow id in

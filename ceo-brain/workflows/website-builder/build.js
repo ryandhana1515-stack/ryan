@@ -203,7 +203,7 @@ const taskCols = [['tenant_id','string'],['task_id','string'],['lead_id','string
 const auditCols = [['tenant_id','string'],['entity_type','string'],['entity_id','string'],['action','string'],['old_value','string'],['new_value','string'],['actor','string'],['execution_id','string'],['reason','string'],['ts','string']];
 const inputs = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string'],['research_brief','string'],['research_json','string']];
 
-const sdk = `import { workflow, node, trigger, sticky, expr, ifElse } from '@n8n/workflow-sdk';
+const sdk = `import { workflow, node, trigger, sticky, expr, ifElse, languageModel } from '@n8n/workflow-sdk';
 
 const whenCalled = trigger({
   type: 'n8n-nodes-base.executeWorkflowTrigger',
@@ -264,28 +264,36 @@ const composeSystem = node({
   output: [{ system_prompt: 'You are the Website Builder Agent…', brain_source: 'vault:standard+playbook', standard_chars: 1, playbook_chars: 1 }]
 });
 
+// Claude 5 runs through a chain + Anthropic chat model so thinking and streaming come from agent.json
+// (the plain Anthropic node has no thinking control and Claude 5 thinks by default) - 2026-09-26.
+const claudeAgentModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: ${j(manifest.model_display_name + ' (Website Builder Agent)')},
+    parameters: {
+      model: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
+      options: ${j(Object.assign({ maxTokensToSample: manifest.max_tokens }, manifest.thinking === 'disabled' ? { thinkingMode: 'disabled' } : { thinkingMode: 'adaptive', effort: (manifest.thinking && manifest.thinking.effort) || 'medium' }, manifest.streaming ? { streaming: true } : {}))}
+    },
+    position: [1100, 500]
+  }
+});
+
 const claudeAgent = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'Website Builder Agent (Claude)',
     onError: 'continueErrorOutput',
     parameters: {
-      resource: 'text',
-      operation: 'message',
-      modelId: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
-      messages: { values: [{ role: 'user', content: expr("{{ $('Build Website Brief Prompt').item.json.user_prompt }}") }] },
-      simplify: true,
-      options: {
-        system: expr("{{ $('Compose System Prompt').first().json.system_prompt }}"),
-        maxTokens: ${manifest.max_tokens},
-        temperature: ${manifest.temperature},
-        includeMergedResponse: true
-      }
+      promptType: 'define',
+      text: expr("{{ $('Build Website Brief Prompt').item.json.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose System Prompt').first().json.system_prompt }}") }] }
     },
+    subnodes: { model: claudeAgentModel },
     position: [1100, 300]
   },
-  output: [{ text: '{"schema_version":"2.0","mode":"sme","site_type":"business_website"}', model: ${j(manifest.model)}, usage: { input_tokens: 1, output_tokens: 1 } }]
+  output: [{ text: ${j('{"schema_version":"2.0","mode":"sme","site_type":"business_website"}')} }]
 });
 
 const finalize = node({

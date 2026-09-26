@@ -5,6 +5,13 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-26 — **Agent models (Ryan paid the Gateway: "upgrade … all of them").** John, ATLAS and Discovery run
+  on **Claude Sonnet 5** with thinking off, so John answers a chat in ~9 seconds. Website Intelligence and the
+  Website Creator run on **Claude Fable 5.1** ("I want more better… premium websites, like with the artery and
+  3D"), thinking on at medium effort. Website Intelligence plans the funnel, the high-converting sales strategy,
+  the 3D/scroll motion and, for clinics, a photorealistic, medically accurate anatomy visual (never cartoon 3D);
+  the creator always builds from that plan. Research stays on Browserbase (the Firecrawl node is not installed).
+
 - 2026-09-25 — **FusionTech's product is the CEO Brain operating system** (CEO Brain + AI workforce +
   CRM/ERP data layer + automation + custom software + high-end websites), customised per customer and
   sold to SMEs and professional businesses. Full directive: [[FusionTech AI — Product & Build Directive]].

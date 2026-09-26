@@ -129,7 +129,7 @@ const code = (name, src, pos, output) => `node({ type: 'n8n-nodes-base.code', ve
 
 const sample = { tenant_id: 'fusiontech', lead_id: 'lead_x', contact_name: 'Ken Tan', company_name: 'Tan Brothers Construction Pte Ltd', industry: 'construction', email: '', phone: '+6591112222', channel: 'whatsapp', message: 'We lose track of quotation follow-ups in Excel', conversation: [], sales_summary: '', extracted: {}, test_mode: true, notify_email: 'owner@example.com', source_execution_id: '1', slug: 'tan-brothers-construction', base_path: 'zaphiel/vault/80_Clients/_Test/tan-brothers-construction/edg/' };
 
-const sdk = `import { workflow, node, trigger, sticky, expr, ifElse } from '@n8n/workflow-sdk';
+const sdk = `import { workflow, node, trigger, sticky, expr, ifElse, languageModel } from '@n8n/workflow-sdk';
 
 const whenCalled = trigger({
   type: 'n8n-nodes-base.executeWorkflowTrigger',
@@ -163,16 +163,36 @@ const loadAgent = node({
 
 const compose = ${code('Compose ATLAS Prompt', codeCompose, [1320, 200], [{ system_prompt: 'ATLAS …', user_prompt: 'Company: …', agent_file_source: 'github' }])};
 
+// Claude 5 runs through a chain + Anthropic chat model so thinking and streaming come from agent.json
+// (the plain Anthropic node has no thinking control and Claude 5 thinks by default) - 2026-09-26.
+const claudeModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: ${j(manifest.model_display_name + ' (ATLAS)')},
+    parameters: {
+      model: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
+      options: ${j(Object.assign({ maxTokensToSample: manifest.max_tokens }, manifest.thinking === 'disabled' ? { thinkingMode: 'disabled' } : { thinkingMode: 'adaptive', effort: (manifest.thinking && manifest.thinking.effort) || 'medium' }, manifest.streaming ? { streaming: true } : {}))}
+    },
+    position: [1540, 400]
+  }
+});
+
 const claude = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'ATLAS (Claude)',
     onError: 'continueErrorOutput',
-    parameters: { resource: 'text', operation: 'message', modelId: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} }, messages: { values: [{ role: 'user', content: expr("{{ $('Compose ATLAS Prompt').first().json.user_prompt }}") }] }, simplify: true, options: { system: expr("{{ $('Compose ATLAS Prompt').first().json.system_prompt }}"), maxTokens: ${manifest.max_tokens}, temperature: ${manifest.temperature}, includeMergedResponse: true } },
+    parameters: {
+      promptType: 'define',
+      text: expr("{{ $('Compose ATLAS Prompt').first().json.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose ATLAS Prompt').first().json.system_prompt }}") }] }
+    },
+    subnodes: { model: claudeModel },
     position: [1540, 200]
   },
-  output: [{ text: '{"questions_open":[]}', model: ${j(manifest.model)} }]
+  output: [{ text: ${j('{"questions_open":[]}')} }]
 });
 
 const finalize = ${code('Finalize ATLAS', codeFinalize, [1780, 200], [{ input: sample, pack: { questions_open: ['q'], summary_for_ryan: 's' }, files: [{ path: sample.base_path + '15_questions_open.md', content: 'x' }], provider: 'rules', model: manifest.model, fallback_used: true, fallback_reason: 'x', task: { task_id: 'task_edg_lead_x', task_type: 'edg_design', title: 't', description: 'd', status: 'open', assigned_to: 'human', requires_approval: true, approval_reason: 'atlas_checkpoint_1_confirm_understanding' }, event: { type: 'edg.checkpoint_1' }, email_subject: 's', email_html: 'h', agent_file_source: 'github', run_id: 'run_x', started_at: '2026-01-01T00:00:00.000Z', finished_at: '2026-01-01T00:00:05.000Z', latency_ms: 5000 }])};

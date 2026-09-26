@@ -184,7 +184,7 @@ const prep = $('Check Existing Design').first().json;
 const pre = $('Compose ATLAS Prompt').first().json;
 const input = prep.input;
 const inp = ($input.first() && $input.first().json) || {};
-let rawText = null, error = null, model = "claude-sonnet-4-6";
+let rawText = null, error = null, model = "claude-sonnet-5";
 if (inp.error) error = 'model_error: ' + String(inp.error.message || inp.error.description || JSON.stringify(inp.error)).slice(0, 300);
 else {
   model = inp.model || model;

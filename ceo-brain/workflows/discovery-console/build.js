@@ -134,7 +134,7 @@ const gh = (name, params, position, onError) => `node({
   output: [{ content: 'IyBX', sha: 'x' }]
 })`;
 
-const sdk = `import { workflow, node, trigger, sticky, ifElse, expr } from '@n8n/workflow-sdk';
+const sdk = `import { workflow, node, trigger, sticky, ifElse, expr, languageModel } from '@n8n/workflow-sdk';
 
 const chat = trigger({
   type: '@n8n/n8n-nodes-langchain.chatTrigger',
@@ -184,22 +184,36 @@ const compose = node({
   output: [{ system_prompt: 'You are…', user_prompt: 'Discovery…', brain_source: 'vault:brain+playbook', map: {}, conversation: [], turns: 0, row_exists: false, contact_name: null, company_name: null, created_at: '2026-01-01T00:00:00.000Z', config: { model: ${j(manifest.model)}, agent: 'company-discovery', agent_version: '1.0.0' } }]
 });
 
+// Claude 5 runs through a chain + Anthropic chat model so thinking and streaming come from agent.json
+// (the plain Anthropic node has no thinking control and Claude 5 thinks by default) - 2026-09-26.
+const claudeModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: ${j(manifest.model_display_name + ' (Discovery Agent)')},
+    parameters: {
+      model: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
+      options: ${j(Object.assign({ maxTokensToSample: manifest.max_tokens }, manifest.thinking === 'disabled' ? { thinkingMode: 'disabled' } : { thinkingMode: 'adaptive', effort: (manifest.thinking && manifest.thinking.effort) || 'medium' }, manifest.streaming ? { streaming: true } : {}))}
+    },
+    position: [1320, 500]
+  }
+});
+
 const claude = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'Discovery Agent (Claude)',
     onError: 'continueErrorOutput',
     parameters: {
-      resource: 'text', operation: 'message',
-      modelId: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
-      messages: { values: [{ role: 'user', content: expr("{{ $('Compose Discovery Prompt').item.json.user_prompt }}") }] },
-      simplify: true,
-      options: { system: expr("{{ $('Compose Discovery Prompt').first().json.system_prompt }}"), maxTokens: ${manifest.max_tokens}, temperature: ${manifest.temperature}, includeMergedResponse: true }
+      promptType: 'define',
+      text: expr("{{ $('Compose Discovery Prompt').item.json.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose Discovery Prompt').first().json.system_prompt }}") }] }
     },
+    subnodes: { model: claudeModel },
     position: [1320, 300]
   },
-  output: [{ text: '{"schema_version":"1.0","reply":"Thanks"}', model: ${j(manifest.model)} }]
+  output: [{ text: ${j('{"schema_version":"1.0","reply":"Thanks"}')} }]
 });
 
 const finalize = node({

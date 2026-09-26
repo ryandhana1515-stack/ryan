@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "description": "Internal agent (ADR-3) between John and the Website Builder. Takes John's hand-off, identifies the company, searches the web and reads its public pages (n8n gateway credits: Browserbase search + fetch), labels every fact, understands the market, and hands the Website Builder a WEBSITE_CREATOR_BRIEF (JSON + text) with placeholders for everything unknown. Never talks to the customer; questions go back to John via the Orchestrator. Never delays a mock-up.",
   "provider": "anthropic",
-  "model": "claude-sonnet-4-6",
-  "model_display_name": "Claude Sonnet 4.6",
-  "temperature": 0.2,
-  "max_tokens": 4000,
+  "model": "claude-fable-5-1",
+  "model_display_name": "Claude Fable 5.1",
+  "max_tokens": 32000,
   "prompts": {
     "role_live": "zaphiel/vault/10_Agents/05a_Website_Intelligence — internal role prompt.md",
     "system": "prompts/website-intelligence.system.md",
@@ -40,5 +39,10 @@
   "vault_sources": {
     "role_prompt": "zaphiel/vault/10_Agents/05a_Website_Intelligence — internal role prompt.md",
     "contract": "zaphiel/vault/10_Agents/05a_Website_Intelligence.md"
-  }
+  },
+  "thinking": {
+    "mode": "adaptive",
+    "effort": "medium"
+  },
+  "streaming": true
 }

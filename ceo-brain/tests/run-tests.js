@@ -830,6 +830,36 @@ test('Lead Intake: an AI reply that says "I don\'t know" is replaced by John\'s 
   assert.ok(!/don't know/i.test(run.fin.result.recommended_reply), run.fin.result.recommended_reply);
   assert.ok(run.fin.audit.includes('reply_replaced:dont_know'));
 });
+console.log('\n[16] Website Intelligence plans the sale; the creator builds it (Ryan, 2026-09-26: funnels, high-converting 3D, realistic anatomy)');
+test('cardiology clinic: WI plans a funnel, conversion rules, 3D motion and a photoreal beating heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
+  const H = { tenant_id: 'fusiontech', lead_id: 'lead_heart', contact_name: 'Dr Lim', company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: 'We are a heart specialist clinic. Can you build us a website and a funnel for ads?', conversation_json: '[]', extracted_json: '{}', test_mode: true };
+  const input = wr.wrInput(H);
+  const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [] });
+  const plan = wr.wrFinalize({ error: 'x', input, digest }).brief;
+  assert.ok(/photoreal/i.test(plan.medical_visual_direction) && /heart/i.test(plan.medical_visual_direction) && /blood/i.test(plan.medical_visual_direction), plan.medical_visual_direction);
+  assert.ok(plan.funnel_plan.length >= 5 && /main deliverable/.test(plan.funnel_plan[0]), 'the customer asked for a funnel');
+  assert.ok(plan.conversion_strategy.length >= 6 && plan.motion_3d_direction);
+  const research_json = JSON.stringify({ brief: plan });
+  const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: H.message, research_json } });
+  assert.strictEqual(out.brief.mode, 'medical');
+  const p = out.build_prompt;
+  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /3D and scroll motion/.test(p) && /Medical visual \(hero\)/.test(p), p.slice(-1500));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT || p.length <= 9000);
+  assert.ok(/heart/i.test(out.image_shots[0].prompt) && /anatomically accurate/.test(out.image_shots[0].prompt) && /not cartoon/.test(out.image_shots[0].prompt));
+  assert.ok(/heart/i.test(out.film_brief.scenes[0].scene), 'the scroll film opens on the heart');
+  // A model-written prompt also gets the strategy, exactly once.
+  const again = wb.wbWithStrategy(p, wb.wbResearchPlan({ research_json }));
+  assert.strictEqual(again.split(wb.WB_STRATEGY_MARK).length, 2);
+});
+test('no research → the creator works as before; general practice gets no anatomy render', () => {
+  assert.strictEqual(wb.wbResearchPlan({}), null); assert.strictEqual(wb.wbResearchPlan({ research_json: 'not json' }), null);
+  const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Brothers Construction', message: 'We need a website' } });
+  assert.ok(plain.build_prompt.indexOf(wb.WB_STRATEGY_MARK) === -1);
+  const gp = { brief: { primary_cta: 'Book an appointment', medical_visual_direction: 'Specialty: general practice. Use the real clinic and team (with consent), no anatomy renders. Photorealistic and medically accurate.' } };
+  assert.strictEqual(wb.wbHasAnatomy(wb.wbResearchPlan({ research_json: JSON.stringify(gp) })), false);
+  const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Family Clinic', industry: 'clinic', message: 'our GP clinic needs a website', research_json: JSON.stringify(gp) } });
+  assert.ok(/reception/i.test(out.image_shots[0].prompt)); assert.ok(/Book an appointment/.test(out.build_prompt));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

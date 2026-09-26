@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "description": "Internal agent behind John. When John has learned that a named company needs CRM / automation / integrations (not only a website), ATLAS runs DESIGN mode up to checkpoint 1: structured company model (every item labelled), current-state map, problem map, report to John and ready-to-ask questions, written to the client's edg/ folder in the vault. Stops there for Ryan (Approval Inbox + email). Later stages, BUILD and AUDIT modes run in Claude Code with the same agent file and all tools.",
   "provider": "anthropic",
-  "model": "claude-sonnet-4-6",
-  "model_display_name": "Claude Sonnet 4.6",
-  "temperature": 0.2,
-  "max_tokens": 6000,
+  "model": "claude-sonnet-5",
+  "model_display_name": "Claude Sonnet 5",
+  "max_tokens": 8000,
   "prompts": {
     "role_live": ".claude/agents/atlas.md",
     "system": "prompts/atlas.runtime.md",
@@ -33,5 +32,6 @@
   "vault_sources": {
     "agent_file": ".claude/agents/atlas.md",
     "contract": "zaphiel/vault/10_Agents/07_CRM_Architect.md"
-  }
+  },
+  "thinking": "disabled"
 }

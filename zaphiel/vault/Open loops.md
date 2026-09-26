@@ -43,31 +43,17 @@ tags: [zaphiel, open-loops]
   (`lead.human_review`, `website.brief`, `website.built`, `website.build_failed`, `workflow.failed`) to
   `POST /webhook/ceo-brain/event` so the Orchestrator sees every hand-off, not only the tables (Website
   Intelligence already does).
-- **(Ryan)** Top up the n8n **Gateway credits** (n8n → Settings → Usage/AI credits): they are depleted, so John,
-  the Website Builder and the new Website Intelligence research (search, page reading, Claude) all run on the
-  deterministic fallback until then. Same place as the model/API keys Ryan planned to add at home.
+- ~~**(Ryan)** Top up the n8n Gateway credits~~ — paid 2026-09-26.
 - Next: John reads open `website.info_needed` tasks and asks the customer in his own voice; Build Record sends
   `MOCKUP_READY` to John.
 - ~~**Ryan (decision):** OK the plan to merge ATLAS into [[10_Agents/07_CRM_Architect]]~~ — done 2026-09-26 (Ryan: "ok merge"), see ADR-4 in [[Decisions]].
-- **Ryan:** top up n8n AI (Gateway) credits. Without them ATLAS, like John, runs on its rule fallback: it writes the
-  checkpoint-1 files from John's facts only (no real systems thinking) — verified 2026-09-26, Claude answered
-  "Payment required".
+- ~~**Ryan:** top up n8n AI (Gateway) credits for ATLAS~~ — paid 2026-09-26; ATLAS runs on Claude Sonnet 5.
 - **Zaphiel (next session):** ATLAS checkpoint 1 → 2 is manual for now: after Ryan confirms in the Approval Inbox, run
   the `atlas` subagent in Claude Code on `80_Clients/<company>/edg/` to continue. John already asks ATLAS's questions automatically (live 2026-09-26).
-- **Waiting for Ryan's Gateway top-up (Ryan, 2026-09-26: "I will pay the gateway later. Just wait.")** Then, and only
-  then, upgrade and test Website Intelligence + the Website Creator together:
-  1. **Google research works again.** Website Intelligence searches through Browserbase on the n8n credits; since they
-     hit $0 every search fails ("Gateway credits depleted", execution 337), so briefs are built blind. No free
-     workaround: DuckDuckGo, Bing and Google all refuse automated searches from n8n (probe 2026-09-26).
-  2. **Funnels.** Website Intelligence plans a real funnel when it fits (offer / lead magnet → landing page →
-     qualifying form → thank-you or booking page → follow-up), and the creator's Lovable prompt builds every step.
-  3. **Most high-converting sales site.** Conversion plan in every brief: one offer, specific headline, proof stack,
-     objection handling, CTA repeated, sticky mobile CTA/WhatsApp, 3D/scroll motion tied to the business.
-  4. **Realistic medical visuals.** Website Intelligence finds the clinic's specialty and tells the creator to use
-     photorealistic, medically accurate anatomy (e.g. cardiology: a real beating heart with coronary arteries and
-     blood flow; dental: real teeth and jaw), generated as video and scroll-animated — never cartoon 3D. MOH rules:
-     educational visuals only, no claims.
-  5. **The creator uses the research even without AI.** Today the Lovable prompt ignores Website Intelligence's
-     research when the AI is unavailable; carry the conversion plan into the prompt deterministically.
-  Test with a real enquiry through John once the credits are live.
+- ~~**Waiting for Ryan's Gateway top-up**~~ — done 2026-09-26: Ryan paid; Website Intelligence (funnels, sales
+  strategy, 3D motion, realistic anatomy) and the Website Creator upgraded and deployed, see [[Change log]].
+- **Ryan (the real test):** message John on WhatsApp or the chat page as a real customer (e.g. a clinic with its
+  website link, asking for a mock-up). John answers, Website Intelligence researches silently, the creator builds on
+  Lovable + Higgsfield, and the Build Worker (hourly, stays on duty the whole hour) sends both links back through John.
+  Test leads never spend Lovable/Higgsfield credits, so this first real build is the proof.
 

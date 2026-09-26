@@ -3,7 +3,7 @@
     {
       "id": "cfg-model",
       "name": "model",
-      "value": "claude-sonnet-4-6",
+      "value": "claude-sonnet-5",
       "type": "string"
     },
     {

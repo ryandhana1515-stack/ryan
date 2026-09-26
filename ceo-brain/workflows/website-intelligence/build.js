@@ -107,7 +107,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;
@@ -125,7 +125,7 @@ else {
 const fin = wrFinalize({ raw_text: rawText, error, input, digest: d.digest });
 const now = new Date().toISOString();
 const started = d.started_at || now;
-const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors };
+const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
 return [{ json: {
   input, status: fin.status, ready: fin.status === 'READY_FOR_WEBSITE_CREATOR', needs_john: fin.needs_john, questions_for_john: fin.questions_for_john,
@@ -152,7 +152,7 @@ passthrough.research_brief = `expr("{{ ${F}.brief_text }}")`;
 passthrough.research_json = `expr("{{ ${F}.research_json }}")`;
 const passthroughSrc = '{ ' + Object.keys(passthrough).map((k) => `${k}: ${passthrough[k]}`).join(', ') + ' }';
 
-const sdk = `import { workflow, node, trigger, sticky, expr, ifElse } from '@n8n/workflow-sdk';
+const sdk = `import { workflow, node, trigger, sticky, expr, ifElse, languageModel } from '@n8n/workflow-sdk';
 
 const whenCalled = trigger({
   type: 'n8n-nodes-base.executeWorkflowTrigger',
@@ -224,16 +224,36 @@ const compose = node({
   output: [{ system_prompt: 'FUSION AI — WEBSITE INTELLIGENCE AGENT …', user_prompt: 'Prepare the WEBSITE_CREATOR_BRIEF …', role_source: 'vault', config: { model: ${j(manifest.model)}, agent: 'website-intelligence', agent_version: '1.0.0' } }]
 });
 
+// Claude 5 runs through a chain + Anthropic chat model so thinking and streaming come from agent.json
+// (the plain Anthropic node has no thinking control and Claude 5 thinks by default) - 2026-09-26.
+const claudeModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: ${j(manifest.model_display_name + ' (Website Intelligence)')},
+    parameters: {
+      model: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} },
+      options: ${j(Object.assign({ maxTokensToSample: manifest.max_tokens }, manifest.thinking === 'disabled' ? { thinkingMode: 'disabled' } : { thinkingMode: 'adaptive', effort: (manifest.thinking && manifest.thinking.effort) || 'medium' }, manifest.streaming ? { streaming: true } : {}))}
+    },
+    position: [2200, 500]
+  }
+});
+
 const claude = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'Website Intelligence (Claude)',
     onError: 'continueErrorOutput',
-    parameters: { resource: 'text', operation: 'message', modelId: { __rl: true, mode: 'list', value: ${j(manifest.model)}, cachedResultName: ${j(manifest.model_display_name)} }, messages: { values: [{ role: 'user', content: expr("{{ $('Compose Research Prompt').item.json.user_prompt }}") }] }, simplify: true, options: { system: expr("{{ $('Compose Research Prompt').first().json.system_prompt }}"), maxTokens: ${manifest.max_tokens}, temperature: ${manifest.temperature}, includeMergedResponse: true } },
+    parameters: {
+      promptType: 'define',
+      text: expr("{{ $('Compose Research Prompt').item.json.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose Research Prompt').first().json.system_prompt }}") }] }
+    },
+    subnodes: { model: claudeModel },
     position: [2200, 300]
   },
-  output: [{ text: '{"company_name":"Prestige Motors"}', model: ${j(manifest.model)} }]
+  output: [{ text: ${j('{"company_name":"Prestige Motors"}')} }]
 });
 
 const finalize = node({

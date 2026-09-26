@@ -1,11 +1,12 @@
-var WB_VERSION = 'website-builder-2.2.0';
+var WB_VERSION = 'website-builder-2.3.0';
 var WB_SCHEMA_VERSION = '2.0';
 var WB_MODES = ['sme', 'medical'];
 var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_app', 'portal', 'other'];
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
 var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'construction', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
-var WB_MAX_PROMPT = 5200;
+var WB_MAX_PROMPT = 9000;
+var WB_STRATEGY_MARK = 'STRATEGY FROM WEBSITE INTELLIGENCE (follow it):';
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
 var WB_ANTI_GENERIC = [
   'the default navy-to-purple SaaS gradient with nothing behind it',
@@ -282,6 +283,51 @@ function wbValidate(b) {
   if (typeof b.build_prompt !== 'string') errs.push('build_prompt');
   return errs;
 }
+/** Website Intelligence's plan (research_json.brief), trimmed to what the build needs. Null when there is none. */
+function wbResearchPlan(input) {
+  input = input || {};
+  var r = input.research_json, obj = null;
+  if (r && typeof r === 'object') obj = r;
+  else if (typeof r === 'string' && r.trim()) { try { obj = JSON.parse(r); } catch (e) { obj = null; } }
+  var b = obj && obj.brief && typeof obj.brief === 'object' ? obj.brief : null;
+  if (!b) return null;
+  var plan = {
+    primary_cta: wbStr(b.primary_cta, 80), secondary_cta: wbStr(b.secondary_cta, 80), primary_conversion: wbStr(b.primary_conversion, 80),
+    target_customers: wbStrArr(b.target_customers, 3), customer_objections: wbStrArr(b.customer_objections, 4),
+    homepage_conversion_flow: wbStrArr(b.homepage_conversion_flow, 9), funnel_plan: wbStrArr(b.funnel_plan, 8),
+    conversion_strategy: wbStrArr(b.conversion_strategy, 8), motion_3d_direction: wbStr(b.motion_3d_direction, 600),
+    medical_visual_direction: wbStr(b.medical_visual_direction, 700), placeholders_required: wbStrArr(b.placeholders_required, 8)
+  };
+  var any = plan.primary_cta || plan.funnel_plan.length || plan.conversion_strategy.length || plan.motion_3d_direction || plan.medical_visual_direction || plan.homepage_conversion_flow.length;
+  return any ? plan : null;
+}
+/** True when the plan carries a real anatomy visual (a specialty), not the general-practice "no anatomy renders" line. */
+function wbHasAnatomy(plan) { return !!(plan && plan.medical_visual_direction && /photoreal/i.test(plan.medical_visual_direction) && !/no anatomy renders/i.test(plan.medical_visual_direction)); }
+/** The strategy section appended to every Lovable prompt, so the build follows the research deterministically. */
+function wbStrategySection(plan) {
+  if (!plan) return '';
+  var L = [WB_STRATEGY_MARK];
+  if (plan.primary_cta) L.push('- Primary CTA everywhere: "' + plan.primary_cta + '"' + (plan.secondary_cta ? '; secondary: "' + plan.secondary_cta + '"' : '') + '.');
+  if (plan.target_customers.length) L.push('- Buyer: ' + plan.target_customers.join('; ') + '.');
+  if (plan.homepage_conversion_flow.length) L.push('- Homepage section order: ' + plan.homepage_conversion_flow.join(' > ') + '.');
+  if (plan.funnel_plan.length) L.push('- Funnel (build these pages and steps): ' + plan.funnel_plan.join(' | '));
+  if (plan.conversion_strategy.length) L.push('- High-conversion rules: ' + plan.conversion_strategy.join('; ') + '.');
+  if (plan.customer_objections.length) L.push('- Answer these objections on the page: ' + plan.customer_objections.join('; ') + '.');
+  if (plan.motion_3d_direction) L.push('- 3D and scroll motion: ' + plan.motion_3d_direction + ' Use scroll-linked animation (e.g. framer-motion / GSAP ScrollTrigger); respect prefers-reduced-motion.');
+  if (wbHasAnatomy(plan)) L.push('- Medical visual (hero): ' + plan.medical_visual_direction + ' Use it as a full-bleed looping hero video (the generated film/photo from the build runner; until it is attached, a placeholder slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly 3D model.');
+  else if (plan.medical_visual_direction) L.push('- Medical visuals: ' + plan.medical_visual_direction);
+  if (plan.placeholders_required.length) L.push('- Placeholders to label clearly: ' + plan.placeholders_required.join('; ') + '.');
+  return L.join('\n');
+}
+/** Append the strategy section to a build prompt (once), keeping the total under WB_MAX_PROMPT by trimming the base, never the strategy. */
+function wbWithStrategy(prompt, plan) {
+  prompt = String(prompt || '');
+  if (!plan || prompt.indexOf(WB_STRATEGY_MARK) !== -1) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
+  var sec = wbStrategySection(plan).slice(0, Math.floor(WB_MAX_PROMPT / 2));
+  var room = WB_MAX_PROMPT - sec.length - 1;
+  if (prompt.length > room) prompt = prompt.slice(0, room - 1) + '…';
+  return prompt + '\n' + sec;
+}
 /** Self-contained prompt for Lovable (Build-with-URL). Facts only from the brief; placeholders are labelled; the generic AI look is forbidden. */
 function wbBuildPrompt(brief, input) {
   input = input || {};
@@ -306,9 +352,7 @@ function wbBuildPrompt(brief, input) {
   if (brief.content_notes) lines.push('What the customer said: "' + brief.content_notes.slice(0, 260) + '"');
   lines.push('Content rules: ' + brief.content_rules.join(' '));
   lines.push('Engineering: React + Tailwind; mobile-first; semantic HTML; WCAG AA contrast; fast (sized images, no layout shift); SEO meta tags and one H1 per page; forms post to a placeholder webhook and show a success state; WhatsApp click-to-chat if listed; footer with contact placeholders.' + (med ? ' Add an information-only medical disclaimer and a privacy notice.' : ''));
-  var prompt = lines.join('\n');
-  if (prompt.length > WB_MAX_PROMPT) prompt = prompt.slice(0, WB_MAX_PROMPT - 1) + '…';
-  return prompt;
+  return wbWithStrategy(lines.join('\n'), wbResearchPlan(input));
 }
 /** Photography the mock-up ships with: 3 cinematic shots per site, generated by the build runner (Higgsfield / Kling). No text, logos or plates in the images. */
 function wbImageShots(brief, input) {
@@ -326,6 +370,14 @@ function wbImageShots(brief, input) {
       { key: 'hero', aspect_ratio: '16:9', prompt: 'Cinematic wide shot of a new ' + car + ' in a glass showroom at dusk, city lights reflecting on wet asphalt outside, dramatic rim lighting on the bodywork, deep charcoal and midnight blue tones with warm metallic highlights' + base },
       { key: 'section', aspect_ratio: '16:9', prompt: 'Low-angle three-quarter view of a ' + car + ' driving through Singapore at blue hour, motion blur on the road, headlights on, cinematic colour grade' + base },
       { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail of a ' + car + ' interior, leather and stitching, ambient cabin lighting, premium showroom mood' + base }
+    ];
+  } else if (brief.mode === 'medical' && wbHasAnatomy(wbResearchPlan(input))) {
+    var anat = wbResearchPlan(input).medical_visual_direction.replace(/^Specialty: [^.]*\.\s*/i, '').replace(/^Hero and section visuals:\s*/i, '');
+    var mbase = ', photorealistic medical visualization, anatomically accurate, dark clean studio background, cinematic lighting, 8k detail, no text, no labels, no logos, no watermarks, not cartoon, not low-poly';
+    shots = [
+      { key: 'hero', aspect_ratio: '16:9', prompt: anat.slice(0, 420) + mbase },
+      { key: 'section', aspect_ratio: '16:9', prompt: 'Calm modern specialist clinic consultation room in Singapore, warm natural light, clean equipment, reassuring atmosphere, no people' + base },
+      { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up of a specialist doctor\'s hands explaining with an anatomical model in a modern clinic, soft light, face not visible' + base }
     ];
   } else if (brief.mode === 'medical') {
     shots = [
@@ -425,6 +477,7 @@ function finalizeBrief(opts) {
       brief.build_prompt = wbBuildPrompt(brief, input);
     }
   }
+  brief.build_prompt = wbWithStrategy(brief.build_prompt || wbBuildPrompt(brief, input), wbResearchPlan(input));
   var readiness = wbReadyToBuild(brief);
   return {
     brief: brief,
