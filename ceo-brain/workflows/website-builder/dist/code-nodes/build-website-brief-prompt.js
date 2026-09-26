@@ -25,4 +25,4 @@ const vars = {
   sales_summary: input.sales_summary || '(none)', extracted_json: JSON.stringify(extracted), conversation: convoText, message: input.message || '(no message)'
 };
 const user_prompt = USER_PROMPT_TEMPLATE.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? String(vars[k]) : ''));
-return [{ json: { input, user_prompt, started_at: now, config: { model: "claude-sonnet-4-6", agent: "website-builder", agent_version: "2.0.2" }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
+return [{ json: { input, user_prompt, started_at: now, config: { model: "claude-sonnet-4-6", agent: "website-builder", agent_version: "2.2.0" }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];

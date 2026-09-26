@@ -64,3 +64,7 @@ tags: [zaphiel, changelog]
   bar, agent finished in 6 min) → Website Build Record → task built, owner email, link in John's chat.
   Preview https://id-preview--5fa1ce49-c40c-4fc1-935d-e6935a33421f.lovable.app. Built by a Claude
   session on Ryan's request; the same steps are what the Website Build Runner will do unattended.
+- 2026-09-26 — **Training: two variations per mock-up (ADR-2).** Website Builder playbook + design standard
+  (live) teach variation A (cinematic scroll film site on Higgsfield, premium) and B (photo-led on Lovable);
+  John's playbook: present both links, no prices. Repo: brief v2.2 carries `variations` + a film brief for A;
+  intake reply mentions the two versions. No build was run (Ryan: training only).

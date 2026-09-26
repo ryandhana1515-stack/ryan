@@ -1,4 +1,4 @@
-var WB_VERSION = 'website-builder-2.1.0';
+var WB_VERSION = 'website-builder-2.2.0';
 var WB_SCHEMA_VERSION = '2.0';
 var WB_MODES = ['sme', 'medical'];
 var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_app', 'portal', 'other'];
@@ -341,6 +341,28 @@ function wbImageShots(brief, input) {
   }
   return shots;
 }
+/** Two variations per mock-up (Ryan, ADR-2 2026-09-26). A = cinematic scroll film site (Higgsfield, premium), B = photo-led (Lovable). */
+var WB_VARIATIONS = [
+  { key: 'cinematic_scroll', label: 'Cinematic scroll film site', tier: 'premium', tool: 'higgsfield_website_builder', template: 'scroll-scrub', description: 'A generated cinematic film of the business (about 15 seconds, one continuous take) that plays as the visitor scrolls; the site sections are revealed inside the film. Our premium option.' },
+  { key: 'photo_led', label: 'Photo-led site', tier: 'standard', tool: 'lovable', template: null, description: 'Full-bleed generated photography with cinematic gradient overlays, rich colour and motion; forms and booking flows.' }
+];
+/** Scenes for variation A single-take film (no text, no logos; the business own world). */
+function wbFilmBrief(brief, input) {
+  var shots = wbImageShots(brief, input);
+  var hero = shots[0] ? shots[0].prompt : '';
+  var section = shots[1] ? shots[1].prompt : '';
+  var detail = shots[2] ? shots[2].prompt : '';
+  return {
+    duration_seconds: 15,
+    mode: 'single-shot',
+    scenes: [
+      { at: '0-5s', scene: hero, section: 'hero: the one message and one action' },
+      { at: '5-10s', scene: section, section: brief.mode === 'medical' ? 'doctors and treatments' : 'what we offer / models or services' },
+      { at: '10-15s', scene: detail, section: brief.primary_goal === 'bookings' ? 'book' : 'enquire / contact' }
+    ],
+    rules: ['no text, logos, plates or faces in the film', 'the camera moves through the real world of this business', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
+  };
+}
 /** The build starts automatically when the brief names the business and what the site is for (Ryan, 2026-09-25: no approvals). */
 function wbReadyToBuild(brief) {
   var missing = [];
@@ -407,6 +429,8 @@ function finalizeBrief(opts) {
     ready_to_build: readiness.ready,
     missing_for_build: readiness.missing,
     image_shots: wbImageShots(brief, input),
+    variations: WB_VARIATIONS.map(function (v) { return { key: v.key, label: v.label, tier: v.tier, tool: v.tool, template: v.template, description: v.description }; }),
+    film_brief: wbFilmBrief(brief, input),
     provider: fallbackUsed ? 'fallback' : 'anthropic',
     fallback_used: fallbackUsed,
     fallback_reason: fallbackReason,

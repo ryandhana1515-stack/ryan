@@ -39,6 +39,7 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 - [ ] Deploy the automatic mock-up chain to n8n — **blocked by Claude Code's permission classifier; (Ryan) permission rule**
 - [ ] **(Ryan)** n8n credentials: Higgsfield API, Kling API, Lovable MCP (OAuth2)
 - [ ] Website QA agent inspects a built preview against the checklist before the customer sees it
+- [ ] Build Runner variation A: Higgsfield website builder (animated scroll-scrub site with a generated film) through the Higgsfield MCP (OAuth credential in n8n) — ADR-2; **(Ryan)** Higgsfield MCP credential
 
 ## Phase 6 — Data/BI/KPI + KPI dictionary + CEO daily/weekly intelligence
 - [x] Daily Brief v0 (`Pew2PX1IcgdXqXr7`)

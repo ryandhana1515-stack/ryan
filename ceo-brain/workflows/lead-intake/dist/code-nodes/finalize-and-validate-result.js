@@ -227,7 +227,7 @@ function wbGuessBusinessName(input, text) {
   var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.\n]| and | with | that | in | based |; )/);
   return m ? wbStr(m[1], 160) : null;
 }
-var WI_VERSION = 'website-intake-1.0.0';
+var WI_VERSION = 'website-intake-1.1.0';
 var WI_WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
 var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test drive|reserv\w*|sell|selling|order|orders|checkout|shop online|enquir\w*|inquir\w*|quote|quotes|quotation|contact us|whatsapp|showcase|portfolio|brochure|browse|catalogue|catalog|menu|sign ?up|register|apply|download|learn about|information about|about us|our services|services page|pages?)\b/i;
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
@@ -294,7 +294,7 @@ function wbIntake(o) {
   if (!topic) reply = '';
   else if (ready) {
     var to = phone ? phone : (email ? email : 'this chat');
-    reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now; I will send the link to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
+    reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now, in two versions for you to compare: a photo-led site and a cinematic scroll film site (our premium option). I will send both links to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
   } else {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
   }
