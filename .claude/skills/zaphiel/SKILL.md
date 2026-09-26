@@ -40,6 +40,8 @@ exists: `Knowledge/AI Workforce — roster`.
   (test leads under `80_Clients/_Test/`), `edg_design` approval task, email to Ryan, event
   `edg.checkpoint_1`. Everything after checkpoint 1 (architecture, build spec, BUILD, AUDIT) runs in
   Claude Code with the `atlas` subagent (`.claude/agents/atlas.md`, all tools) once Ryan confirms.
+  John asks ATLAS's open questions himself: Lead Intake's "Load ATLAS Questions" step reads the lead's
+  `edg_design` task and Finalize adds the next unasked one to John's reply (`atlas_question` in the output).
 - **Training Room** `AM59goLdbt0clv8q`: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents

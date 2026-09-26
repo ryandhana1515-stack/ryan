@@ -161,7 +161,7 @@ const codeOf = (f) => fs.readFileSync(fs.existsSync(path.join(distDir, f)) ? pat
 
 function runCodeNode(file, inputItems, nodeOutputs) {
   const $input = { first: () => inputItems[0], all: () => inputItems };
-  const $ = (name) => { if (!nodeOutputs[name]) throw new Error('simulation: node "' + name + '" has no output'); return { first: () => ({ json: nodeOutputs[name] }), item: { json: nodeOutputs[name] } }; };
+  const $ = (name) => { if (!nodeOutputs[name]) throw new Error('simulation: node "' + name + '" has no output'); return { first: () => ({ json: nodeOutputs[name] }), item: { json: nodeOutputs[name] }, all: () => [].concat(nodeOutputs[name]).map((x) => ({ json: x })) }; };
   const ctx = { $input, $, $execution: { id: 'sim-exec' }, $workflow: { id: 'sim-wf' }, JSON, Math, Date, Number, String, Array, Object, parseInt, parseFloat, isNaN, RegExp, console, Buffer };
   const fn = vm.runInNewContext('(function(){\n' + codeOf(file) + '\n})', ctx);
   return fn();
@@ -178,6 +178,7 @@ function simulate(payload, opts) {
   outputs['Resolve Lead Identity'] = resolved;
   const rulesOut = runCodeNode('rule-based-qualification.js', [{ json: { id: 1 } }], outputs)[0].json;
   outputs['Rule-Based Qualification (baseline / fallback)'] = rulesOut;
+  if (opts.atlasRows) outputs['Load ATLAS Questions'] = opts.atlasRows;
   let aiOut;
   if (resolved.lead.ai_mode === 'live' && opts.modelText !== undefined) aiOut = { text: opts.modelText, model: 'claude-sonnet-4-6', usage: { input_tokens: 10, output_tokens: 5 } };
   else if (resolved.lead.ai_mode === 'live' && opts.modelError) aiOut = { error: { message: opts.modelError } };
@@ -745,6 +746,33 @@ test('ATLAS code nodes run as deployed (vm): prepare → check → compose (agen
   assert.deepStrictEqual(modes, ['edit', 'create', 'create', 'create', 'create']);
 });
 
+
+console.log('\n[14] John asks ATLAS\'s questions himself (Ryan, 2026-09-26)');
+test('atNextQuestion: first unasked, safe question; nothing when all asked', () => {
+  const qs = ['How much does it cost to set up?', 'Which accounting software do you use?', 'How many people would use the system?'];
+  assert.strictEqual(at.atNextQuestion(qs, []), 'Which accounting software do you use?', 'price question skipped');
+  const hist = [{ role: 'agent', content: 'Hi. One more question so we get this right for you: Which accounting software do you use?' }];
+  assert.strictEqual(at.atNextQuestion(qs, hist), 'How many people would use the system?');
+  assert.strictEqual(at.atNextQuestion(qs, hist.concat([{ role: 'agent', content: 'How many people would use the system?' }])), null);
+  assert.deepStrictEqual(at.atQuestionsFromRows([{ task_type: 'edg_design', payload_json: JSON.stringify({ questions_for_john: ['A?', 'B?'] }) }, { task_type: 'follow_up' }]), ['A?', 'B?']);
+});
+test('Lead Intake: John adds ATLAS\'s next question to his own reply, once', () => {
+  const rows = [{ task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'] }) }];
+  const run = simulate(fx('john-tan.json'), { atlasRows: rows });
+  assert.strictEqual(run.fin.atlas_question, 'Which accounting or invoicing software do you use (for example Xero or QuickBooks)?');
+  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get this right for you: Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'));
+  const asked = Object.assign({}, fx('john-tan.json'), { conversation_history: [{ role: 'customer', content: 'hi' }, { role: 'agent', content: run.fin.result.recommended_reply }] });
+  const again = simulate(asked, { atlasRows: rows });
+  assert.strictEqual(again.fin.atlas_question, null, 'never asked twice');
+  const none = simulate(fx('john-tan.json'));
+  assert.strictEqual(none.fin.atlas_question, null, 'no ATLAS task, reply unchanged');
+});
+test('Lead Intake: no ATLAS question on a reply that waits for approval', () => {
+  const rows = [{ task_type: 'edg_design', payload_json: JSON.stringify({ questions_for_john: ['Which accounting software do you use?'] }) }];
+  const run = simulate(fx('risky-refund.json'), { atlasRows: rows });
+  assert.strictEqual(run.fin.approval_needed, true);
+  assert.strictEqual(run.fin.atlas_question, null);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
