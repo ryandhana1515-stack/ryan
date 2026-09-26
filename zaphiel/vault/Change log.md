@@ -120,3 +120,4 @@ tags: [zaphiel, changelog]
   "Sunrise Dental Clinic" test lead (24 Higgsfield credits, one Lovable project `4e9a50a0-3407-43ea-9fb2-564bcf0a7f4e`)
   before Ryan said tests happen only through John on WhatsApp. Rule added to the worker: never spend on test leads.
 - 2026-09-26 (late) — **Both variations on** (Ryan: "they will create those 3D animation scroll effects video stuff"). The build worker now builds B (Lovable photo-led) then A (Higgsfield scroll-scrub film site, deployed to its Higgsfield subdomain, never the community feed) for every real lead and reports both links; routine prompt and `ROUTINE.md` step 2i updated.
+- 2026-09-26 (late) — **Build worker stays on duty** (Ryan: an hour is too long). Each hourly routine session now checks n8n every 2 minutes for 55 minutes, so a build starts within 2 minutes of the hand-off. Open loop added: ask Lovable support to approve n8n cloud's OAuth callback so the n8n runner can start builds instantly as well.
