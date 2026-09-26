@@ -12,6 +12,15 @@ tags: [zaphiel, open-loops]
   Nothing else to type. (n8n cannot hold the Lovable login: Lovable blocks hosted tools; delete the half-made
   "Lovable MCP (OAuth2)" credential in n8n, it can never connect.) Optional: delete the test project
   "Sunrise Dental Clinic" in Lovable.
+- **Ryan (optional, makes the build instant inside n8n):** ask Lovable support (https://lovable.dev/support) to
+  approve n8n cloud as an MCP client. Text to send: "Hi, I am an n8n Cloud user (ryan1515.app.n8n.cloud). I want
+  to connect the Lovable MCP server from n8n's MCP Client node, which uses OAuth with dynamic client
+  registration and the callback URL https://oauth.n8n.cloud/oauth2/callback. Registration currently returns
+  HTTP 400. Could you approve this redirect URL for my account so n8n can connect? Thank you, Ryan Dhana."
+  If they approve, Zaphiel publishes the n8n Website Build Runner and the build starts the second John hands
+  over, with the Claude routine as backup.
+- **Zaphiel (done 2026-09-26 late):** the routine session stays on duty 55 minutes and checks every 2 minutes,
+  so a build starts within 2 minutes of the hand-off; the Lovable + Higgsfield build time (5–15 min) is the floor.
 - **Zaphiel (next session):** John promises "usually within 10 to 15 minutes" for the mock-up; the routine runs
   hourly, so change the wording in `zaphiel/knowledge/fusiontech-master-brain.md`-derived prompt to "within the
   hour" and redeploy Lead Intake + Website Builder. Ask Ryan whether the routine may run more often (platform

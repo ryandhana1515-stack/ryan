@@ -29,10 +29,18 @@ anything. Work silently; end with one short line per task you touched, or nothin
 - Higgsfield image model for photography: `recraft_v4_1` (resolution `2k`, `model_type` `standard`).
   Kling `text_to_image` is the fallback when Higgsfield fails.
 
+## Stay on duty for the whole hour (Ryan, 2026-09-26: a customer must not wait an hour)
+
+The routine fires once an hour, but this session does not stop after one check. Note the start time. Repeat:
+run the steps below; if there was nothing to build, wait 2 minutes (a background `sleep 120` watched with the
+Monitor tool, or `ScheduleWakeup` with `delaySeconds` 120 if that tool is available; never a foreground
+sleep), then check again. Stop after 55 minutes from the start so the next hourly session takes over
+cleanly. A build in progress is never abandoned at the 55-minute mark: finish it and its report first.
+
 ## Steps
 
 1. `get_data_table_rows` on `ceo_tasks`: filter `task_type` eq `website_build` AND `status` eq `building`,
-   sort `updatedAt:asc`, limit 3. No rows → stop, say nothing.
+   sort `updatedAt:asc`, limit 3. No rows → nothing to do this round (wait, then check again as above).
 2. For each task row:
    a. Parse `payload_json`. It holds `brief` (with `build_prompt`, `business_name`, `mode`,
       `industry_category`), `image_shots` (up to 3: `key`, `prompt`, `aspect_ratio`) and `build_decision`.
