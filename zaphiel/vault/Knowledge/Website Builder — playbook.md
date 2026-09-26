@@ -41,3 +41,9 @@ premium option; the price of either comes only in Ryan's proposal.
 - 2026-09-26 (Ryan) — Offer the two variations above on every mock-up; the cinematic scroll film
   site is the premium option. Do not describe A as "3D" unless the film actually shows the space
   or product in 3D motion; describe what the visitor will see.
+- 2026-09-26 (Ryan) — When a WEBSITE_CREATOR_BRIEF from the Website Intelligence agent is present,
+  it is the authoritative input: build the site around its business summary, target customers,
+  conversion objective, primary/secondary CTA, sitemap and homepage conversion flow. Do not make a
+  generic informational site. Keep every unknown as a visible placeholder ([CLIENT TESTIMONIALS TO BE
+  ADDED], [PROJECT IMAGES TO BE PROVIDED], [FINAL PRICING TO BE CONFIRMED]); never invent facts. The
+  finished mock-up goes back to John, never to the customer.

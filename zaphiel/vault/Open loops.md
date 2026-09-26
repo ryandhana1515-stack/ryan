@@ -47,3 +47,6 @@ tags: [zaphiel, open-loops]
 - Next session: make Lead Intake, Website Builder, Build Record and the Build Runner post their events
   (`lead.human_review`, `website.brief`, `website.built`, `website.build_failed`, `workflow.failed`) to
   `POST /webhook/ceo-brain/event` so the Orchestrator sees every hand-off, not only the tables.
+- Next build (after the auto-build chain is deployed): the Website Intelligence research step in n8n between
+  John's hand-off and the Website Builder brief (ADR-3), using n8n gateway credits (Brave Search + Firecrawl)
+  so no new keys are needed; then John gets `MORE_INFORMATION_REQUIRED` / `MOCKUP_READY` messages.

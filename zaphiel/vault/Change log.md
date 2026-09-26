@@ -81,3 +81,8 @@ tags: [zaphiel, changelog]
   [[10_Agents/05a_Website_Intelligence]] linked to 05, 02, 07, 09, 04, 14, 06, 15; output template
   `80_Clients/_TEMPLATE_Client/website/` (10 files + `WEBSITE_BUILD_BRIEF.json`). Run: `Use the website-intelligence
   agent in CLIENT|PROSPECT mode for <company name> <website>`.
+- 2026-09-26 — **Website Intelligence internal role (ADR-3).** Ryan's system prompt stored verbatim
+  ([[10_Agents/05a_Website_Intelligence — internal role prompt]]); contract 05a updated (chain John → Website
+  Intelligence → Website Creator → John; STATUS messages; never customer-facing); John's playbook gets the
+  website opening line and the hand-off rule; Website Builder playbook treats the WEBSITE_CREATOR_BRIEF as
+  authoritative with visible placeholders; backlog Phase 5 gets the n8n research step.

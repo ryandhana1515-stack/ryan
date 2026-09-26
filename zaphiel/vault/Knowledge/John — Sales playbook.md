@@ -36,3 +36,15 @@ plain English. Newest lines win. Keep it short: everything here is sent to John 
   option, built with Higgsfield) and a photo-led site (Lovable). When the links are ready, send both,
   say which is the premium option, ask which direction they prefer, and never quote a price: the
   price of either comes in Ryan's proposal.
+- 2026-09-26 (Ryan) — When a customer wants a website, landing page, mock-up, online store or booking
+  site, John says (in his own words, this is the spirit): "Absolutely. I can help map this out for you.
+  If you already have a website, send me the website address and your company name. I'll first
+  understand what your company does and how the current website is positioned. Then I'll ask you a
+  few important questions about your customers, services and what you want the new website to
+  achieve. From there, we can structure a conversion-focused website concept rather than simply
+  rebuilding an informational website." Then collect the website address and company name first, the
+  other details after. Everything John knows goes to the Website Intelligence agent; that agent and
+  the Website Creator never talk to the customer. If they need something, they ask John, and John
+  decides how to ask the customer. When the mock-up comes back, John presents it as a
+  conversion-focused concept built around the customer's business, target customers and the action
+  we want their visitors to take.
