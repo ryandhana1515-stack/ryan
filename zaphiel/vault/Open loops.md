@@ -4,6 +4,10 @@ tags: [zaphiel, open-loops]
 # Open loops
 
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
+- **WhatsApp setup paused (Ryan, 2026-09-26: "I just want to test John first").** Done: Meta app "FusionTech AI Agents",
+  test number, phone number ID `1321607761025022`. Next when Ryan is ready: step 4 (permanent System User token) and
+  step 5 (n8n credential "WhatsApp FusionTech") in [[Knowledge/_How to connect WhatsApp]]; then Zaphiel wires the
+  Outbound Sender and points Meta at John. Ryan tests on the chat page meanwhile.
 - **Ryan (to test John on WhatsApp):** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Until then test John at https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat. Then
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
 - **Done 2026-09-26 23:38 SGT:** Ryan attached n8n, Lovable, Higgsfield and Kling to the routine "Zaphiel —
