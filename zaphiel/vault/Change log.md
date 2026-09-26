@@ -76,3 +76,8 @@ tags: [zaphiel, changelog]
   with a test build-failure event (task opened, audited, view written, no email in test mode, then recovered
   from the inbox). Repo: `ceo-brain/agents/ceo-orchestrator/`, `workflows/ceo-orchestrator/`,
   `workflows/approval-inbox/`, tests 46/46.
+- 2026-09-26 — **Website Intelligence & Conversion Strategist installed** (Ryan's agent file, verbatim). Claude Code
+  subagent `.claude/agents/website-intelligence.md` (repo root, where Claude Code reads subagents); contract note
+  [[10_Agents/05a_Website_Intelligence]] linked to 05, 02, 07, 09, 04, 14, 06, 15; output template
+  `80_Clients/_TEMPLATE_Client/website/` (10 files + `WEBSITE_BUILD_BRIEF.json`). Run: `Use the website-intelligence
+  agent in CLIENT|PROSPECT mode for <company name> <website>`.
