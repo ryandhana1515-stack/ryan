@@ -179,3 +179,11 @@ tags: [zaphiel, changelog]
   A guard swaps any AI reply that says "I don't know" / "I'm not sure" for John's answer. John's AI rules now answer
   general price and timing questions instead of parking them. Tests 68/68; deployed and verified live (execution 376).
 
+- 2026-09-26 (night) — **Agent team upgraded to Claude 5 (Ryan paid the Gateway: "upgrade … all of them").**
+  John, ATLAS, Discovery → Claude Sonnet 5 with thinking off (first try with thinking on used all of John's tokens and
+  took 45 s; now ~9 s per reply, verified execution 383). Website Intelligence, Website Creator → Claude Fable 5.1.
+  Website Intelligence now plans the funnel, a high-converting sales strategy, 3D/scroll motion and, for clinics, a
+  photorealistic, medically accurate anatomy visual (e.g. a beating heart with arteries and blood flow). The creator
+  always puts that plan into the Lovable prompt, uses the anatomy shot as the clinic's hero, and the Build Worker
+  routine turns it into a looping video (Higgsfield, Kling backup). Deployed to all five n8n workflows (code verified
+  identical to the repo); tests 70/70.
