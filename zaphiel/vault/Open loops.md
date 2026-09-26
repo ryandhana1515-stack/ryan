@@ -16,8 +16,6 @@ tags: [zaphiel, open-loops]
   hourly, so change the wording in `zaphiel/knowledge/fusiontech-master-brain.md`-derived prompt to "within the
   hour" and redeploy Lead Intake + Website Builder. Ask Ryan whether the routine may run more often (platform
   minimum is 1 hour unless the project allows shorter).
-- **Ryan (decision):** variation A (Higgsfield cinematic scroll film site) is designed but not built by the worker
-  until you say so (video credits per site).
 - **Ryan:** paste `ceo-brain/website-chat/embed-snippet.html` into FusionTech.com.sg before `</body>`
   so visitors talk to John there; until then use https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat.
 - **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),

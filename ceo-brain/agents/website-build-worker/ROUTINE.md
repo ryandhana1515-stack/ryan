@@ -71,11 +71,24 @@ anything. Work silently; end with one short line per task you touched, or nothin
       (Lovable returned an error or `failed`) or `skipped_test_mode`; `notes` = what happened in one line
       (photos generated count, Lovable finished or still finishing, test lead skipped).
 
+   i. Variation A — the 3D cinematic scroll film site (Ryan, 2026-09-26: always build it too). After the
+      Lovable report, call Higgsfield `get_workflow_instructions` with `{ workflow: "website-builder-flow" }`
+      and follow its website flow: `create_website` with `type` `website`, `template` `scroll-scrub`,
+      `category` `cinematic` (or the closest slug from `list_website_categories`), `subdomain` derived from
+      the business name (lowercase, hyphens, more than 4 characters, e.g. `sunrise-dental-sg`). Generate the
+      single-shot ~15 s film from the brief's `film_brief` (three scenes: hero, offer, book/enquire; no text,
+      logos, plates or faces), fill the scroll-scrub scenes with the site's sections (same copy, pages and
+      placeholders as the Lovable brief), write the cover + metadata, and `deploy_website` so the preview is
+      live on its Higgsfield subdomain. Never `publish_website` to the community feed. Then report a second
+      time to the Build Record with the same `task_id`, `status` `built`, `project_id` = the website id,
+      `preview_url` = the deployed URL, `editor_url` = "", `notes` = "variation A: cinematic scroll film
+      site". If the flow needs a decision you cannot make, report `build_failed` for variation A with the
+      reason and leave variation B standing.
+
 ## Rules
 
-- Variation B (photo-led, Lovable) only for now. Variation A (Higgsfield cinematic scroll film site) is
-  designed in the brief (`film_brief`) but is not built until Ryan says so — it costs several minutes of
-  video credits per site.
+- Both variations for every real lead: B (photo-led, Lovable) first, then A (Higgsfield cinematic scroll
+  film site). John sends both links to the customer.
 - Never publish or deploy to a live domain. Never quote prices, guarantees or delivery dates anywhere.
   Never invent facts about the customer; the brief's placeholders stay visible.
 - Never paste secrets, keys or tokens anywhere. The connectors are already authorized.
