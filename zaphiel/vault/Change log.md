@@ -50,3 +50,10 @@ tags: [zaphiel, changelog]
   Agent Permission Matrix; KPI Dictionary), `50_Client_Onboarding` (8-step workflow, 13 discovery topics,
   classification rules, data migration), `80_Clients/_TEMPLATE_Client`, `90_Templates` (5), `_sources/README`.
   Why: merge Review v2 onto the blueprint without breaking what runs. Nothing existing was moved or renamed (ADR-1).
+- 2026-09-26 — **John v2 live in n8n** (Lead Intake `b7kbJpnKLN2uQxyn`): greets and explains FusionTech himself,
+  runs the website intake (name, what the business does, what the site must do, where to send the link) and
+  hands off to the Website Builder only when complete; email/name/industry learned in chat are saved on the
+  lead. Verified live: "hi" → introduction (execution 275); mock-up ask → the four questions (278); BMW details
+  → hand-off, brief + owner email (280 → 282). Chat console updated: public-page visitors are real leads, the
+  preview link shows in the chat once a mock-up is built. Still on rule fallback (AI credits exhausted). The
+  automatic Lovable build (Website Builder v2.1 + Build Runner) remains undeployed: permission block.

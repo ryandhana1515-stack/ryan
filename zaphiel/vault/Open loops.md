@@ -4,7 +4,7 @@ tags: [zaphiel, open-loops]
 # Open loops
 
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
-- **Ryan:** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Then
+- **Ryan (to test John on WhatsApp):** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Until then test John at https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat. Then
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
 - **Ryan — make the automatic mock-up chain live (3 things, once).**
   1. Permission: Claude Code's auto-mode classifier refused to deploy the chain ("Create Unsafe
