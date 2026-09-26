@@ -1,0 +1,44 @@
+{
+  "id": "website-intelligence",
+  "name": "Website Intelligence & Conversion Strategist",
+  "version": "1.0.0",
+  "description": "Internal agent (ADR-3) between John and the Website Builder. Takes John's hand-off, identifies the company, searches the web and reads its public pages (n8n gateway credits: Browserbase search + fetch), labels every fact, understands the market, and hands the Website Builder a WEBSITE_CREATOR_BRIEF (JSON + text) with placeholders for everything unknown. Never talks to the customer; questions go back to John via the Orchestrator. Never delays a mock-up.",
+  "provider": "anthropic",
+  "model": "claude-sonnet-4-6",
+  "model_display_name": "Claude Sonnet 4.6",
+  "temperature": 0.2,
+  "max_tokens": 4000,
+  "prompts": {
+    "role_live": "zaphiel/vault/10_Agents/05a_Website_Intelligence — internal role prompt.md",
+    "system": "prompts/website-intelligence.system.md",
+    "user": "prompts/website-intelligence.user.md"
+  },
+  "fallback": "agents/website-intelligence/research.js#wrFallbackBrief",
+  "postprocess": "agents/website-intelligence/research.js#wrFinalize",
+  "triggered_by": "sales-qualification (Lead Intake 'Website Requested?' gate) — replaces the direct call to the Website Builder; also callable directly with the same inputs",
+  "hands_off_to": "website-builder (hSTRGnHVsu6tMOmH) with research_brief + research_json added to John's hand-off",
+  "research_tools": "n8n Browserbase node (gateway credits): search (6 queries: name, name+location, reviews, name+service, service+location, best service+location) and fetch (homepage + up to 3 internal pages: about/services/contact/faq/pricing/projects)",
+  "notify_email": "ryandhana1515@gmail.com",
+  "may_autonomously": [
+    "search the public web and read the company's public pages",
+    "decide which site is the official one (John's/customer's URL always wins)",
+    "write the WEBSITE_CREATOR_BRIEF and hand it to the Website Builder",
+    "send questions for John to the Orchestrator (website.info_needed)",
+    "log the run and the audit row"
+  ],
+  "must_escalate": [
+    "any question for the customer (goes to John, who decides)",
+    "regulated claims (MOH, CEA, MAS) — flagged for human review"
+  ],
+  "never": [
+    "talk to the customer, greet, ask, present, negotiate, price or close",
+    "invent testimonials, awards, certifications, counts, years, revenue, results, prices, addresses, team members",
+    "present an inference or a possibly-wrong website's facts as verified",
+    "bypass logins, scrape private data, submit the business's forms",
+    "block or delay a mock-up because information is missing (placeholders instead)"
+  ],
+  "vault_sources": {
+    "role_prompt": "zaphiel/vault/10_Agents/05a_Website_Intelligence — internal role prompt.md",
+    "contract": "zaphiel/vault/10_Agents/05a_Website_Intelligence.md"
+  }
+}

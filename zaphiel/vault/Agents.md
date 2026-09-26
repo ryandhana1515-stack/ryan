@@ -19,6 +19,7 @@ John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1
 | **WhatsApp Inbound** | Meta WhatsApp Cloud API → John (GET/POST /webhook/ceo-brain/whatsapp, verify token ceo-brain-verify); Meta not pointed at it yet | `3IhIJ5IYsB7wQQSg` |
 | **Approve Reply** | Ryan's APPROVE / Reject links in emails | `uQxHTTdEkazgKpRT` |
 | **Vault Writer** | After every conversation turn writes the lead note (`Leads/`) and company note (`Companies/`) into this vault | `tVvSWjOubwBNLi88` |
+| **Website Intelligence** (internal, ADR-3) | Between John and the Website Builder: identifies the company, searches and reads its public pages, labels facts, writes the WEBSITE_CREATOR_BRIEF (two variations, placeholders) and calls the builder; questions go to John via the Orchestrator; never talks to the customer | `5VWP3tMK3MZysi7w` |
 | **CEO Orchestrator** (Agent #0) | Head agent, no AI: receives every event (`POST /webhook/ceo-brain/event`), routes it by a fixed table, opens exception/review tasks, emails Ryan on failures, recomputes the unresolved-issues list hourly and writes [[00_CEO_Brain/Management view]] | `8Ix4yc223sxrSu5h` |
 | **Approval Inbox** | One page for everything waiting on a human — approvals (Approve/Reject via the Approve Reply gate), exceptions (Mark recovered, PIN), leads needing a human, overdue, stale: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox | `r4ynzcSqRy8zHoFl` |
 | **Daily Brief** (CEO Intelligence Agent) | 08:00 SGT email: what happened, what needs Ryan | `Pew2PX1IcgdXqXr7` |

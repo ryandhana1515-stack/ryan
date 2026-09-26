@@ -513,12 +513,12 @@ const callWebsiteBuilder = node({
   type: 'n8n-nodes-base.executeWorkflow',
   version: 1.3,
   config: {
-    name: 'Hand Off to Website Builder',
+    name: 'Hand Off to Website Intelligence',
     onError: 'continueRegularOutput',
     parameters: {
       mode: 'once',
       source: 'database',
-      workflowId: { __rl: true, mode: 'id', value: "hSTRGnHVsu6tMOmH", cachedResultName: 'CEO Brain — Website Builder' },
+      workflowId: { __rl: true, mode: 'id', value: "5VWP3tMK3MZysi7w", cachedResultName: "CEO Brain — Website Intelligence" },
       workflowInputs: {
         mappingMode: 'defineBelow',
         value: {

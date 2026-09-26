@@ -4,7 +4,7 @@
  * Universal rule: verified context → structured output → permission check → action or approval → audit → result.
  * It owns no data: tasks/leads/runs come from the CEO Brain tables; sensitive actions always go to a human.
  */
-var OC_VERSION = 'ceo-orchestrator-1.0.0';
+var OC_VERSION = 'ceo-orchestrator-1.0.1';
 var OC_STALE_HOURS = 48;
 var OC_BUILD_STUCK_MINUTES = 45;
 var OC_APPROVAL_HIGH_HOURS = 4;
@@ -16,6 +16,8 @@ var OC_ROUTES = {
   'website.brief': { agent: 'website-builder', action: 'note', severity: 'info', notify: false },
   'website.building': { agent: 'website-build-runner', action: 'note', severity: 'info', notify: false },
   'website.built': { agent: 'sales-qualification', action: 'note', severity: 'info', notify: false },
+  'website.research': { agent: 'website-builder', action: 'note', severity: 'info', notify: false },
+  'website.info_needed': { agent: 'sales-qualification', action: 'ensure_task', severity: 'medium', notify: false },
   'website.build_failed': { agent: 'human', action: 'exception_task', severity: 'high', notify: true },
   'workflow.failed': { agent: 'human', action: 'exception_task', severity: 'high', notify: true },
   'integration.reauth_needed': { agent: 'human', action: 'exception_task', severity: 'high', notify: true },
