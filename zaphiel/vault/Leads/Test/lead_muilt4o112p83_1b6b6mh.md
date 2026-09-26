@@ -11,7 +11,7 @@ channel: whatsapp
 source: facebook
 test_mode: true
 first_contact: 2026-09-26
-updated: 2026-09-26T16:28:22.587Z
+updated: 2026-09-26T16:42:24.596Z
 tags: [lead, test]
 ---
 # Ken Test @ ATLAS Test Renovation Pte Ltd
@@ -23,10 +23,10 @@ Links: [[Companies/ATLAS Test Renovation Pte Ltd|ATLAS Test Renovation Pte Ltd]]
 
 - Company size: 12 · Users: 12 · Decision maker: -
 - Problem: -
-- Wants: lead_follow_up, quote_generation, crm_sync
+- Wants: whatsapp_auto_reply, lead_follow_up, quote_generation, customer_support, crm_sync
 - Tools: Spreadsheets
 - Budget: - · Timeline: -
-- Outcome wanted: We want a CRM with automated follow-ups.
+- Outcome wanted: -
 
 ## Conversation log
 
@@ -36,3 +36,10 @@ Links: [[Companies/ATLAS Test Renovation Pte Ltd|ATLAS Test Renovation Pte Ltd]]
 **John:** Hi Ken, thanks for reaching out. A renovation business with 12 people looking at lead follow up is exactly the kind of setup we work on. To point you in the right direction, a few quick questions: Which part of your day-to-day work is the most repetitive or manual right now? When would you like to have this running? Which accounting or back-office systems would this need to connect to?
 
 _Summary:_ Ken Test from ATLAS Test Renovation Pte Ltd (renovation), 12 people. Wants: lead follow up, quote generation, crm sync.
+
+### 2026-09-26 16:42 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: atlas · rules
+**Prospect:** Thanks. We get about 30 enquiries a month, mostly from Facebook, and my two sales staff reply on WhatsApp.
+
+**John:** Hi Ken, thanks for reaching out. A renovation business with 12 people looking at whatsapp auto reply is exactly the kind of setup we work on. To point you in the right direction, a few quick questions: Which part of your day-to-day work is the most repetitive or manual right now? What result would make this a clear win for you in three months? When would you like to have this running? One more question so we get this right for you: What happens between the first message and a paying customer: quotation, site visit, appointment, deposit?
+
+_Summary:_ Ken Test from ATLAS Test Renovation Pte Ltd (renovation), 12 people. Wants: whatsapp auto reply, lead follow up, quote generation, customer support, crm sync.
