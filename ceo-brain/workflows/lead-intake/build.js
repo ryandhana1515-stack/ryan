@@ -60,7 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
-const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'AT_EXPLICIT', 'atNeeded']);   // when John wakes ATLAS
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atNextQuestion']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -149,6 +149,15 @@ const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name 
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
 else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
+// John asks ATLAS's questions himself (Ryan, 2026-09-26): one unasked question per normal reply, never on a
+// website-intake turn, an offer turn or a reply waiting for approval.
+let atlasQuestion = null;
+try {
+  const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
+  const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
+  const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
+  if (nextQ && johnsOwnReply && !approvalNeeded && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
+} catch (e) { atlasQuestion = null; }
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
@@ -177,6 +186,7 @@ const response = {
   handoffs,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   edg_requested: edgRequested,
+  atlas_question: atlasQuestion,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -187,7 +197,7 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, handoffs, response,
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, atlas_question: atlasQuestion, handoffs, response,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];
 `;
@@ -414,6 +424,19 @@ const logInbound = node({
     position: [1560, 300]
   },
   output: [{ id: 1, direction: 'inbound' }]
+});
+
+const loadAtlasQs = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: 'Load ATLAS Questions',
+    alwaysOutputData: true,
+    onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'get', dataTableId: ${j(table('ceo_tasks'))}, matchType: 'allConditions', filters: { conditions: [{ keyName: 'task_type', condition: 'eq', keyValue: 'edg_design' }, { keyName: 'lead_id', condition: 'eq', keyValue: expr("{{ ${R}.lead.lead_id }}") }] }, returnAll: false, limit: 3 },
+    position: [1670, 480]
+  },
+  output: [{}]
 });
 
 const useLiveAi = ifElse({
@@ -955,7 +978,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(workflowConfig)
   .to(normalizeLeadNode)
   .to(isLeadValid
-    .onTrue(findExistingLead.to(resolveLead).to(saveLead).to(logInbound).to(rulesEngine).to(useLiveAi
+    .onTrue(findExistingLead.to(resolveLead).to(saveLead).to(logInbound).to(loadAtlasQs).to(rulesEngine).to(useLiveAi
       .onTrue(loadBrain.to(loadPlaybook).to(composePrompt).to(claudeAgent.to(finalize)))
       .onFalse(finalize)))
     .onFalse(respondInvalid))
@@ -983,7 +1006,7 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .add(noteAi)
   .add(noteHuman)
   .group('1. Intake & validation', [workflowConfig, normalizeLeadNode, isLeadValid], { description: 'Reads the webhook body, normalizes contact fields, and gates on validity (invalid payloads get an HTTP 400 response).' })
-  .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound], { description: 'Looks up the lead by dedupe key, merges known contact facts, upserts the lead row and logs the inbound message.' })
+  .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound, loadAtlasQs], { description: 'Finds the lead by dedupe key, merges contact facts, saves the lead, logs the message, loads ATLAS questions for John.' })
   .group('3. AI qualification', [rulesEngine, useLiveAi, loadBrain, loadPlaybook, composePrompt, claudeAgent, finalize], { description: 'Rule baseline; live: brain + sales playbook loaded from the vault into the prompt, Claude classifies; validation, fallback, guardrails.' })
   .group('4. Persist & record', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, writeVault], { description: 'Status, run, audit, draft reply, follow-up task, vault write.' })
   // EDG Needed? + Hand Off to ATLAS stay ungrouped: n8n groups need a single exit and the gate has two.

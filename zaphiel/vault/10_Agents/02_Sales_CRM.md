@@ -58,6 +58,9 @@ normalize → resolve identity → rules baseline → Claude (if credits) → va
 - **ATLAS → John:** `80_Clients/<company>/edg/14_report_to_john.md` (plain-language picture) and
   `15_questions_open.md` (questions ready to ask, most important first). John asks them one or two at a time, in his
   own words. ATLAS never talks to the customer.
+- **Automatic** (Ryan, 2026-09-26): John reads ATLAS's questions for the lead ("Load ATLAS Questions") and adds the
+  next unasked one to his normal reply — one per turn, never twice, never on a website-intake turn or a reply waiting
+  for approval, and never a question about price, contracts or credentials.
 
 ## 13. Platform services used
 [[30_Platform_Services/Identity_Tenant]] · [[30_Platform_Services/Policy_Service]] · [[30_Platform_Services/Approval_Service]] · [[30_Platform_Services/Audit_Service]] · [[30_Platform_Services/Workflow_Event_Service]] · [[30_Platform_Services/AI_Gateway]] · [[30_Platform_Services/Notification_Service]] · [[30_Platform_Services/Context_Knowledge]] · [[30_Platform_Services/Observability]]

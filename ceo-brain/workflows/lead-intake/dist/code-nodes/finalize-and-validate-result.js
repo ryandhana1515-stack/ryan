@@ -354,6 +354,11 @@ function atStr(v, max) {
   return max && s.length > max ? s.slice(0, max) : s;
 }
 function atArr(v) { return Array.isArray(v) ? v.map(function (x) { return atStr(x, 200); }).filter(Boolean) : []; }
+function atParse(v, dflt) {
+  if (v && typeof v === 'object') return v;
+  try { var o = JSON.parse(v || ''); return o === null || o === undefined ? dflt : o; } catch (e) { return dflt; }
+}
+/** Should John wake ATLAS for this lead? Needs a named company, a systems need (not only a website) and at least one fact about how they work today. */
 var AT_EXPLICIT = /\b(crm|edg|pipeline|automat\w*|workflow|integrat\w*|dashboard|erp|ai agents?|operating system|lead management|follow[- ]?up system)\b/i;
 function atNeeded(o) {
   o = o || {};
@@ -366,6 +371,28 @@ function atNeeded(o) {
   if (!systemsNeed) return false;
   var knowsToday = !!(atStr(ex.problem) || atStr(ex.current_follow_up_process) || atArr(ex.current_tools).length || atArr(ex.accounting_or_erp).length);
   return knowsToday;
+}
+var AT_UNSAFE_Q = /(s?\$|\b(sgd|usd|rm))\s?\d|\b(price|pricing|cost|discount|guarantee\w*|refund|contract|agreement|password|api key|token|credential)s?\b/i;
+function atQuestionsFromRows(rows) {
+  var out = [];
+  (Array.isArray(rows) ? rows : []).forEach(function (r) {
+    if (!r || r.task_type !== 'edg_design') return;
+    var p = atParse(r.payload_json, {}) || {};
+    atArr(p.questions_for_john).forEach(function (q) { if (out.indexOf(q) === -1) out.push(q); });
+  });
+  return out;
+}
+function atNextQuestion(questions, history) {
+  var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
+    .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
+  var qs = atArr(questions);
+  for (var i = 0; i < qs.length; i++) {
+    var q = qs[i].slice(0, 300);
+    if (AT_UNSAFE_Q.test(q)) continue;
+    if (asked.indexOf(q.toLowerCase()) !== -1) continue;
+    return q;
+  }
+  return null;
 }
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
@@ -408,6 +435,15 @@ const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name 
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
 else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
+// John asks ATLAS's questions himself (Ryan, 2026-09-26): one unasked question per normal reply, never on a
+// website-intake turn, an offer turn or a reply waiting for approval.
+let atlasQuestion = null;
+try {
+  const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
+  const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
+  const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
+  if (nextQ && johnsOwnReply && !approvalNeeded && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
+} catch (e) { atlasQuestion = null; }
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
@@ -436,6 +472,7 @@ const response = {
   handoffs,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
   edg_requested: edgRequested,
+  atlas_question: atlasQuestion,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -446,6 +483,6 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, handoffs, response,
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, atlas_question: atlasQuestion, handoffs, response,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];

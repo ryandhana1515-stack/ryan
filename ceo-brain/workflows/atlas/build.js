@@ -35,7 +35,7 @@ function pick(file, names) {
   }
   return names.map((n) => { if (!blocks[n]) throw new Error('pick: ' + n + ' not found in ' + file); return blocks[n].join('\n'); }).join('\n');
 }
-const atlasSrc = inline('agents/atlas/atlas.js');
+const atlasSrc = inline('agents/atlas/atlas.js').split('var AT_UNSAFE_Q')[0].replace(/\/\*\* John asks ATLAS's questions[\s\S]*$/, '').trimEnd();   // John-side helpers stay out
 const atlasPrepSrc = pick('agents/atlas/atlas.js', ['atStr', 'atSlug', 'atParse', 'atInput']);   // the setup step only normalises the hand-off
 
 const codePrepare = `${atlasPrepSrc}

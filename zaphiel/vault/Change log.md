@@ -159,4 +159,10 @@ tags: [zaphiel, changelog]
   `_backups/2026-09-26/`. Boundaries set with Discovery (01), Workflow Automation (09), Data/BI (14),
   Security/QA (15); linked to the nine notes Ryan listed. John's note (02) has the two-way hand-off; the permission
   matrix row and the agent index updated. Decision recorded as ADR-4.
+- 2026-09-26 (night) — **John asks ATLAS's questions automatically** (Ryan: "John asked automatically", correcting
+  "i see first"). Lead Intake has a new step "Load ATLAS Questions" (the lead's `edg_design` task); John adds the next
+  unasked ATLAS question to his normal reply, one per turn, never twice, never on a website-intake turn or a reply
+  waiting for approval, never about price/contracts/credentials. Tests 63/63. Deployed and verified live: Lead
+  Intake 361 (second message from the test lead) asked ATLAS's first question; ATLAS did not run twice. Recorded in
+  ADR-4, the ATLAS note (07), John's note (02), Open loops.
 

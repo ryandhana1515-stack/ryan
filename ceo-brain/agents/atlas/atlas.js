@@ -198,5 +198,30 @@ function atFinalize(opts) {
   };
 }
 
+// ---- John-side helpers (inlined into Lead Intake only, not into the ATLAS workflow) ----
+/** John asks ATLAS's questions himself (Ryan, 2026-09-26). Reads the questions from ATLAS's edg_design task rows and
+ *  returns the first one John has not asked yet in this conversation, skipping anything a reply guardrail would block. */
+var AT_UNSAFE_Q = /(s?\$|\b(sgd|usd|rm))\s?\d|\b(price|pricing|cost|discount|guarantee\w*|refund|contract|agreement|password|api key|token|credential)s?\b/i;
+function atQuestionsFromRows(rows) {
+  var out = [];
+  (Array.isArray(rows) ? rows : []).forEach(function (r) {
+    if (!r || r.task_type !== 'edg_design') return;
+    var p = atParse(r.payload_json, {}) || {};
+    atArr(p.questions_for_john).forEach(function (q) { if (out.indexOf(q) === -1) out.push(q); });
+  });
+  return out;
+}
+function atNextQuestion(questions, history) {
+  var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
+    .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
+  var qs = atArr(questions);
+  for (var i = 0; i < qs.length; i++) {
+    var q = qs[i].slice(0, 300);
+    if (AT_UNSAFE_Q.test(q)) continue;
+    if (asked.indexOf(q.toLowerCase()) !== -1) continue;
+    return q;
+  }
+  return null;
+}
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize };
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion: atNextQuestion };

@@ -70,4 +70,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   permissions and privacy.
 - **Consequences:** 07 rewritten (old note in `_backups/2026-09-26/`); John's note (02) gets the two-way hand-off;
   the permission matrix row now allows only the client's `edg/` folder and staging after approval.
+- **Amendment (2026-09-26, Ryan: "John asked automatically"):** John asks ATLAS's questions for the customer
+  automatically, one unasked question per normal reply. Ryan still receives the checkpoint email and approval task;
+  the architecture (checkpoint 2 onwards) still waits for Ryan. (Ryan first said "i see first", then corrected it.)
 

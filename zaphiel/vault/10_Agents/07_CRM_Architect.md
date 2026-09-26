@@ -177,7 +177,10 @@ summary written · open questions listed.
 
 **Hand-offs:**
 - **John → ATLAS:** lead notes + company facts (n8n "Hand Off to ATLAS", 15 fields, once per lead).
-- **ATLAS → John:** `14_report_to_john.md` (plain language) + `15_questions_open.md` (questions ready to ask).
+- **ATLAS → John:** `14_report_to_john.md` (plain language) + `15_questions_open.md` (questions ready to ask). Live:
+  John's "Load ATLAS Questions" step reads them from the `edg_design` task and John asks the next unasked one in his
+  reply, **automatically** (Ryan, 2026-09-26). Never on a website-intake turn or a reply waiting for approval; price,
+  contract and similar questions are skipped.
 - **ATLAS → Ryan:** checkpoint emails + `edg_design` tasks in the Approval Inbox.
 - **ATLAS → builders** (after approval): [[10_Agents/09_Workflow_Automation]], [[20_Specialist_Workers/Data_Migration_Worker]],
   [[10_Agents/05_Website_App_General]] (client portal / unified app), [[10_Agents/15_Security_Governance_QA]]. Each
@@ -219,7 +222,8 @@ after migration · reconciliation variance = 0 · time to CRM live · first sell
 
 ## 18. Open questions for Ryan
 - Keep the CEO Brain CRM for the first package or connect an existing CRM? *(from the CRM Architect)*
-- Should John read `14_report_to_john.md` and ask ATLAS's questions himself (automatic), or should Ryan see them first?
+- ~~Should John ask ATLAS's questions himself, or should Ryan see them first?~~ **Answered 2026-09-26: John asks them
+  automatically.** One unasked question per normal reply; Ryan still gets the checkpoint email and task.
 - Approval thresholds for client systems (refund, discount, quote size) — per client, or a FusionTech default?
 
 ---
