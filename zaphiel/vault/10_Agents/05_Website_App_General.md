@@ -39,6 +39,9 @@ website_build tasks, briefs, previews; staging/preview builds — only the autho
 ## 8. Needs human approval when...
 **none for mock-ups (Ryan 2026-09-25)**; production publish to a live domain: Ryan + client owner — through [[30_Platform_Services/Approval_Service]].
 
+## 8b. Two variations per mock-up (ADR-2, 2026-09-26)
+A — cinematic scroll film site on Higgsfield (premium option; more expensive; price only in Ryan's proposal). B — photo-led site on Lovable with generated photography. Same brief, pages, copy rules and QA; John sends both links.
+
 ## 9. Decision rights (what it can decide alone)
 site type, mode (SME/medical enforced from words), design direction, pages, when a brief is ready to build (name + industry + purpose), daily cap
 

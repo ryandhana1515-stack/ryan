@@ -32,3 +32,6 @@ The generic AI look is forbidden and the QA stage rejects it: dark navy + purple
 
 # Output schema
 {{OUTPUT_SCHEMA}}
+
+## Two variations per mock-up (Ryan, 2026-09-26)
+Every mock-up is produced in two versions the customer compares: **A** a cinematic scroll film site (Higgsfield animated website: a ~15 s single-take generated film the visitor scrolls through; our premium option, more expensive) and **B** a photo-led site (Lovable, full-bleed generated photography, gradients, motion). Write one brief that serves both; the film brief lists three scenes. Never mention a price for either; say "premium option".

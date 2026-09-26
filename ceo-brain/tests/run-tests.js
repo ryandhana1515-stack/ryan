@@ -275,7 +275,7 @@ test('website intake: details given in later turns → hand-off fires once, cont
   assert.strictEqual(run.fin.website_requested, true);
   assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
   assert.strictEqual(run.fin.contact_found.email, 'daniel@prestige.sg');
-  assert.ok(/building your first mock-up/.test(run.fin.result.recommended_reply));
+  assert.ok(/building your first mock-up/.test(run.fin.result.recommended_reply) && /two versions/.test(run.fin.result.recommended_reply) && /premium option/.test(run.fin.result.recommended_reply));
   const history2 = history.concat([{ role: 'customer', content: 'We are Prestige Motors…' }, { role: 'agent', content: run.fin.result.recommended_reply }]);
   const again = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'Great, thanks!', conversation_history: history2, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's4' } });
   assert.strictEqual(again.fin.website_requested, false, 'no second build for the same lead');
@@ -349,6 +349,8 @@ test('BMW dealership: business name from "I\'m Daniel from Prestige Motors", aut
   assert.strictEqual(r.ready_to_build, true);
   assert.strictEqual(r.image_shots.length, 3);
   assert.ok(/BMW/.test(r.image_shots[0].prompt) && /no text, no logos/.test(r.image_shots[0].prompt));
+  assert.strictEqual(r.variations.length, 2); assert.strictEqual(r.variations[0].tier, 'premium'); assert.strictEqual(r.variations[1].tool, 'lovable');
+  assert.strictEqual(r.film_brief.scenes.length, 3); assert.ok(!/\$|price/i.test(JSON.stringify(r.variations)));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
 });
 test('dental clinic → medical mode: doctor/treatment pages, verification list, medical QA, no fabricated claims', () => {

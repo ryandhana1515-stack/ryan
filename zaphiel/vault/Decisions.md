@@ -48,3 +48,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - **Decision:** the numbered CEO Brain v3 structure is added next to the existing notes; nothing existing is moved, renamed or deleted. `Decisions`, `Change log`, `Open loops` stay at the root as the canonical logs (n8n and sessions write there); `00_CEO_Brain/03_Decision_Log` and `04_Changelog` point to them.
 - **Why:** the live agents and the Vault Writer read/write fixed paths; moving them would break automation for no gain.
 - **Consequences:** new decisions are appended here as `ADR-<n>` using [[90_Templates/ADR_Decision_TEMPLATE]]; the four live-read notes (`Knowledge/John — Sales playbook`, `Knowledge/Company Discovery — playbook`, `Knowledge/Website design standard`, `Knowledge/Website Builder — playbook`) never move.
+
+## ADR-2 · Two website variations per mock-up (2026-09-26, Ryan)
+- **Decision:** every mock-up request produces two versions: **A** a cinematic scroll film site built with Higgsfield's animated website builder (the premium, more expensive option) and **B** a photo-led site built on Lovable with generated photography. John presents both; pricing stays in Ryan's proposal.
+- **Why:** Ryan wants customers to see the cinematic option and choose; the scroll film site is the upsell.
+- **Consequences:** the Website Builder brief carries both variations; the Build Runner gets a second build path (Higgsfield MCP, OAuth) in backlog Phase 5; QA covers both.

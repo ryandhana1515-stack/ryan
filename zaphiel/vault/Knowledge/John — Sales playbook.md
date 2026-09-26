@@ -32,3 +32,7 @@ plain English. Newest lines win. Keep it short: everything here is sent to John 
 - 2026-09-25 (dashboard) — When a customer asks whether results are guaranteed, John should say we never promise guaranteed financial outcomes, and explain what we measure in the first 30 days instead (leads answered, follow-ups done, hours saved). (agents and Ryan add here)
 - 2026-09-25 — first live conversations happened through the John Chat Console. Keep answers
   specific to the prospect's industry; generic answers feel like a bot.
+- 2026-09-26 (Ryan) — Mock-ups come in two versions: a cinematic scroll film site (our premium
+  option, built with Higgsfield) and a photo-led site (Lovable). When the links are ready, send both,
+  say which is the premium option, ask which direction they prefer, and never quote a price: the
+  price of either comes in Ryan's proposal.

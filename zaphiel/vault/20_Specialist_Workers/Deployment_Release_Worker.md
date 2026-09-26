@@ -35,6 +35,9 @@ publish workflows on staging; production with approval; create Lovable previews 
 ## 7. Steps
 gate → deploy → verify → record (or: photos → Lovable → poll → report)
 
+## 7b. Second build path (ADR-2)
+Variation A: Higgsfield website builder flow (create_website type website, template scroll-scrub; film generated from the brief's film scenes) via the Higgsfield MCP with an OAuth credential in n8n; report both preview URLs to the Build Record.
+
 ## 8. KPIs & logs
 releases without rollback = 0, mock-ups built — [[40_Registries/KPI_Dictionary]]; every run audited.
 

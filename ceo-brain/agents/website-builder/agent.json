@@ -1,7 +1,7 @@
 {
   "id": "website-builder",
   "name": "Website Builder Agent",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Agent #2 — FusionTech's premium website production system. Two modes on shared infrastructure: SME Website Agent and Medical/Doctor Website Agent (separate discovery, page requirements, content rules, verification and QA). Turns the conversation into a build brief with a category-specific design direction (brand personality, typography, layout, imagery, motion, palette; the generic AI look is forbidden), a QA checklist, and a self-contained Lovable build prompt; stores one website_build task per lead and emails the owner. Reads its playbook and the design standard live from the vault. It never builds or deploys anything itself.",
   "provider": "anthropic",
   "model": "claude-sonnet-4-6",
@@ -64,5 +64,10 @@
     "quality review (qa_checklist → Website Build Record)",
     "human review (Ryan)",
     "customer preview (Outbound Sender)"
-  ]
+  ],
+  "variations": {
+    "A": "cinematic_scroll: Higgsfield animated website (scroll-scrub film), premium option",
+    "B": "photo_led: Lovable with generated photography",
+    "rule": "both built for every mock-up; John presents both; price only in Ryan's proposal (ADR-2, 2026-09-26)"
+  }
 }

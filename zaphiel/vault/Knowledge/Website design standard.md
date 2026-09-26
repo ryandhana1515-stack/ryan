@@ -2,7 +2,7 @@
 tags: [zaphiel, knowledge, website-builder, design, live]
 feeds: Website Builder agent (read live on every brief)
 edit_here: yes
-updated: 2026-09-25
+updated: 2026-09-26
 ---
 # Website design standard — the S$10,000 bar
 
@@ -44,10 +44,19 @@ template".
   testimonials, certifications or treatment outcomes. Missing medical facts are marked
   **[VERIFY WITH CLINIC]** and the customer verifies them before anything is shown to patients.
 
+## Two variations (Ryan, 2026-09-26)
+| | A — Cinematic scroll film site (premium option) | B — Photo-led site |
+|---|---|---|
+| Built with | Higgsfield website builder, animated scroll-scrub template: a generated ~15 s single-take film of the business that the visitor scrubs by scrolling; sections revealed inside the film | Lovable: React + Tailwind, full-bleed generated photography (Higgsfield / Kling) with cinematic gradient overlays |
+| Feel | film / 3D motion, one continuous journey | premium editorial photography with motion (ken-burns, parallax, staggered reveals, hover zoom) |
+| Best for | showrooms, clinics, property, hospitality, anything with a space or product to move through | most SME sites; faster to iterate; forms and booking flows |
+| Tier | premium (more expensive); the price is Ryan's, never in the mock-up or the chat | standard |
+| Same for both | brief, pages, copy rules, [PLACEHOLDER] discipline, QA, no live domain without Ryan | |
+
 ## The mock-up pipeline
 Client discovery → industry analysis → brand direction → website architecture → copy direction →
-visual direction → Lovable build brief → mock-up → **quality review** → human review (Ryan) →
-customer preview.
+visual direction → photography / film generation → **two builds (A scroll film on Higgsfield, B
+photo-led on Lovable)** → **quality review** → human review (Ryan) → customer preview of both.
 
 ## QA before any customer sees a site
 Desktop and mobile responsiveness · navigation · spacing · typography · contrast · accessibility
@@ -57,4 +66,6 @@ hierarchy · animations · claims · placeholder content. Medical sites add a me
 verification pass.
 
 ## Lessons learned
-- (add here after reviewing previews)
+- 2026-09-26 (Ryan) — Rejected: flat black boxes and no photography (first Prestige Motors mock-up).
+  Photo-led means the imagery carries every section; colour and gradients come from the photos.
+- 2026-09-26 (Ryan) — Two variations per mock-up: cinematic scroll film (premium) and photo-led.

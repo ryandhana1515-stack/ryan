@@ -25,7 +25,8 @@ Template: [[90_Templates/Integration_Entry_TEMPLATE]]. Target table: `integratio
 | n8n AI Gateway (Anthropic Claude) | every agent's reasoning | n8n managed | api | credits exhausted 2026-09-25; rule fallbacks active | `planned` | [ ] credits topped up |
 | Meta WhatsApp Business (Cloud API) | John in/out, Outbound Sender | oauth / system token | api + webhook | no credential yet ([[Knowledge/_How to connect WhatsApp]]) | `planned` | [ ] |
 | Lovable MCP (https://mcp.lovable.dev) | [[20_Specialist_Workers/Deployment_Release_Worker|Website Build Runner]] | oauth2 (MCP Client) | api | credential not created | `planned` | [ ] |
-| Higgsfield API (api.higgsfield.ai) | Website Build Runner (photography) | header key | api | credential not created | `planned` | [ ] |
+| Higgsfield API (api.higgsfield.ai) | Website Build Runner (photography) | header key | api | credential not created; used from a Claude session on 2026-09-26 (3 photos) | `planned` | [ ] |
+| Higgsfield MCP (website builder, scroll-scrub sites) | Website Build Runner, variation A (ADR-2) | oauth2 (MCP Client) | api | credential not created | `planned` | [ ] |
 | Kling API (api-singapore.klingai.com) | Website Build Runner (photography fallback) | bearer key | api | credential not created | `planned` | [ ] |
 | Supabase / Postgres | CRM/ERP data layer | service key (server only) | api | migration 002 validated locally, no project yet | `planned` | [ ] |
 | Canva, Figma, ElevenLabs, Vercel, Shopify, Airtable, Slack, Google Drive/Calendar | future agents | connectors in Claude sessions only | — | not reachable from n8n | `planned` | [ ] |
