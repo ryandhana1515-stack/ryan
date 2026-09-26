@@ -40,6 +40,7 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 - [x] Website Builder v2.1 (cinematic standard), Build Runner workflow created (`7sEuGyU6IjJsSaKL`), chain in repo
 - [ ] Deploy the automatic mock-up chain to n8n — **blocked by Claude Code's permission classifier; (Ryan) permission rule**
 - [ ] **(Ryan)** n8n credentials: Higgsfield API, Kling API, Lovable MCP (OAuth2)
+- [ ] Website Intelligence step between John's hand-off and the Website Builder brief ([[10_Agents/05a_Website_Intelligence]], ADR-3): research the company + market (web search/fetch; n8n gateway credits cover Brave Search and Firecrawl), classify facts, WEBSITE_CREATOR_BRIEF, `MORE_INFORMATION_REQUIRED` back to John, `MOCKUP_READY` after the build — internal only, never to the customer
 - [ ] Website QA agent inspects a built preview against the checklist before the customer sees it
 - [ ] Build Runner variation A: Higgsfield website builder (animated scroll-scrub site with a generated film) through the Higgsfield MCP (OAuth credential in n8n) — ADR-2; **(Ryan)** Higgsfield MCP credential
 
