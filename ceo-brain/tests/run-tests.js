@@ -237,9 +237,10 @@ test('logistics website lead is handed off to the Website Builder', () => {
   assert.strictEqual(run.fin.result.extracted.industry, 'logistics');
   assert.strictEqual(run.fin.result.intent !== 'spam', true);
 });
-test('john tan (no website ask) is not handed off', () => {
+test('john tan (no website ask) is not handed to the website chain, but ATLAS wakes (follow-up problem + WhatsApp automation)', () => {
   assert.strictEqual(mockRun.fin.website_requested, false);
-  assert.strictEqual(JSON.stringify(mockRun.fin.handoffs), '[]');
+  assert.strictEqual(mockRun.fin.edg_requested, true);
+  assert.strictEqual(JSON.stringify(mockRun.fin.handoffs), '["atlas"]');
 });
 test('a returning lead is only handed off when the current message asks for a site', () => {
   const p = Object.assign({}, fx('john-tan.json'), { message: 'Yes we use WhatsApp and Google Sheets', conversation_history: [{ role: 'customer', content: 'we might want a website later' }] });
@@ -689,6 +690,59 @@ test('wiAsksForBuild: requests vs questions', () => {
   const w = require('../agents/website-builder/intake.js');
   ['Can you build me a website?', 'Can you build a website for my bakery?', 'I want a sales funnel', 'We need a new website', 'Send me a mock-up', 'help me build a landing page'].forEach((m) => assert.strictEqual(w.wiAsksForBuild(m), true, m));
   ['What type of websites can you build?', 'Do you make funnels?', 'Can you build a website?', 'how much is a website?', 'Our website gets no enquiries'].forEach((m) => assert.strictEqual(w.wiAsksForBuild(m), false, m));
+});
+
+console.log('\n[13] ATLAS — EDG & CRM Systems Architect (agents/atlas/atlas.js + workflow code nodes)');
+const at = require('../agents/atlas/atlas.js');
+test('atNeeded: named company + systems need + a fact about today; never for a website-only or anonymous ask', () => {
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['whatsapp_auto_reply'], problem: 'agents do not follow up' } }), true);
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['website_build'], problem: 'no enquiries' } }), false, 'website only');
+  assert.strictEqual(at.atNeeded({ company_name: '', extracted: { desired_automation: ['crm_sync'], problem: 'x' } }), false, 'no company');
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC', extracted: { desired_automation: ['crm_sync'], lead_sources: ['website'] } }), false, 'nothing known about today');
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC', extracted: { current_tools: ['Spreadsheets'] }, message: 'we need a CRM' }), true, 'explicit CRM ask');
+});
+test('atFinalize fallback: 5 labelled checkpoint-1 files, test leads under _Test, approval task, never VERIFIED', () => {
+  const input = at.atInput({ lead_id: 'lead_1', company_name: 'Tan Brothers Construction Pte Ltd', test_mode: true, extracted_json: JSON.stringify({ problem: 'quotations get lost in Excel', current_tools: ['Spreadsheets'], lead_sources: ['whatsapp'], desired_automation: ['quote_generation'] }) });
+  assert.strictEqual(input.base_path, 'zaphiel/vault/80_Clients/_Test/tan-brothers-construction/edg/');
+  const fin = at.atFinalize({ error: 'Payment required', input });
+  assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.files.length, 5);
+  assert.deepStrictEqual(fin.files.map((f) => f.path.split('/').pop()), ['00_company_model.json', '01_current_state.md', '02_problem_map.md', '14_report_to_john.md', '15_questions_open.md']);
+  const model = JSON.parse(fin.files[0].content);
+  assert.strictEqual(model.problems.stated_problem.label, 'CLIENT-PROVIDED'); assert.strictEqual(model.acquisition.monthly_lead_volume.label, 'UNKNOWN');
+  assert.ok(!/"VERIFIED"/.test(fin.files[0].content), 'nothing can be VERIFIED without checking');
+  assert.ok(/```mermaid/.test(fin.files[1].content));
+  assert.ok(fin.pack.questions_open.length >= 3 && fin.pack.questions_open.length <= 8);
+  assert.strictEqual(fin.task.requires_approval, true); assert.strictEqual(fin.task.task_type, 'edg_design'); assert.strictEqual(fin.event.type, 'edg.checkpoint_1');
+  const real = at.atInput({ lead_id: 'lead_2', company_name: 'ABC Property Pte Ltd', test_mode: false });
+  assert.strictEqual(real.base_path, 'zaphiel/vault/80_Clients/abc-property/edg/');
+});
+test('atFinalize with model JSON: model sections kept, gaps filled, provider anthropic', () => {
+  const input = at.atInput({ lead_id: 'lead_3', company_name: 'ABC Property', test_mode: true });
+  const fin = at.atFinalize({ raw_text: '```json\n' + JSON.stringify({ current_state_md: 'flowchart of how ABC runs today with enough words', questions_open: ['Which CRM do you use?'], summary_for_ryan: 'ok' }) + '\n```', input });
+  assert.strictEqual(fin.provider, 'anthropic'); assert.strictEqual(fin.pack.current_state_md, 'flowchart of how ABC runs today with enough words');
+  assert.deepStrictEqual(fin.pack.questions_open, ['Which CRM do you use?']); assert.ok(fin.pack.problem_map_md.length > 20);
+});
+test('ATLAS code nodes run as deployed (vm): prepare → check → compose (agent file from GitHub) → finalize → files → create/edit', () => {
+  require('child_process').execSync('node ' + path.join(ROOT, 'workflows/atlas/build.js'));
+  const src = (f) => fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/code-nodes', f), 'utf8');
+  const items = (a) => a.map((json, i) => ({ json, pairedItem: { item: i } }));
+  const store = {};
+  const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => input[0], all: () => input }, $execution: { id: '9' }, $workflow: { id: 'w' }, Buffer, Date, JSON, Math });
+  const run = (f, input) => vm.runInNewContext('(function(){' + src(f) + '})()', mk(input)).map((i) => i.json);
+  store['Prepare ATLAS Input'] = run('prepare-atlas-input.js', items([{ lead_id: 'lead_x', company_name: 'ABC Property Pte Ltd', test_mode: true, extracted_json: JSON.stringify({ problem: "agents don't follow up", desired_automation: ['whatsapp_auto_reply'] }), conversation_json: '[]' }]));
+  store['Check Existing Design'] = run('check-existing-design.js', items([{ task_type: 'edg_design', lead_id: 'other' }]));
+  assert.strictEqual(store['Check Existing Design'][0].already, false);
+  assert.strictEqual(run('check-existing-design.js', items([{ task_type: 'edg_design', lead_id: 'lead_x', status: 'open' }]))[0].already, true, 'once per lead');
+  store['Load ATLAS Agent File'] = [{ content: Buffer.from('---\nname: atlas\n---\n# ATLAS — EDG & CRM SYSTEMS ARCHITECT\nYou are ATLAS').toString('base64') }];
+  store['Compose ATLAS Prompt'] = run('compose-atlas-prompt.js', items([{}]));
+  assert.strictEqual(store['Compose ATLAS Prompt'][0].agent_file_source, 'github');
+  assert.ok(/^# ATLAS — EDG & CRM SYSTEMS ARCHITECT/.test(store['Compose ATLAS Prompt'][0].system_prompt) && /CHECKPOINT 1/.test(store['Compose ATLAS Prompt'][0].system_prompt));
+  store['Finalize ATLAS'] = run('finalize-atlas.js', items([{ error: { message: 'Payment required' } }]));
+  assert.strictEqual(store['Finalize ATLAS'][0].files.length, 5); assert.ok(/ATLAS checkpoint 1/.test(store['Finalize ATLAS'][0].email_html));
+  store['Files to Write'] = run('files-to-write.js', items([{}]));
+  assert.strictEqual(store['Files to Write'].length, 5);
+  const modes = run('create-or-edit.js', items([{ sha: 'abc' }, { error: 'Not Found' }, {}, {}, {}])).map((x) => x.mode);
+  assert.deepStrictEqual(modes, ['edit', 'create', 'create', 'create', 'create']);
 });
 
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

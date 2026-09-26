@@ -28,7 +28,7 @@ how it is built: [[Knowledge/CEO Brain — product architecture]]; the twelve ag
   customer through the Outbound Sender (WhatsApp when the credential exists, else email) → copy to Ryan.
 - **Outbound Sender** (`SAcnNxG1GWPwn3N7`), **Approve Reply** (`uQxHTTdEkazgKpRT`), **WhatsApp
   Inbound** (`3IhIJ5IYsB7wQQSg`), **Vault Writer** (`tVvSWjOubwBNLi88`), **Daily Brief**
-  (`Pew2PX1IcgdXqXr7`), **Website Intelligence** (`5VWP3tMK3MZysi7w`), **CEO Orchestrator** (`8Ix4yc223sxrSu5h`), **Approval Inbox** (`r4ynzcSqRy8zHoFl`), **John Chat Console** (`ny60ozvH8B4uNpcb`), **Trainer API**
+  (`Pew2PX1IcgdXqXr7`), **Website Intelligence** (`5VWP3tMK3MZysi7w`), **ATLAS** (`9XQWSgTBszRc0Jxj`), **CEO Orchestrator** (`8Ix4yc223sxrSu5h`), **Approval Inbox** (`r4ynzcSqRy8zHoFl`), **John Chat Console** (`ny60ozvH8B4uNpcb`), **Trainer API**
   (`zKqlk05WShUOrojw`), **Training Room** dashboard (`AM59goLdbt0clv8q`), **Chat with John public
   page** (`FngKsJ2x0AaWOdJl`, https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat), **Website Build
   Runner** (`7sEuGyU6IjJsSaKL`, superseded 2026-09-26: the build step runs as the Claude routine "Zaphiel —

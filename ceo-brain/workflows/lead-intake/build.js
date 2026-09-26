@@ -22,6 +22,7 @@ TABLES.__sender_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.ou
 TABLES.__website_builder_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_builder) || null;
 // ADR-3: John hands off to the Website Intelligence agent, which researches and then calls the Website Builder.
 TABLES.__website_intelligence_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_intelligence) || null;
+TABLES.__atlas_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.atlas) || null;
 TABLES.__vault_writer_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.vault_writer) || null;
 const GITHUB = TABLES_JSON.github || { owner: 'ryandhana1515-stack', repo: 'ryan', credential_id: 'lZqYskCh7zVfXsc7', credential_name: 'GitHub account' };
 const agentManifest = JSON.parse(read('agents/sales-qualification/agent.json'));
@@ -59,6 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'AT_EXPLICIT', 'atNeeded']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -105,6 +107,7 @@ var CB_LEAD_STATUS = ${leadStatus.trim()};
 ${postprocessSrc}
 ${briefSrc}
 ${intakeSrc}
+${atlasSrc}
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
 const ctx = $('Resolve Lead Identity').first().json;
@@ -140,11 +143,14 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+// ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
+const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\\n');
+const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
 else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
-const handoffs = websiteRequested ? ['website-builder'] : [];
+const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
   task_id: cbMakeId('task'),
   task_type: approvalNeeded ? 'approval' : (r.next_action === 'book_discovery_call' ? 'call' : 'follow_up'),
@@ -170,6 +176,7 @@ const response = {
   audit: fin.audit,
   handoffs,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted },
+  edg_requested: edgRequested,
   execution_id: ctx.execution_id
 };
 return [{ json: {
@@ -180,7 +187,7 @@ return [{ json: {
   result: r, run_id: cbMakeId('run'), message_id: cbMakeId('msg'), task: followUpTask,
   usage, started_at: ctx.now, finished_at: finishedAt, latency_ms: latencyMs,
   approval_needed: approvalNeeded, auto_send: autoSend, send_channel: sendChannel, send_to: sendTo,
-  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, handoffs, response,
+  send_subject: 'Re: your enquiry to FusionTech AI', website_requested: websiteRequested, edg_requested: edgRequested, handoffs, response,
   website_intake: { topic: websiteTopic, intent: intake.intent, ready: intake.ready, missing: intake.missing, build_started: buildStarted, details: intake.details }, contact_found: contactFound
 } }];
 `;
@@ -727,6 +734,62 @@ const writeVault = node({
   output: [{ ok: true }]
 });
 
+const edgGate = ifElse({
+  version: 2.3,
+  config: {
+    name: 'EDG Needed?',
+    parameters: {
+      conditions: {
+        options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 },
+        conditions: [{ id: 'edg', leftValue: expr("{{ ${F}.edg_requested }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }],
+        combinator: 'and'
+      }
+    },
+    position: [4310, 80]
+  }
+});
+
+const callAtlas = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'Hand Off to ATLAS',
+    onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once',
+      source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__atlas_workflow_id || 'REPLACE_ME')}, cachedResultName: 'CEO Brain — ATLAS (EDG & CRM Systems Architect)' },
+      workflowInputs: {
+        mappingMode: 'defineBelow',
+        value: {
+          tenant_id: expr("{{ ${F}.lead.tenant_id }}"),
+          lead_id: expr("{{ ${F}.lead.lead_id }}"),
+          contact_name: expr("{{ ${F}.lead.contact_name ?? '' }}"),
+          company_name: expr("{{ ${F}.lead.company_name || ${F}.result.extracted.company_name || '' }}"),
+          industry: expr("{{ ${F}.lead.industry || ${F}.result.extracted.industry || '' }}"),
+          email: expr("{{ ${F}.lead.email || ${F}.contact_found.email || '' }}"),
+          phone: expr("{{ ${F}.lead.phone || ${F}.contact_found.phone || '' }}"),
+          channel: expr("{{ ${F}.lead.channel }}"),
+          message: expr("{{ ${F}.lead.message ?? '' }}"),
+          conversation_json: expr("{{ JSON.stringify(${F}.lead.conversation_history ?? []) }}"),
+          sales_summary: expr("{{ ${F}.result.summary }}"),
+          extracted_json: expr("{{ JSON.stringify(${F}.result.extracted) }}"),
+          test_mode: expr("{{ ${F}.lead.test_mode }}"),
+          notify_email: expr("{{ ${F}.config.notify_email }}"),
+          source_execution_id: expr("{{ ${F}.execution_id }}")
+        },
+        matchingColumns: [],
+        schema: ${j([['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']].map(([id,type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))},
+        attemptToConvertTypes: false,
+        convertFieldsToString: true
+      },
+      options: { waitForSubWorkflow: false }
+    },
+    position: [4420, -120]
+  },
+  output: [{ ok: true }]
+});
+
 const websiteGate = ifElse({
   version: 2.3,
   config: {
@@ -904,7 +967,10 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .to(saveDraftReply)
   .to(createTask)
   .to(writeVault)
-  .to(websiteGate
+  .to(edgGate
+    .onTrue(callAtlas.to(websiteGate))
+    .onFalse(websiteGate))
+  .add(websiteGate
     .onTrue(callWebsiteBuilder.to(autoSendGate))
     .onFalse(autoSendGate))
   .add(autoSendGate
@@ -919,7 +985,9 @@ export default workflow('ceo-brain-lead-intake', 'CEO Brain — Lead Intake (Pha
   .group('1. Intake & validation', [workflowConfig, normalizeLeadNode, isLeadValid], { description: 'Reads the webhook body, normalizes contact fields, and gates on validity (invalid payloads get an HTTP 400 response).' })
   .group('2. Persist lead + inbound message', [findExistingLead, resolveLead, saveLead, logInbound], { description: 'Looks up the lead by dedupe key, merges known contact facts, upserts the lead row and logs the inbound message.' })
   .group('3. AI qualification', [rulesEngine, useLiveAi, loadBrain, loadPlaybook, composePrompt, claudeAgent, finalize], { description: 'Rule baseline; live: brain + sales playbook loaded from the vault into the prompt, Claude classifies; validation, fallback, guardrails.' })
-  .group('4. Persist, deliver & notify', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, writeVault, websiteGate, callWebsiteBuilder, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Status, run, audit, draft, task; vault write; website hand-off; auto-send low-risk replies; approve-link email; respond.' });
+  .group('4. Persist & record', [updateLeadStatus, logAgentRun, logAudit, saveDraftReply, createTask, writeVault], { description: 'Status, run, audit, draft reply, follow-up task, vault write.' })
+  // EDG Needed? + Hand Off to ATLAS stay ungrouped: n8n groups need a single exit and the gate has two.
+  .group('6. Website hand-off, reply & notify', [websiteGate, callWebsiteBuilder, autoSendGate, sendReplyNow, needsHuman, notifyOwner, respondResult], { description: 'Website Intelligence hand-off; auto-send low-risk replies; approve-link email; respond.' });
 `;
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });

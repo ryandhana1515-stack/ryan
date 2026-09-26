@@ -142,3 +142,14 @@ tags: [zaphiel, changelog]
 - 2026-09-26 — **ATLAS installed** (EDG & CRM Systems Architect, Claude Code subagent `.claude/agents/atlas.md`,
   verbatim from Ryan) + template `80_Clients/_TEMPLATE_Client/edg/`. Merge into [[10_Agents/07_CRM_Architect]]
   proposed, waiting for Ryan's OK. Details in [[00_CEO_Brain/04_Changelog]].
+- 2026-09-26 (night) — **ATLAS is a working team member** (Ryan: "create that agent… that can do whatever was in the
+  prompt"). New n8n workflow **CEO Brain — ATLAS** `9XQWSgTBszRc0Jxj`, published. John (Lead Intake) now has an
+  "EDG Needed?" gate: when a named company needs CRM / automation / integrations and John knows something about how
+  it works today, the lead goes to ATLAS once. ATLAS loads Ryan's agent file live from GitHub, works in DESIGN mode to
+  checkpoint 1, writes five files to `80_Clients/<company>/edg/` (test leads under `80_Clients/_Test/`), opens an
+  approval task (Approval Inbox), emails Ryan and sends `edg.checkpoint_1` to the Orchestrator. Checkpoint 2+ and
+  BUILD / AUDIT run in Claude Code with the same agent file and every tool, after Ryan confirms. Tests 60/60.
+  Verified live with a test lead (Lead Intake 354 → ATLAS 356): all five files written, task opened, email sent,
+  no website build started, zero Higgsfield / Lovable spend. Claude answered "Payment required" (Gateway credits $0),
+  so ATLAS used its rule fallback: until the credits are topped up it only restates what John collected and lists
+  the questions John should ask next.

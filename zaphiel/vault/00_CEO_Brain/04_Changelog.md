@@ -8,6 +8,10 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 
 ## Entries recorded here (also in [[Change log]])
 - 2026-09-26 — **Website Intelligence & Conversion Strategist installed** (Ryan's agent file, verbatim): Claude Code subagent `.claude/agents/website-intelligence.md`; contract note [[10_Agents/05a_Website_Intelligence]]; output template `80_Clients/_TEMPLATE_Client/website/` (10 files + `WEBSITE_BUILD_BRIEF.json`). Runs in Claude Code in CLIENT or PROSPECT mode, before the Website Builder.
+- 2026-09-26 — **ATLAS live in n8n** (`9XQWSgTBszRc0Jxj`, source `ceo-brain/workflows/atlas/build.js`): John hands a
+  lead to ATLAS once when a named company needs CRM / automation and John knows how it works today; ATLAS runs DESIGN
+  mode to checkpoint 1 (files 00, 01, 02, 14, 15 in `80_Clients/<company>/edg/`), opens an approval task, emails Ryan
+  and notifies the Orchestrator. Later checkpoints and BUILD / AUDIT run in Claude Code (`atlas` subagent, all tools).
 - 2026-09-26 — **ATLAS — EDG & CRM Systems Architect installed** (Ryan's agent file, verbatim): Claude Code subagent
   `.claude/agents/atlas.md` (repo root, where Claude Code reads subagents, next to `website-intelligence.md`);
   output template `80_Clients/_TEMPLATE_Client/edg/` (STAGE 16 files, empty, plus a README linking ATLAS to the
