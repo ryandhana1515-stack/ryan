@@ -1,0 +1,141 @@
+{
+  "schema": "atlas.company_model.v1",
+  "generated_by": "atlas-n8n-1.0.0",
+  "mode": "DESIGN",
+  "checkpoint": 1,
+  "company": {
+    "name": {
+      "value": "Asian Heart & Vascular Centre",
+      "label": "CLIENT-PROVIDED"
+    },
+    "industry": {
+      "value": "cardiology clinic",
+      "label": "CLIENT-PROVIDED"
+    },
+    "size_people": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "location": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "website": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "contact": {
+    "name": {
+      "value": "Zaphiel Test",
+      "label": "CLIENT-PROVIDED"
+    },
+    "email": {
+      "value": "zaphiel-test@example.com",
+      "label": "CLIENT-PROVIDED"
+    },
+    "phone": {
+      "value": "+6590000002",
+      "label": "CLIENT-PROVIDED"
+    },
+    "decision_maker": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "acquisition": {
+    "lead_sources": {
+      "value": [
+        "ads"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "monthly_lead_volume": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "attribution": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "sales": {
+    "follow_up_process": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "pipeline_stages": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "salespeople": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "tools": {
+    "current_tools": {
+      "value": [
+        "ahvc.com.sg"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "accounting_or_erp": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "uses_whatsapp": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "uses_email": {
+      "value": true,
+      "label": "CLIENT-PROVIDED"
+    }
+  },
+  "problems": {
+    "stated_problem": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "goals": {
+    "desired_automation": {
+      "value": [
+        "website_build",
+        "funnel_build"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "desired_outcome": {
+      "value": "Get patients to book a heart screening consultation",
+      "label": "CLIENT-PROVIDED"
+    },
+    "timeline": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "budget": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "operations": {
+    "delivery": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "payments": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "customer_service": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "reporting": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  }
+}
