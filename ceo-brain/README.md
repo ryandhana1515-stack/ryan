@@ -17,10 +17,13 @@ needs you, an email lands in your inbox.
 
 - **n8n** at `https://ryan1515.app.n8n.cloud` — the orchestrator. Authenticated through the
   official n8n MCP in the Claude session, so workflows are created/updated/tested from code.
-- **Claude Sonnet 4.6 via n8n Gateway credits** — no API key needed. Worked on 2026-09-24/25;
-  on the afternoon of 2026-09-25 the Gateway returned **"Payment required"** (credits used up), so
-  John and the Website Builder ran on their deterministic fallbacks. Top up n8n AI credits (or add
-  an Anthropic API key credential in n8n) to get Claude-quality replies back. Nothing breaks meanwhile.
+- **Claude via n8n Gateway credits** — no API key needed (credits topped up 2026-09-26). Models since
+  2026-09-26: **Claude Sonnet 5** for John, ATLAS and Discovery (thinking switched off, so chat replies take
+  ~9 s), **Claude Fable 5.1** for Website Intelligence and the Website Builder (adaptive thinking, effort
+  medium, streaming, 32k tokens). Every agent calls Claude through a Basic LLM Chain + Anthropic Chat Model
+  node because the plain Anthropic node cannot turn Claude 5's default thinking off (it used all of John's
+  tokens and took 45 s, execution 381). Model, max tokens, thinking and streaming live in each
+  `agents/*/agent.json`. When the credits run out, every agent falls back to its deterministic rules.
 - **Gmail credential** in n8n — used for the approval email. Verified: a `[TEST]` email was sent.
 - **GitHub credential** in n8n (not used by Phase 1).
 - **Lead Intake, deployed and active**: `CEO Brain — Lead Intake`, id `b7kbJpnKLN2uQxyn`,

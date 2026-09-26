@@ -27,4 +27,4 @@ const vars = {
   research_brief: input.research_brief || '(none — no research brief; use John\'s hand-off only)'
 };
 const user_prompt = USER_PROMPT_TEMPLATE.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? String(vars[k]) : ''));
-return [{ json: { input, user_prompt, started_at: now, config: { model: "claude-sonnet-4-6", agent: "website-builder", agent_version: "2.2.0" }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
+return [{ json: { input, user_prompt, started_at: now, config: { model: "claude-fable-5-1", agent: "website-builder", agent_version: "2.2.0" }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];

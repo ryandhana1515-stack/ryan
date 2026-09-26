@@ -251,7 +251,7 @@ const auditCols = [['tenant_id','string'],['entity_type','string'],['entity_id',
 
 const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cachedResultName: name });
 
-const sdk = `import { workflow, node, trigger, sticky, ifElse, expr } from '@n8n/workflow-sdk';
+const sdk = `import { workflow, node, trigger, sticky, ifElse, expr, languageModel } from '@n8n/workflow-sdk';
 
 const leadWebhook = trigger({
   type: 'n8n-nodes-base.webhook',
@@ -494,28 +494,37 @@ const composePrompt = node({
   output: [{ system_prompt: 'You are John...', brain_source: 'vault:brain+playbook', brain_chars: 17000, playbook_chars: 2000 }]
 });
 
+// Claude 5 models think by default and the plain Anthropic node cannot turn that off: the thinking used up
+// max_tokens and took ~45 s (execution 381). John answers chat, so he runs through a chain whose Anthropic
+// chat model has thinking switched off — fast, text-only replies (2026-09-26).
+const johnModel = languageModel({
+  type: '@n8n/n8n-nodes-langchain.lmChatAnthropic',
+  version: 1.6,
+  config: {
+    name: ${j(agentManifest.model_display_name + ' (John, thinking off)')},
+    parameters: {
+      model: { __rl: true, mode: 'list', value: ${j(agentManifest.model)}, cachedResultName: ${j(agentManifest.model_display_name)} },
+      options: { maxTokensToSample: ${agentManifest.max_tokens}, thinkingMode: 'disabled' }
+    },
+    position: [2860, 300]
+  }
+});
+
 const claudeAgent = node({
-  type: '@n8n/n8n-nodes-langchain.anthropic',
-  version: 1,
+  type: '@n8n/n8n-nodes-langchain.chainLlm',
+  version: 1.9,
   config: {
     name: 'Sales Qualification Agent (Claude)',
     onError: 'continueErrorOutput',
     parameters: {
-      resource: 'text',
-      operation: 'message',
-      modelId: { __rl: true, mode: 'list', value: ${j(agentManifest.model)}, cachedResultName: ${j(agentManifest.model_display_name)} },
-      messages: { values: [{ role: 'user', content: expr("{{ ${R}.user_prompt }}") }] },
-      simplify: true,
-      options: {
-        system: expr("{{ $('Compose System Prompt').first().json.system_prompt }}"),
-        maxTokens: 2500,
-        temperature: 0.1,
-        includeMergedResponse: true
-      }
+      promptType: 'define',
+      text: expr("{{ ${R}.user_prompt }}"),
+      messages: { messageValues: [{ type: 'SystemMessagePromptTemplate', message: expr("{{ $('Compose System Prompt').first().json.system_prompt }}") }] }
     },
+    subnodes: { model: johnModel },
     position: [2860, 100]
   },
-  output: [{ text: '{"schema_version":"1.0","lead_status":"QUALIFYING"}', model: 'claude-sonnet-4-6', usage: { input_tokens: 1, output_tokens: 1 } }]
+  output: [{ text: '{"schema_version":"1.0","lead_status":"QUALIFYING"}' }]
 });
 
 const rulesEngine = node({

@@ -112,7 +112,8 @@ function wbIntake(o) {
   if (!topic) reply = '';
   else if (!intent) reply = '';
   else if (ready) {
-    var to = phone ? phone : (email ? email : 'this chat');
+    // The address the customer typed wins ("send the link to me@x.com"); otherwise WhatsApp/phone, then email (execution 385).
+    var to = emailInText ? email : (phone ? phone : (email ? email : 'this chat'));
     reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now, in two versions for you to compare: a photo-led site and a cinematic scroll film site (our premium option). I will send both links to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
   } else {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');

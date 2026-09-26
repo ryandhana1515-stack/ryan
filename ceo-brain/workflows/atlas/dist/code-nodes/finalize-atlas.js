@@ -126,6 +126,7 @@ function atFallbackPack(input) {
 }
 function atParseJson(text) {
   if (typeof text !== 'string') return null;
+  var w0 = text.indexOf('{'), w1 = text.lastIndexOf('}'); if (w0 !== -1 && w1 > w0) { try { return JSON.parse(text.slice(w0, w1 + 1)); } catch (e) {} }
   var t = text.trim(); var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i); if (fence) t = fence[1].trim();
   if (t.charAt(0) !== '{') { var i = t.indexOf('{'), k = t.lastIndexOf('}'); if (i === -1 || k < i) return null; t = t.slice(i, k + 1); }
   try { return JSON.parse(t); } catch (e) { return null; }
@@ -184,7 +185,7 @@ const prep = $('Check Existing Design').first().json;
 const pre = $('Compose ATLAS Prompt').first().json;
 const input = prep.input;
 const inp = ($input.first() && $input.first().json) || {};
-let rawText = null, error = null, model = "claude-sonnet-4-6";
+let rawText = null, error = null, model = "claude-sonnet-5";
 if (inp.error) error = 'model_error: ' + String(inp.error.message || inp.error.description || JSON.stringify(inp.error)).slice(0, 300);
 else {
   model = inp.model || model;

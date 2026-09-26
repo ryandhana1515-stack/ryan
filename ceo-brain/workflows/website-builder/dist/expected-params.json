@@ -5,6 +5,6 @@
     "playbook": "zaphiel/vault/Knowledge/Website Builder — playbook.md",
     "design_standard": "zaphiel/vault/Knowledge/Website design standard.md"
   },
-  "model": "claude-sonnet-4-6",
+  "model": "claude-fable-5-1",
   "workflow_id": "hSTRGnHVsu6tMOmH"
 }
