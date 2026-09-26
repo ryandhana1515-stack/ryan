@@ -153,3 +153,10 @@ tags: [zaphiel, changelog]
   no website build started, zero Higgsfield / Lovable spend. Claude answered "Payment required" (Gateway credits $0),
   so ATLAS used its rule fallback: until the credits are topped up it only restates what John collected and lists
   the questions John should ask next.
+- 2026-09-26 (night) — **ATLAS merged into 07** (Ryan: "ok merge"). [[10_Agents/07_CRM_Architect]] is now "07 · ATLAS —
+  EDG & CRM Systems Architect" (alias ATLAS): all 18 sections rewritten from Ryan's agent file, the old CRM
+  Architect content kept inside it (data layer, migration steps, open question), old note backed up in
+  `_backups/2026-09-26/`. Boundaries set with Discovery (01), Workflow Automation (09), Data/BI (14),
+  Security/QA (15); linked to the nine notes Ryan listed. John's note (02) has the two-way hand-off; the permission
+  matrix row and the agent index updated. Decision recorded as ADR-4.
+

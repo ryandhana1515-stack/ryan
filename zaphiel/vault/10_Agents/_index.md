@@ -12,7 +12,7 @@ tags: [zaphiel, moc, agents]
 | 05 | [[10_Agents/05_Website_App_General]] | 5 | built | Live v2 |
 | 05a | [[10_Agents/05a_Website_Intelligence]] | 5 | tested | Live in the chain: `5VWP3tMK3MZysi7w` (John → research → Website Builder), role prompt read live; + Claude Code subagent for Ryan's own projects |
 | 06 | [[10_Agents/06_Medical_3D_Web]] | 10 | built | Live as the `medical` mode of the Website Builder (enforced by code from the customer's wo |
-| 07 | [[10_Agents/07_CRM_Architect]] | 3 | designed | Designed: the CRM/ERP data layer (39 tables, tenant RLS) in `ceo-brain/database/`; today's |
+| 07 | [[10_Agents/07_CRM_Architect]] (ATLAS — EDG & CRM Systems Architect) | 3 | live | ATLAS (merged 2026-09-26): n8n `9XQWSgTBszRc0Jxj` runs checkpoint 1 from John's hand-off; later checkpoints, BUILD and AUDIT in Claude Code (`atlas` subagent) |
 | 08 | [[10_Agents/08_ERP_Operations]] | 8 | draft | Planned (only per client need) |
 | 09 | [[10_Agents/09_Workflow_Automation]] | 4 | built | Built in pieces: every n8n workflow has error branches and audit rows; the shared event /  |
 | 10 | [[10_Agents/10_Finance_Ops]] | 8 | draft | Planned |

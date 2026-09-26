@@ -49,7 +49,15 @@ conversation history per lead (`ceo_messages`), lead row; nothing across tenants
 normalize → resolve identity → rules baseline → Claude (if credits) → validate + guardrails → website intake → save + reply/approval → hand-offs → vault note
 
 ## 12. Handoffs (to which agent, trigger, payload)
-[[10_Agents/05_Website_App_General]] (intake complete), [[10_Agents/00_CEO_Orchestrator]] (escalations), [[10_Agents/13_Customer_Success]] (existing customers). Every hand-off carries tenant_id + correlation_id.
+[[10_Agents/05_Website_App_General]] (intake complete), [[10_Agents/07_CRM_Architect]] (ATLAS: company needs CRM / automation), [[10_Agents/00_CEO_Orchestrator]] (escalations), [[10_Agents/13_Customer_Success]] (existing customers). Every hand-off carries tenant_id + correlation_id.
+
+**John ↔ ATLAS** (added 2026-09-26):
+- **John → ATLAS:** when a named company needs CRM / automation / integrations (not only a website) and John knows
+  something about how it works today, the "EDG Needed?" gate hands the lead to ATLAS once: chat notes, John's
+  summary and the extracted company facts.
+- **ATLAS → John:** `80_Clients/<company>/edg/14_report_to_john.md` (plain-language picture) and
+  `15_questions_open.md` (questions ready to ask, most important first). John asks them one or two at a time, in his
+  own words. ATLAS never talks to the customer.
 
 ## 13. Platform services used
 [[30_Platform_Services/Identity_Tenant]] · [[30_Platform_Services/Policy_Service]] · [[30_Platform_Services/Approval_Service]] · [[30_Platform_Services/Audit_Service]] · [[30_Platform_Services/Workflow_Event_Service]] · [[30_Platform_Services/AI_Gateway]] · [[30_Platform_Services/Notification_Service]] · [[30_Platform_Services/Context_Knowledge]] · [[30_Platform_Services/Observability]]
