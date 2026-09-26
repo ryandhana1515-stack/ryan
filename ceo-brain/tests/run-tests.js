@@ -880,6 +880,15 @@ test('a rich research plan never pushes the 3D motion or the anatomy visual out 
   for (const k of ['Primary CTA everywhere', '3D and scroll motion', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
   assert.ok(/Never a cartoon/.test(sec) && /Build a premium/.test(p), 'strategy complete and the base prompt still leads');
 });
+test('John sends the mock-up link where the customer asked: a typed email beats the phone on file (execution 385)', () => {
+  const wi = require('../agents/website-builder/intake.js');
+  const fn = wi.wbIntake;
+  const r = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation. Send the link to drtan@example.com', history: [] });
+  assert.ok(r.ready, JSON.stringify(r.missing));
+  assert.ok(/send both links to drtan@example\.com/.test(r.reply), r.reply);
+  const r2 = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation.', history: [] });
+  assert.ok(/send both links to \+6590000002/.test(r2.reply), r2.reply);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
