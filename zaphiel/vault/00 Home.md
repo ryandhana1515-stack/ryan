@@ -23,6 +23,7 @@ started: 2026-09-25
 ## The agents
 - [[Agents]] — every agent, what it does, its n8n id, and the website chain Ryan wants.
 - [[CEO Brain]] — the operating system the agents run on.
+- [[00_CEO_Brain/Management view]] — **live**: what is unresolved right now (written by the CEO Orchestrator every hour). Act on it in the [Approval Inbox](https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox).
 
 ## How to
 - [[Knowledge/_How the brain feeds the agents]] — what feeds whom, what happens when you edit a note.

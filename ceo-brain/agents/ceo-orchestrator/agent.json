@@ -1,0 +1,45 @@
+{
+  "id": "ceo-orchestrator",
+  "name": "CEO Orchestrator",
+  "version": "1.0.0",
+  "description": "Agent #0 (head). Receives every company-wide event (lead, discovery, website build, failures, approvals), routes it to the responsible agent by a fixed routing table, opens exception/approval tasks for humans, keeps the unresolved-issues list, writes the Management view into the vault every hour and serves the Approval Inbox. Deterministic: no LLM, no customer contact, no money.",
+  "provider": "rules",
+  "model": null,
+  "prompts": {},
+  "input_schema": null,
+  "output_schema": null,
+  "fallback": "agents/ceo-orchestrator/orchestrator.js",
+  "postprocess": "agents/ceo-orchestrator/orchestrator.js",
+  "default_tenant": "fusiontech",
+  "notify_email": "ryandhana1515@gmail.com",
+  "event_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/event",
+  "inbox_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox",
+  "approve_url": "https://ryan1515.app.n8n.cloud/webhook/ceo-brain/approve",
+  "schedule": "7 * * * * (hourly, UTC)",
+  "vault_view": "zaphiel/vault/00_CEO_Brain/Management view.md",
+  "routes": "OC_ROUTES in orchestrator.js (event type -> agent, action, severity, notify)",
+  "may_autonomously": [
+    "route an event to the responsible agent",
+    "open or reopen an exception task (task_type exception, assigned to human)",
+    "open a review task for lead.human_review",
+    "email the owner about a failure or a re-auth need (never in test_mode)",
+    "compute the unresolved-issues list and rewrite the Management view note",
+    "close/recover/reopen/cancel a task when the owner does it in the inbox with the PIN",
+    "write audit rows and agent-run rows"
+  ],
+  "must_escalate": [
+    "every approval (customer reply, proposal, pricing) - it only lists them and links to the Approve Reply gate",
+    "any exception it cannot resolve by re-routing (all of them, v1)"
+  ],
+  "never": [
+    "send anything to a customer",
+    "move money, publish a website, change a credential",
+    "become a source of truth (tasks/leads/runs live in the CEO Brain tables)",
+    "drop an event silently (unknown types are logged as notes)",
+    "use an LLM (v1 is fully deterministic)"
+  ],
+  "vault_sources": {
+    "contract": "zaphiel/vault/10_Agents/00_CEO_Orchestrator.md",
+    "inbox_worker": "zaphiel/vault/20_Specialist_Workers/Approval_Inbox_Agent.md"
+  }
+}

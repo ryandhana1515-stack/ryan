@@ -41,3 +41,9 @@ tags: [zaphiel, open-loops]
 - **Ryan:** choose the core stack for the first package (CRM, WhatsApp provider, dashboard, hosting) and create/authenticate the accounts; then say which integrations are `tested` so the [[40_Registries/Integration_Registry]] moves off `planned`.
 - **Ryan:** pick the first pilot client (Bio Green Elixirs or Brow Revolution) and set the package price (proposal only, never in an agent).
 - **Zaphiel (Phase 2, after Ryan's "continue"):** Solution Architect output (phased target architecture per client), onboarding steps 5–8 design detail, the first `80_Clients/` folder for the pilot, skill-pack extraction.
+- **(Ryan)** Change the Approval Inbox PIN in n8n ("CEO Brain — Approval Inbox" → node "Inbox Config"); it
+  starts as the same default as the Trainer PIN. Open https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
+  once and press "Mark done" on the old test approval ("build MEDICAL business website for Dashboard tester").
+- Next session: make Lead Intake, Website Builder, Build Record and the Build Runner post their events
+  (`lead.human_review`, `website.brief`, `website.built`, `website.build_failed`, `workflow.failed`) to
+  `POST /webhook/ceo-brain/event` so the Orchestrator sees every hand-off, not only the tables.

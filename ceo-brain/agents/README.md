@@ -26,6 +26,7 @@ Rules that apply to all agents:
 
 | Agent | Status | Notes |
 |---|---|---|
+| `ceo-orchestrator` | **live, v1.0.0** | Agent #0 (head). Deterministic, no LLM: routes every event (`POST /webhook/ceo-brain/event`) by a fixed routing table, opens exception/review tasks for humans, computes the unresolved-issues list from the tables every hour, writes the vault Management view, serves the Approval Inbox. Never contacts a customer, never moves money. |
 | `sales-qualification` | **live, v1.1.0** | Agent #1, persona **John**. Briefed with the FusionTech Master Company Brain (`prompts/company-context.md`). Extracts, classifies, asks progressively, drafts; low-risk replies auto-sent, the rest approved by the owner. |
 | `ceo-intelligence` (v0, inside the Daily Brief workflow) | live | Agent #8. Writes the recommended-priorities section of the 08:00 brief from table numbers only. |
 | `company-discovery` | **live, v1.0.0** | Agent #1 of the workforce. Consultant-style conversation → Client Digital Company Map (`schemas/company-map.schema.json`), data discovery checklist with connect/import/index/summarize/leave handling, proposal draft when complete. Rules fallback records the owner's answers under the asked topic. Runs in the Discovery Console. |

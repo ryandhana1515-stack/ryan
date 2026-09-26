@@ -457,6 +457,110 @@ test('discovery completes only after enough turns and coverage; note + proposal 
   assert.ok(/- \[x\] company/.test(note) && /## Proposal draft/.test(note));
 });
 
+console.log('\n[9] ceo orchestrator (Agent #0) + approval inbox');
+const oc = require('../agents/ceo-orchestrator/orchestrator.js');
+const OC_NOW = Date.parse('2026-09-26T04:00:00.000Z');
+test('event routing: build failure opens an exception task (idempotent id) and notifies the owner unless test_mode', () => {
+  const ev = oc.ocNormalizeEvent({ type: 'website.build_failed', source: 'website-build-runner', lead_id: 'lead_1', task_id: 'task_wb_1', summary: 'Lovable timed out' }, OC_NOW);
+  assert.strictEqual(ev.route.action, 'exception_task');
+  const a = oc.ocEventActions(ev);
+  assert.strictEqual(a.tasks.length, 1);
+  assert.strictEqual(a.tasks[0].task_type, 'exception');
+  assert.strictEqual(a.tasks[0].assigned_to, 'human');
+  assert.ok(a.notify && /build failed/.test(a.notify.subject), 'owner notified');
+  assert.ok(/Nothing was sent to any customer/.test(a.notify.html));
+  const again = oc.ocEventActions(oc.ocNormalizeEvent({ type: 'website.build_failed', task_id: 'task_wb_1', summary: 'other words' }, OC_NOW + 5000));
+  assert.strictEqual(again.tasks[0].task_id, a.tasks[0].task_id, 'same entity → same task id');
+  const t = oc.ocEventActions(oc.ocNormalizeEvent({ type: 'website.build_failed', task_id: 'task_wb_1', test_mode: true }, OC_NOW));
+  assert.strictEqual(t.notify, null, 'no email in test mode');
+  assert.strictEqual(a.audit.action, 'event_website_build_failed');
+});
+test('event routing: informational events open no task, unknown types are accepted as notes, human_review opens a review task', () => {
+  const built = oc.ocEventActions(oc.ocNormalizeEvent({ type: 'website.built', lead_id: 'lead_1' }, OC_NOW));
+  assert.deepStrictEqual(built.tasks, []); assert.strictEqual(built.notify, null); assert.strictEqual(built.decision.agent, 'sales-qualification');
+  const unknown = oc.ocEventActions(oc.ocNormalizeEvent({ type: 'Something.Odd' }, OC_NOW));
+  assert.strictEqual(unknown.decision.action, 'note'); assert.strictEqual(unknown.audit.action, 'event_something_odd');
+  const rev = oc.ocEventActions(oc.ocNormalizeEvent({ type: 'lead.human_review', lead_id: 'lead_9', summary: 'asked for a refund' }, OC_NOW));
+  assert.strictEqual(rev.tasks[0].task_type, 'approval'); assert.strictEqual(rev.tasks[0].requires_approval, true); assert.strictEqual(rev.notify, null);
+  assert.deepStrictEqual(oc.ocEventActions(oc.ocNormalizeEvent(null, OC_NOW)).tasks, [], 'garbage body does not throw');
+});
+const OC_FIX = {
+  now: OC_NOW,
+  tasks: [
+    { task_id: 'task_a', lead_id: 'lead_real', status: 'open', requires_approval: true, title: 'Approve reply', approval_reason: 'pricing', ts: '2026-09-26T03:30:00.000Z' },
+    { task_id: 'task_b', lead_id: 'lead_test', status: 'open', requires_approval: true, title: 'test approval', ts: '2026-09-25T00:00:00.000Z' },
+    { task_id: 'task_exc_1', lead_id: 'lead_test', task_type: 'exception', status: 'open', title: 'EXCEPTION: build failed', ts: '2026-09-25T00:00:00.000Z' },
+    { task_id: 'task_exc_2', lead_id: '', task_type: 'exception', status: 'recovered', title: 'old', ts: '2026-09-25T00:00:00.000Z' },
+    { task_id: 'task_wb_1', lead_id: 'lead_real', task_type: 'website_build', status: 'building', title: 'Build Prestige', ts: '2026-09-26T02:00:00.000Z' },
+    { task_id: 'task_wb_2', lead_id: 'lead_real', task_type: 'website_build', status: 'built', title: 'Built', ts: '2026-09-26T02:00:00.000Z' },
+    { task_id: 'task_f', lead_id: 'lead_real', status: 'open', requires_approval: false, title: 'Call back', due_at: '2026-09-25T10:00:00.000Z', ts: '2026-09-25T00:00:00.000Z' }
+  ],
+  leads: [
+    { lead_id: 'lead_real', status: 'QUALIFYING', contact_name: 'Marcus', company_name: 'SwiftMove', last_contact_at: '2026-09-23T00:00:00.000Z', createdAt: '2026-09-26T01:00:00.000Z' },
+    { lead_id: 'lead_test', status: 'HUMAN_REVIEW', test_mode: true, contact_name: 'Ryan test', last_contact_at: '2026-09-20T00:00:00.000Z' },
+    { lead_id: 'lead_hr', status: 'HUMAN_REVIEW', contact_name: 'Dr Lim', company_name: 'Lim Clinic', last_contact_at: '2026-09-26T03:00:00.000Z' }
+  ],
+  runs: [
+    { run_id: 'r1', agent: 'sales-qualification', started_at: '2026-09-26T03:00:00.000Z', success: false, error: 'model_error' },
+    { run_id: 'r2', agent: 'website-builder', started_at: '2026-09-26T03:00:00.000Z', success: true, provider: 'rules', error: 'Payment required' },
+    { run_id: 'r3', agent: 'x', started_at: '2026-09-20T03:00:00.000Z', success: false, error: 'old' }
+  ]
+};
+test('unresolved issues: test leads excluded (exceptions always in), stuck build, overdue, stale, failed runs, sorted high first', () => {
+  const { issues, stats } = oc.ocComputeIssues(OC_FIX);
+  const kinds = issues.map((i) => i.kind + ':' + (i.task_id || i.lead_id || i.ref));
+  assert.ok(kinds.includes('approval_waiting:task_a') && !kinds.includes('approval_waiting:task_b'), 'test lead approval excluded');
+  assert.ok(kinds.includes('exception_open:task_exc_1') && !kinds.includes('exception_open:task_exc_2'), 'exception on test lead still shown; recovered one not');
+  assert.ok(kinds.includes('build_stuck:task_wb_1'), 'building for 2 h = stuck');
+  assert.ok(kinds.includes('overdue_follow_up:task_f') && kinds.includes('stale_lead:lead_real') && kinds.includes('human_review_lead:lead_hr'));
+  assert.ok(!kinds.some((k) => k.endsWith(':lead_test')), 'test lead never listed');
+  assert.ok(kinds.includes('runs_failed_24h:runs') && kinds.includes('ai_fallback_24h:fallback'));
+  assert.strictEqual(issues[0].severity, 'high'); assert.strictEqual(issues[issues.length - 1].severity, 'low');
+  assert.strictEqual(stats.leads_real, 2); assert.strictEqual(stats.leads_test, 1); assert.strictEqual(stats.runs_failed_24h, 1); assert.strictEqual(stats.builds.building, 1);
+  assert.deepStrictEqual(oc.ocComputeIssues({}).issues, [], 'empty tables → nothing unresolved');
+});
+test('management view note and inbox page render from the same issues; inbox links approvals to the Approve Reply gate', () => {
+  const comp = oc.ocComputeIssues(OC_FIX);
+  const view = oc.ocRenderView(comp);
+  assert.ok(view.startsWith('---\ntags: [zaphiel, ceo-brain, management-view, live]'));
+  assert.ok(/### Exceptions \(1\)/.test(view) && /### Website builds stuck \(1\)/.test(view) && /\| Approvals waiting \| 1 \|/.test(view));
+  const html = oc.ocInboxHtml({ issues: comp.issues, stats: comp.stats, drafts: { lead_real: 'msg_77_out' }, approve_url: 'https://x/approve', action_url: 'https://x/inbox' });
+  assert.ok(/https:\/\/x\/approve\?decision=approve&message_id=msg_77_out&lead_id=lead_real/.test(html), 'approve link');
+  assert.ok(/data-act="recover" data-task="task_exc_1"/.test(html) && /data-act="close" data-task="task_f"/.test(html));
+  assert.ok(!/<script>[^]*\$\(/.test(html) && /"https:\/\/x\/inbox"/.test(html), 'page posts back to the inbox url');
+  assert.ok(/&lt;/.test(oc.ocInboxHtml({ issues: [{ kind: 'stale_lead', severity: 'low', title: '<b>x</b>', lead_id: 'l' }], stats: {} })), 'titles are escaped');
+});
+test('inbox action: PIN required, only close/recover/reopen/cancel, maps to task statuses', () => {
+  assert.deepStrictEqual(oc.ocInboxAction({ action: 'close', task_id: 't1', pin: 'nope' }, 'secret').error, 'wrong_pin');
+  assert.strictEqual(oc.ocInboxAction({ action: 'close', task_id: 't1', pin: 'secret' }, '').error, 'wrong_pin', 'empty configured pin never matches');
+  assert.strictEqual(oc.ocInboxAction({ action: 'delete', task_id: 't1', pin: 'secret' }, 'secret').error, 'unknown_action');
+  assert.strictEqual(oc.ocInboxAction({ action: 'close', pin: 'secret' }, 'secret').error, 'task_id_required');
+  const ok = oc.ocInboxAction({ action: 'RECOVER', task_id: 'task_exc_1', pin: 'secret', note: 'reran the build' }, 'secret');
+  assert.strictEqual(ok.ok, true); assert.strictEqual(ok.status, 'recovered'); assert.strictEqual(ok.note, 'reran the build');
+  assert.strictEqual(oc.ocInboxAction({ action: 'close', task_id: 't', pin: 'secret' }, 'secret').status, 'done');
+});
+test('Orchestrate / Render Inbox / Validate Action code nodes run as deployed (vm simulation)', () => {
+  const src = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
+  const items = (a) => a.map((json) => ({ json }));
+  const mk = (store, input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => ({ json: input }) }, $execution: { id: '42' }, Buffer, Date, JSON, Math });
+  const run = (f, ctx) => vm.runInNewContext('(function(){' + src(f) + '})()', ctx);
+  const store = { 'Normalize Event': [{ mode: 'event', body: { type: 'website.build_failed', source: 'runner', lead_id: 'lead_real', task_id: 'task_wb_1', summary: 'timed out', test_mode: true }, received_at: '2026-09-26T04:00:00.000Z' }], 'Get Tasks': items(OC_FIX.tasks).map((i) => i.json), 'Get Leads': OC_FIX.leads, 'Get Agent Runs': OC_FIX.runs, 'Get Pending Drafts': [{ message_id: 'msg_1', lead_id: 'lead_real', status: 'draft_pending_approval', ts: '2026-09-26T03:00:00.000Z' }] };
+  const o = run('workflows/ceo-orchestrator/dist/code-nodes/orchestrate.js', mk(store, store['Normalize Event'][0]))[0].json;
+  assert.strictEqual(o.mode, 'event'); assert.strictEqual(o.has_tasks, true); assert.strictEqual(o.tasks[0].task_type, 'exception'); assert.strictEqual(o.has_notify, false, 'test_mode → no email');
+  assert.ok(o.issues.some((i) => i.task_id === o.tasks[0].task_id), 'new task already in the view');
+  assert.ok(o.response.ok && o.audit.action === 'event_website_build_failed' && /^run_/.test(o.run_id));
+  const tick = run('workflows/ceo-orchestrator/dist/code-nodes/orchestrate.js', mk(Object.assign({}, store, { 'Normalize Event': [{ mode: 'tick', body: {}, received_at: '2026-09-26T04:00:00.000Z' }] }), {}))[0].json;
+  assert.strictEqual(tick.mode, 'tick'); assert.strictEqual(tick.has_tasks, false); assert.strictEqual(tick.event, null); assert.strictEqual(tick.response.type, 'tick');
+  const prep = run('workflows/ceo-orchestrator/dist/code-nodes/prepare-view-write.js', mk({ Orchestrate: [o] }, { sha: 'abc', content: Buffer.from(o.view.replace(/^updated:.*$/m, 'updated: 2020').replace(/^# Management view.*$/m, '# Management view — old')).toString('base64') }))[0].json;
+  assert.deepStrictEqual({ exists: prep.exists, changed: prep.changed }, { exists: true, changed: false }, 'same content apart from timestamps → no commit');
+  assert.strictEqual(run('workflows/ceo-orchestrator/dist/code-nodes/prepare-view-write.js', mk({ Orchestrate: [o] }, {}))[0].json.exists, false);
+  const inbox = run('workflows/approval-inbox/dist/code-nodes/render-inbox.js', mk(store, {}))[0].json;
+  assert.ok(/decision=approve&message_id=msg_1&lead_id=lead_real/.test(inbox.html) && inbox.drafts === 1);
+  const val = run('workflows/approval-inbox/dist/code-nodes/validate-action.js', mk({ 'Inbox Config': [{ pin: 'p1' }] }, { body: { pin: 'p1', action: 'close', task_id: 'task_f' } }))[0].json;
+  assert.strictEqual(val.ok, true); assert.strictEqual(val.status, 'done'); assert.strictEqual(val.execution_id, '42');
+  assert.strictEqual(run('workflows/approval-inbox/dist/code-nodes/validate-action.js', mk({ 'Inbox Config': [{ pin: 'p1' }] }, { body: { pin: 'zz', action: 'close', task_id: 'task_f' } }))[0].json.http, 403);
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

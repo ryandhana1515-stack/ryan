@@ -3,17 +3,17 @@ type: agent
 agent_id: ceo-orchestrator
 name: CEO Orchestrator
 version: 1.0
-status: designed
+status: live
 build_phase: 1
 owner: Ryan
-last_reviewed: 2026-09-25
+last_reviewed: 2026-09-26
 tags: [agent, head-agent, phase-1]
 ---
 # 00 · CEO Orchestrator
 
 > **Universal execution rule:** verified context → structured output → permission check → action or approval → audit log → measurable result.
 
-**Where it stands (2026-09-25):** Partly running: the Daily Brief (`Pew2PX1IcgdXqXr7`) is the v0 management view; routing today is inside each workflow (John hands to the Website Builder, the Builder to the Build Runner). The Orchestrator note is the contract those hand-offs will move into.
+**Where it stands (2026-09-26): running (v1.0.0).** n8n workflow **CEO Brain — CEO Orchestrator** (`8Ix4yc223sxrSu5h`): any workflow posts an event to `POST /webhook/ceo-brain/event` (`type`, `source`, `lead_id`, `task_id`, `summary`, `severity`, `correlation_id`, `payload`, `test_mode`); every hour it recomputes the unresolved-issues list from the tables. Routing table (event type → agent, action, severity, notify): `lead.new`, `lead.human_review` (review task), `discovery.complete`, `website.brief` / `building` / `built`, `website.build_failed` / `workflow.failed` / `integration.reauth_needed` / `exception.raised` (exception task + email Ryan), `approval.decided`; unknown types are logged, never dropped. It writes **[[00_CEO_Brain/Management view]]** (this vault, rewritten only when something changed) and the **Approval Inbox** page https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox (`r4ynzcSqRy8zHoFl`). Deterministic, no AI credits. The Daily Brief (`Pew2PX1IcgdXqXr7`) still sends the 08:00 email. Source: `ceo-brain/agents/ceo-orchestrator/orchestrator.js` + `workflows/ceo-orchestrator/build.js`. Hand-offs between John, the Website Builder and the Build Runner still run inside those workflows; they will additionally post events here (next step).
 
 ## 1. Identity & purpose
 The one manager over the whole workforce: receives company-wide work, routes it to the right agent, combines results, keeps track of what is unresolved, enforces the approval rules and produces the management view for the CEO. It owns no data; the registries and systems of record do.

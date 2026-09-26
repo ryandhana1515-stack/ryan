@@ -68,3 +68,11 @@ tags: [zaphiel, changelog]
   (live) teach variation A (cinematic scroll film site on Higgsfield, premium) and B (photo-led on Lovable);
   John's playbook: present both links, no prices. Repo: brief v2.2 carries `variations` + a film brief for A;
   intake reply mentions the two versions. No build was run (Ryan: training only).
+- 2026-09-26 — **CEO Orchestrator (Agent #0) + Approval Inbox live.** Two new n8n workflows: **CEO Orchestrator**
+  `8Ix4yc223sxrSu5h` (`POST /webhook/ceo-brain/event` + hourly: routing table, exception/review tasks, email
+  on failures, unresolved-issues list, writes [[00_CEO_Brain/Management view]] into this vault) and **Approval
+  Inbox** `r4ynzcSqRy8zHoFl` (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox: approvals via the
+  Approve Reply gate, exceptions → Mark recovered with PIN, audit row). Deterministic, no AI credits. Verified
+  with a test build-failure event (task opened, audited, view written, no email in test mode, then recovered
+  from the inbox). Repo: `ceo-brain/agents/ceo-orchestrator/`, `workflows/ceo-orchestrator/`,
+  `workflows/approval-inbox/`, tests 46/46.
