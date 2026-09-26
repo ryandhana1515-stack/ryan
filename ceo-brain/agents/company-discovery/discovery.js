@@ -263,6 +263,8 @@ function dsValidateTurn(t) {
 }
 function dsParseJson(text) {
   if (typeof text !== 'string') return null;
+  // The whole answer first: a JSON value may itself contain ``` blocks (e.g. a mermaid diagram), which a fence regex cuts short (ATLAS, execution 387).
+  var w0 = text.indexOf('{'), w1 = text.lastIndexOf('}'); if (w0 !== -1 && w1 > w0) { try { return JSON.parse(text.slice(w0, w1 + 1)); } catch (e) {} }
   var s = text.trim();
   var fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
   if (fence) s = fence[1].trim();

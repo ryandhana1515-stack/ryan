@@ -860,6 +860,16 @@ test('no research → the creator works as before; general practice gets no anat
   const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Family Clinic', industry: 'clinic', message: 'our GP clinic needs a website', research_json: JSON.stringify(gp) } });
   assert.ok(/reception/i.test(out.image_shots[0].prompt)); assert.ok(/Book an appointment/.test(out.build_prompt));
 });
+test('every agent parses a fenced JSON answer that itself contains a ``` block (ATLAS execution 387 lost a good answer to this)', () => {
+  const raw = '```json\n{\n  "current_state_md": "# Now\\n\\n```mermaid\\nflowchart LR\\n  A --> B\\n```\\n",\n  "questions_open": ["Who replies first?"]\n}\n```';
+  const at = require('../agents/atlas/atlas.js'), ds = require('../agents/company-discovery/discovery.js');
+  for (const [name, fn] of [['atlas', at.atParseJson], ['discovery', ds.dsParseJson], ['website-intelligence', wr.wrParseJson], ['website-builder', wb.wbParseJson]]) {
+    assert.strictEqual(typeof fn, 'function', name + ' exports its parser');
+    const o = fn(raw);
+    assert.ok(o && /mermaid/.test(o.current_state_md) && o.questions_open[0] === 'Who replies first?', name);
+    assert.strictEqual(fn('no json here'), null, name);
+  }
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

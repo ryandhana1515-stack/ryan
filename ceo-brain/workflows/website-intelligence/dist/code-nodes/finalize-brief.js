@@ -144,6 +144,7 @@ function wrCoerceBrief(raw, fallback) {
 }
 function wrParseJson(text) {
   if (typeof text !== 'string') return null;
+  var w0 = text.indexOf('{'), w1 = text.lastIndexOf('}'); if (w0 !== -1 && w1 > w0) { try { return JSON.parse(text.slice(w0, w1 + 1)); } catch (e) {} }
   var t = text.trim(); var m = /```(?:json)?\s*([\s\S]*?)```/i.exec(t); if (m) t = m[1].trim();
   var a = t.indexOf('{'), z = t.lastIndexOf('}'); if (a === -1 || z === -1) return null;
   try { return JSON.parse(t.slice(a, z + 1)); } catch (e) { return null; }

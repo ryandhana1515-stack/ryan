@@ -451,6 +451,8 @@ function wbLovableUrl(prompt) { return WB_LOVABLE_BASE + encodeURIComponent(prom
 
 function wbParseJson(text) {
   if (typeof text !== 'string') return null;
+  // The whole answer first: a JSON value may itself contain ``` blocks (e.g. a mermaid diagram), which a fence regex cuts short (ATLAS, execution 387).
+  var w0 = text.indexOf('{'), w1 = text.lastIndexOf('}'); if (w0 !== -1 && w1 > w0) { try { return JSON.parse(text.slice(w0, w1 + 1)); } catch (e) {} }
   var t = text.trim();
   var fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
   if (fence) t = fence[1].trim();
