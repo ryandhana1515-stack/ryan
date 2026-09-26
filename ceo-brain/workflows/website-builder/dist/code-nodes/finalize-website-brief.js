@@ -3,7 +3,7 @@ var WB_SCHEMA_VERSION = '2.0';
 var WB_MODES = ['sme', 'medical'];
 var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_app', 'portal', 'other'];
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
-var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'other'];
+var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'construction', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
 var WB_MAX_PROMPT = 5200;
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
@@ -39,6 +39,7 @@ var WB_DESIGN = {
   local_business: { personality: 'welcoming, genuine, nearby', typography: 'warm sans, larger body text', layout: 'single clear path: what, where, when, how to contact; map and hours above the fold on mobile', imagery: 'the actual shop, owners, products', motion: 'none needed', palette: 'drawn from the shop front or logo' },
   food_beverage: { personality: 'appetising, lively, textured', typography: 'characterful display face for headings with a simple body', layout: 'menu-first, photography-heavy, reservations/orders one tap away', imagery: 'the food and the room, shot warm', motion: 'gentle image reveals', palette: 'rich, from the cuisine (deep greens, terracotta, cream)' },
   logistics: { personality: 'reliable, fast, transparent', typography: 'condensed sans headings, tabular numerals for tracking numbers and times', layout: 'action-first: quote and tracking forms in the hero, coverage map, process timeline', imagery: 'fleet, warehouse, real operations', motion: 'a tracking-timeline animation, otherwise minimal', palette: 'dark text on white with one high-visibility accent' },
+  construction: { personality: 'solid, capable, proven', typography: 'strong condensed or geometric sans for headings (e.g. Barlow Condensed / Archivo) with a sturdy grotesque body, tabular numerals for project sizes and dates', layout: 'project-led: full-bleed hero of a real site or finished build with one action (Request a quote / Book a site visit); capabilities by trade; project portfolio with scope and location; process from tender to handover; safety and accreditations as placeholders; quote form above the fold on mobile', imagery: 'cinematic photography of sites, structures, machinery and finished buildings at golden hour, crews seen from behind or at distance with PPE; no clip-art hard hats', motion: 'slow parallax on site photography, a scroll-driven project timeline, before/after sliders on finished work', palette: 'concrete, steel and charcoal neutrals with one safety-signal accent (high-vis orange or yellow) used for actions only' },
   automotive: { personality: 'cinematic, premium, exhilarating', typography: 'wide geometric display sans for headings (e.g. Manrope / Sora) with a clean grotesque body (e.g. Inter), tabular numerals for specs', layout: 'film-like: full-bleed hero of the car with a cinematic gradient overlay and one action (Book a test drive); model showcase with large imagery and horizontal scroll; showroom and service sections with photography; team; booking; WhatsApp bar on mobile', imagery: 'cinematic photography of the actual models and showroom (dusk light, wet asphalt reflections, studio rim light); generated hero and section imagery until the dealership supplies its own; no clip-art cars', motion: 'ken-burns on the hero, parallax on section imagery, staggered reveal, hover zoom on model cards', palette: 'deep charcoal into midnight blue gradients with a warm metallic (champagne / brushed steel) accent and bright white type; colour comes from the photography, never flat black panels' },
   healthcare: { personality: 'clinical, calm, reassuring', typography: 'clean humanist sans (e.g. Source Sans / Nunito Sans) with excellent legibility, larger body size', layout: 'patient-first: doctors, treatments, locations and appointment booking within one scroll; information architecture over decoration', imagery: 'the real clinic, real practitioners (with consent), clean interiors; no stock models in white coats', motion: 'minimal; never on medical content', palette: 'soft neutrals with one calm accent (teal, sage or deep blue as text/buttons); high contrast for readability' },
   other: { personality: 'clear, credible, specific to the business', typography: 'a deliberate pairing chosen for the brand, not a default', layout: 'intentional hierarchy: one message, one action per section', imagery: 'the actual business only', motion: 'only where it helps', palette: 'chosen from the brand or business, never a default gradient' }
@@ -69,7 +70,7 @@ function wbText(input) {
   if (input.sales_summary) parts.push(String(input.sales_summary));
   return parts.join('\n');
 }
-var WB_MEDICAL_RE = /\b(doctor|doctors|dr\.?|clinic|clinics|dental|dentist|orthodont|aesthetic (clinic|practice)|medical|physician|specialist|surgeon|surgery|healthcare|health care|hospital|physio(therapy)?|chiropract|tcm|traditional chinese medicine|dermatolog|paediatric|pediatric|gynae|gynec|cardiolog|oncolog|ophthalmolog|optometr|patients?)\b/i;
+var WB_MEDICAL_RE = /\b(doctor|doctors|dr\.?|clinic|clinics|dental|dentist|orthodont\w*|aesthetic (clinic|practice)|medical|physician|specialist|surgeon|surgery|healthcare|health care|hospital|physio(therapy)?|chiropract\w*|tcm|traditional chinese medicine|dermatolog\w*|paediatric\w*|pediatric\w*|gynae\w*|gynec\w*|cardiolog\w*|oncolog\w*|ophthalmolog\w*|optometr\w*|patients?)\b/i;
 function wbDetectMode(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
   return WB_MEDICAL_RE.test(t) ? 'medical' : 'sme';
@@ -80,14 +81,15 @@ var WB_CATEGORY_RULES = [
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
   ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b)\b/i],
-  ['logistics', /\b(logistic|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
-  ['home_services', /\b(plumb|electric(ian|al)|aircon|air-con|renovat|contractor|cleaning|pest|handyman|mover|moving|landscap|roofing|painter)\b/i],
+  ['logistics', /\b(logistic\w*|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
+  ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
+  ['home_services', /\b(plumb\w*|electric(ian|al)s?|aircon|air-con|renovat\w*|contractors?|cleaning|pest|handyman|movers?|moving|landscap\w*|roofing|roofers?|painters?)\b/i],
   ['education', /\b(tuition|tutor|school|academy|course|training centre|enrichment|students?|learning|kindergarten|preschool)\b/i],
   ['retail', /\b(retail|shop|store|boutique|products?|merchandise|e-?commerce|online store)\b/i],
   ['technology', /\b(software|saas|app\b|platform|startup|tech|it services|cybersecurity|cloud)\b/i],
-  ['consulting', /\b(consult(ing|ant|ancy)|advisory|advisor|strategy firm)\b/i],
-  ['professional_services', /\b(law firm|lawyer|legal|accountant|accounting firm|audit|tax|architect|engineering firm|insurance|financial advis|corporate secretar)\b/i],
-  ['b2b', /\b(manufactur|factory|wholesale|supplier|distributor|industrial|b2b|oem|fabricat|precision)\b/i]
+  ['consulting', /\b(consult(ing|ants?|ancy)|advisory|advisor|strategy firm)\b/i],
+  ['professional_services', /\b(law firm|lawyer|legal|accountant|accounting firm|audit|tax|architect|engineering firm|insurance|financial advis\w*|corporate secretar\w*)\b/i],
+  ['b2b', /\b(manufactur\w*|factory|wholesale\w*|suppliers?|distributors?|industrial|b2b|oem|fabricat\w*|precision)\b/i]
 ];
 function wbDetectCategory(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
@@ -96,7 +98,7 @@ function wbDetectCategory(text, industry) {
 }
 function wbDetectSiteType(text) {
   if (/online store|e-?commerce|sell (products )?online|shop online|webshop|checkout/i.test(text)) return 'online_store';
-  if (/landing page/i.test(text)) return 'landing_page';
+  if (/landing page|\bfunnels?\b|squeeze page|opt-?in page|sales page|lead magnet/i.test(text)) return 'landing_page';
   if (/customer portal|client portal|patient portal|\bportal\b/i.test(text)) return 'portal';
   if (/web ?app|dashboard|log ?in|track(ing)? (shipments|orders|deliver)|booking system|online system/i.test(text)) return 'web_app';
   if (/web ?site|homepage|web ?page/i.test(text)) return 'business_website';
@@ -487,7 +489,7 @@ return [{ json: {
   input: ctx.input, config: ctx.config, execution_id: ctx.execution_id, workflow_id: ctx.workflow_id,
   brief: b, provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, validation_errors: fin.validation_errors,
   build_prompt: fin.build_prompt, lovable_url: fin.lovable_url, task, usage,
-  ready_to_build: fin.ready_to_build, missing_for_build: fin.missing_for_build, image_shots: fin.image_shots,
+  ready_to_build: fin.ready_to_build, missing_for_build: fin.missing_for_build, image_shots: fin.image_shots, variations: fin.variations, film_brief: fin.film_brief,
   run_id: 'run_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36),
   started_at: ctx.started_at, finished_at: finishedAt, latency_ms: latencyMs,
   email_subject: (ctx.input.test_mode ? '[TEST] ' : '') + 'CEO Brain: website brief ready — ' + who,

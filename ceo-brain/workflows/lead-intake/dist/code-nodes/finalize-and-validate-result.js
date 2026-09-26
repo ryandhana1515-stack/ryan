@@ -180,7 +180,7 @@ function wbStr(v, max) {
   if (!s) return null;
   return max && s.length > max ? s.slice(0, max) : s;
 }
-var WB_MEDICAL_RE = /\b(doctor|doctors|dr\.?|clinic|clinics|dental|dentist|orthodont|aesthetic (clinic|practice)|medical|physician|specialist|surgeon|surgery|healthcare|health care|hospital|physio(therapy)?|chiropract|tcm|traditional chinese medicine|dermatolog|paediatric|pediatric|gynae|gynec|cardiolog|oncolog|ophthalmolog|optometr|patients?)\b/i;
+var WB_MEDICAL_RE = /\b(doctor|doctors|dr\.?|clinic|clinics|dental|dentist|orthodont\w*|aesthetic (clinic|practice)|medical|physician|specialist|surgeon|surgery|healthcare|health care|hospital|physio(therapy)?|chiropract\w*|tcm|traditional chinese medicine|dermatolog\w*|paediatric\w*|pediatric\w*|gynae\w*|gynec\w*|cardiolog\w*|oncolog\w*|ophthalmolog\w*|optometr\w*|patients?)\b/i;
 function wbDetectMode(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
   return WB_MEDICAL_RE.test(t) ? 'medical' : 'sme';
@@ -191,14 +191,15 @@ var WB_CATEGORY_RULES = [
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
   ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b)\b/i],
-  ['logistics', /\b(logistic|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
-  ['home_services', /\b(plumb|electric(ian|al)|aircon|air-con|renovat|contractor|cleaning|pest|handyman|mover|moving|landscap|roofing|painter)\b/i],
+  ['logistics', /\b(logistic\w*|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
+  ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
+  ['home_services', /\b(plumb\w*|electric(ian|al)s?|aircon|air-con|renovat\w*|contractors?|cleaning|pest|handyman|movers?|moving|landscap\w*|roofing|roofers?|painters?)\b/i],
   ['education', /\b(tuition|tutor|school|academy|course|training centre|enrichment|students?|learning|kindergarten|preschool)\b/i],
   ['retail', /\b(retail|shop|store|boutique|products?|merchandise|e-?commerce|online store)\b/i],
   ['technology', /\b(software|saas|app\b|platform|startup|tech|it services|cybersecurity|cloud)\b/i],
-  ['consulting', /\b(consult(ing|ant|ancy)|advisory|advisor|strategy firm)\b/i],
-  ['professional_services', /\b(law firm|lawyer|legal|accountant|accounting firm|audit|tax|architect|engineering firm|insurance|financial advis|corporate secretar)\b/i],
-  ['b2b', /\b(manufactur|factory|wholesale|supplier|distributor|industrial|b2b|oem|fabricat|precision)\b/i]
+  ['consulting', /\b(consult(ing|ants?|ancy)|advisory|advisor|strategy firm)\b/i],
+  ['professional_services', /\b(law firm|lawyer|legal|accountant|accounting firm|audit|tax|architect|engineering firm|insurance|financial advis\w*|corporate secretar\w*)\b/i],
+  ['b2b', /\b(manufactur\w*|factory|wholesale\w*|suppliers?|distributors?|industrial|b2b|oem|fabricat\w*|precision)\b/i]
 ];
 function wbDetectCategory(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
@@ -207,7 +208,7 @@ function wbDetectCategory(text, industry) {
 }
 function wbDetectSiteType(text) {
   if (/online store|e-?commerce|sell (products )?online|shop online|webshop|checkout/i.test(text)) return 'online_store';
-  if (/landing page/i.test(text)) return 'landing_page';
+  if (/landing page|\bfunnels?\b|squeeze page|opt-?in page|sales page|lead magnet/i.test(text)) return 'landing_page';
   if (/customer portal|client portal|patient portal|\bportal\b/i.test(text)) return 'portal';
   if (/web ?app|dashboard|log ?in|track(ing)? (shipments|orders|deliver)|booking system|online system/i.test(text)) return 'web_app';
   if (/web ?site|homepage|web ?page/i.test(text)) return 'business_website';
@@ -228,7 +229,7 @@ function wbGuessBusinessName(input, text) {
   return m ? wbStr(m[1], 160) : null;
 }
 var WI_VERSION = 'website-intake-1.1.0';
-var WI_WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
+var WI_WEBSITE_RE = /\b(website|web ?site|landing page|(sales |lead |marketing )?funnels?|sales page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
 var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test drive|reserv\w*|sell|selling|order|orders|checkout|shop online|enquir\w*|inquir\w*|quote|quotes|quotation|contact us|whatsapp|showcase|portfolio|brochure|browse|catalogue|catalog|menu|sign ?up|register|apply|download|learn about|information about|about us|our services|services page|pages?)\b/i;
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;

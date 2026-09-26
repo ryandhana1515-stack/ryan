@@ -5,7 +5,7 @@
 // Depends on the detection helpers in brief.js (inlined before this file inside n8n Code nodes).
 
 var WI_VERSION = 'website-intake-1.1.0';
-var WI_WEBSITE_RE = /\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
+var WI_WEBSITE_RE = /\b(website|web ?site|landing page|(sales |lead |marketing )?funnels?|sales page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page|mock-?up|mockup)\b/i;
 var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test drive|reserv\w*|sell|selling|order|orders|checkout|shop online|enquir\w*|inquir\w*|quote|quotes|quotation|contact us|whatsapp|showcase|portfolio|brochure|browse|catalogue|catalog|menu|sign ?up|register|apply|download|learn about|information about|about us|our services|services page|pages?)\b/i;
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;

@@ -122,3 +122,12 @@ tags: [zaphiel, changelog]
 - 2026-09-26 (late) — **Both variations on** (Ryan: "they will create those 3D animation scroll effects video stuff"). The build worker now builds B (Lovable photo-led) then A (Higgsfield scroll-scrub film site, deployed to its Higgsfield subdomain, never the community feed) for every real lead and reports both links; routine prompt and `ROUTINE.md` step 2i updated.
 - 2026-09-26 (late) — **Build worker stays on duty** (Ryan: an hour is too long). Each hourly routine session now checks n8n every 2 minutes for 55 minutes, so a build starts within 2 minutes of the hand-off. Open loop added: ask Lovable support to approve n8n cloud's OAuth callback so the n8n runner can start builds instantly as well.
 - 2026-09-26 23:38 SGT — **Build worker connectors attached by Ryan** (n8n, Lovable, Higgsfield, Kling on `trig_01K4UinSX4tQWK537MeHQuuc`). Verification run fired; only the test lead was waiting, so it must report `skipped_test_mode` and spend nothing.
+- 2026-09-26 (late) — **Funnels + construction + 3D film plan wired** (Ryan: "create funnels… construction sites, every single thing").
+  John's hand-off gate and rules now treat "funnel / sales funnel / sales page" as a website request; the Website
+  Builder builds it as a landing page. New industry **construction** with its own design direction (project-led,
+  concrete/steel palette, high-vis accent); industry detection now matches word forms (plumber, renovation,
+  logistics, manufacturer…). Found and fixed: the builder computed the 3D scroll-film plan but never stored it, so
+  the build worker could not make variation A; `film_brief` and `variations` now go into the task payload.
+  Deployed Lead Intake + Website Builder, tests 52/52. Verified live: Lead Intake 335 → Website Intelligence 337 →
+  Website Builder 338 (construction, landing_page, build, film_brief stored) → Orchestrator 339. Test lead, so no
+  build credits. Gateway AI credits are still $0: every agent runs on its rule fallback until Ryan tops up.
