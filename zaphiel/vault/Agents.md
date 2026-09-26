@@ -19,6 +19,8 @@ John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1
 | **WhatsApp Inbound** | Meta WhatsApp Cloud API → John (GET/POST /webhook/ceo-brain/whatsapp, verify token ceo-brain-verify); Meta not pointed at it yet | `3IhIJ5IYsB7wQQSg` |
 | **Approve Reply** | Ryan's APPROVE / Reject links in emails | `uQxHTTdEkazgKpRT` |
 | **Vault Writer** | After every conversation turn writes the lead note (`Leads/`) and company note (`Companies/`) into this vault | `tVvSWjOubwBNLi88` |
+| **CEO Orchestrator** (Agent #0) | Head agent, no AI: receives every event (`POST /webhook/ceo-brain/event`), routes it by a fixed table, opens exception/review tasks, emails Ryan on failures, recomputes the unresolved-issues list hourly and writes [[00_CEO_Brain/Management view]] | `8Ix4yc223sxrSu5h` |
+| **Approval Inbox** | One page for everything waiting on a human — approvals (Approve/Reject via the Approve Reply gate), exceptions (Mark recovered, PIN), leads needing a human, overdue, stale: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox | `r4ynzcSqRy8zHoFl` |
 | **Daily Brief** (CEO Intelligence Agent) | 08:00 SGT email: what happened, what needs Ryan | `Pew2PX1IcgdXqXr7` |
 | **John Chat Console** | Test page to talk to John as a prospect: https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat | `ny60ozvH8B4uNpcb` |
 | **Training Room** (dashboard) | Ryan's training app: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard — lists every agent in [[Knowledge/agents.json]] plus the brain; talk to an agent by voice or text, teach it ("when a customer says X, then …" → written into its playbook note here), read its playbook live | `AM59goLdbt0clv8q` |

@@ -12,7 +12,8 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 - [x] Vault structure v3, master rules, templates, P0 foundation notes, registries, architecture (2026-09-25, Phase 1 of the vault work)
 - [x] Audit log table + rows written by every workflow (n8n `ceo_audit_logs`)
 - [x] Approval ladder in code for John's replies (Approve Reply workflow); auto-build policy for mock-ups (Ryan's decision)
-- [ ] [[10_Agents/00_CEO_Orchestrator]] as a running workflow (routing + management view) — today the Daily Brief is the v0 management view
+- [x] [[10_Agents/00_CEO_Orchestrator]] as a running workflow (routing + management view) — `8Ix4yc223sxrSu5h`, 2026-09-26; writes [[00_CEO_Brain/Management view]]; the Daily Brief stays as the 08:00 email
+- [ ] Every workflow posts its events to the Orchestrator (`POST /webhook/ceo-brain/event`) instead of only writing tables
 - [ ] [[30_Platform_Services/Identity_Tenant]] running: tenants + users + roles tables live (Supabase migration 002)
 - [ ] [[30_Platform_Services/Approval_Service]] running as one shared workflow (today approvals are per-workflow)
 - [ ] **(Ryan)** approval authority: who approves what (Ryan, Dad, client owner) and money limits
@@ -32,7 +33,8 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 
 ## Phase 4 — Workflow Automation + event / retry / exception / manual-recovery framework
 - [ ] [[30_Platform_Services/Workflow_Event_Service]]: correlation ids, idempotency keys, retry limits, dead-letter queue, recovery task
-- [ ] Exception queue visible in the human task inbox ([[20_Specialist_Workers/Approval_Inbox_Agent]])
+- [x] Exception queue visible in the human task inbox ([[20_Specialist_Workers/Approval_Inbox_Agent]]) — Approval Inbox `r4ynzcSqRy8zHoFl`, 2026-09-26
+- [ ] Retry limits + dead-letter handling before an exception task is opened (today: first failure → task)
 
 ## Phase 5 — General Website/App + premium website QA and deployment pipeline
 - [x] Website Builder v2.1 (cinematic standard), Build Runner workflow created (`7sEuGyU6IjJsSaKL`), chain in repo
