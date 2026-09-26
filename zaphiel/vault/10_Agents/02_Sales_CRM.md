@@ -75,7 +75,7 @@ new leads, first-response time, qualified rate, follow-ups overdue, mock-ups req
 Repo suite: 40 tests incl. greeting, FusionTech answer, intake not-ready / ready, no second build, price withheld, refund escalated (passing).
 
 ## 17. Failure / fallback behaviour
-Rule engine (rules-v2) answers when the model is unavailable; replies stay safe (no prices).
+Rule engine (rules-v3, with the 26-topic answer bank) answers when the model is unavailable; replies stay safe (no prices). John never says "I don't know": an AI reply that does is swapped for the rule engine's answer (2026-09-26).
 
 ## 18. Open questions for Ryan
 Auto-send low-risk replies on WhatsApp once connected (yes/no)? Business hours for follow-ups?
