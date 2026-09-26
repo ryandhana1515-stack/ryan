@@ -1,7 +1,7 @@
 var RB_VERSION = 'rules-v2';
 var RB_GREETING = /^\s*(hi|hello|hey|yo|hai|halo|good (morning|afternoon|evening)|hi there|hello there|hey there)[\s!.,?]*(john|there)?[\s!.,?]*$/i;
 var RB_ABOUT = /(what (do|does|can) (you|u|fusiontech|fusion tech|your company|your team)( guys)? (do|offer|build|help|make)|what is (fusiontech|fusion tech|this|the ceo brain)|tell me (more )?about (you|yourself|fusiontech|fusion tech|your (company|services))|what can you (do|help|build)|how (can|do) you help|what (kind|type|sort)s? of websites?|what (websites?|services?|products?) (do|can) you|what are your services|what do you (offer|sell|build|specialise in|specialize in)|what.?s your problem|how does (it|this) work|what should i do|help me)/i;
-var RB_ABOUT_REPLY = 'FusionTech AI builds an AI workforce around the way your business already works. We connect what you use today (WhatsApp, email, spreadsheets, CRM, accounting, Facebook, Instagram, TikTok, your website and calendar) so every enquiry gets answered and followed up, bookings and quotes happen without chasing, and you can see what is going on. We also build the websites and web apps that sit in front of it: business websites, landing pages, online stores, booking sites, customer portals and web apps, all designed to look premium and cinematic, and you get a first mock-up to react to before anything is decided.';
+var RB_ABOUT_REPLY = 'FusionTech AI builds an AI workforce around the way your business already works. We connect what you use today (WhatsApp, email, spreadsheets, CRM, accounting, Facebook, Instagram, TikTok, your website and calendar) so every enquiry gets answered and followed up, bookings and quotes happen without chasing, and you can see what is going on. We also build the websites and web apps that sit in front of it: business websites, landing pages, sales funnels, online stores, booking sites, customer portals and web apps, all designed to look premium and cinematic, and you get a first mock-up to react to before anything is decided.';
 var RB_GREETING_REPLY = 'I am John from FusionTech AI. We build AI agents and automation around how your business already runs, plus the websites and web apps that go with it. What kind of business do you run, and what would you like to take off your plate?';
 var RB_INDUSTRY = [
   [/property|real estate|realtor|agency with .*agents|condo|hdb|landed/i, 'real_estate'],
@@ -32,7 +32,7 @@ var RB_SOURCES = [
   [/walk[- ]?in/i, 'walk_in'], [/cold call|telemarket/i, 'outbound_calls']
 ];
 var RB_AUTOMATION = [
-  [/\b(website|web ?site|landing page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\b/i, 'website_build'],
+  [/\b(website|web ?site|landing page|(sales |lead |marketing )?funnels?|sales page|web ?app|online store|e-?commerce (site|store|website)|web portal|customer portal|homepage|web ?page)\b/i, 'website_build'],
   [/whatsapp.*(reply|respond|answer|chat)|(reply|respond|answer).*whatsapp/i, 'whatsapp_auto_reply'],
   [/book(ing)? (an? )?appointment|schedule (a )?(call|meeting|viewing)|appointment/i, 'appointment_booking'],
   [/follow[- ]?up/i, 'lead_follow_up'],

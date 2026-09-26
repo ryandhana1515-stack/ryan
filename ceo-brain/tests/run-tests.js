@@ -635,6 +635,29 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   assert.strictEqual(fin2.event.type, 'website.research'); assert.strictEqual(fin2.needs_john, false);
 });
 
+console.log('\n[11] funnels + construction (Ryan, 2026-09-26: the builder makes funnels and sites for every industry)');
+test('"funnel" is a landing-page build; construction is its own industry with its own design direction', () => {
+  assert.strictEqual(wb.wbDetectSiteType('I need a sales funnel for my coaching business'), 'landing_page');
+  assert.strictEqual(wb.wbDetectSiteType('can you build us a lead funnel'), 'landing_page');
+  assert.strictEqual(wb.wbDetectCategory('We are a construction company, main contractor for condos'), 'construction');
+  assert.strictEqual(wb.wbDetectCategory('We do design and build for offices'), 'construction');
+  assert.strictEqual(wb.wbDetectCategory('I am a plumber'), 'home_services'); assert.strictEqual(wb.wbDetectCategory('we do home renovation'), 'home_services'); assert.strictEqual(wb.wbDetectCategory('a logistics company'), 'logistics');
+  assert.ok(wb.WB_CATEGORIES.indexOf('construction') !== -1 && wb.WB_DESIGN.construction && /safety-signal/.test(wb.WB_DESIGN.construction.palette));
+  const b = wb.wbFallbackBrief({ company_name: 'Tan Brothers Construction Pte Ltd', message: 'We are Tan Brothers Construction Pte Ltd, a main contractor. We need a funnel so developers can request a quote.' });
+  assert.strictEqual(b.site_type, 'landing_page'); assert.strictEqual(b.industry_category, 'construction'); assert.strictEqual(b.primary_goal, 'leads');
+  assert.deepStrictEqual(wb.wbValidate(b), []);
+  assert.ok(/Barlow Condensed|Archivo/.test(b.build_prompt));
+  const schema = JSON.parse(fs.readFileSync(path.join(ROOT, 'schemas/website-brief.schema.json'), 'utf8'));
+  assert.ok(schema.properties.industry_category.enum.indexOf('construction') !== -1);
+});
+test('John hands a funnel request to the website chain, and the rules tag it website_build', () => {
+  const r = classifyWithRules({ message: 'Hi, I want a sales funnel for my construction company', contact_name: 'Ken' });
+  assert.ok(r.extracted.desired_automation.includes('website_build'));
+  const run = simulate({ name: 'Ken', channel: 'web_chat', source: 'website', message: 'Hi, we are Tan Brothers Construction Pte Ltd, a main contractor in Singapore. I want a sales funnel where developers can request a quote. Send it to ken@tanbrothers.sg', test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's-funnel' } });
+  assert.strictEqual(run.fin.website_intake.topic, true);
+  assert.strictEqual(run.fin.website_requested, true);
+});
+
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

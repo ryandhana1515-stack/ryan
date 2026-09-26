@@ -118,7 +118,7 @@ return [{ json: {
   input: ctx.input, config: ctx.config, execution_id: ctx.execution_id, workflow_id: ctx.workflow_id,
   brief: b, provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, validation_errors: fin.validation_errors,
   build_prompt: fin.build_prompt, lovable_url: fin.lovable_url, task, usage,
-  ready_to_build: fin.ready_to_build, missing_for_build: fin.missing_for_build, image_shots: fin.image_shots,
+  ready_to_build: fin.ready_to_build, missing_for_build: fin.missing_for_build, image_shots: fin.image_shots, variations: fin.variations, film_brief: fin.film_brief,
   run_id: 'run_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36),
   started_at: ctx.started_at, finished_at: finishedAt, latency_ms: latencyMs,
   email_subject: (ctx.input.test_mode ? '[TEST] ' : '') + 'CEO Brain: website brief ready — ' + who,
@@ -327,7 +327,7 @@ const upsertTask = node({
           assigned_to: expr("{{ ${F}.task.assigned_to }}"),
           requires_approval: false,
           approval_reason: expr("{{ ${F}.task.approval_reason }}"),
-          payload_json: expr("{{ JSON.stringify({ brief: ${F}.brief, lovable_url: ${F}.lovable_url, provider: ${F}.provider, fallback_used: ${F}.fallback_used, build_decision: ${F}.build_decision, image_shots: ${F}.image_shots }) }}"),
+          payload_json: expr("{{ JSON.stringify({ brief: ${F}.brief, lovable_url: ${F}.lovable_url, provider: ${F}.provider, fallback_used: ${F}.fallback_used, build_decision: ${F}.build_decision, image_shots: ${F}.image_shots, variations: ${F}.variations, film_brief: ${F}.film_brief }) }}"),
           created_by: expr("{{ 'agent:' + ${F}.config.agent }}"),
           ts: expr("{{ ${F}.finished_at }}")
         },
