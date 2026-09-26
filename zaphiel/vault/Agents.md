@@ -42,6 +42,8 @@ https://id-preview--e650eee1-4666-475f-95dc-0686284264fc.lovable.app) → Websit
 the task to `built` and emailed Ryan the preview (execution 229). The customer send was skipped only
 because it was a test session with no phone or email.
 
+**2026-09-26:** second Prestige Motors mock-up built to the cinematic standard with generated photography (Lovable `5fa1ce49-c40c-4fc1-935d-e6935a33421f`); see [[Change log]].
+
 **2026-09-25, later:** Ryan rejected the first mock-up (flat black boxes, no photography) and set the
 zero-approval flow. The repo now has it end to end (John intake → Website Builder v2.1 cinematic
 standard → **Website Build Runner** with Higgsfield/Kling photography + Lovable → Build Record → John

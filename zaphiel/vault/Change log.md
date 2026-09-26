@@ -57,3 +57,10 @@ tags: [zaphiel, changelog]
   → hand-off, brief + owner email (280 → 282). Chat console updated: public-page visitors are real leads, the
   preview link shows in the chat once a mock-up is built. Still on rule fallback (AI credits exhausted). The
   automatic Lovable build (Website Builder v2.1 + Build Runner) remains undeployed: permission block.
+- 2026-09-26 — **Prestige Motors mock-up rebuilt to the cinematic standard** (Ryan rejected the flat first one).
+  John's intake (execution 280) → brief → 3 photographs generated on Ryan's Higgsfield account
+  (gpt_image_2_5: showroom at dusk, blue-hour drive, interior detail) → Lovable project
+  `5fa1ce49-c40c-4fc1-935d-e6935a33421f` ("Prestige Drive Booking", 6 pages, test-drive booking, WhatsApp
+  bar, agent finished in 6 min) → Website Build Record → task built, owner email, link in John's chat.
+  Preview https://id-preview--5fa1ce49-c40c-4fc1-935d-e6935a33421f.lovable.app. Built by a Claude
+  session on Ryan's request; the same steps are what the Website Build Runner will do unattended.
