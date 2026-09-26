@@ -86,3 +86,11 @@ tags: [zaphiel, changelog]
   Intelligence → Website Creator → John; STATUS messages; never customer-facing); John's playbook gets the
   website opening line and the hand-off rule; Website Builder playbook treats the WEBSITE_CREATOR_BRIEF as
   authoritative with visible placeholders; backlog Phase 5 gets the n8n research step.
+- 2026-09-26 — **Website Intelligence live in the chain** (`5VWP3tMK3MZysi7w`). John's hand-off now goes Lead Intake →
+  Website Intelligence → Website Builder. Research: 6 searches + homepage and up to 3 pages (Browserbase on n8n
+  Gateway credits), labelled fact ledger, Ryan's role prompt read live, Claude on Gateway credits, deterministic
+  fallback; WEBSITE_CREATOR_BRIEF with the two variations and placeholders; Orchestrator event
+  `website.research` / `website.info_needed` (REVIEW task for John). Website Builder accepts `research_brief`
+  (authoritative). Verified end to end (executions 298 → 300 → 301). Gateway credits were empty during the test,
+  so the fallback brief was used — the chain still completed. Repo: `ceo-brain/agents/website-intelligence/`,
+  `workflows/website-intelligence/`, tests 50/50.

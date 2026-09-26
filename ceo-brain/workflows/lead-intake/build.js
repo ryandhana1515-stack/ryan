@@ -20,6 +20,8 @@ const TABLES_JSON = JSON.parse(read('database/n8n-data-tables.json'));
 const TABLES = TABLES_JSON.tables;
 TABLES.__sender_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.outbound_sender) || null;
 TABLES.__website_builder_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_builder) || null;
+// ADR-3: John hands off to the Website Intelligence agent, which researches and then calls the Website Builder.
+TABLES.__website_intelligence_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.website_intelligence) || null;
 TABLES.__vault_writer_workflow_id = (TABLES_JSON.workflows && TABLES_JSON.workflows.vault_writer) || null;
 const GITHUB = TABLES_JSON.github || { owner: 'ryandhana1515-stack', repo: 'ryan', credential_id: 'lZqYskCh7zVfXsc7', credential_name: 'GitHub account' };
 const agentManifest = JSON.parse(read('agents/sales-qualification/agent.json'));
@@ -742,12 +744,12 @@ const callWebsiteBuilder = node({
   type: 'n8n-nodes-base.executeWorkflow',
   version: 1.3,
   config: {
-    name: 'Hand Off to Website Builder',
+    name: 'Hand Off to Website Intelligence',
     onError: 'continueRegularOutput',
     parameters: {
       mode: 'once',
       source: 'database',
-      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__website_builder_workflow_id || 'REPLACE_ME')}, cachedResultName: 'CEO Brain — Website Builder' },
+      workflowId: { __rl: true, mode: 'id', value: ${j(TABLES.__website_intelligence_workflow_id || TABLES.__website_builder_workflow_id || 'REPLACE_ME')}, cachedResultName: ${j(TABLES.__website_intelligence_workflow_id ? 'CEO Brain — Website Intelligence' : 'CEO Brain — Website Builder')} },
       workflowInputs: {
         mappingMode: 'defineBelow',
         value: {

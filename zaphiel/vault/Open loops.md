@@ -46,7 +46,10 @@ tags: [zaphiel, open-loops]
   once and press "Mark done" on the old test approval ("build MEDICAL business website for Dashboard tester").
 - Next session: make Lead Intake, Website Builder, Build Record and the Build Runner post their events
   (`lead.human_review`, `website.brief`, `website.built`, `website.build_failed`, `workflow.failed`) to
-  `POST /webhook/ceo-brain/event` so the Orchestrator sees every hand-off, not only the tables.
-- Next build (after the auto-build chain is deployed): the Website Intelligence research step in n8n between
-  John's hand-off and the Website Builder brief (ADR-3), using n8n gateway credits (Brave Search + Firecrawl)
-  so no new keys are needed; then John gets `MORE_INFORMATION_REQUIRED` / `MOCKUP_READY` messages.
+  `POST /webhook/ceo-brain/event` so the Orchestrator sees every hand-off, not only the tables (Website
+  Intelligence already does).
+- **(Ryan)** Top up the n8n **Gateway credits** (n8n → Settings → Usage/AI credits): they are depleted, so John,
+  the Website Builder and the new Website Intelligence research (search, page reading, Claude) all run on the
+  deterministic fallback until then. Same place as the model/API keys Ryan planned to add at home.
+- Next: John reads open `website.info_needed` tasks and asks the customer in his own voice; Build Record sends
+  `MOCKUP_READY` to John.

@@ -55,13 +55,15 @@ const input = {
   contact_name: str(inp.contact_name), company_name: str(inp.company_name), industry: str(inp.industry) || str(extracted.industry),
   email: str(inp.email), phone: str(inp.phone), channel: str(inp.channel) || 'unknown',
   message: str(inp.message) || '', conversation, sales_summary: str(inp.sales_summary) || '', extracted,
-  test_mode: testMode, notify_email: str(inp.notify_email) || ${j(manifest.notify_email)}, source_execution_id: str(inp.source_execution_id)
+  test_mode: testMode, notify_email: str(inp.notify_email) || ${j(manifest.notify_email)}, source_execution_id: str(inp.source_execution_id),
+  research_brief: str(inp.research_brief) || '', research_json: str(inp.research_json) || ''
 };
 const convoText = conversation.map((m) => '- [' + (m.role || 'customer') + (m.ts ? ' ' + m.ts : '') + '] ' + m.content).join('\\n') || '(none)';
 const vars = {
   tenant_id: input.tenant_id, lead_id: input.lead_id, now, contact_name: input.contact_name || 'not given', company_name: input.company_name || 'not given',
   industry: input.industry || 'not given', email: input.email || 'not given', phone: input.phone || 'not given',
-  sales_summary: input.sales_summary || '(none)', extracted_json: JSON.stringify(extracted), conversation: convoText, message: input.message || '(no message)'
+  sales_summary: input.sales_summary || '(none)', extracted_json: JSON.stringify(extracted), conversation: convoText, message: input.message || '(no message)',
+  research_brief: input.research_brief || '(none — no research brief; use John\\'s hand-off only)'
 };
 const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) => (k in vars ? String(vars[k]) : ''));
 return [{ json: { input, user_prompt, started_at: now, config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} }, execution_id: String($execution.id), workflow_id: String($workflow.id) } }];
@@ -199,7 +201,7 @@ const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cache
 const runCols = [['tenant_id','string'],['run_id','string'],['agent','string'],['agent_version','string'],['lead_id','string'],['workflow_id','string'],['execution_id','string'],['model','string'],['provider','string'],['input_ref','string'],['output_json','string'],['success','boolean'],['error','string'],['latency_ms','number'],['test_mode','boolean'],['started_at','string'],['finished_at','string']];
 const taskCols = [['tenant_id','string'],['task_id','string'],['lead_id','string'],['task_type','string'],['title','string'],['description','string'],['due_at','string'],['status','string'],['assigned_to','string'],['requires_approval','boolean'],['approval_reason','string'],['payload_json','string'],['created_by','string'],['ts','string']];
 const auditCols = [['tenant_id','string'],['entity_type','string'],['entity_id','string'],['action','string'],['old_value','string'],['new_value','string'],['actor','string'],['execution_id','string'],['reason','string'],['ts','string']];
-const inputs = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']];
+const inputs = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string'],['research_brief','string'],['research_json','string']];
 
 const sdk = `import { workflow, node, trigger, sticky, expr, ifElse } from '@n8n/workflow-sdk';
 

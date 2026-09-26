@@ -25,4 +25,9 @@ Current customer message:
 {{message}}
 """
 
+WEBSITE_CREATOR_BRIEF from the Website Intelligence agent (research already done; authoritative for facts, objective, CTAs, sitemap and placeholders; empty when John's hand-off came straight to you):
+"""
+{{research_brief}}
+"""
+
 Return the JSON object now.

@@ -10,7 +10,7 @@ tags: [zaphiel, moc, agents]
 | 03 | [[10_Agents/03_Marketing_Growth]] | 9 | draft | Planned |
 | 04 | [[10_Agents/04_Creative_Studio]] | 9 | draft | Planned |
 | 05 | [[10_Agents/05_Website_App_General]] | 5 | built | Live v2 |
-| 05a | [[10_Agents/05a_Website_Intelligence]] | 5 | designed | Internal agent between John and the Website Creator (ADR-3, role prompt verbatim in the vault; n8n step in backlog) + Claude Code subagent for Ryan's own projects |
+| 05a | [[10_Agents/05a_Website_Intelligence]] | 5 | tested | Live in the chain: `5VWP3tMK3MZysi7w` (John → research → Website Builder), role prompt read live; + Claude Code subagent for Ryan's own projects |
 | 06 | [[10_Agents/06_Medical_3D_Web]] | 10 | built | Live as the `medical` mode of the Website Builder (enforced by code from the customer's wo |
 | 07 | [[10_Agents/07_CRM_Architect]] | 3 | designed | Designed: the CRM/ERP data layer (39 tables, tenant RLS) in `ceo-brain/database/`; today's |
 | 08 | [[10_Agents/08_ERP_Operations]] | 8 | draft | Planned (only per client need) |
