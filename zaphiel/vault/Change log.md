@@ -165,4 +165,8 @@ tags: [zaphiel, changelog]
   waiting for approval, never about price/contracts/credentials. Tests 63/63. Deployed and verified live: Lead
   Intake 361 (second message from the test lead) asked ATLAS's first question; ATLAS did not run twice. Recorded in
   ADR-4, the ATLAS note (07), John's note (02), Open loops.
+- 2026-09-26 (night) — **Website Intelligence upgrade planned, on hold until the Gateway top-up** (Ryan: funnels, Google
+  research, most high-converting 3D sales sites, realistic anatomy for doctors; "I will pay the gateway later. Just
+  wait."). Found: every Website Intelligence search has failed since the credits ran out, and free search engines
+  block n8n. Nothing changed live; plan in [[Open loops]]. Temporary probe workflow archived.
 

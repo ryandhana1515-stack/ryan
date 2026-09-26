@@ -54,4 +54,20 @@ tags: [zaphiel, open-loops]
   "Payment required".
 - **Zaphiel (next session):** ATLAS checkpoint 1 → 2 is manual for now: after Ryan confirms in the Approval Inbox, run
   the `atlas` subagent in Claude Code on `80_Clients/<company>/edg/` to continue. John already asks ATLAS's questions automatically (live 2026-09-26).
+- **Waiting for Ryan's Gateway top-up (Ryan, 2026-09-26: "I will pay the gateway later. Just wait.")** Then, and only
+  then, upgrade and test Website Intelligence + the Website Creator together:
+  1. **Google research works again.** Website Intelligence searches through Browserbase on the n8n credits; since they
+     hit $0 every search fails ("Gateway credits depleted", execution 337), so briefs are built blind. No free
+     workaround: DuckDuckGo, Bing and Google all refuse automated searches from n8n (probe 2026-09-26).
+  2. **Funnels.** Website Intelligence plans a real funnel when it fits (offer / lead magnet → landing page →
+     qualifying form → thank-you or booking page → follow-up), and the creator's Lovable prompt builds every step.
+  3. **Most high-converting sales site.** Conversion plan in every brief: one offer, specific headline, proof stack,
+     objection handling, CTA repeated, sticky mobile CTA/WhatsApp, 3D/scroll motion tied to the business.
+  4. **Realistic medical visuals.** Website Intelligence finds the clinic's specialty and tells the creator to use
+     photorealistic, medically accurate anatomy (e.g. cardiology: a real beating heart with coronary arteries and
+     blood flow; dental: real teeth and jaw), generated as video and scroll-animated — never cartoon 3D. MOH rules:
+     educational visuals only, no claims.
+  5. **The creator uses the research even without AI.** Today the Lovable prompt ignores Website Intelligence's
+     research when the AI is unavailable; carry the conversion plan into the prompt deterministically.
+  Test with a real enquiry through John once the credits are live.
 
