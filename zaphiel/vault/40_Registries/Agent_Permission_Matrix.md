@@ -20,7 +20,7 @@ tags: [registry, permissions, p0]
 | [[10_Agents/04_Creative_Studio]] | none | none | read | none | none | none | write | none |
 | [[10_Agents/05_Website_App_General]] | read, write tasks | approval (send preview via John: auto for mock-ups) | read | none | write (staging / preview); approval (production) | use (Lovable, Higgsfield, Kling) via gateway | write | none |
 | [[10_Agents/06_Medical_3D_Web]] | read, write tasks | none | read | none | write (preview); approval (production + medical content review) | use via gateway | write | none |
-| [[10_Agents/07_CRM_Architect]] | write (schema, migrations on staging); approval (production migration) | none | read | none | none | read registry | write | read |
+| [[10_Agents/07_CRM_Architect]] (ATLAS) | DESIGN/AUDIT: read + write own `edg_design` task; BUILD: write schema + migrations on staging only; approval (production migration, go-live) | none (talks to customers only through John) | read + write own client folder `80_Clients/<slug>/edg/` | none | none | read registry; set status up to `planned` only; **never** secrets | write | read |
 | [[10_Agents/08_ERP_Operations]] | read | none | read | none | none | none | write | none |
 | [[10_Agents/09_Workflow_Automation]] | write (workflow runs) | none | read | none | none | read registry, health | write | none |
 | [[10_Agents/10_Finance_Ops]] | read | approval (reminders) | read | read; approval (any change); **never** move money | none | none | write | none |

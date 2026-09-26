@@ -58,3 +58,16 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - **Decision:** the chain is customer ↔ **John** → **Website Intelligence** → **Website Creator** (the Website Builder) → John → customer. Website Intelligence and the Website Creator never talk to the customer, never present the mock-up, never discuss price. Website Intelligence starts from whatever John has (even just "customer wants a mock-up, company X"), identifies the company, researches it and its market, never invents facts (`[CLIENT TO PROVIDE]`), and does **not** delay a mock-up for missing details: it briefs the Creator with placeholders. Missing critical information goes back to John as `STATUS: MORE_INFORMATION_REQUIRED`; John decides whether to ask the customer. The finished mock-up returns to John as `STATUS: MOCKUP_READY` and John presents it in his own voice.
 - **Why:** Ryan's role prompt of 2026-09-26 ([[10_Agents/05a_Website_Intelligence — internal role prompt]]): one customer-facing voice, fast mock-ups, no invented facts.
 - **Consequences:** the intake gate stays with John (website address + company name first); the research step is added between John's hand-off and the Website Builder brief (backlog Phase 5); the Website Builder treats a WEBSITE_CREATOR_BRIEF as authoritative input and keeps the placeholders visible; the Claude Code subagent version stays for Ryan's own client/prospect work.
+
+## ADR-4 · ATLAS is the upgraded CRM Architect (07) (2026-09-26, Ryan: "ok merge")
+- **Decision:** ATLAS — EDG & CRM Systems Architect replaces and extends [[10_Agents/07_CRM_Architect]] (file name kept so
+  links keep working; alias `ATLAS`). Ryan's agent file `.claude/agents/atlas.md` is its source of truth. Scope is the
+  whole business system (EDG), not only the CRM. Three modes (DESIGN default, BUILD, AUDIT) and four checkpoints; every
+  step from design to build and from staging to production needs Ryan's approval. ATLAS works behind John and never
+  talks to the customer.
+- **Boundaries:** Discovery (01) runs the first client discovery, ATLAS takes its Company Map; ATLAS writes workflow
+  specs, Workflow Automation (09) builds and runs them; Data/BI (14) owns KPI definitions; Security/QA (15) reviews
+  permissions and privacy.
+- **Consequences:** 07 rewritten (old note in `_backups/2026-09-26/`); John's note (02) gets the two-way hand-off;
+  the permission matrix row now allows only the client's `edg/` folder and staging after approval.
+
