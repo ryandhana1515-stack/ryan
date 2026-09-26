@@ -139,3 +139,6 @@ tags: [zaphiel, changelog]
   340: "What type of websites can you build?" → answer + offer, no hand-off). John playbook lesson added. The Website
   Builder's copy of the company description (same wording change) syncs on its next deploy; it does not affect
   decisions.
+- 2026-09-26 — **ATLAS installed** (EDG & CRM Systems Architect, Claude Code subagent `.claude/agents/atlas.md`,
+  verbatim from Ryan) + template `80_Clients/_TEMPLATE_Client/edg/`. Merge into [[10_Agents/07_CRM_Architect]]
+  proposed, waiting for Ryan's OK. Details in [[00_CEO_Brain/04_Changelog]].

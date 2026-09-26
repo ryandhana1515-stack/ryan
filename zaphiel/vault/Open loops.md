@@ -48,3 +48,4 @@ tags: [zaphiel, open-loops]
   deterministic fallback until then. Same place as the model/API keys Ryan planned to add at home.
 - Next: John reads open `website.info_needed` tasks and asks the customer in his own voice; Build Record sends
   `MOCKUP_READY` to John.
+- **Ryan (decision):** OK the plan to merge ATLAS into [[10_Agents/07_CRM_Architect]] (ATLAS becomes the upgraded 07; plan given in chat 2026-09-26). Until then ATLAS runs from `.claude/agents/atlas.md` and the 07 note still shows the old CRM Architect.
