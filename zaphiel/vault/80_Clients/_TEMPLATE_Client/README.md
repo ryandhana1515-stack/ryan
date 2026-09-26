@@ -32,3 +32,5 @@ Copy this folder to `80_Clients/<Client_Name>/` when a client is onboarded (step
 | Status | discovering → provisioned → staging → live |
 
 Rules: [[00_CEO_Brain/00_Master_Rules]] #10. Provisioning: [[30_Platform_Services/Identity_Tenant]].
+
+`website/` — output folder of the Website Intelligence & Conversion Strategist ([[10_Agents/05a_Website_Intelligence]]); see its README.
