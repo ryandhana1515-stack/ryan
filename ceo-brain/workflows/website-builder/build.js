@@ -537,7 +537,7 @@ export default workflow('ceo-brain-website-builder', 'CEO Brain — Website Buil
     .onTrue(startRunner.to(emailOwner))
     .onFalse(emailOwner))
   .add(note)
-  .group('1. Brief generation', [buildPrompt, loadStandard, loadPlaybook, composeSystem, claudeAgent, finalize], { description: 'Prompt from the hand-off; design standard + playbook live from the vault; Claude; validate, mode guard, fallback, Lovable prompt, image shot list.' })
+  .group('1. Brief generation', [buildPrompt, loadStandard, loadPlaybook, composeSystem, claudeAgent, finalize], { description: 'Prompt, standard + playbook from the vault, Claude, validate, fallback, Lovable prompt, image shots.' })
   .group('2. Decide & build', [loadTasks, decideBuild, upsertTask, logRun, logAudit, buildGate, startRunner, emailOwner], { description: 'Auto-build policy: one build per lead + daily cap; task, run, audit; start the Website Build Runner; owner copy by email.' });
 `;
 
