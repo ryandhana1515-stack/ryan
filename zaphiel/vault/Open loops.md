@@ -6,19 +6,18 @@ tags: [zaphiel, open-loops]
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
 - **Ryan (to test John on WhatsApp):** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Until then test John at https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat. Then
   Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
-- **Ryan — make the automatic mock-up chain live (credentials in n8n, once; 2026-09-26: the chain itself is
-  deployed and verified, Website Builder v2.2 `hSTRGnHVsu6tMOmH`).** Zaphiel guides step by step. In n8n
-  (https://ryan1515.app.n8n.cloud → Credentials → Create):
-  1. "Lovable MCP (OAuth2)" — type *MCP Client (OAuth2) API*, server URL https://mcp.lovable.dev, press Connect
-     and sign in to Lovable. **This one unblocks the build**: the runner `7sEuGyU6IjJsSaKL` cannot be published
-     without it, and n8n refuses to publish the Website Builder's "Start Website Build Runner" node until the runner
-     is published (the node is disabled meanwhile; everything else is live).
-  2. "Higgsfield API" — type *Header Auth*, name `Authorization`, value `Key <key id>:<secret>` (from
-     console.higgsfield.ai). 3. "Kling API" — *Header Auth*, `Authorization` = `Bearer <API key>` (kling.ai/dev/api-key).
-     4. "Higgsfield MCP (OAuth2)" for variation A (the cinematic scroll film site).
-  Then tell Zaphiel "credentials added": Zaphiel assigns them to the runner nodes, publishes the runner, re-enables
-  the node, republishes the Website Builder and runs one real test from John to two mock-up links.
-  Keys are typed only into n8n's credential screen, never pasted into chat or the repo.
+- **Ryan — one click to make the mock-up chain live (2026-09-26 late).** The build step now runs as the Claude
+  routine "Zaphiel — Website Build Worker" (hourly). It was created without connectors, so: open claude.ai →
+  Routines → "Zaphiel — Website Build Worker" → attach the connectors **n8n, Lovable, Higgsfield, Kling** → save.
+  Nothing else to type. (n8n cannot hold the Lovable login: Lovable blocks hosted tools; delete the half-made
+  "Lovable MCP (OAuth2)" credential in n8n, it can never connect.) Optional: delete the test project
+  "Sunrise Dental Clinic" in Lovable.
+- **Zaphiel (next session):** John promises "usually within 10 to 15 minutes" for the mock-up; the routine runs
+  hourly, so change the wording in `zaphiel/knowledge/fusiontech-master-brain.md`-derived prompt to "within the
+  hour" and redeploy Lead Intake + Website Builder. Ask Ryan whether the routine may run more often (platform
+  minimum is 1 hour unless the project allows shorter).
+- **Ryan (decision):** variation A (Higgsfield cinematic scroll film site) is designed but not built by the worker
+  until you say so (video credits per site).
 - **Ryan:** paste `ceo-brain/website-chat/embed-snippet.html` into FusionTech.com.sg before `</body>`
   so visitors talk to John there; until then use https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat.
 - **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),

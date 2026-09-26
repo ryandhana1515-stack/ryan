@@ -31,8 +31,9 @@ how it is built: [[Knowledge/CEO Brain — product architecture]]; the twelve ag
   (`Pew2PX1IcgdXqXr7`), **Website Intelligence** (`5VWP3tMK3MZysi7w`), **CEO Orchestrator** (`8Ix4yc223sxrSu5h`), **Approval Inbox** (`r4ynzcSqRy8zHoFl`), **John Chat Console** (`ny60ozvH8B4uNpcb`), **Trainer API**
   (`zKqlk05WShUOrojw`), **Training Room** dashboard (`AM59goLdbt0clv8q`), **Chat with John public
   page** (`FngKsJ2x0AaWOdJl`, https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat), **Website Build
-  Runner** (`7sEuGyU6IjJsSaKL`, wired from Website Builder v2.2 on 2026-09-26; unpublished until Ryan's Lovable
-  MCP credential exists, so the start node is disabled meanwhile).
+  Runner** (`7sEuGyU6IjJsSaKL`, superseded 2026-09-26: the build step runs as the Claude routine "Zaphiel —
+  Website Build Worker" `trig_01K4UinSX4tQWK537MeHQuuc`, see `ceo-brain/agents/website-build-worker/ROUTINE.md`;
+  the n8n runner stays unpublished and the Website Builder's start node disabled).
 - Data: n8n tables `ceo_leads`, `ceo_messages`, `ceo_agent_runs`, `ceo_tasks`, `ceo_audit_logs`,
   `ceo_company_maps`. Long-term CRM/ERP schema (39 tables, tenant isolation with RLS) designed in
   `ceo-brain/database/migrations/002_crm_erp_core.sql`.

@@ -105,3 +105,17 @@ tags: [zaphiel, changelog]
   be published: n8n refuses to publish a workflow that calls an unpublished sub-workflow, and the runner needs
   Ryan's Lovable MCP credential first. Once Ryan connects Lovable (and Higgsfield/Kling), Zaphiel assigns the
   credentials, publishes the runner, re-enables the node and republishes. Registry: `website_build_runner`.
+- 2026-09-26 (late) — **Build step moved from n8n to a Zaphiel routine; no builds for test leads (Ryan).**
+  Finding: Lovable only allows hosted OAuth clients it has approved, so n8n cloud's "MCP OAuth2 API" credential
+  fails with 400 (docs.lovable.dev, "Supported AI clients"); the Lovable REST API cannot create projects and
+  needs a Business plan. Ryan's Lovable, Higgsfield and Kling accounts are connected to Zaphiel's environment,
+  so the build worker runs there: Claude Code Routine **"Zaphiel — Website Build Worker"**
+  (`trig_01K4UinSX4tQWK537MeHQuuc`, hourly at :25 UTC = 00:25 SGT etc.; prompt in
+  `ceo-brain/agents/website-build-worker/ROUTINE.md`). It reads `building` tasks from `ceo_tasks`, skips test
+  leads, generates the 3 photos (Higgsfield `recraft_v4_1`, Kling fallback), builds in Lovable, reports to the
+  Build Record webhook. **Blocked on one click by Ryan:** the routine was created without connectors (the tool
+  cannot pass them); Ryan attaches n8n, Lovable, Higgsfield and Kling to it in claude.ai → Routines. The n8n
+  "Website Build Runner" (`7sEuGyU6IjJsSaKL`) is superseded and stays unpublished; the Website Builder's
+  "Start Website Build Runner" node stays disabled. Mistake recorded: Zaphiel ran one build for the fake
+  "Sunrise Dental Clinic" test lead (24 Higgsfield credits, one Lovable project `4e9a50a0-3407-43ea-9fb2-564bcf0a7f4e`)
+  before Ryan said tests happen only through John on WhatsApp. Rule added to the worker: never spend on test leads.
