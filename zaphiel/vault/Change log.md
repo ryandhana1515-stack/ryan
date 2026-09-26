@@ -94,3 +94,14 @@ tags: [zaphiel, changelog]
   (authoritative). Verified end to end (executions 298 → 300 → 301). Gateway credits were empty during the test,
   so the fallback brief was used — the chain still completed. Repo: `ceo-brain/agents/website-intelligence/`,
   `workflows/website-intelligence/`, tests 50/50.
+- 2026-09-26 — **Website Builder v2.2 deployed: the automatic build chain is wired** (`hSTRGnHVsu6tMOmH`, published).
+  Ryan switched Claude Code to "Accept edits" so the deploy could go through. New nodes: Load Website Build
+  Tasks → **Decide Build** (auto-build policy: `build` / `ask_customer` / `already_built` / `daily_cap` of 12; no
+  approval step) → task, run, audit → **Build Now?** → **Start Website Build Runner** (`7sEuGyU6IjJsSaKL`) → owner
+  email. Compose System Prompt carries the two variations (A cinematic scroll film, B photo-led) and the
+  WEBSITE_CREATOR_BRIEF rule; Finalize Website Brief 2.2.0 adds `ready_to_build`, `variations`, `film_brief`.
+  Verified live: Lead Intake 328 → Website Intelligence 330 → Website Builder 331 (decision `build`, medical mode,
+  task `building`, email sent) → Orchestrator 332. **The runner-start node is disabled in n8n** until the runner can
+  be published: n8n refuses to publish a workflow that calls an unpublished sub-workflow, and the runner needs
+  Ryan's Lovable MCP credential first. Once Ryan connects Lovable (and Higgsfield/Kling), Zaphiel assigns the
+  credentials, publishes the runner, re-enables the node and republishes. Registry: `website_build_runner`.

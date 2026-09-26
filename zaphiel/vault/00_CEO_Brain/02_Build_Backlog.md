@@ -38,8 +38,8 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 
 ## Phase 5 — General Website/App + premium website QA and deployment pipeline
 - [x] Website Builder v2.1 (cinematic standard), Build Runner workflow created (`7sEuGyU6IjJsSaKL`), chain in repo
-- [ ] Deploy the automatic mock-up chain to n8n — **blocked by Claude Code's permission classifier; (Ryan) permission rule**
-- [ ] **(Ryan)** n8n credentials: Higgsfield API, Kling API, Lovable MCP (OAuth2)
+- [x] Deploy the automatic mock-up chain to n8n — done 2026-09-26 (Website Builder v2.2 `hSTRGnHVsu6tMOmH`: Decide Build → Start Website Build Runner; verified 328 → 330 → 331 → 332). Runner-start node disabled until the runner is published (needs the Lovable credential)
+- [ ] **(Ryan)** n8n credentials: Lovable MCP (OAuth2) first — it unblocks the runner — then Higgsfield API, Kling API, Higgsfield MCP (OAuth2); then Zaphiel publishes the runner and re-enables the start node
 - [x] Website Intelligence step between John's hand-off and the Website Builder brief ([[10_Agents/05a_Website_Intelligence]], ADR-3) — `5VWP3tMK3MZysi7w`, 2026-09-26: Browserbase search + fetch on n8n Gateway credits, fact ledger, WEBSITE_CREATOR_BRIEF, questions for John as `website.info_needed`; verified 298 → 300 → 301
 - [ ] John reads open `website.info_needed` tasks and asks the customer the questions in his own voice (chat console + Lead Intake)
 - [ ] `MOCKUP_READY` message to John from Build Record (today John reads the built task directly)
@@ -71,4 +71,4 @@ Legend: `[x]` done · `[ ]` open · **(Ryan)** needs Ryan · status words follow
 4. Pricing of the first sellable package (never in an agent; only in the proposal you approve).
 5. Confirm which integrations are `tested`: Gmail and GitHub run in n8n daily; Lovable, Higgsfield, Kling, Meta WhatsApp are `planned`.
 6. Source PDFs (Blueprint, Review v2) into `_sources/`.
-7. Claude Code permission rule so the automatic mock-up chain can be deployed.
+7. ~~Claude Code permission rule so the automatic mock-up chain can be deployed.~~ Done 2026-09-26 (Accept edits mode).
