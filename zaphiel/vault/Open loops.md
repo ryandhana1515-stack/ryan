@@ -4,12 +4,15 @@ tags: [zaphiel, open-loops]
 # Open loops
 
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
-- **WhatsApp setup paused (Ryan, 2026-09-26: "I just want to test John first").** Done: Meta app "FusionTech AI Agents",
-  test number, phone number ID `1321607761025022`. Next when Ryan is ready: step 4 (permanent System User token) and
-  step 5 (n8n credential "WhatsApp FusionTech") in [[Knowledge/_How to connect WhatsApp]]; then Zaphiel wires the
-  Outbound Sender and points Meta at John. Ryan tests on the chat page meanwhile.
-- **Ryan (to test John on WhatsApp):** WhatsApp credential in n8n — steps in [[Knowledge/_How to connect WhatsApp]]. Until then test John at https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat. Then
-  Zaphiel re-adds the WhatsApp node to the Outbound Sender and points Meta at the inbound webhook.
+- **WhatsApp is live for testing (2026-09-27).** Meta app "AI AGENTS" (1415986013818104) on Ryan's Meta business
+  portfolio; free Meta test number (phone number ID `1321607761025022`, WhatsApp account `1034122678981935`); n8n
+  credential "WHATSAPP FUSION TECH"; webhook → `/webhook/ceo-brain/whatsapp`, field `messages`; Outbound Sender sends
+  WhatsApp. Ryan talked to John on it the same night.
+- **Ryan (decision):** the old Bio Green app "Test" (1349701273957004) is still subscribed to this WhatsApp account and
+  its n8n sandbox (`eS8K8Si0VqToZajp`, /webhook/whatsapp-in) also receives every message. Its key is expired so it
+  cannot reply today; unsubscribe it before real customers use the number (Zaphiel can do it on Ryan's word).
+- **Ryan (before real customers):** register FusionTech's own WhatsApp business number (the test number only reaches 5
+  verified phones, and it sits under the Ryan Dhana/Foodblock portfolio); then Zaphiel swaps the phone number ID.
 - **Done 2026-09-26 23:38 SGT:** Ryan attached n8n, Lovable, Higgsfield and Kling to the routine "Zaphiel —
   Website Build Worker". The mock-up chain is fully wired. The real test is Ryan through John on WhatsApp.
   Still optional for Ryan: delete the half-made "Lovable MCP (OAuth2)" credential in n8n and the test project
