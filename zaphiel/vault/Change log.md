@@ -231,3 +231,8 @@ tags: [zaphiel, changelog]
   just "new chat" (or "reset") to the FusionTech number starts a fresh conversation: John forgets the earlier chat, a
   new lead is opened for the number, and the next message is treated like a new customer (a new mock-up is allowed).
   The old conversation is kept in the records. Tests 86/86.
+- 2026-09-27 (night) — **Why John went quiet, and the fixes.** (1) Ryan's voice note was dropped: WhatsApp Inbound only
+  took typed text → voice notes are now downloaded and transcribed. (2) "Hi any response?" got a reply that waited for
+  approval because John flagged the late mock-up → John now always answers (see Decisions). (3) The Free & Easy
+  mock-up link *was* sent to Ryan at 16:06, but the Build Record never wrote it into the conversation, so John kept
+  promising it → the mock-up message is now logged and John sees it. Tests 91/91.

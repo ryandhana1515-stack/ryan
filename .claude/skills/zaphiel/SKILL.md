@@ -50,6 +50,12 @@ exists: `Knowledge/AI Workforce — roster`.
   fresh `ceo_leads` row (new `lead_key` + `lead_id`, status NEW) and confirm on WhatsApp; the number's newest lead row
   is its current conversation and its `lead_key` is passed to Lead Intake. Code: `agents/whatsapp-inbound/inbound.js`,
   build `workflows/whatsapp-inbound/build.js`. The old conversation stays in the tables.
+- **WhatsApp voice notes** (2026-09-27): Is a Voice Message? → Get Voice Note Link (WhatsApp media URL) → Download
+  Voice Note (HTTP, WhatsApp credential) → Name Voice File → Transcribe Voice Note (OpenAI, Gateway credits) →
+  Prepare Message (`waMessageFrom`) → the normal path. Website Build Record logs the mock-up message in
+  `ceo_messages` so John's history shows the link was sent.
+- **John never goes silent** (2026-09-27): Lead Intake always sends John's reply; `ppMustHold` (postprocess.js) holds
+  only money/contract/refund/legal/data/proposal/WON-LOST replies and sends `ppHoldingReply` instead.
 - **Outbound Sender** `SAcnNxG1GWPwn3N7` (email live; WhatsApp node re-added once the Meta WhatsApp
   Business credential exists). **Approve Reply** `uQxHTTdEkazgKpRT`. **WhatsApp Inbound**
   `3IhIJ5IYsB7wQQSg` (verify token ceo-brain-verify). **Vault Writer** `tVvSWjOubwBNLi88`.
