@@ -242,7 +242,7 @@ var WI_ASK_RES = [
   /\bmock-?ups?\b|\bmockups?\b/i,
   new RegExp('\\b(build|make|create|design|develop|do|set up|redo|redesign|revamp|rebuild|upgrade|get)\\b[^.?!\\n]{0,40}\\b(me|us|my|our|a|an|new)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
   new RegExp('\\b(i|we)(\\s|\'m\\s|\'d\\s|\\s+am\\s|\\s+are\\s|\\s+would\\s)*(like|want|need|looking for|wanna|want to get|need to get|interested in)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
-  /\b(help)\s+(me|us)\s+(build|make|create|design|get|with)\b/i
+  new RegExp('\\b(help)\\s+(me|us)\\s+(build|make|create|design|get|with)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i')
 ];
 var WI_CAPABILITY_Q = /^\s*(can|could|do|does|would|will|what|which|how|are|is|have)\b/i;
 var WI_PERSONAL = /\b(me|us|my|our|mine|ours)\b/i;

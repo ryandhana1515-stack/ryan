@@ -897,6 +897,20 @@ test('a bare "hi" on WhatsApp from a new lead is answered automatically, not hel
   assert.ok(!run.fin.result.escalation_reasons.includes('invalid_status_transition'));
   assert.strictEqual(run.fin.approval_needed, false);
 });
+test('"what can you help us with like crm edg sme" is a question, not a website order (WhatsApp 2026-09-27)', () => {
+  const wi = require('../agents/website-builder/intake.js');
+  const hist = [{ role: 'customer', content: 'Hi' }, { role: 'agent', content: 'Hi Ryan, we are FusionTech AI. We connect WhatsApp, email and CRM and also build premium websites and web apps. What does your business do?' }];
+  const r = wi.wbIntake({ contact_name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', message: 'What can you help us with like crm edg sme', history: hist });
+  assert.strictEqual(r.intent, false); assert.strictEqual(r.reply, '');
+  assert.strictEqual(wi.wbIntake({ message: 'Can you help us build a website for our clinic?', history: [] }).intent, true, 'a real website ask still counts');
+  assert.strictEqual(wi.wbIntake({ message: 'help me make a landing page', history: [] }).intent, true);
+  assert.strictEqual(wi.wbIntake({ message: 'can you help us with our CRM', history: [] }).intent, false);
+});
+test("John's live playbook explains EDG, CRM, SME and the CEO Brain in FusionTech's own terms", () => {
+  const pb = fs.readFileSync(path.join(ROOT, '..', 'zaphiel/vault/Knowledge/John — Sales playbook.md'), 'utf8');
+  assert.ok(/EDG = End-to-end Digital business system/.test(pb) && /Enterprise Development Grant/.test(pb) && /never promise a grant/.test(pb));
+  assert.ok(/\*\*The CEO Brain\*\*/.test(pb) && /\*\*CRM\*\*/.test(pb) && /\*\*SME operating system\*\*/.test(pb) && /\*\*AI workforce\*\*/.test(pb));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
