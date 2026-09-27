@@ -41,9 +41,11 @@ function wrQueries(input) {
   var q = [
     { key: 'name', query: name },
     { key: 'name_location', query: name + ' ' + loc },
-    { key: 'reviews', query: name + ' reviews' }
+    { key: 'reviews', query: name + ' reviews' },
+    { key: 'socials', query: name + ' ' + loc + ' instagram facebook' },
+    { key: 'maps', query: name + ' ' + loc + ' address opening hours' }
   ];
-  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); }
+  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); q.push({ key: 'competitors', query: 'top ' + svc + ' ' + loc + ' reviews' }); }
   return q;
 }
 /** Normalizes whatever shape the search node returns into [{query_key, title, url, snippet}]. */

@@ -39,7 +39,7 @@ function wrIdentify(input, results) {
   var toks = wrTokens(input.company_name);
   var scored = {};
   (results || []).forEach(function (r) {
-    if (['name', 'name_location', 'name_service'].indexOf(r.query_key) === -1 && r.query_key) return;
+    if (['name', 'name_location', 'name_service', 'socials'].indexOf(r.query_key) === -1 && r.query_key) return;
     var host = wrHost(r.url); if (!host) return;
     if (wrIsSocial(host)) { if (out.socials.indexOf(r.url) === -1 && out.socials.length < 5) out.socials.push(r.url); return; }
     if (wrIsDirectory(host)) return;

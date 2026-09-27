@@ -623,7 +623,7 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => input[0], all: () => input }, $execution: { id: '7' }, $workflow: { id: 'w' }, Buffer, Date, JSON, Math });
   const run = (f, input) => vm.runInNewContext('(function(){' + src(f) + '})()', mk(input));
   store['Plan Research'] = run('plan-research.js', items([WR_HANDOFF])).map((i) => i.json);
-  assert.strictEqual(store['Plan Research'].length, 6);
+  assert.strictEqual(store['Plan Research'].length, 9, 'wider Google pass (Ryan, 2026-09-27)');
   store['Identify Company'] = run('identify-company.js', items(store['Plan Research'].map(() => ({ results: [{ title: 'Prestige Motors BMW', url: 'https://prestigemotors.sg/', description: 'x' }] })))).map((i) => i.json);
   assert.strictEqual(store['Identify Company'][0].identity.confidence, 'high'); assert.strictEqual(store['Identify Company'][0].homepage_url, 'https://prestigemotors.sg');
   store['Fetch Homepage'] = [{ html: WR_HTML, status: 200 }];
