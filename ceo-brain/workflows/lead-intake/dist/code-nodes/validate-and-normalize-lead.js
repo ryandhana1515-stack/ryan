@@ -121,6 +121,8 @@ function normalizeLead(raw, opts) {
   if (!hasContactPoint) warnings.push('no_contact_point');
   var identity = email.value || phone.value || (Object.keys(extIds).length ? JSON.stringify(extIds) : null) || (name ? 'name:' + name.toLowerCase() : null);
   var leadKey = identity ? tenant + ':' + cbHash(identity) : null;
+  var givenKey = cbStr(raw.lead_key, 120);
+  if (givenKey && givenKey.indexOf(tenant + ':') === 0 && /^[A-Za-z0-9_:+.-]+$/.test(givenKey)) leadKey = givenKey;
   var leadId = cbStr(raw.lead_id, 80) || cbId('lead', nowMs, leadKey || 'anon');
   var lead = {
     tenant_id: tenant,

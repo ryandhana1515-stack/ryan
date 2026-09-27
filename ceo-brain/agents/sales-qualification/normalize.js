@@ -143,6 +143,10 @@ function normalizeLead(raw, opts) {
   // Dedupe key: tenant + strongest identifier available
   var identity = email.value || phone.value || (Object.keys(extIds).length ? JSON.stringify(extIds) : null) || (name ? 'name:' + name.toLowerCase() : null);
   var leadKey = identity ? tenant + ':' + cbHash(identity) : null;
+  // WhatsApp Inbound passes the key of the number's current conversation, so a "new chat" starts a fresh lead
+  // on the same phone (Ryan, 2026-09-27). Only keys of this tenant are accepted.
+  var givenKey = cbStr(raw.lead_key, 120);
+  if (givenKey && givenKey.indexOf(tenant + ':') === 0 && /^[A-Za-z0-9_:+.-]+$/.test(givenKey)) leadKey = givenKey;
   var leadId = cbStr(raw.lead_id, 80) || cbId('lead', nowMs, leadKey || 'anon');
 
   var lead = {

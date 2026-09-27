@@ -973,6 +973,42 @@ test("John's question speaks to the customer, not about them (Ah Seng test, 2026
   const ask = wr.wrCustomerAsk({ needs_john: true, questions: ["Is this business the same as 'Ah Seng (Hai Nam) Coffee' at Amoy Street Food Centre, or a different shop?", 'What exactly does Ah Seng Kopi Corner sell, and does the customer have a logo, menu and photos?'], input: { channel: 'whatsapp', phone: '+6590000005', contact_name: 'Ah Seng', company_name: 'Ah Seng Kopi Corner', lead_id: 'l', message: 'build a website', conversation: [], test_mode: false } });
   assert.ok(/Is your business the same as/.test(ask.text) && /do you have a logo/.test(ask.text) && !/the customer/.test(ask.text), ask.text);
 });
+console.log('\n[17] WhatsApp "new chat" starts a brand-new conversation on the same number (Ryan, 2026-09-27)');
+const wi = require('../agents/whatsapp-inbound/inbound.js');
+test('only a message that is just the command starts a new chat', () => {
+  ['new chat', 'New Chat', 'NEW CHAT!', ' #newchat ', 'reset', 'reset chat', 'start a new chat', 'newchat.'].forEach((t) => assert.ok(wi.waIsNewChat(t), t));
+  ['hi', 'I want a new chat app for my shop', 'can you reset my password', 'new chatbot please', '', null].forEach((t) => assert.ok(!wi.waIsNewChat(t), String(t)));
+});
+test('a new chat gets its own lead key and lead id; Lead Intake accepts the key', () => {
+  const row = wi.waNewChatLead({ tenant_id: 'fusiontech', phone: '+6591234567', name: 'Ryan', now_ms: 1790000000000 });
+  assert.strictEqual(row.status, 'NEW'); assert.strictEqual(row.test_mode, false); assert.strictEqual(row.channel, 'whatsapp');
+  assert.ok(/^fusiontech:wa6591234567:/.test(row.lead_key) && /^lead_wa6591234567_/.test(row.lead_id), JSON.stringify(row));
+  const later = wi.waNewChatLead({ tenant_id: 'fusiontech', phone: '+6591234567', now_ms: 1790000999000 });
+  assert.notStrictEqual(later.lead_key, row.lead_key, 'every reset is a different conversation');
+  const plain = normalizeLead({ tenant_id: 'fusiontech', phone: '+6591234567', channel: 'whatsapp', source: 'whatsapp', message: 'hi' }, { nowMs: 1 });
+  const keyed = normalizeLead({ tenant_id: 'fusiontech', phone: '+6591234567', channel: 'whatsapp', source: 'whatsapp', message: 'hi', lead_key: row.lead_key }, { nowMs: 1 });
+  assert.strictEqual(keyed.lead.lead_key, row.lead_key);
+  assert.notStrictEqual(plain.lead.lead_key, row.lead_key, 'without a key the phone hash is used, as before');
+  const foreign = normalizeLead({ tenant_id: 'fusiontech', phone: '+6591234567', message: 'hi', lead_key: 'othertenant:abc' }, { nowMs: 1 });
+  assert.strictEqual(foreign.lead.lead_key, plain.lead.lead_key, 'another tenant\'s key is ignored');
+});
+test('the payload carries the current lead\'s key and only its sent/received messages', () => {
+  const wa = { from: '6591234567', phone: '+6591234567', name: 'Ryan', text: 'hi', wa_message_id: 'wamid.1' };
+  const fresh = wi.waBuildPayload({ wa, leadRow: {}, rows: [] });
+  assert.strictEqual(fresh.payload.lead_key, undefined); assert.strictEqual(fresh.payload.lead_id, null); assert.strictEqual(fresh.history_count, 0);
+  const leadRow = { tenant_id: 'fusiontech', lead_id: 'lead_wa1', lead_key: 'fusiontech:wa6591234567:abc' };
+  const rows = [{ direction: 'outbound', status: 'sent', content: 'Hello!', createdAt: '2026-09-27T10:00:02Z' }, { direction: 'inbound', content: 'hi', createdAt: '2026-09-27T10:00:01Z' }, { direction: 'outbound', status: 'draft', content: 'draft', createdAt: '2026-09-27T10:00:03Z' }];
+  const out = wi.waBuildPayload({ wa, leadRow, rows });
+  assert.strictEqual(out.payload.lead_key, leadRow.lead_key); assert.strictEqual(out.payload.lead_id, 'lead_wa1');
+  assert.deepStrictEqual(out.payload.conversation_history.map((m) => m.role + ':' + m.content), ['customer:hi', 'agent:Hello!']);
+});
+test('the WhatsApp Inbound code nodes are generated from the repo', () => {
+  require('child_process').execFileSync('node', [require('path').join(__dirname, '../workflows/whatsapp-inbound/build.js')]);
+  const fs = require('fs'); const d = require('path').join(__dirname, '../workflows/whatsapp-inbound/dist/code-nodes/');
+  const a = fs.readFileSync(d + 'check-new-chat.js', 'utf8'); const b = fs.readFileSync(d + 'build-lead-payload.js', 'utf8');
+  assert.ok(/waIsNewChat\(wa\.text\)/.test(a) && !/module\.exports/.test(a) && /waBuildPayload\(/.test(b) && !/module\.exports/.test(b));
+  new Function('$', '$input', a); new Function('$', '$input', b);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
