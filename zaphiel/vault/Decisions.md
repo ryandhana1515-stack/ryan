@@ -86,4 +86,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - **Amendment (2026-09-26, Ryan: "John asked automatically"):** John asks ATLAS's questions for the customer
   automatically, one unasked question per normal reply. Ryan still receives the checkpoint email and approval task;
   the architecture (checkpoint 2 onwards) still waits for Ryan. (Ryan first said "i see first", then corrected it.)
+- **Amendment (2026-09-27, Ryan: "save it" — ATLAS DISCOVERY MODE):** ATLAS has a 4th mode, DISCOVERY, before DESIGN.
+  In DESIGN / BUILD / AUDIT mode ATLAS still works behind John. In DISCOVERY MODE ATLAS may speak with the customer
+  directly (or with Ryan relaying the customer's answers), or give John the next questions to ask. This narrows ADR-3's
+  "John owns the customer" for ATLAS's discovery conversations only; Website Intelligence and the Website Creator still
+  never talk to the customer. Playbook: [[10_Agents/ATLAS_Discovery_Playbook]]; agent file `.claude/agents/atlas.md`.
 

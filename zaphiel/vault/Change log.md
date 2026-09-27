@@ -202,3 +202,7 @@ tags: [zaphiel, changelog]
   treated as a website order (mock-up template replaced John's answer), and John read EDG as the Enterprise
   Development Grant. John's live playbook now has the full plain-words offer: CEO Brain and modules, SME operating
   system, EDG, CRM, AI workforce, automation, ERP, websites/funnels. Tests 76/76.
+- 2026-09-27 (night) — **ATLAS DISCOVERY MODE** saved to `.claude/agents/atlas.md` (Ryan: "save it"), playbook
+  [[10_Agents/ATLAS_Discovery_Playbook]], template `80_Clients/_TEMPLATE_Client/edg/discovery/`, ADR-4 amended. John's
+  live playbook gained "Ask like a consultant" (ATLAS's discovery questions in plain words; websites still start from
+  the name alone).
