@@ -23,7 +23,7 @@ var WB_CINEMATIC = [
   'Photo-led: a full-bleed cinematic photograph (or looping video still) in the hero and at the top of every major section; the imagery carries the page.',
   'Colour with depth: rich colour pulled from the imagery, cinematic gradient overlays (dark-to-transparent, brand-tinted) for legibility and mood; never a flat single-colour block.',
   'Large, confident display typography over the imagery; short lines; generous spacing.',
-  'Motion: none. Flat, fast page (Ryan, 2026-09-27): no scroll animations, no parallax, no 3D, no scroll film and no video backgrounds (the one exception is a specialist clinic\'s realistic anatomy loop in the hero); only simple hover and focus states. The page sells through the offer, the headline, proof, answered objections and the repeated call to action.',
+  'Motion: 3D parallax scroll film (Ryan, 2026-09-27): the Kling film is pinned in the hero and scrubbed by the scroll, imagery moves in layered depth parallax (foreground and background at different speeds, a slight 3D perspective), sections and CTAs are revealed over the film, smooth scrolling; fast on mobile and prefers-reduced-motion shows stills.',
   'Every section has a visual: photo, product/vehicle shot, showroom, team or detail; text-only sections are not allowed except legal.',
   'Placeholders for the customer\'s own photos are labelled, but the mock-up itself ships with the generated photography so it already looks finished.'
 ];
@@ -312,8 +312,8 @@ function wbStrategySection(plan) {
   if (!plan) return '';
   var L = [WB_STRATEGY_MARK];
   if (plan.primary_cta) L.push('- Primary CTA everywhere: "' + plan.primary_cta + '"' + (plan.secondary_cta ? '; secondary: "' + plan.secondary_cta + '"' : '') + '.');
-  L.push('- Flat page: no scroll animation, no parallax, no 3D, no scroll film, no video backgrounds except the clinic anatomy loop below (Ryan, 2026-09-27). Conversion comes from the offer, headline, proof, objections answered and the repeated CTA.');
-  if (wbHasAnatomy(plan)) L.push(wbCap('- Medical visual (hero): ' + plan.medical_visual_direction, 750) + ' Show it full-bleed in the hero as a short silent video that loops on its own (<video autoplay muted loop playsinline> with the still photo as poster; both made by Kling; until attached, a slot labelled [ANATOMY VIDEO]). It is not tied to scrolling; the rest of the page stays flat. Never a cartoon or low-poly model.');
+  L.push(wbCap('- 3D parallax scroll film: ' + (plan.motion_3d_direction || 'a Kling film of the business scrubbed by the scroll, layered depth parallax'), 650) + ' Pin the hero and drive the film video currentTime from scroll progress (GSAP ScrollTrigger or framer-motion useScroll), layer the photos in depth parallax, reveal each section and CTA over the film; respect prefers-reduced-motion (show the posters).');
+  if (wbHasAnatomy(plan)) L.push(wbCap('- Medical visual (hero): ' + plan.medical_visual_direction, 750) + ' It is the opening scene of the scroll film: the Kling anatomy video, full-bleed, scrubbed by the scroll with the still photo as its poster (until attached, a slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly model.');
   else if (plan.medical_visual_direction) L.push(wbCap('- Medical visuals: ' + plan.medical_visual_direction, 500));
   if (plan.funnel_plan.length) L.push(wbCap('- Funnel (build these pages and steps): ' + plan.funnel_plan.join(' | '), 1300));
   if (plan.homepage_conversion_flow.length) L.push(wbCap('- Homepage section order: ' + plan.homepage_conversion_flow.join(' > '), 1000));
@@ -342,7 +342,7 @@ function wbBuildPrompt(brief, input) {
   var lines = [];
   lines.push('Build a premium ' + brief.site_type.replace(/_/g, ' ') + ' for ' + name + ' (' + industry + ', Singapore). It must look like an agency-grade site produced by a brand strategist, UX/UI designer, copywriter, art director and front-end engineer — never an AI template.');
   lines.push('Primary goal: ' + brief.primary_goal + (brief.audience ? '. Audience: ' + brief.audience : '') + '.');
-  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: none (flat page, no scroll animation, parallax or 3D). Palette: ' + d.palette + '.');
+  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: ' + d.motion + '; 3D parallax scroll film (Kling film scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
   lines.push('Look and feel (mandatory): ' + WB_CINEMATIC.join(' '));
   lines.push('Never use: ' + WB_ANTI_GENERIC.join('; ') + '.');
   lines.push('Pages: ' + brief.pages.map(function (p) { return p.name + (p.purpose ? ' (' + p.purpose + ')' : ''); }).join('; ') + '.');
@@ -399,9 +399,9 @@ function wbImageShots(brief, input) {
   }
   return shots;
 }
-/** One flat, high-converting website per mock-up (Ryan, 2026-09-27; replaces ADR-2's two variations). A = cinematic scroll film site (Kling film + Lovable scroll site, premium; Ryan 2026-09-27: never Higgsfield), B = photo-led (Lovable). */
+/** One 3D parallax scroll-film website per mock-up (Ryan, 2026-09-27; replaces ADR-2's two variations and the flat rule). Kling makes the film and photos, Lovable builds and publishes; never Higgsfield. */
 var WB_VARIATIONS = [
-  { key: 'flat_site', label: 'High-converting website', tier: 'standard', tool: 'kling_photos_lovable', template: null, description: 'One flat, fast, high-converting website: generated photography, the Website Intelligence sales strategy, no scroll animation, parallax or 3D (Ryan, 2026-09-27).' }
+  { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One high-converting website with a Kling film of the business scrubbed by the scroll and layered 3D depth parallax, Kling photography and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27).' }
 ];
 /** Scenes for variation A single-take film (no text, no logos; the business own world). */
 function wbFilmBrief(brief, input) {
