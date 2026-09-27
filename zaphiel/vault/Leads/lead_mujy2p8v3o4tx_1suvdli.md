@@ -5,13 +5,13 @@ contact: "Ryan"
 company: ""
 industry: ""
 status: QUALIFYING
-temperature: cold
+temperature: warm
 intent: unclear
 channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:19:05.720Z
+updated: 2026-09-27T15:21:02.951Z
 tags: [lead]
 ---
 # Ryan
@@ -21,7 +21,7 @@ tags: [lead]
 
 - Company size: - · Users: - · Decision maker: -
 - Problem: -
-- Wants: -
+- Wants: website_build
 - Tools: -
 - Budget: - · Timeline: -
 - Outcome wanted: -
@@ -83,3 +83,10 @@ _Summary:_ Ryan has asked multiple times what FusionTech and specifically the CE
 **John:** Good to keep talking, Ryan. In short, our agents work like AI staff: they answer enquiries on WhatsApp, email or your website instantly, qualify and follow up leads, book appointments, send quotations for approval, handle customer service, and report to you, all connected to your CRM and other tools, with a person approving anything involving money or contracts. To show you specifically how this fits, what does your business do, and what is the one task or bottleneck taking up most of your team's time right now?
 
 _Summary:_ Ryan (WhatsApp contact, phone provided) has asked repeatedly what our AI agents/CEO Brain can do, but has not yet shared his company, industry, or any business specifics despite the agent asking multiple times. Previous replies already covered the mock-up intake and the CEO Brain explanation; the prospect is re-asking a general capability question rather than answering the qualifying questions.
+
+### 2026-09-27 15:21 UTC · QUALIFYING / warm · next: ask_qualifying_questions · anthropic
+**Prospect:** Can you build a website for our company? It called Free & Easy Minimart
+
+**John:** Hi Ryan, happy to get a first mock-up built for you at Free & Easy Minimart. One thing I need: What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
+
+_Summary:_ Ryan runs Free & Easy Minimart and has now asked us to build a website for the business after several general questions about what FusionTech offers. We have the business name but still need what the business does, who it serves, what the site should let visitors do, which pages, and where to send the mock-up link.
