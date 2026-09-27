@@ -170,6 +170,7 @@ function runCodeNode(file, inputItems, nodeOutputs) {
 function simulate(payload, opts) {
   opts = opts || {};
   const outputs = { 'Workflow Config': { model: 'claude-sonnet-4-6', notify_email: 'owner@example.com', default_tenant: 'biogreen', default_ai_mode: 'live', agent: 'sales-qualification', agent_version: '1.0.0' } };
+  if (opts.config) Object.assign(outputs['Workflow Config'], opts.config);
   const norm = runCodeNode('validate-and-normalize-lead.js', [{ json: { body: payload, headers: {} } }], outputs)[0].json;
   if (!norm.ok) return { norm };
   outputs['Validate & Normalize Lead'] = norm;
@@ -1007,7 +1008,58 @@ test('the WhatsApp Inbound code nodes are generated from the repo', () => {
   const fs = require('fs'); const d = require('path').join(__dirname, '../workflows/whatsapp-inbound/dist/code-nodes/');
   const a = fs.readFileSync(d + 'check-new-chat.js', 'utf8'); const b = fs.readFileSync(d + 'build-lead-payload.js', 'utf8');
   assert.ok(/waIsNewChat\(wa\.text\)/.test(a) && !/module\.exports/.test(a) && /waBuildPayload\(/.test(b) && !/module\.exports/.test(b));
+  assert.ok(/\$\('Prepare Message'\)/.test(a) && /\$\('Prepare Message'\)/.test(b), 'both read the prepared message (text or voice)');
+  ['prepare-message.js', 'name-voice-file.js'].forEach((f) => new Function('$', '$input', fs.readFileSync(d + f, 'utf8')));
   new Function('$', '$input', a); new Function('$', '$input', b);
+});
+test('voice notes: John reads the transcript; an unclear note still gets an answer (Ryan, 2026-09-27)', () => {
+  const base = { from: '6587587170', phone: '+6587587170', name: 'Ryan', wa_message_id: 'wamid.v1' };
+  const typed = wi.waMessageFrom(Object.assign({ type: 'text', text: 'Hello' }, base), 'ignored');
+  assert.strictEqual(typed.text, 'Hello'); assert.strictEqual(typed.voice, false);
+  const voice = wi.waMessageFrom(Object.assign({ type: 'audio', text: '' }, base), '  Hi John, can you build a website\n for Ah Seng Kopi?  ');
+  assert.strictEqual(voice.text, 'Hi John, can you build a website for Ah Seng Kopi?'); assert.strictEqual(voice.voice, true); assert.strictEqual(voice.phone, '+6587587170');
+  assert.ok(wi.waIsNewChat(wi.waMessageFrom(Object.assign({ type: 'audio' }, base), 'New chat.').text), 'saying "new chat" works too');
+  const unclear = wi.waMessageFrom(Object.assign({ type: 'audio' }, base), undefined);
+  assert.strictEqual(unclear.text, wi.WA_VOICE_UNCLEAR);
+  const out = wi.waBuildPayload({ wa: voice, leadRow: {}, rows: [] });
+  assert.strictEqual(out.payload.message, 'Hi John, can you build a website for Ah Seng Kopi?');
+  // the generated n8n node, run with the transcription as its input
+  const vm = require('vm');
+  const code = fs.readFileSync(path.join(__dirname, '../workflows/whatsapp-inbound/dist/code-nodes/prepare-message.js'), 'utf8');
+  const $ = (n) => ({ first: () => ({ json: n === 'Extract WhatsApp Message' ? Object.assign({ type: 'audio', text: '' }, base) : {} }) });
+  const res = vm.runInNewContext('(function(){\n' + code + '\n})', { $, $input: { first: () => ({ json: { text: 'I need a website' } }) }, String, Object, Array, JSON, RegExp })();
+  assert.strictEqual(res[0].json.text, 'I need a website');
+});
+console.log('\n[18] John never goes silent (Ryan, 2026-09-27: "he didn\'t even say anything")');
+const pp = require('../agents/sales-qualification/postprocess.js');
+function aiObj(over) {
+  const raw = fs.readFileSync(path.join(__dirname, 'fixtures', 'ai-raw-fenced.txt'), 'utf8');
+  return Object.assign(JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1)), over || {});
+}
+const waLead = { name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', source: 'whatsapp', test_mode: false, ai_mode: 'live' };
+test('only money, contracts, refunds, legal, data, proposals and WON/LOST hold a reply', () => {
+  ['reply_contains_price', 'customer_requests_refund', 'customer_mentions_contract', 'customer_mentions_payment', 'customer_mentions_legal', 'customer_requests_price_commitment', 'customer_data_request', 'proposal_or_pricing_requires_approval', 'ai_attempted_won_status', 'close_lost_requires_human_confirmation'].forEach((r) => assert.ok(pp.ppMustHold({ escalation_reasons: [r] }), r));
+  ['low_confidence', 'Mock-up link promised twice but not yet delivered; check build status with the team.'].forEach((r) => assert.ok(!pp.ppMustHold({ escalation_reasons: [r] }), r));
+  assert.ok(/Thanks Ryan, that one is for our founder Ryan/.test(pp.ppHoldingReply({ contact_name: 'Ryan Dhana' })));
+});
+test('"Hi any response?" (execution 623): John answers even though he flags the lead for Ryan', () => {
+  const obj = aiObj({ lead_status: 'HUMAN_REVIEW', human_review_required: true, next_action: 'human_review', escalation_reasons: ['Mock-up link promised twice (10-15 minutes) but not yet delivered; customer is chasing a response; check build status with the team.'], recommended_reply: 'Thanks for your patience, Ryan. Your mock-up for Free & Easy Minimart is with our website team right now and the link is coming to this number shortly.' });
+  const run = simulate(Object.assign({}, waLead, { message: 'Hi any response?' }), { modelText: JSON.stringify(obj), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(run.fin.auto_send, true, JSON.stringify(run.fin.response.delivery));
+  assert.strictEqual(run.fin.approval_needed, true, 'Ryan is still told');
+  assert.ok(/Thanks for your patience/.test(run.fin.result.recommended_reply));
+});
+test('a money question gets a holding reply now and John\'s draft goes to Ryan', () => {
+  const obj = aiObj({ recommended_reply: 'Our package is S$3,000 a month.' });
+  const run = simulate(Object.assign({}, waLead, { message: 'how much is it?' }), { modelText: JSON.stringify(obj), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(run.fin.auto_send, true);
+  assert.ok(/passed it to him and he will reply to you here personally/.test(run.fin.result.recommended_reply) && !/S\$/.test(run.fin.result.recommended_reply), run.fin.result.recommended_reply);
+  assert.ok(run.fin.audit.includes('reply_held_for_ryan:holding_reply_sent'));
+  assert.strictEqual(run.fin.approval_needed, true);
+});
+test('test leads still never send', () => {
+  const run = simulate(Object.assign({}, waLead, { message: 'hi', test_mode: true }), { modelText: JSON.stringify(aiObj()), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(run.fin.auto_send, false);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

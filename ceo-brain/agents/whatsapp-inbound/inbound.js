@@ -8,6 +8,22 @@ var WA_DEFAULT_TENANT = 'fusiontech';
 var WA_NEW_CHAT_RE = /^\s*(#\s*)?(new\s*chat|reset(\s*chat)?|start\s+(a\s+)?new\s+chat)\s*[.!]*\s*$/i;
 var WA_NEW_CHAT_REPLY = 'New chat started. Everything before this is forgotten, so message me as a new customer.';
 
+// Voice notes (Ryan, 2026-09-27: "let John listen to voice messages"): the note is downloaded from WhatsApp and
+// transcribed (OpenAI speech-to-text on n8n credits); John reads the words like a typed message.
+var WA_VOICE_UNCLEAR = '(The customer sent a voice message, but it could not be heard clearly. Kindly ask them to send it again or type it.)';
+
+/** The message John reads: the typed text, or the transcript of a voice note. Never empty for a voice note. */
+function waMessageFrom(wa, transcript) {
+  wa = wa || {};
+  var isVoice = wa.type === 'audio' || wa.type === 'voice';
+  var spoken = isVoice ? String(transcript || '').replace(/\s+/g, ' ').trim() : '';
+  return {
+    from: wa.from || '', phone: wa.phone || '', name: wa.name || '', wa_message_id: wa.wa_message_id || '', wa_timestamp: wa.wa_timestamp || '',
+    type: wa.type || 'text', voice: isVoice, spoken: spoken,
+    text: isVoice ? (spoken || WA_VOICE_UNCLEAR) : String(wa.text || '')
+  };
+}
+
 function waIsNewChat(text) { return WA_NEW_CHAT_RE.test(String(text || '')); }
 
 /** The ceo_leads row that starts a fresh conversation on this number: new lead_key and lead_id, status NEW. */
@@ -64,4 +80,4 @@ function waBuildPayload(o) {
 }
 
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { WA_DEFAULT_TENANT, WA_NEW_CHAT_RE, WA_NEW_CHAT_REPLY, waIsNewChat, waNewChatLead, waBuildPayload };
+if (typeof module !== 'undefined') module.exports = { WA_VOICE_UNCLEAR, waMessageFrom, WA_DEFAULT_TENANT, WA_NEW_CHAT_RE, WA_NEW_CHAT_REPLY, waIsNewChat, waNewChatLead, waBuildPayload };
