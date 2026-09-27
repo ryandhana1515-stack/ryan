@@ -17,7 +17,7 @@
   "triggered_by": "sales-qualification (Lead Intake 'Website Requested?' gate: current customer message mentions a website / landing page / online store / web app / portal, or a new lead whose desired automation includes website_build)",
   "builder": {
     "tool": "Lovable",
-    "mechanism": "Website Build Runner (n8n): Higgsfield API / Kling API photography → Lovable MCP create_project (OAuth credential in n8n) → poll → POST /webhook/ceo-brain/website-built. Manual fallback: the Lovable link in the owner email.",
+    "mechanism": "Website Build Runner (n8n): Kling photography and video (Ryan 2026-09-27: never Higgsfield) → Lovable MCP create_project (OAuth credential in n8n) → poll → POST /webhook/ceo-brain/website-built. Manual fallback: the Lovable link in the owner email.",
     "human_approval": "always (task_type website_build, requires_approval=true)",
     "record_endpoint": "POST https://ryan1515.app.n8n.cloud/webhook/ceo-brain/website-built (workflow RVPBGpBzj2SUQlgX) — the session that performs the Lovable build reports {task_id, lead_id, status, project_id, preview_url, editor_url}; the task flips to built/build_failed/skipped_test_mode and the owner is emailed the preview",
     "automation_status": "Ryan (2026-09-25): mock-ups build automatically, no approval. The repo implements it end to end (intake gate in John, Decide Build, Website Build Runner 7sEuGyU6IjJsSaKL with Higgsfield/Kling photography + Lovable MCP). Deployment to n8n was refused by the Claude Code permission classifier; needs Ryan's permission rule, then redeploy from the generators."
@@ -65,7 +65,7 @@
     "customer preview (Outbound Sender)"
   ],
   "variations": {
-    "A": "cinematic_scroll: Higgsfield animated website (scroll-scrub film), premium option",
+    "A": "cinematic_scroll: Kling film scrubbed by scroll, site built on Lovable (Ryan 2026-09-27: never Higgsfield), premium option",
     "B": "photo_led: Lovable with generated photography",
     "rule": "both built for every mock-up; John presents both; price only in Ryan's proposal (ADR-2, 2026-09-26)"
   },

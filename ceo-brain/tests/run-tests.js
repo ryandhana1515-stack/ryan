@@ -957,6 +957,10 @@ test('what Google cannot find goes back to John: he asks the customer at once (m
   const hist = [{ role: 'agent', content: ask.text }];
   assert.strictEqual(at.atNextQuestion(qs, hist), 'Do you deliver?', 'already-asked questions are skipped');
 });
+test("John's question speaks to the customer, not about them (Ah Seng test, 2026-09-27)", () => {
+  const ask = wr.wrCustomerAsk({ needs_john: true, questions: ["Is this business the same as 'Ah Seng (Hai Nam) Coffee' at Amoy Street Food Centre, or a different shop?", 'What exactly does Ah Seng Kopi Corner sell, and does the customer have a logo, menu and photos?'], input: { channel: 'whatsapp', phone: '+6590000005', contact_name: 'Ah Seng', company_name: 'Ah Seng Kopi Corner', lead_id: 'l', message: 'build a website', conversation: [], test_mode: false } });
+  assert.ok(/Is your business the same as/.test(ask.text) && /do you have a logo/.test(ask.text) && !/the customer/.test(ask.text), ask.text);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

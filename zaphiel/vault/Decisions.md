@@ -5,6 +5,11 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **Kling for all website images and video; never Higgsfield** (Ryan: "for scroll website from now on
+  permanently use Kling not Higgsfield" … "Kling all"). The build worker makes the photos, the clinic anatomy video
+  and the scroll film with Kling. Variation A (cinematic scroll film site) = Kling film + a Lovable scroll site;
+  both variations are published to public lovable.app links (no login). Amends ADR-2 (A was a Higgsfield site).
+
 - 2026-09-27 — **Missing website details go back to John; ATLAS joins every mock-up** (Ryan: "if the website
   intelligence can't find more details on Google … tell John … and then John will ask the customer … not the same
   question but what's left"; "can you involve Atlas also?"). The mock-up still starts from the name alone and is never
