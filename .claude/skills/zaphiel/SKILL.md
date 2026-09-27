@@ -46,6 +46,10 @@ exists: `Knowledge/AI Workforce — roster`.
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents
   come from `Knowledge/agents.json`; any entry with a `chat_url` is chattable from the dashboard.
+- **WhatsApp "new chat"** (2026-09-27): a message that is only "new chat" / "reset" makes WhatsApp Inbound insert a
+  fresh `ceo_leads` row (new `lead_key` + `lead_id`, status NEW) and confirm on WhatsApp; the number's newest lead row
+  is its current conversation and its `lead_key` is passed to Lead Intake. Code: `agents/whatsapp-inbound/inbound.js`,
+  build `workflows/whatsapp-inbound/build.js`. The old conversation stays in the tables.
 - **Outbound Sender** `SAcnNxG1GWPwn3N7` (email live; WhatsApp node re-added once the Meta WhatsApp
   Business credential exists). **Approve Reply** `uQxHTTdEkazgKpRT`. **WhatsApp Inbound**
   `3IhIJ5IYsB7wQQSg` (verify token ceo-brain-verify). **Vault Writer** `tVvSWjOubwBNLi88`.

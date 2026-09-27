@@ -227,3 +227,7 @@ tags: [zaphiel, changelog]
 - 2026-09-27 (night) — **Deployed to n8n** (Ryan: "deploy it"): flat websites + the clinic anatomy loop are live in
   Lead Intake (`749b3345`), Website Builder (`3c8618f3`) and Website Intelligence (`1817edc5`); six Code nodes,
   byte-identical to the repo, published. No workflow was run (no build, no credits).
+- 2026-09-27 (night) — **WhatsApp "new chat"** (Ryan: "how do I start a brand new chat … without any words"). Sending
+  just "new chat" (or "reset") to the FusionTech number starts a fresh conversation: John forgets the earlier chat, a
+  new lead is opened for the number, and the next message is treated like a new customer (a new mock-up is allowed).
+  The old conversation is kept in the records. Tests 86/86.
