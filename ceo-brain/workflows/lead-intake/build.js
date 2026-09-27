@@ -149,6 +149,7 @@ const websiteRequested = websiteTopic && intake.ready && !buildStarted;
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\\n');
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
+const johnAiReply = r.recommended_reply;
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
 else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
@@ -161,6 +162,15 @@ try {
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
   if (nextQ && johnsOwnReply && !approvalNeeded && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
+// John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
+// If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.
+const normMsg = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+let lastAgentMsg = '';
+for (let i = histAll.length - 1; i >= 0; i--) if (histAll[i] && histAll[i].role === 'agent') { lastAgentMsg = String(histAll[i].content || ''); break; }
+if (r.recommended_reply && lastAgentMsg && normMsg(r.recommended_reply) === normMsg(lastAgentMsg)) {
+  const alts = [johnAiReply, rulesResult && rulesResult.recommended_reply].filter((a) => a && normMsg(a) !== normMsg(lastAgentMsg));
+  if (alts.length) { r.recommended_reply = alts[0]; fin.audit.push('reply_replaced:repeat'); }
+}
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
