@@ -226,7 +226,7 @@ function wbDetectGoal(text, mode) {
 }
 function wbGuessBusinessName(input, text) {
   if (input.company_name) return wbStr(input.company_name, 160);
-  var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.\n]| and | with | that | in | based |; )/);
+  var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from|(?:[Ii]t'?s|[Ii]t is|[Ii]ts|[Ii]t) called|(?:[Ii]t'?s|[Ii]t is) named|[Nn]ame is|business called|shop called|store called|restaurant called)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.!?\n]| and | with | that | in | based |; |\s*$)/);
   return m ? wbStr(m[1], 160) : null;
 }
 var WI_VERSION = 'website-intake-1.2.0';
@@ -320,9 +320,11 @@ function wbIntake(o) {
     site_purpose: 'What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?',
     contact: 'Which WhatsApp number or email should I send the mock-up link to?'
   };
+  var blocking = [];
+  for (var bi = 0; bi < missing.length; bi++) if (missing[bi] === 'business_name' || missing[bi] === 'contact') blocking.push(missing[bi]);
   var questions = [];
-  for (var i = 0; i < missing.length && questions.length < 3; i++) questions.push(q[missing[i]]);
-  var ready = intent && missing.length === 0;
+  for (var i = 0; i < blocking.length && questions.length < 3; i++) questions.push(q[blocking[i]]);
+  var ready = intent && blocking.length === 0;
   var first = wiClean(o.contact_name) ? String(o.contact_name).trim().split(' ')[0] : null;
   var greet = first ? 'Hi ' + first + ', ' : 'Hi, ';
   var reply;
@@ -343,7 +345,15 @@ function wbIntake(o) {
 }
 /** True when John already asked the intake questions in an earlier turn. */
 function wbIntakeInProgress(history) {
-  return wiAgentText(history).toLowerCase().indexOf('first mock-up built for you') !== -1;
+  var h = Array.isArray(history) ? history : [];
+  var lastAgent = -1;
+  for (var i = h.length - 1; i >= 0; i--) if (h[i] && h[i].role === 'agent') { lastAgent = i; break; }
+  if (lastAgent === -1 || String(h[lastAgent].content || '').toLowerCase().indexOf('first mock-up built for you') === -1) return false;
+  for (var k = 0; k < lastAgent; k++) {
+    if (!h[k] || h[k].role === 'agent') continue;
+    if (wiAsksForBuild(h[k].content) || wiAcceptedOffer(h.slice(0, k), h[k].content)) return true;
+  }
+  return false;
 }
 /** True when John already told this customer the build has started (marker in an agent turn). */
 function wbBuildAlreadyStarted(history) {

@@ -104,9 +104,14 @@ function wbIntake(o) {
     site_purpose: 'What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?',
     contact: 'Which WhatsApp number or email should I send the mock-up link to?'
   };
+  // Ryan, 2026-09-27: once the customer asks for a site and gives the business name, John starts the build at once.
+  // Website Intelligence researches what the business does, its customers and what the site needs; John never
+  // interviews the customer about it. Only the name (and, off WhatsApp, where to send the link) can hold the build.
+  var blocking = [];
+  for (var bi = 0; bi < missing.length; bi++) if (missing[bi] === 'business_name' || missing[bi] === 'contact') blocking.push(missing[bi]);
   var questions = [];
-  for (var i = 0; i < missing.length && questions.length < 3; i++) questions.push(q[missing[i]]);
-  var ready = intent && missing.length === 0;
+  for (var i = 0; i < blocking.length && questions.length < 3; i++) questions.push(q[blocking[i]]);
+  var ready = intent && blocking.length === 0;
   var first = wiClean(o.contact_name) ? String(o.contact_name).trim().split(' ')[0] : null;
   var greet = first ? 'Hi ' + first + ', ' : 'Hi, ';
   var reply;
@@ -128,7 +133,17 @@ function wbIntake(o) {
 }
 /** True when John already asked the intake questions in an earlier turn. */
 function wbIntakeInProgress(history) {
-  return wiAgentText(history).toLowerCase().indexOf('first mock-up built for you') !== -1;
+  // John is collecting mock-up details only if his LAST turn asked for them AND the customer really asked for a
+  // build earlier (or said yes to the offer). A wrong intake reply must not trap the chat (WhatsApp 2026-09-27).
+  var h = Array.isArray(history) ? history : [];
+  var lastAgent = -1;
+  for (var i = h.length - 1; i >= 0; i--) if (h[i] && h[i].role === 'agent') { lastAgent = i; break; }
+  if (lastAgent === -1 || String(h[lastAgent].content || '').toLowerCase().indexOf('first mock-up built for you') === -1) return false;
+  for (var k = 0; k < lastAgent; k++) {
+    if (!h[k] || h[k].role === 'agent') continue;
+    if (wiAsksForBuild(h[k].content) || wiAcceptedOffer(h.slice(0, k), h[k].content)) return true;
+  }
+  return false;
 }
 /** True when John already told this customer the build has started (marker in an agent turn). */
 function wbBuildAlreadyStarted(history) {
