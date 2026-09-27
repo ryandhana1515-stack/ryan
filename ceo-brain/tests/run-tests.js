@@ -932,6 +932,14 @@ test('the business name is enough: John starts the mock-up at once and Website I
   assert.strictEqual(b.ready_to_build, true, JSON.stringify(b.missing_for_build));
   assert.strictEqual(b.brief.site_type, 'business_website'); assert.ok(!/premium other/.test(b.build_prompt));
 });
+test('John never sends the same message twice in a row (Ryan, 2026-09-27)', () => {
+  const last = 'Hi Ryan, happy to get a first mock-up built for you. One thing I need: What is the name of your business?';
+  const raw = JSON.stringify({ schema_version: '1.0', lead_status: 'QUALIFYING', intent: 'ai_automation_enquiry', lead_temperature: 'warm', summary: 's', extracted: {}, missing_information: [], recommended_reply: 'No problem at all. Whenever you are ready, just tell me the name of the shop and our team will start on the mock-up straight away.', questions_to_ask: [], next_action: 'ask_qualifying_questions', follow_up_at: null, human_review_required: false, escalation_reasons: [], confidence: 0.8, reasoning: 'r' });
+  const run = simulate({ name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', source: 'whatsapp', message: 'just build it', test_mode: false, ai_mode: 'live', conversation_history: [{ role: 'customer', content: 'Can you build a website for my shop?' }, { role: 'agent', content: last }] }, { modelText: raw });
+  const norm = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  assert.notStrictEqual(norm(run.fin.result.recommended_reply), norm(last), run.fin.result.recommended_reply);
+  assert.ok(run.fin.audit.includes('reply_replaced:repeat'));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
