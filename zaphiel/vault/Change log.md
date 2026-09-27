@@ -224,3 +224,6 @@ tags: [zaphiel, changelog]
   blood vessels, it still must be able to do that"). Specialist clinics get the realistic anatomy photo plus a short
   Kling video from it (the heart beating, blood flowing through the arteries) that loops on its own in the hero, not
   tied to scrolling. Website Intelligence, the Creator's prompt and the build worker (live) updated. Tests 82/82.
+- 2026-09-27 (night) — **Deployed to n8n** (Ryan: "deploy it"): flat websites + the clinic anatomy loop are live in
+  Lead Intake (`749b3345`), Website Builder (`3c8618f3`) and Website Intelligence (`1817edc5`); six Code nodes,
+  byte-identical to the repo, published. No workflow was run (no build, no credits).
