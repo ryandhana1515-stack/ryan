@@ -5,6 +5,14 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **3D parallax scroll-film websites with Kling** (Ryan: "can we do the 3D parallax scrolling and connect
+  the Kling to make the most beautiful 3D parallax website video scrolling … connect the Kling"). Every mock-up is ONE
+  website: a Kling film of the business pinned in the hero and scrubbed by the scroll, layered depth parallax, sections
+  and CTAs over the film, on top of the high-converting sales structure (offer, headline, proof, objections, repeated
+  CTA). Clinics open on their realistic anatomy film. Kling makes the photos and the film, Lovable builds and publishes;
+  never Higgsfield. **Replaces the two flat-site entries below** ("One flat, high-converting website" and "Flat pages
+  keep the clinic anatomy").
+
 - 2026-09-27 — **John never goes silent; he listens to voice notes** (Ryan: "he didn't even say anything … let John
   listen to voice messages too … everything linked"). John always answers. Only money, contracts, refunds, legal,
   personal data, proposals and WON/LOST still wait for Ryan: the customer then hears that Ryan will reply personally,
