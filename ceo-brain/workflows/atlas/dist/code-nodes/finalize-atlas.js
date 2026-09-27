@@ -21,6 +21,7 @@ function atNeeded(o) {
   var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
   var company = atStr(o.company_name || ex.company_name, 160);
   if (!company) return false;
+  if (atArr(ex.desired_automation).indexOf('website_build') !== -1) return true;
   var wants = atArr(ex.desired_automation).filter(function (w) { return w !== 'website_build'; });
   var said = [o.message || '', o.history_text || ''].join('\n');
   var systemsNeed = wants.length > 0 || AT_EXPLICIT.test(said);

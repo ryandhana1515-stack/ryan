@@ -232,8 +232,9 @@ test('refund lead produces an approval task and email trigger', () => {
 test('logistics website lead is handed off to the Website Builder', () => {
   const run = simulate(fx('logistics-website.json'));
   assert.strictEqual(run.fin.website_requested, true);
-  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
-  assert.strictEqual(JSON.stringify(run.fin.response.handoffs), '["website-builder"]');
+  // Ryan, 2026-09-27: ATLAS joins every mock-up request for a named company.
+  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder","atlas"]');
+  assert.strictEqual(JSON.stringify(run.fin.response.handoffs), '["website-builder","atlas"]');
   assert.ok(run.fin.result.extracted.desired_automation.includes('website_build'), 'rules must tag website_build');
   assert.strictEqual(run.fin.result.extracted.industry, 'logistics');
   assert.strictEqual(run.fin.result.intent !== 'spam', true);
@@ -697,7 +698,8 @@ console.log('\n[13] ATLAS — EDG & CRM Systems Architect (agents/atlas/atlas.js
 const at = require('../agents/atlas/atlas.js');
 test('atNeeded: named company + systems need + a fact about today; never for a website-only or anonymous ask', () => {
   assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['whatsapp_auto_reply'], problem: 'agents do not follow up' } }), true);
-  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['website_build'], problem: 'no enquiries' } }), false, 'website only');
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['website_build'], problem: 'no enquiries' } }), true, 'a named company asking for a website brings ATLAS in (Ryan, 2026-09-27)');
+  assert.strictEqual(at.atNeeded({ extracted: { desired_automation: ['website_build'] } }), false, 'no company name, no ATLAS');
   assert.strictEqual(at.atNeeded({ company_name: '', extracted: { desired_automation: ['crm_sync'], problem: 'x' } }), false, 'no company');
   assert.strictEqual(at.atNeeded({ company_name: 'ABC', extracted: { desired_automation: ['crm_sync'], lead_sources: ['website'] } }), false, 'nothing known about today');
   assert.strictEqual(at.atNeeded({ company_name: 'ABC', extracted: { current_tools: ['Spreadsheets'] }, message: 'we need a CRM' }), true, 'explicit CRM ask');
@@ -939,6 +941,21 @@ test('John never sends the same message twice in a row (Ryan, 2026-09-27)', () =
   const norm = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   assert.notStrictEqual(norm(run.fin.result.recommended_reply), norm(last), run.fin.result.recommended_reply);
   assert.ok(run.fin.audit.includes('reply_replaced:repeat'));
+});
+test('what Google cannot find goes back to John: he asks the customer at once (max 2, never repeated) and ATLAS questions come after (Ryan, 2026-09-27)', () => {
+  const inputBase = { channel: 'whatsapp', phone: '+6587587170', contact_name: 'Ryan Dhana', company_name: 'Free & Easy Minimart', lead_id: 'lead_1', message: 'build a website', conversation: [], test_mode: false };
+  const ask = wr.wrCustomerAsk({ needs_john: true, questions: ['Which products or categories should we feature first?', 'What are your opening hours?', 'Do you deliver?'], input: inputBase });
+  assert.strictEqual(ask.send, true); assert.strictEqual(ask.questions.length, 2); assert.strictEqual(ask.to, '+6587587170');
+  assert.ok(/while our team builds your Free & Easy Minimart mock-up/.test(ask.text) && /placeholders/.test(ask.text), ask.text);
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { test_mode: true }) }).send, false, 'never on test leads');
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { channel: 'web_chat' }) }).send, false, 'web chat: John asks in his next reply instead');
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: false, questions: [], input: inputBase }).send, false);
+  const at = require('../agents/atlas/atlas.js');
+  const rows = [{ task_type: 'edg_design', payload_json: JSON.stringify({ questions_for_john: ['When a new enquiry comes in, who replies first?'] }) }, { task_type: 'website_info_needed', payload_json: JSON.stringify({ questions_for_john: ['What are your opening hours?', 'Do you deliver?'] }) }, { task_type: 'follow_up', payload_json: '{}' }];
+  const qs = at.atQuestionsFromRows(rows);
+  assert.deepStrictEqual(qs, ['What are your opening hours?', 'Do you deliver?', 'When a new enquiry comes in, who replies first?'], 'website details first, then ATLAS');
+  const hist = [{ role: 'agent', content: ask.text }];
+  assert.strictEqual(at.atNextQuestion(qs, hist), 'Do you deliver?', 'already-asked questions are skipped');
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
