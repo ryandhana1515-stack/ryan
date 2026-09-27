@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:30:35.839Z
+updated: 2026-09-27T17:53:22.684Z
 tags: [lead]
 ---
 # Ryan
@@ -111,3 +111,10 @@ _Summary:_ Ryan runs Free & Easy Minimart, a minimart/retail business, and has a
 **John:** Hi Ryan, perfect, I have what I need for Free & Easy Minimart. Our website team is building your first mock-up now, in two versions for you to compare: a photo-led site and a cinematic scroll film site (our premium option). I will send both links to +6587587170 in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.
 
 _Summary:_ Ryan of Free & Easy Minimart has asked three times to build a website for his company. He has already given the business name. Previous agent replies incorrectly asked him for pages/features instead of starting the build, which should have started as soon as the name was given.
+
+### 2026-09-27 17:53 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: atlas · anthropic
+**Prospect:** Hi can I get more info of this
+
+**John:** Hi Ryan, good news, the first mock-up for Free & Easy Minimart is already being put together and the link will land here shortly. While that's underway, a bit more info on FusionTech: we build an AI workforce around how a business already runs, answering enquiries on WhatsApp and your website instantly, following up leads, and keeping everything in one place for you to see. For a minimart, that could mean handling customer enquiries or orders automatically. What's the one task that takes up most of your team's time day to day? One more question so we get this right for you: What does Free & Easy Minimart actually sell, and do customers only walk into the store, or can they also order for delivery / bulk / wholesale?
+
+_Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a website; the business name was already given and the agent already confirmed the mock-up was being built and links would follow. Ryan has now written back asking for more info, likely because the earlier repeated questions and the two-version mock-up message caused confusion.
