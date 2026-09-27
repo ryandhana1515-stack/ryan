@@ -5,6 +5,18 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **Apple-grade websites; ATLAS speaks; Website Intelligence searches wider** (Ryan: "as premium as Apple
+  videos but as a website … premium golden website with parallax, with 3D videos … make sure Atlas knows Atlas can talk
+  and then John also can talk … the website intelligence … can search every single thing on Google … the website
+  creator … many types of parallax video scrollings"). (1) Every mock-up meets an Apple-grade standard and uses 5–6
+  scroll effects chosen for the business from a library (pinned film scrub, product reveal, zoom-through, depth
+  parallax, sticky scrollytelling, text-mask reveal, horizontal gallery, split reveal, proof in motion, a premium golden
+  light-sweep finish with champagne-gold accents for premium brands). (2) In the customer chat ATLAS asks its own
+  questions in its own name ("ATLAS, our systems architect, would like to know: …"); John leads the conversation and
+  keeps Website Intelligence's questions as his own. (3) Website Intelligence reads the customer's own description first,
+  then searches wider: company, location, reviews, socials, maps listing, services, market and competitors, and reads up
+  to five pages of their site.
+
 - 2026-09-27 — **3D parallax scroll-film websites with Kling** (Ryan: "can we do the 3D parallax scrolling and connect
   the Kling to make the most beautiful 3D parallax website video scrolling … connect the Kling"). Every mock-up is ONE
   website: a Kling film of the business pinned in the hero and scrubbed by the scroll, layered depth parallax, sections

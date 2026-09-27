@@ -72,7 +72,7 @@ const codePickPages = `${pick(HELPERS.concat(['WR_PAGE_RE', 'WR_MAX_PAGE_TEXT', 
 const id = $('Identify Company').first().json;
 const page = wrFetchedPage($input.first(), id.homepage_url);
 let urls = [];
-if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 3); }
+if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 5); }
 if (!urls.length) return [{ json: { url: '', skip: true, homepage_ok: page.ok } }];
 return urls.map((u) => ({ json: { url: u, skip: false, homepage_ok: page.ok } }));
 `;

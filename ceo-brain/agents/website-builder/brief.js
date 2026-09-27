@@ -10,7 +10,7 @@ var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_ap
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
 var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'construction', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
-var WB_MAX_PROMPT = 12000;
+var WB_MAX_PROMPT = 14000;
 var WB_STRATEGY_MARK = 'STRATEGY FROM WEBSITE INTELLIGENCE (follow it):';
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
 
@@ -35,6 +35,39 @@ var WB_CINEMATIC = [
   'Every section has a visual: photo, product/vehicle shot, showroom, team or detail; text-only sections are not allowed except legal.',
   'Placeholders for the customer\'s own photos are labelled, but the mock-up itself ships with the generated photography so it already looks finished.'
 ];
+
+// Apple-grade standard (Ryan, 2026-09-27: "as premium as Apple videos but as a website … premium golden website with
+// parallax, with 3D videos … many types of parallax video scrollings").
+var WB_APPLE = 'Apple-grade: one idea per screen, huge confident headlines in few words, generous breathing room, the product or the business as the hero under cinematic light, pixel-precise spacing and alignment, silky 60fps scrolling (GSAP ScrollTrigger with Lenis smooth scroll), a premium finish everywhere.';
+// The scroll-effect library the creator picks from; every effect is built from the Kling film and photos and serves the sale.
+var WB_SCROLL_EFFECTS = {
+  film_scrub: 'Pinned hero film: the Kling film fills the screen and plays forward as the visitor scrolls (video currentTime from scroll progress)',
+  product_reveal: 'Product reveal: the hero subject stays pinned and turns, zooms or opens into an exploded view as the visitor scrolls, like an Apple product page',
+  zoom_through: 'Zoom-through: the camera pushes into an image until it becomes the next section',
+  depth_layers: 'Depth parallax: foreground, subject and background layers move at different speeds with a slight 3D perspective tilt',
+  sticky_story: 'Sticky scrollytelling: the visual stays pinned while short benefit lines change beside it, step by step',
+  text_mask: 'Text-mask reveal: a huge headline with the film playing inside the letters that opens to full screen',
+  horizontal_gallery: 'Horizontal gallery: a pinned section that scrolls sideways through products, rooms or projects',
+  split_reveal: 'Split reveal: two panels slide apart to reveal the offer and its call to action',
+  stat_counters: 'Proof in motion: numbers and review stars count up and cards scale in as they enter (placeholders until confirmed)',
+  light_sweep: 'Premium golden finish: a slow light sweep across the hero type and accents; champagne-gold accents for premium and luxury brands, otherwise the brand colours'
+};
+var WB_EFFECTS_BY_CATEGORY = {
+  automotive: ['film_scrub', 'product_reveal', 'depth_layers', 'horizontal_gallery', 'light_sweep'],
+  property: ['film_scrub', 'zoom_through', 'depth_layers', 'horizontal_gallery', 'split_reveal', 'light_sweep'],
+  healthcare: ['film_scrub', 'zoom_through', 'sticky_story', 'stat_counters', 'split_reveal'],
+  food_beverage: ['film_scrub', 'product_reveal', 'text_mask', 'horizontal_gallery', 'depth_layers', 'light_sweep'],
+  retail: ['film_scrub', 'product_reveal', 'horizontal_gallery', 'text_mask', 'light_sweep'],
+  beauty: ['film_scrub', 'text_mask', 'depth_layers', 'sticky_story', 'light_sweep'],
+  technology: ['film_scrub', 'product_reveal', 'sticky_story', 'stat_counters', 'split_reveal'],
+  construction: ['film_scrub', 'zoom_through', 'sticky_story', 'horizontal_gallery', 'stat_counters'],
+  other: ['film_scrub', 'depth_layers', 'sticky_story', 'text_mask', 'stat_counters', 'light_sweep']
+};
+/** The Apple-style scroll effects for this business (5–6, always starting with the pinned film). */
+function wbEffectsFor(category) {
+  var keys = WB_EFFECTS_BY_CATEGORY[category] || WB_EFFECTS_BY_CATEGORY.other;
+  return keys.map(function (k) { return { key: k, text: WB_SCROLL_EFFECTS[k] }; });
+}
 
 // Design intelligence: a defensible visual direction per business category. The model may refine
 // these from the customer's words; the fallback uses them as-is. Nothing here is a fact about the customer.
@@ -363,8 +396,9 @@ function wbBuildPrompt(brief, input) {
   var lines = [];
   lines.push('Build a premium ' + brief.site_type.replace(/_/g, ' ') + ' for ' + name + ' (' + industry + ', Singapore). It must look like an agency-grade site produced by a brand strategist, UX/UI designer, copywriter, art director and front-end engineer — never an AI template.');
   lines.push('Primary goal: ' + brief.primary_goal + (brief.audience ? '. Audience: ' + brief.audience : '') + '.');
-  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: ' + d.motion + '; 3D parallax scroll film (Kling film scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
+  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: Apple-grade 3D parallax scroll film (Kling film scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
   lines.push('Look and feel (mandatory): ' + WB_CINEMATIC.join(' '));
+  lines.push(WB_APPLE + ' Scroll effects to build (from the Kling film and photos, each one serving the sale): ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
   lines.push('Never use: ' + WB_ANTI_GENERIC.join('; ') + '.');
   lines.push('Pages: ' + brief.pages.map(function (p) { return p.name + (p.purpose ? ' (' + p.purpose + ')' : ''); }).join('; ') + '.');
   if (brief.features.length) lines.push('Features: ' + brief.features.join('; ') + '.');
@@ -423,7 +457,7 @@ function wbImageShots(brief, input) {
 }
 /** One 3D parallax scroll-film website per mock-up (Ryan, 2026-09-27; replaces ADR-2's two variations and the flat rule). Kling makes the film and photos, Lovable builds and publishes; never Higgsfield. */
 var WB_VARIATIONS = [
-  { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One high-converting website with a Kling film of the business scrubbed by the scroll and layered 3D depth parallax, Kling photography and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27).' }
+  { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One Apple-grade, high-converting website with a Kling film of the business scrubbed by the scroll, layered 3D depth parallax and a set of premium scroll effects, Kling photography and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27).' }
 ];
 /** Scenes for variation A single-take film (no text, no logos; the business own world). */
 function wbFilmBrief(brief, input) {
@@ -529,4 +563,4 @@ function finalizeBrief(opts) {
 }
 
 // ---- Node module wrapper (stripped by build.js) ----
-module.exports = { WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };
+module.exports = { WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_APPLE, WB_SCROLL_EFFECTS, WB_EFFECTS_BY_CATEGORY, wbEffectsFor, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };

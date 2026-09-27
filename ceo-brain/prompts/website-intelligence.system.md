@@ -8,6 +8,7 @@ ONE JSON object and nothing else (no prose, no markdown fences) with exactly the
 {{BRIEF_KEYS}}
 
 Rules for filling it:
+- Read the customer's own words first (Ryan, 2026-09-27: "know what the customer wants instantly"): from their description in the hand-off and conversation, state in `business_summary` what they sell, to whom, and what they want the website to achieve, and infer the `industry` from their words when John did not give one. Then use the whole search pass (company, location, reviews, socials, maps listing, services, market, competitors) to confirm and deepen it.
 - Facts only from the digest and John's hand-off. Every claim you cannot point to in the digest goes to `unverified_information` or `placeholders_required` with the words "[CLIENT TO PROVIDE]". Never invent testimonials, awards, certifications, customer counts, years operating, revenue, results, prices, addresses or team members (list them in `do_not_invent`).
 - `identity_confidence`: high only when the digest says the website was given by John or the customer; medium when search identified it; low when unsure — then use no facts from that site and put the question in `questions_for_john`.
 - `questions_for_john`: at most 3, only for things research could not answer and that change the design. John decides whether to ask the customer. Do not repeat what the hand-off already answers.

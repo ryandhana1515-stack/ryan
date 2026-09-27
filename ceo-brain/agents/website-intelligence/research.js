@@ -114,9 +114,12 @@ function wrQueries(input) {
   var q = [
     { key: 'name', query: name },
     { key: 'name_location', query: name + ' ' + loc },
-    { key: 'reviews', query: name + ' reviews' }
+    { key: 'reviews', query: name + ' reviews' },
+    // Wider Google pass (Ryan, 2026-09-27: "search every single thing on Google"): socials, maps listing, competitors.
+    { key: 'socials', query: name + ' ' + loc + ' instagram facebook' },
+    { key: 'maps', query: name + ' ' + loc + ' address opening hours' }
   ];
-  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); }
+  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); q.push({ key: 'competitors', query: 'top ' + svc + ' ' + loc + ' reviews' }); }
   return q;
 }
 
@@ -146,7 +149,7 @@ function wrIdentify(input, results) {
   var toks = wrTokens(input.company_name);
   var scored = {};
   (results || []).forEach(function (r) {
-    if (['name', 'name_location', 'name_service'].indexOf(r.query_key) === -1 && r.query_key) return;
+    if (['name', 'name_location', 'name_service', 'socials'].indexOf(r.query_key) === -1 && r.query_key) return;
     var host = wrHost(r.url); if (!host) return;
     if (wrIsSocial(host)) { if (out.socials.indexOf(r.url) === -1 && out.socials.length < 5) out.socials.push(r.url); return; }
     if (wrIsDirectory(host)) return;
@@ -249,9 +252,9 @@ function wrDigest(o) {
   var competitors = [], reviews = [], market = [];
   results.forEach(function (r) {
     var h = wrHost(r.url); if (!h) return;
-    if (r.query_key === 'reviews' && (r.snippet || r.title)) { if (reviews.length < 6) reviews.push({ source: r.url, text: wrStr(r.title + ' — ' + r.snippet, 300) }); return; }
-    if ((r.query_key === 'market' || r.query_key === 'buyer_intent') && h !== host && !wrIsSocial(h) && !wrIsDirectory(h)) { if (!competitors.some(function (c) { return wrHost(c.url) === h; }) && competitors.length < 5) competitors.push({ name: r.title, url: r.url, snippet: r.snippet }); return; }
-    if ((r.query_key === 'market' || r.query_key === 'buyer_intent') && wrIsDirectory(h) && market.length < 4) market.push(wrStr(r.title + ' — ' + r.snippet, 200));
+    if ((r.query_key === 'reviews' || r.query_key === 'maps') && (r.snippet || r.title)) { if (reviews.length < 8) reviews.push({ source: r.url, text: wrStr(r.title + ' — ' + r.snippet, 300) }); return; }
+    if ((r.query_key === 'market' || r.query_key === 'buyer_intent' || r.query_key === 'competitors') && h !== host && !wrIsSocial(h) && !wrIsDirectory(h)) { if (!competitors.some(function (c) { return wrHost(c.url) === h; }) && competitors.length < 6) competitors.push({ name: r.title, url: r.url, snippet: r.snippet }); return; }
+    if ((r.query_key === 'market' || r.query_key === 'buyer_intent' || r.query_key === 'competitors') && wrIsDirectory(h) && market.length < 5) market.push(wrStr(r.title + ' — ' + r.snippet, 200));
   });
   reviews.forEach(function (rv) { push('Public mention: ' + rv.text, 'THIRD_PARTY_PUBLIC_INFORMATION', rv.source); });
   identity.socials.forEach(function (s) { push('Official social profile (found in search): ' + s, 'THIRD_PARTY_PUBLIC_INFORMATION', s); });

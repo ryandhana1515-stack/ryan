@@ -574,7 +574,7 @@ test('hand-off → input, queries, identity: the customer\'s URL wins; without o
   const input = wr.wrInput(WR_HANDOFF);
   assert.strictEqual(input.website, 'https://prestigemotors.sg'); assert.strictEqual(input.website_source, 'customer_words'); assert.strictEqual(input.location, 'Singapore');
   const qs = wr.wrQueries(input).map((q) => q.key);
-  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'name_service', 'market', 'buyer_intent']);
+  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'name_service', 'market', 'buyer_intent', 'competitors'], 'wider Google pass (Ryan, 2026-09-27)');
   assert.strictEqual(wr.wrIdentify(input, []).confidence, 'high');
   const noUrl = wr.wrInput(Object.assign({}, WR_HANDOFF, { message: 'mock-up please' }));
   const results = wr.wrSearchItems([{ json: { query_key: 'name', results: [{ title: 'Prestige Motors Singapore | BMW', url: 'https://prestigemotors.sg/', description: 'official' }, { title: 'Prestige Motors | Facebook', url: 'https://www.facebook.com/pm' }, { title: 'Prestige Motors reviews', url: 'https://www.google.com/maps/x' }] } }]);
@@ -764,7 +764,7 @@ test('Lead Intake: John adds ATLAS\'s next question to his own reply, once', () 
   const rows = [{ task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'] }) }];
   const run = simulate(fx('john-tan.json'), { atlasRows: rows });
   assert.strictEqual(run.fin.atlas_question, 'Which accounting or invoicing software do you use (for example Xero or QuickBooks)?');
-  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get this right for you: Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'));
+  assert.ok(run.fin.result.recommended_reply.endsWith('ATLAS, our systems architect, would like to know: Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'), 'ATLAS speaks in its own name (Ryan, 2026-09-27)');
   const asked = Object.assign({}, fx('john-tan.json'), { conversation_history: [{ role: 'customer', content: 'hi' }, { role: 'agent', content: run.fin.result.recommended_reply }] });
   const again = simulate(asked, { atlasRows: rows });
   assert.strictEqual(again.fin.atlas_question, null, 'never asked twice');
@@ -1060,6 +1060,25 @@ test('a money question gets a holding reply now and John\'s draft goes to Ryan',
 test('test leads still never send', () => {
   const run = simulate(Object.assign({}, waLead, { message: 'hi', test_mode: true }), { modelText: JSON.stringify(aiObj()), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(run.fin.auto_send, false);
+});
+console.log('\n[19] Apple-grade websites, ATLAS in its own voice, a wider Google pass (Ryan, 2026-09-27)');
+test('the creator asks Lovable for an Apple-grade site with a set of scroll effects and a premium golden finish', () => {
+  const auto = wb.wbEffectsFor('automotive').map((e) => e.key);
+  assert.strictEqual(auto[0], 'film_scrub'); assert.ok(auto.length >= 5 && auto.includes('product_reveal') && auto.includes('light_sweep'));
+  assert.strictEqual(wb.wbEffectsFor('unknown_category')[0].key, 'film_scrub');
+  Object.keys(wb.WB_EFFECTS_BY_CATEGORY).forEach((c) => wb.WB_EFFECTS_BY_CATEGORY[c].forEach((k) => assert.ok(wb.WB_SCROLL_EFFECTS[k], c + ':' + k)));
+  const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Prestige Motors', industry: 'BMW car dealership', message: 'I want a website for my BMW showroom' } });
+  const p = out.build_prompt;
+  assert.ok(/Apple-grade/.test(p) && /Pinned hero film/.test(p) && /Product reveal/.test(p) && /Premium golden finish/.test(p) && /Lenis/.test(p), p.slice(0, 2500));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT);
+});
+test('website questions stay John\'s; only ATLAS\'s own questions are asked in ATLAS\'s name', () => {
+  const rows = [{ task_type: 'website_info_needed', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['What are your opening hours?'] }) }, { task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting software do you use?'] }) }];
+  const run = simulate(fx('john-tan.json'), { atlasRows: rows });
+  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get your website right: What are your opening hours?'), run.fin.result.recommended_reply);
+  const at = require('../agents/atlas/atlas.js');
+  assert.strictEqual(at.atIsAtlasQuestion('Which accounting software do you use?', rows), true);
+  assert.strictEqual(at.atIsAtlasQuestion('What are your opening hours?', rows), false);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
