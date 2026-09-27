@@ -1,9 +1,9 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-09-27T15:36:24.277Z
+updated: 2026-09-27T16:07:01.934Z
 ---
-# Management view — Sun, 27 Sept, 11:36 pm SGT
+# Management view — Mon, 28 Sept, 12:07 am SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
@@ -14,17 +14,20 @@ updated: 2026-09-27T15:36:24.277Z
 | Open tasks | 15 |
 | Approvals waiting | 4 |
 | Exceptions open | 0 |
-| Website builds | building 1 · built 2 · failed 0 |
-| Agent runs 24 h | 63 (failed 0, AI fallback 8) |
+| Website builds | building 1 · built 3 · failed 0 |
+| Agent runs 24 h | 60 (failed 0, AI fallback 5) |
 | Test leads excluded | 22 |
 
-## Unresolved (5, 1 high)
+## Unresolved (6, 1 high)
 
 ### Approvals waiting (4)
-- **APPROVAL: build MEDICAL business website for Dashboard tester** · 46 h · `task_web_lead_dash_v2medtest1`
+- **APPROVAL: build MEDICAL business website for Dashboard tester** · 47 h · `task_web_lead_dash_v2medtest1`
 - APPROVAL: Ryan — ask qualifying questions · 1 h · `task_mujy2u7k7vj21`
-- ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart · 0 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
-- REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n · 0 h · `task_evt_3lrywe`
+- ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart · 1 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
+- REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n · 1 h · `task_evt_3lrywe`
+
+### Overdue follow-ups (1)
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 0 h · `task_mujz6ojo5a82r`
 
 ### AI fallback (1)
-- 8 run(s) used the rule fallback (AI unavailable)
+- 5 run(s) used the rule fallback (AI unavailable)
