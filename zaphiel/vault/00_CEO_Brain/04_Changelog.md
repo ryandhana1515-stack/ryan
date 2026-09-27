@@ -20,3 +20,13 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   Orchestrator, John, Website Intelligence, Workflow Automation, Data/BI, Security/QA and the registries).
   [[10_Agents/07_CRM_Architect]] already exists, so no separate ATLAS note: the merge (ATLAS becomes the upgraded
   07) is proposed to Ryan and waits for his OK. John already has a note ([[10_Agents/02_Sales_CRM]]), so no stub.
+- 2026-09-27 — **ATLAS DISCOVERY MODE added** (Ryan's text, verbatim; diff shown and approved: "save it").
+  `.claude/agents/atlas.md`: DISCOVERY MODE added to the modes list and as a full section (D0–D13) right after
+  OPERATING MODES; the identity line now reads "In DESIGN / BUILD / AUDIT mode you work behind John. In DISCOVERY MODE
+  you may speak with the customer directly (or with Ryan relaying the customer's answers), OR give John the next
+  questions to ask." Nothing else changed. New playbook note [[10_Agents/ATLAS_Discovery_Playbook]] (linked to 07 ATLAS,
+  02 John, 05a Website Intelligence, 01 Discovery, 15 Security/QA — Ryan's names `07_ATLAS_EDG_CRM_Architect` and
+  `John_Customer_Facing_Agent` do not exist, so the real notes are linked). New template folder
+  `80_Clients/_TEMPLATE_Client/edg/discovery/` (00–05 + `DISCOVERY_BRIEF.json`). ADR-4 amended (narrows ADR-3 for ATLAS's
+  discovery conversations). The live n8n ATLAS reads the agent file too; it keeps running DESIGN mode only.
+  Start: `Use the atlas agent in DISCOVERY mode. New customer: <name/website or "no info">. I'll paste their replies.`
