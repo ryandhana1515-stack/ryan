@@ -18,6 +18,17 @@ var PP_ESCALATE_ON_MESSAGE = [
   [/\b(delete my (data|account)|gdpr|pdpa)\b/i, 'customer_data_request'],
   [/\b(pay(ment)?|invoice|deposit|bank transfer|paynow)\b/i, 'customer_mentions_payment']
 ];
+var PP_HOLD_REASON = /^(reply_|customer_requests_refund|customer_mentions_(contract|legal|payment)|customer_requests_price_commitment|customer_data_request|proposal_or_pricing|ai_attempted_|close_lost)/;
+function ppMustHold(result) {
+  var reasons = (result && result.escalation_reasons) || [];
+  for (var i = 0; i < reasons.length; i++) if (PP_HOLD_REASON.test(String(reasons[i]))) return true;
+  return !!(result && result.next_action === 'request_proposal_approval');
+}
+/** What the customer hears while Ryan handles a held question: no commitment, no silence. */
+function ppHoldingReply(lead) {
+  var first = String((lead && lead.contact_name) || '').trim().split(/\s+/)[0];
+  return 'Thanks' + (first ? ' ' + first : '') + ', that one is for our founder Ryan, so I have passed it to him and he will reply to you here personally. Is there anything else I can help with in the meantime?';
+}
 var PP_FOLLOW_UP_HOURS = { HOT: 4, PROPOSAL_REQUIRED: 8, HUMAN_REVIEW: 2, QUALIFIED: 24, QUALIFYING: 48, CONTACTED: 48, NEW: 24, FOLLOW_UP: 72, WON: null, LOST: null };
 function ppStripFences(text) {
   var s = String(text || '').trim();
@@ -437,7 +448,7 @@ if (fin.provider !== 'rules' && r.recommended_reply && JOHN_DONT_KNOW.test(r.rec
 const approvalNeeded = r.human_review_required || r.next_action === 'request_proposal_approval';
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
-const autoSend = !approvalNeeded && ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
+const holdForRyan = approvalNeeded && ppMustHold(r);
 // Website intake + hand-off (Ryan, 2026-09-25: zero approvals). When the customer asks for a site or a
 // mock-up, John collects the four details; once he has them the Website Builder is called and builds.
 const notPitch = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch';
@@ -451,8 +462,8 @@ const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => Strin
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
 const johnAiReply = r.recommended_reply;
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
-if (websiteTopic && intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply) r.recommended_reply = intake.reply;
-else if (websiteTopic && !intake.intent && !buildStarted && !approvalNeeded && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
+if (websiteTopic && intake.intent && !buildStarted && !holdForRyan && r.recommended_reply) r.recommended_reply = intake.reply;
+else if (websiteTopic && !intake.intent && !buildStarted && !holdForRyan && r.recommended_reply && !/mock-?up made for your business/i.test(r.recommended_reply)) r.recommended_reply = r.recommended_reply.trim() + ' ' + intake.offer;
 // John asks ATLAS's questions himself (Ryan, 2026-09-26): one unasked question per normal reply, never on a
 // website-intake turn, an offer turn or a reply waiting for approval.
 let atlasQuestion = null;
@@ -460,7 +471,7 @@ try {
   const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
   const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
-  if (nextQ && johnsOwnReply && !approvalNeeded && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
+  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.
@@ -471,6 +482,17 @@ if (r.recommended_reply && lastAgentMsg && normMsg(r.recommended_reply) === norm
   const alts = [johnAiReply, rulesResult && rulesResult.recommended_reply].filter((a) => a && normMsg(a) !== normMsg(lastAgentMsg));
   if (alts.length) { r.recommended_reply = alts[0]; fin.audit.push('reply_replaced:repeat'); }
 }
+// John never goes silent (Ryan, 2026-09-27). Only money, contracts, refunds, legal, personal data, proposals and WON/LOST
+// wait for Ryan: the customer then hears that Ryan will answer personally, and John's draft goes to Ryan in the task.
+if (holdForRyan) {
+  if (r.recommended_reply) r.summary = r.summary + ' | Draft from John (not sent): ' + r.recommended_reply;
+  r.recommended_reply = ppHoldingReply(ctx.lead);
+  fin.audit.push('reply_held_for_ryan:holding_reply_sent');
+} else if (!r.recommended_reply && rulesResult && rulesResult.recommended_reply) {
+  r.recommended_reply = rulesResult.recommended_reply;
+  fin.audit.push('reply_from_rules:empty_reply');
+}
+const autoSend = ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {

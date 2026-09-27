@@ -66,7 +66,7 @@ function waBuildPayload(o) {
   return { payload: payload, history_count: history.length, known_lead: !!leadRow.lead_id };
 }
 // ---- n8n glue ----
-const wa = $('Prepare Message').first().json;
-const leadRow = ($('Find Lead by Phone').first() && $('Find Lead by Phone').first().json) || {};
-const rows = $input.all().map((i) => i.json);
-return [{ json: waBuildPayload({ wa, leadRow, rows }) }];
+// Text branch: the input is the extracted message. Voice branch: the input is the transcription ({ text }).
+const wa = $('Extract WhatsApp Message').first().json;
+const inp = ($input.first() && $input.first().json) || {};
+return [{ json: waMessageFrom(wa, inp.text) }];

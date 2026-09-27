@@ -1,6 +1,18 @@
 var WA_DEFAULT_TENANT = 'fusiontech';
 var WA_NEW_CHAT_RE = /^\s*(#\s*)?(new\s*chat|reset(\s*chat)?|start\s+(a\s+)?new\s+chat)\s*[.!]*\s*$/i;
 var WA_NEW_CHAT_REPLY = 'New chat started. Everything before this is forgotten, so message me as a new customer.';
+var WA_VOICE_UNCLEAR = '(The customer sent a voice message, but it could not be heard clearly. Kindly ask them to send it again or type it.)';
+/** The message John reads: the typed text, or the transcript of a voice note. Never empty for a voice note. */
+function waMessageFrom(wa, transcript) {
+  wa = wa || {};
+  var isVoice = wa.type === 'audio' || wa.type === 'voice';
+  var spoken = isVoice ? String(transcript || '').replace(/\s+/g, ' ').trim() : '';
+  return {
+    from: wa.from || '', phone: wa.phone || '', name: wa.name || '', wa_message_id: wa.wa_message_id || '', wa_timestamp: wa.wa_timestamp || '',
+    type: wa.type || 'text', voice: isVoice, spoken: spoken,
+    text: isVoice ? (spoken || WA_VOICE_UNCLEAR) : String(wa.text || '')
+  };
+}
 function waIsNewChat(text) { return WA_NEW_CHAT_RE.test(String(text || '')); }
 /** The ceo_leads row that starts a fresh conversation on this number: new lead_key and lead_id, status NEW. */
 function waNewChatLead(o) {
@@ -54,7 +66,7 @@ function waBuildPayload(o) {
   return { payload: payload, history_count: history.length, known_lead: !!leadRow.lead_id };
 }
 // ---- n8n glue ----
-const wa = $('Extract WhatsApp Message').first().json;
+const wa = $('Prepare Message').first().json;
 const leadRow = ($('Find Lead by Phone').first() && $('Find Lead by Phone').first().json) || {};
 const newChat = waIsNewChat(wa.text);
 return [{ json: { new_chat: newChat, phone: wa.phone, new_lead: newChat ? waNewChatLead({ tenant_id: leadRow.tenant_id, phone: wa.phone, name: wa.name }) : null, reply: WA_NEW_CHAT_REPLY } }];

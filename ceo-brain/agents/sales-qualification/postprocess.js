@@ -29,6 +29,21 @@ var PP_ESCALATE_ON_MESSAGE = [
   [/\b(pay(ment)?|invoice|deposit|bank transfer|paynow)\b/i, 'customer_mentions_payment']
 ];
 
+// Replies that must wait for Ryan (money, contracts, refunds, legal, personal data, proposals, WON/LOST). Any other
+// reason to involve Ryan never silences John: he still answers and Ryan is told (Ryan, 2026-09-27: "he didn't even say
+// anything").
+var PP_HOLD_REASON = /^(reply_|customer_requests_refund|customer_mentions_(contract|legal|payment)|customer_requests_price_commitment|customer_data_request|proposal_or_pricing|ai_attempted_|close_lost)/;
+function ppMustHold(result) {
+  var reasons = (result && result.escalation_reasons) || [];
+  for (var i = 0; i < reasons.length; i++) if (PP_HOLD_REASON.test(String(reasons[i]))) return true;
+  return !!(result && result.next_action === 'request_proposal_approval');
+}
+/** What the customer hears while Ryan handles a held question: no commitment, no silence. */
+function ppHoldingReply(lead) {
+  var first = String((lead && lead.contact_name) || '').trim().split(/\s+/)[0];
+  return 'Thanks' + (first ? ' ' + first : '') + ', that one is for our founder Ryan, so I have passed it to him and he will reply to you here personally. Is there anything else I can help with in the meantime?';
+}
+
 var PP_FOLLOW_UP_HOURS = { HOT: 4, PROPOSAL_REQUIRED: 8, HUMAN_REVIEW: 2, QUALIFIED: 24, QUALIFYING: 48, CONTACTED: 48, NEW: 24, FOLLOW_UP: 72, WON: null, LOST: null };
 
 function ppStripFences(text) {
@@ -213,4 +228,4 @@ if (typeof module !== 'undefined' && typeof require === 'function' && typeof CB_
   global.CB_OUTPUT_SCHEMA = require('../../schemas/sales-qualification-output.schema.json');
   global.CB_LEAD_STATUS = require('../../schemas/lead-status.json');
 }
-module.exports = { finalizeResult: finalizeResult, ppParse: ppParse, ppValidate: ppValidate, ppCoerce: ppCoerce, PP_VERSION: PP_VERSION };
+module.exports = { ppMustHold: ppMustHold, ppHoldingReply: ppHoldingReply, PP_HOLD_REASON: PP_HOLD_REASON, finalizeResult: finalizeResult, ppParse: ppParse, ppValidate: ppValidate, ppCoerce: ppCoerce, PP_VERSION: PP_VERSION };

@@ -5,6 +5,13 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **John never goes silent; he listens to voice notes** (Ryan: "he didn't even say anything … let John
+  listen to voice messages too … everything linked"). John always answers. Only money, contracts, refunds, legal,
+  personal data, proposals and WON/LOST still wait for Ryan: the customer then hears that Ryan will reply personally,
+  and John's draft goes to Ryan. Anything else John flags (for example a late mock-up) is answered at once and Ryan is
+  told. WhatsApp voice notes are transcribed (OpenAI speech-to-text on n8n credits) and John reads them like text;
+  an unclear note gets a kind "please send it again or type it". Refines the 2026-09-25 "low-risk replies auto-send".
+
 - 2026-09-27 — **Flat pages keep the clinic anatomy: arteries, heartbeat, blood vessels** (Ryan: "can we build all the
   arteries, all the heartbeats, all those blood vessels, it still must be able to do that"). Specialist clinics still
   open on photorealistic, medically accurate anatomy (for a heart clinic: the heart beating, coronary arteries,
