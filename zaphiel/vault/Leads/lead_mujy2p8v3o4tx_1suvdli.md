@@ -4,14 +4,14 @@ lead_id: lead_mujy2p8v3o4tx_1suvdli
 contact: "Ryan"
 company: ""
 industry: ""
-status: QUALIFYING
+status: HUMAN_REVIEW
 temperature: warm
 intent: unclear
 channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T17:53:22.684Z
+updated: 2026-09-27T18:15:52.051Z
 tags: [lead]
 ---
 # Ryan
@@ -19,7 +19,7 @@ tags: [lead]
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: -
+- Company size: - · Users: - · Decision maker: true
 - Problem: -
 - Wants: website_build
 - Tools: -
@@ -118,3 +118,10 @@ _Summary:_ Ryan of Free & Easy Minimart has asked three times to build a website
 **John:** Hi Ryan, good news, the first mock-up for Free & Easy Minimart is already being put together and the link will land here shortly. While that's underway, a bit more info on FusionTech: we build an AI workforce around how a business already runs, answering enquiries on WhatsApp and your website instantly, following up leads, and keeping everything in one place for you to see. For a minimart, that could mean handling customer enquiries or orders automatically. What's the one task that takes up most of your team's time day to day? One more question so we get this right for you: What does Free & Easy Minimart actually sell, and do customers only walk into the store, or can they also order for delivery / bulk / wholesale?
 
 _Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a website; the business name was already given and the agent already confirmed the mock-up was being built and links would follow. Ryan has now written back asking for more info, likely because the earlier repeated questions and the two-version mock-up message caused confusion.
+
+### 2026-09-27 18:15 UTC · HUMAN_REVIEW / warm · next: human_review · hand-off: atlas · anthropic
+**Prospect:** Hi any response?
+
+**John:** Thanks for your patience, Ryan. Your mock-up for Free & Easy Minimart is with our website team right now and the link is coming to this number shortly. While we finish that, it would help to know: what does the minimart mainly sell, and do customers only walk in, or can they also order for delivery or bulk?
+
+_Summary:_ Ryan of Free & Easy Minimart asked for a website build and has been told the mock-up is in progress. He is now chasing a response ('Hi any response?') after multiple prior agent replies already promised the link. He has not yet provided business details (what they sell, delivery/wholesale) but the mock-up commitment has already been made twice with no link delivered, risking credibility.
