@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:05:06.540Z
+updated: 2026-09-27T15:11:05.217Z
 tags: [lead]
 ---
 # Ryan
@@ -22,7 +22,7 @@ tags: [lead]
 - Company size: - · Users: - · Decision maker: -
 - Problem: -
 - Wants: -
-- Tools: CRM
+- Tools: -
 - Budget: - · Timeline: -
 - Outcome wanted: -
 
@@ -48,3 +48,10 @@ _Summary:_ Contact named Ryan sent a plain greeting via WhatsApp with no further
 **John:** Hi Ryan, happy to get a first mock-up built for you. A few quick details so it is right the first time: What is the name of your business? What does the business do, and who are your customers? What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
 
 _Summary:_ Ryan asked what FusionTech can help with, referencing CRM and SME (possibly EDG/PSG grant support for SMEs). No company, industry, or specific problem stated yet.
+
+### 2026-09-27 15:11 UTC · QUALIFYING / warm · next: ask_qualifying_questions · anthropic
+**Prospect:** What can you help my company with and can I get more info?
+
+**John:** Hi Ryan, happy to get a first mock-up built for you. A few quick details so it is right the first time: What is the name of your business? What does the business do, and who are your customers? What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
+
+_Summary:_ Ryan has messaged twice asking what FusionTech can help with, mentioning CRM, EDG and SME, and now asks for more info. No company name, industry or specific problem stated yet. Previous agent reply incorrectly jumped to website mock-up questions; customer has not asked for a website build.
