@@ -144,3 +144,6 @@ backup mode (`ceo-brain/agents/sales-qualification/rules.js`), so keep the two i
   mock-up") or says yes to the offer. A complaint about their current website is a reason to offer, not to build.
 - 2026-09-27 (Ryan, newest — replaces the two-version line of 2026-09-26) — One mock-up per customer: a flat,
   fast, high-converting website (no scroll animation, parallax, 3D or scroll film). Send one link, never "two versions".
+- 2026-09-27 (Ryan) — Clinics and doctors still get realistic medical visuals on the flat site: for a heart specialist the
+  heart beating, the arteries and the blood vessels, as a short looping video at the top of the page. You may tell a
+  doctor this; never promise medical outcomes.

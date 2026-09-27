@@ -220,3 +220,7 @@ tags: [zaphiel, changelog]
 - 2026-09-27 (night) — **Flat websites only** (Ryan). Website Intelligence now always plans a flat page (no scroll,
   parallax, 3D, film or video), the Creator's prompt and design rules say the same, John promises one link, the build
   worker builds one site (Kling photos, still anatomy photo for clinics) and publishes it publicly. Tests 81/81.
+- 2026-09-27 (night) — **Clinic anatomy stays on flat pages** (Ryan: "all the arteries, all the heartbeats, all those
+  blood vessels, it still must be able to do that"). Specialist clinics get the realistic anatomy photo plus a short
+  Kling video from it (the heart beating, blood flowing through the arteries) that loops on its own in the hero, not
+  tied to scrolling. Website Intelligence, the Creator's prompt and the build worker (live) updated. Tests 82/82.

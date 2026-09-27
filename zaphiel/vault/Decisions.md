@@ -5,6 +5,13 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **Flat pages keep the clinic anatomy: arteries, heartbeat, blood vessels** (Ryan: "can we build all the
+  arteries, all the heartbeats, all those blood vessels, it still must be able to do that"). Specialist clinics still
+  open on photorealistic, medically accurate anatomy (for a heart clinic: the heart beating, coronary arteries,
+  blood flowing through the vessels). Kling makes the still photo and a short silent video from it that loops on
+  its own in the hero, not tied to scrolling. Everything else on the page stays flat. Amends the entry below
+  ("clinics get realistic anatomy as a still photo").
+
 - 2026-09-27 — **One flat, high-converting website per mock-up** (Ryan: "from now on, don't use scroll animation. Just use
   normal flat website that just have high converting sales in the brain"). No scroll animation, parallax, 3D, scroll
   film, video backgrounds or second version. Website Intelligence's sales strategy (offer, headline, proof, objections,

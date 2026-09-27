@@ -846,13 +846,25 @@ test('cardiology clinic: WI plans a funnel, conversion rules, a flat page and a 
   const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: H.message, research_json } });
   assert.strictEqual(out.brief.mode, 'medical');
   const p = out.build_prompt;
-  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /Flat page: no scroll animation/.test(p) && /Medical visual \(hero\)/.test(p) && /still image/.test(p) && !/ScrollTrigger/.test(p), p.slice(-1500));
+  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /Flat page: no scroll animation/.test(p) && /Medical visual \(hero\)/.test(p) && /loops on its own/.test(p) && /\[ANATOMY VIDEO\]/.test(p) && !/ScrollTrigger/.test(p), p.slice(-1500));
   assert.ok(p.length <= wb.WB_MAX_PROMPT || p.length <= 9000);
   assert.ok(/heart/i.test(out.image_shots[0].prompt) && /anatomically accurate/.test(out.image_shots[0].prompt) && /not cartoon/.test(out.image_shots[0].prompt));
   // A model-written prompt also gets the strategy, exactly once.
   const again = wb.wbWithStrategy(p, wb.wbResearchPlan({ research_json }));
   assert.strictEqual(again.split(wb.WB_STRATEGY_MARK).length, 2);
 });
+test('flat pages still keep the clinic anatomy loop: heart beating, arteries, blood vessels (Ryan, 2026-09-27)', () => {
+  const wr = require('../agents/website-intelligence/research.js');
+  const src = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-intelligence/research.js'), 'utf8');
+  assert.ok(/exception is a specialist clinic/.test(src) && /heart beating with blood flowing through the arteries and vessels/.test(src), 'WI keeps the anatomy loop');
+  assert.ok(/heart beating in slow motion, coronary arteries and veins/.test(src), 'cardiology visual intact');
+  const plan = { brief: { primary_cta: 'Book a Heart Screening', medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: a photorealistic, medically accurate human heart beating in slow motion, coronary arteries and veins, blood flowing. Photorealistic and medically accurate.' } };
+  const p = wb.wbWithStrategy('Build the site.', wb.wbResearchPlan({ research_json: JSON.stringify(plan) }));
+  assert.ok(/heart beating/.test(p) && /autoplay muted loop playsinline/.test(p) && /not tied to scrolling/.test(p) && /no scroll animation/.test(p), p.slice(-1200));
+  const routine = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/image_to_video/.test(routine) && /HERO VIDEO/.test(routine) && !/Higgsfield `/.test(routine), 'build worker makes the loop with Kling');
+});
+
 test('no research → the creator works as before; general practice gets no anatomy render', () => {
   assert.strictEqual(wb.wbResearchPlan({}), null); assert.strictEqual(wb.wbResearchPlan({ research_json: 'not json' }), null);
   const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Brothers Construction', message: 'We need a website' } });

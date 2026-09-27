@@ -9,7 +9,8 @@ create projects and needs a Business plan. Ryan's Lovable and Kling accounts are
 to Zaphiel's environment instead, so the build step runs here.
 
 Decisions (Ryan, 2026-09-27): **Kling for all images** — never Higgsfield. **One flat, high-converting website** —
-no scroll animation, parallax, 3D, scroll film or video backgrounds, and no second version.
+no scroll animation, parallax, 3D, scroll film or video backgrounds, and no second version. **Exception:
+specialist clinics keep their realistic anatomy loop** (the heart beating, arteries, blood vessels) in the hero.
 
 Decision (Ryan, 2026-09-26): wire the tools to the Website Builder; **do not run builds for test leads**.
 The first real test happens when John is live on WhatsApp and Ryan sends a real enquiry himself.
@@ -34,7 +35,7 @@ is missing, stop and say which one in one line.
   `/webhook/ceo-brain/website-built`). Call it with `execute_workflow` (executionMode `production`,
   triggerNodeName "Website Built Webhook", `inputs.webhookData.body` = the payload below).
 - Lovable workspace "Ryan's Lovable" = `zjVuSnHzhPWFroVpa2KX`.
-- All images come from **Kling** (Ryan, 2026-09-27: "Kling all"). Call Kling `who_am_i` once per session
+- All images and video come from **Kling** (Ryan, 2026-09-27: "Kling all"). Call Kling `who_am_i` once per session
   for the current model names and argument shapes. Never use Higgsfield.
 
 ## Stay on duty for the whole hour (Ryan, 2026-09-26: a customer must not wait an hour)
@@ -64,13 +65,19 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       `aspect_ratio`, highest photorealistic quality, 1 image each). Poll `query_tasks` until all are done (at most
       ~6 minutes). Collect the image URL per shot. If Kling fails a shot, retry it once on Kling. If no image at
       all, continue without photos.
-   e2. Specialist clinics: the `hero` shot is the photoreal, medically accurate anatomy photograph (a still image,
-      no video). Never cartoon; no text, labels, gore or outcome claims.
+   e2. Specialist clinics (the brief's research has a `medical_visual_direction` with a specialty): the `hero` shot
+      is the photoreal, medically accurate anatomy photograph. Then Kling `image_to_video` from that hero image: 5
+      seconds, the motion the direction describes (for example the heart beating and blood flowing through the
+      arteries and vessels), slow and smooth so it loops cleanly, no camera cuts, no sound. Poll `query_tasks`
+      (at most ~6 minutes). Never cartoon; no text, labels, gore or outcome claims. If the video fails, retry once,
+      then use the still photo alone.
    f. Lovable: `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
       `initial_message` = `brief.build_prompt` + a blank line + the photography block:
       "Photography generated for this customer (use as real content, not placeholders; load by URL):"
       then one line per shot — `hero` = "HERO — full-bleed hero background with a cinematic gradient
-      overlay and the headline over it: <url>", `section` = "SECTION — full-width image opening the first
+      overlay and the headline over it: <url>" (clinics with an anatomy video add the line "HERO VIDEO — play
+      it full-bleed behind the hero as <video autoplay muted loop playsinline> with the HERO photo as poster;
+      it loops on its own, not tied to scrolling: <video url>"), `section` = "SECTION — full-width image opening the first
       major section (static): <url>", `detail` = "DETAIL — split section or feature card image: <url>" —
       then "If an image fails to load, keep the layout and use a rich brand-tinted gradient with the same
       mood." When there are no photos write instead: "No photography could be generated in time: use rich,
