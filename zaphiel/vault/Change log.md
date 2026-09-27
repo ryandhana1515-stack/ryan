@@ -195,3 +195,10 @@ tags: [zaphiel, changelog]
   night: ATLAS's good answer was rejected because it contained a diagram (all agents now read such answers); the
   research plan was cut before the 3D and anatomy lines reached Lovable (important lines now first, prompt limit
   12,000); John promised the phone when the customer asked for email (typed email now wins). Tests 73/73.
+- 2026-09-27 (night) — **John is on WhatsApp.** Ryan set up the Meta app, token and webhook (guided step by step);
+  Zaphiel wired the Outbound Sender to WhatsApp and subscribed the AI AGENTS app to the WhatsApp account (it was
+  missing: messages went only to the old Bio Green sandbox). First real conversation showed three faults, all fixed the
+  same night: a "hi" from a new contact was held for approval (NEW→NEW status rule), "what can you help us with" was
+  treated as a website order (mock-up template replaced John's answer), and John read EDG as the Enterprise
+  Development Grant. John's live playbook now has the full plain-words offer: CEO Brain and modules, SME operating
+  system, EDG, CRM, AI workforce, automation, ERP, websites/funnels. Tests 76/76.

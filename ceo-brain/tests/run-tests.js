@@ -889,6 +889,28 @@ test('John sends the mock-up link where the customer asked: a typed email beats 
   const r2 = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation.', history: [] });
   assert.ok(/send both links to \+6590000002/.test(r2.reply), r2.reply);
 });
+test('a bare "hi" on WhatsApp from a new lead is answered automatically, not held (execution 435)', () => {
+  const raw = JSON.stringify({ schema_version: '1.0', lead_status: 'NEW', intent: 'unclear', lead_temperature: 'cold', summary: 'Greeting only.', extracted: {}, missing_information: ['company_name'], recommended_reply: 'Hi Ryan, welcome to FusionTech AI. What does your business do?', questions_to_ask: ['What does your business do?'], next_action: 'ask_qualifying_questions', follow_up_at: null, human_review_required: false, escalation_reasons: [], confidence: 0.9, reasoning: 'r' });
+  const run = simulate({ name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', source: 'whatsapp', message: 'Hi', test_mode: false, ai_mode: 'live' }, { modelText: raw });
+  assert.strictEqual(run.fin.provider, 'anthropic');
+  assert.strictEqual(run.fin.result.lead_status, 'QUALIFYING', JSON.stringify(run.fin.audit));
+  assert.ok(!run.fin.result.escalation_reasons.includes('invalid_status_transition'));
+  assert.strictEqual(run.fin.approval_needed, false);
+});
+test('"what can you help us with like crm edg sme" is a question, not a website order (WhatsApp 2026-09-27)', () => {
+  const wi = require('../agents/website-builder/intake.js');
+  const hist = [{ role: 'customer', content: 'Hi' }, { role: 'agent', content: 'Hi Ryan, we are FusionTech AI. We connect WhatsApp, email and CRM and also build premium websites and web apps. What does your business do?' }];
+  const r = wi.wbIntake({ contact_name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', message: 'What can you help us with like crm edg sme', history: hist });
+  assert.strictEqual(r.intent, false); assert.strictEqual(r.reply, '');
+  assert.strictEqual(wi.wbIntake({ message: 'Can you help us build a website for our clinic?', history: [] }).intent, true, 'a real website ask still counts');
+  assert.strictEqual(wi.wbIntake({ message: 'help me make a landing page', history: [] }).intent, true);
+  assert.strictEqual(wi.wbIntake({ message: 'can you help us with our CRM', history: [] }).intent, false);
+});
+test("John's live playbook explains EDG, CRM, SME and the CEO Brain in FusionTech's own terms", () => {
+  const pb = fs.readFileSync(path.join(ROOT, '..', 'zaphiel/vault/Knowledge/John — Sales playbook.md'), 'utf8');
+  assert.ok(/EDG = End-to-end Digital business system/.test(pb) && /Enterprise Development Grant/.test(pb) && /never promise a grant/.test(pb));
+  assert.ok(/\*\*The CEO Brain\*\*/.test(pb) && /\*\*CRM\*\*/.test(pb) && /\*\*SME operating system\*\*/.test(pb) && /\*\*AI workforce\*\*/.test(pb));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

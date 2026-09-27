@@ -162,7 +162,8 @@ function finalizeResult(input) {
   if (lead.test_mode) notes.push('test_mode:no_customer_contact');
   var allowed = CB_LEAD_STATUS.transitions[prev] || CB_LEAD_STATUS.transitions.NEW;
   var to = result.lead_status;
-  if (allowed.indexOf(to) === -1) { notes.push('transition_rejected:' + prev + '->' + to); to = prev === 'WON' || prev === 'LOST' ? prev : 'HUMAN_REVIEW'; result.lead_status = to; result.human_review_required = true; if (result.escalation_reasons.indexOf('invalid_status_transition') === -1) result.escalation_reasons.push('invalid_status_transition'); }
+  if (to === 'NEW' && result.recommended_reply && allowed.indexOf('QUALIFYING') !== -1) { to = 'QUALIFYING'; result.lead_status = to; }
+  if (to !== prev && allowed.indexOf(to) === -1) { notes.push('transition_rejected:' + prev + '->' + to); to = prev === 'WON' || prev === 'LOST' ? prev : 'HUMAN_REVIEW'; result.lead_status = to; result.human_review_required = true; if (result.escalation_reasons.indexOf('invalid_status_transition') === -1) result.escalation_reasons.push('invalid_status_transition'); }
   var statusChange = { from: prev, to: to, changed: prev !== to };
   if (!result.follow_up_at) {
     var h = PP_FOLLOW_UP_HOURS[to];
@@ -241,7 +242,7 @@ var WI_ASK_RES = [
   /\bmock-?ups?\b|\bmockups?\b/i,
   new RegExp('\\b(build|make|create|design|develop|do|set up|redo|redesign|revamp|rebuild|upgrade|get)\\b[^.?!\\n]{0,40}\\b(me|us|my|our|a|an|new)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
   new RegExp('\\b(i|we)(\\s|\'m\\s|\'d\\s|\\s+am\\s|\\s+are\\s|\\s+would\\s)*(like|want|need|looking for|wanna|want to get|need to get|interested in)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i'),
-  /\b(help)\s+(me|us)\s+(build|make|create|design|get|with)\b/i
+  new RegExp('\\b(help)\\s+(me|us)\\s+(build|make|create|design|get|with)\\b[^.?!\\n]{0,40}\\b' + WI_SITE_NOUN, 'i')
 ];
 var WI_CAPABILITY_Q = /^\s*(can|could|do|does|would|will|what|which|how|are|is|have)\b/i;
 var WI_PERSONAL = /\b(me|us|my|our|mine|ours)\b/i;
