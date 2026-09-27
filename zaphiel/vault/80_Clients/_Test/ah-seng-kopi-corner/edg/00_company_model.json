@@ -1,0 +1,100 @@
+{
+  "company_name": {
+    "value": "Ah Seng Kopi Corner",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Likely a kopi shop / F&B café business (name suggests a traditional coffee shop or café in Singapore)",
+    "label": "INFERENCE"
+  },
+  "contact_name": {
+    "value": "Zaphiel Test",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_phone": {
+    "value": "+6590000005",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "preferred_channel": {
+    "value": "whatsapp",
+    "label": "CLIENT-PROVIDED"
+  },
+  "company_size": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "locations": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "products_services": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "customer_types": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "current_tools": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "lead_sources": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "current_follow_up_process": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "uses_whatsapp": {
+    "value": "Contacted us via WhatsApp, so at minimum uses WhatsApp personally/for business already",
+    "label": "INFERENCE"
+  },
+  "uses_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "accounting_or_erp": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "stated_request": {
+    "value": "Build a website for my company",
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_automation": {
+    "value": [
+      "website_build"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "users_needed": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "desired_outcome": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "decision_maker": {
+    "value": "Assumed to be Zaphiel Test since they made the request, not confirmed",
+    "label": "INFERENCE"
+  },
+  "problem_stated": {
+    "value": null,
+    "label": "UNKNOWN"
+  }
+}
