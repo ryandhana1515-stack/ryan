@@ -104,9 +104,14 @@ function wbIntake(o) {
     site_purpose: 'What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?',
     contact: 'Which WhatsApp number or email should I send the mock-up link to?'
   };
+  // Ryan, 2026-09-27: once the customer asks for a site and gives the business name, John starts the build at once.
+  // Website Intelligence researches what the business does, its customers and what the site needs; John never
+  // interviews the customer about it. Only the name (and, off WhatsApp, where to send the link) can hold the build.
+  var blocking = [];
+  for (var bi = 0; bi < missing.length; bi++) if (missing[bi] === 'business_name' || missing[bi] === 'contact') blocking.push(missing[bi]);
   var questions = [];
-  for (var i = 0; i < missing.length && questions.length < 3; i++) questions.push(q[missing[i]]);
-  var ready = intent && missing.length === 0;
+  for (var i = 0; i < blocking.length && questions.length < 3; i++) questions.push(q[blocking[i]]);
+  var ready = intent && blocking.length === 0;
   var first = wiClean(o.contact_name) ? String(o.contact_name).trim().split(' ')[0] : null;
   var greet = first ? 'Hi ' + first + ', ' : 'Hi, ';
   var reply;

@@ -5,6 +5,12 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **The business name is enough to start a mock-up** (Ryan: "Once I give the name, he'll say, okay,
+  building the mock-up now … the website intelligence … will search it up on Google … then he will send it to the
+  website creator … John's like, here's the website link"). John no longer asks what the business does, its customers
+  or the pages; Website Intelligence researches them. Only a missing name (or, off WhatsApp, where to send the link)
+  holds the build. Supersedes the four-question intake of 2026-09-25.
+
 - 2026-09-26 — **Agent models (Ryan paid the Gateway: "upgrade … all of them").** John, ATLAS and Discovery run
   on **Claude Sonnet 5** with thinking off, so John answers a chat in ~9 seconds. Website Intelligence and the
   Website Creator run on **Claude Fable 5.1** ("I want more better… premium websites, like with the artery and

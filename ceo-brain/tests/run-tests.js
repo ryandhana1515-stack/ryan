@@ -921,6 +921,17 @@ test('one wrong mock-up reply does not trap the chat; a real website ask still c
   const r2 = wi.wbIntake({ contact_name: 'Ryan', channel: 'whatsapp', phone: '+6587587170', message: 'We are Sunrise Dental, a family dentist; patients should book appointments online', history: real });
   assert.strictEqual(r2.intent, true, 'answers to the intake questions keep the build going');
 });
+test('the business name is enough: John starts the mock-up at once and Website Intelligence researches the rest (Ryan, 2026-09-27)', () => {
+  const wi = require('../agents/website-builder/intake.js');
+  const r = wi.wbIntake({ contact_name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', message: 'Can you build a website for our company? It called Free & Easy Minimart', history: [] });
+  assert.strictEqual(r.intent, true); assert.strictEqual(r.ready, true, JSON.stringify(r.missing));
+  assert.ok(/building your first mock-up/.test(r.reply) && /Free & Easy Minimart/.test(r.reply), r.reply);
+  const noName = wi.wbIntake({ contact_name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', message: 'Can you build a website for my shop?', history: [] });
+  assert.strictEqual(noName.ready, false); assert.deepStrictEqual(noName.questions, ['What is the name of your business?']);
+  const b = wb.finalizeBrief({ error: 'x', input: { company_name: 'Free & Easy Minimart', message: 'Can you build a website for our company? It called Free & Easy Minimart' } });
+  assert.strictEqual(b.ready_to_build, true, JSON.stringify(b.missing_for_build));
+  assert.strictEqual(b.brief.site_type, 'business_website'); assert.ok(!/premium other/.test(b.build_prompt));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

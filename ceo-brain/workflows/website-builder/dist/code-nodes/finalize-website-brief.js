@@ -146,7 +146,7 @@ function wbDefaultPages(siteType, goal, mode) {
 }
 function wbGuessBusinessName(input, text) {
   if (input.company_name) return wbStr(input.company_name, 160);
-  var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.\n]| and | with | that | in | based |; )/);
+  var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from|(?:[Ii]t'?s|[Ii]t is|[Ii]ts|[Ii]t) called|(?:[Ii]t'?s|[Ii]t is) named|[Nn]ame is|business called|shop called|store called|restaurant called)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.!?\n]| and | with | that | in | based |; |\s*$)/);
   return m ? wbStr(m[1], 160) : null;
 }
 function wbDesignFor(category) { return WB_DESIGN[category] || WB_DESIGN.other; }
@@ -165,6 +165,7 @@ function wbFallbackBrief(input) {
   var mode = wbDetectMode(text, industry);
   var category = wbDetectCategory(text, industry);
   var siteType = wbDetectSiteType(text);
+  if (siteType === 'other') siteType = 'business_website'; // a plain "build us a site" is a business website (Ryan, 2026-09-27)
   var goal = wbDetectGoal(text, mode);
   var integrations = wbDetectIntegrations(text);
   if (mode === 'medical' && integrations.indexOf('Appointment booking / calendar') === -1) integrations.unshift('Appointment booking / calendar');
@@ -234,7 +235,7 @@ function wbCoerce(b) {
     schema_version: WB_SCHEMA_VERSION,
     mode: mode,
     industry_category: category,
-    site_type: WB_SITE_TYPES.indexOf(b.site_type) !== -1 ? b.site_type : 'other',
+    site_type: WB_SITE_TYPES.indexOf(b.site_type) !== -1 && b.site_type !== 'other' ? b.site_type : 'business_website',
     business_name: wbStr(b.business_name, 160),
     industry: wbStr(b.industry, 80),
     audience: wbStr(b.audience, 300),
@@ -424,8 +425,6 @@ function wbFilmBrief(brief, input) {
 function wbReadyToBuild(brief) {
   var missing = [];
   if (!brief.business_name) missing.push('business_name');
-  if (!brief.industry && brief.industry_category === 'other') missing.push('industry');
-  if (brief.site_type === 'other') missing.push('site_type');
   return { ready: missing.length === 0, missing: missing };
 }
 function wbLovableUrl(prompt) { return WB_LOVABLE_BASE + encodeURIComponent(prompt); }
