@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:21:02.951Z
+updated: 2026-09-27T15:26:18.985Z
 tags: [lead]
 ---
 # Ryan
@@ -19,9 +19,9 @@ tags: [lead]
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: -
+- Company size: - · Users: - · Decision maker: true
 - Problem: -
-- Wants: website_build
+- Wants: website_build, whatsapp_auto_reply, appointment_booking, lead_follow_up, lead_qualification, quote_generation, customer_support, email_automation, crm_sync, reporting
 - Tools: -
 - Budget: - · Timeline: -
 - Outcome wanted: -
@@ -90,3 +90,10 @@ _Summary:_ Ryan (WhatsApp contact, phone provided) has asked repeatedly what our
 **John:** Hi Ryan, happy to get a first mock-up built for you at Free & Easy Minimart. One thing I need: What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
 
 _Summary:_ Ryan runs Free & Easy Minimart and has now asked us to build a website for the business after several general questions about what FusionTech offers. We have the business name but still need what the business does, who it serves, what the site should let visitors do, which pages, and where to send the mock-up link.
+
+### 2026-09-27 15:26 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: atlas · rules
+**Prospect:** Just build it
+
+**John:** Hi Ryan, happy to get a first mock-up built for you at Free & Easy Minimart. One thing I need: What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
+
+_Summary:_ Ryan from Free & Easy Minimart (Minimart / retail). Wants: website build, whatsapp auto reply, appointment booking, lead follow up, lead qualification, quote generation, customer support, email automation, crm sync, reporting.
