@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:12:56.029Z
+updated: 2026-09-27T15:17:38.150Z
 tags: [lead]
 ---
 # Ryan
@@ -62,3 +62,10 @@ _Summary:_ Ryan has messaged twice asking what FusionTech can help with, mention
 **John:** Hi Ryan, happy to get a first mock-up built for you. A few quick details so it is right the first time: What is the name of your business? What does the business do, and who are your customers? What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
 
 _Summary:_ Ryan has messaged twice asking what FusionTech can help with (mentioning CRM, EDG, SME) and for more info. The agent previously jumped to website mock-up questions, but Ryan never asked for a website build - he's asking a general capability question that hasn't been properly answered yet. No company name, industry or specific problem has been given.
+
+### 2026-09-27 15:17 UTC · QUALIFYING / warm · next: ask_qualifying_questions · anthropic
+**Prospect:** What can you help my company with and can I get more info?
+
+**John:** Hi Ryan, happy to explain properly. We build an AI workforce around how your business already runs: we connect tools like WhatsApp, email, your CRM and accounting software so every enquiry gets answered and followed up, nothing falls through the cracks, and you can see it all in one place. We also design the CRM setup itself (what you called EDG) around how you sell, and it works whether you're an SME or a larger team. What does your company do, and what's the biggest bottleneck your team deals with today?
+
+_Summary:_ Ryan asked twice what FusionTech can help his company with (mentioning CRM, EDG, SME) and requested more info. The system had previously misread this as a website build request and kept asking mock-up questions instead of answering his actual question. No company name, industry or specific problem has been shared yet.
