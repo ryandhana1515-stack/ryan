@@ -172,6 +172,28 @@ function wrFinalize(o) {
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
   return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0 };
 }
+/** What Google could not tell us goes back to John, who asks the customer at once (Ryan, 2026-09-27): at most two
+ *  questions, in John's voice, while the mock-up is already being built with placeholders. Never asks what the
+ *  customer already said; never on test leads. Returns { send, channel, to, text, questions, message_id }. */
+function wrCustomerAsk(o) {
+  o = o || {};
+  var input = o.input || {};
+  var qs = wrArr(o.questions, 5).filter(function (q) { return q && q.length > 8; });
+  var said = String([input.message || ''].concat((input.conversation || []).map(function (m) { return m && m.content; })).join('\n')).toLowerCase();
+  qs = qs.filter(function (q) { return said.indexOf(q.toLowerCase().slice(0, 40)) === -1; }).slice(0, 2);
+  var channel = input.channel === 'whatsapp' ? 'whatsapp' : (input.channel === 'email' ? 'email' : null);
+  var to = channel === 'whatsapp' ? wrStr(input.phone, 40) : (channel === 'email' ? wrStr(input.email, 160) : '');
+  var first = wrStr(input.contact_name, 60).split(' ')[0];
+  var biz = wrStr(input.company_name, 80);
+  var text = '';
+  if (qs.length) {
+    text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + 'while our team builds your ' + (biz ? biz + ' ' : '') + 'mock-up, ' +
+      (qs.length === 1 ? 'one quick detail we could not find online: ' + qs[0] : 'two quick details we could not find online: 1) ' + qs[0] + ' 2) ' + qs[1]) +
+      ' If you are not sure, no problem, we will use clear placeholders you can change later.';
+  }
+  var send = !!(o.needs_john && qs.length && !input.test_mode && channel && to);
+  return { send: send, channel: channel || '', to: to || '', text: text, questions: qs, message_id: 'msg_wi_' + String(input.lead_id || 'x').replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + Date.now().toString(36) };
+}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;
@@ -193,6 +215,7 @@ const researchSlim = { version: d.digest.version, identity: d.identity, facts: d
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
 return [{ json: {
   input, status: fin.status, ready: fin.status === 'READY_FOR_WEBSITE_CREATOR', needs_john: fin.needs_john, questions_for_john: fin.questions_for_john,
+  ask_customer: wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john }),
   brief: fin.brief, brief_text: fin.brief_text, research_json: JSON.stringify(researchSlim), identity_confidence: fin.identity_confidence,
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, role_source: pre.role_source, config: pre.config,
   event: { type: eventType, source: 'website-intelligence', tenant_id: input.tenant_id, lead_id: input.lead_id, entity_type: 'lead', entity_id: input.lead_id, severity: eventType === 'website.info_needed' ? 'medium' : 'info', summary: (fin.status === 'READY_FOR_WEBSITE_CREATOR' ? 'Research brief ready for ' + (input.company_name || input.lead_id) + ' (' + fin.identity_confidence + ' identity)' : 'Website Intelligence needs information for ' + input.lead_id) + (fin.questions_for_john.length ? ' — questions for John: ' + fin.questions_for_john.join(' | ') : ''), payload: { questions_for_john: fin.questions_for_john, identity_confidence: fin.identity_confidence, website: d.identity.website, pages_read: researchSlim.site.pages_read, provider: fin.provider }, test_mode: input.test_mode, correlation_id: 'lead:' + input.lead_id },

@@ -22,6 +22,7 @@ const manifest = JSON.parse(read('agents/website-intelligence/agent.json'));
 const research = require(path.join(ROOT, 'agents/website-intelligence/research.js'));
 const NOTIFY = manifest.notify_email;
 const BUILDER_ID = WF.website_builder || 'REPLACE_ME';
+const SENDER_ID = WF.outbound_sender || 'REPLACE_ME';
 const EVENT_URL = 'https://ryan1515.app.n8n.cloud/webhook/ceo-brain/event';
 const systemAddendum = read('prompts/website-intelligence.system.md').replace('{{BRIEF_KEYS}}', JSON.stringify(Object.fromEntries(research.WR_BRIEF_KEYS.map((k) => [k, research.WR_LIST_KEYS.includes(k) ? [] : (k === 'identity_confidence' ? 'high | medium | low' : '')])), null, 0));
 const userPrompt = read('prompts/website-intelligence.user.md');
@@ -107,7 +108,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;
@@ -129,6 +130,7 @@ const researchSlim = { version: d.digest.version, identity: d.identity, facts: d
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
 return [{ json: {
   input, status: fin.status, ready: fin.status === 'READY_FOR_WEBSITE_CREATOR', needs_john: fin.needs_john, questions_for_john: fin.questions_for_john,
+  ask_customer: wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john }),
   brief: fin.brief, brief_text: fin.brief_text, research_json: JSON.stringify(researchSlim), identity_confidence: fin.identity_confidence,
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, role_source: pre.role_source, config: pre.config,
   event: { type: eventType, source: 'website-intelligence', tenant_id: input.tenant_id, lead_id: input.lead_id, entity_type: 'lead', entity_id: input.lead_id, severity: eventType === 'website.info_needed' ? 'medium' : 'info', summary: (fin.status === 'READY_FOR_WEBSITE_CREATOR' ? 'Research brief ready for ' + (input.company_name || input.lead_id) + ' (' + fin.identity_confidence + ' identity)' : 'Website Intelligence needs information for ' + input.lead_id) + (fin.questions_for_john.length ? ' — questions for John: ' + fin.questions_for_john.join(' | ') : ''), payload: { questions_for_john: fin.questions_for_john, identity_confidence: fin.identity_confidence, website: d.identity.website, pages_read: researchSlim.site.pages_read, provider: fin.provider }, test_mode: input.test_mode, correlation_id: 'lead:' + input.lead_id },
@@ -141,6 +143,8 @@ const col = (id, type) => ({ id, displayName: id, required: false, defaultMatch:
 const schemaFor = (cols) => cols.map(([id, type]) => col(id, type));
 const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cachedResultName: name });
 const runCols = [['tenant_id','string'],['run_id','string'],['agent','string'],['agent_version','string'],['lead_id','string'],['workflow_id','string'],['execution_id','string'],['model','string'],['provider','string'],['input_ref','string'],['output_json','string'],['success','boolean'],['error','string'],['latency_ms','number'],['test_mode','boolean'],['started_at','string'],['finished_at','string']];
+const taskCols = [['tenant_id','string'],['task_id','string'],['lead_id','string'],['task_type','string'],['title','string'],['description','string'],['due_at','string'],['status','string'],['assigned_to','string'],['requires_approval','boolean'],['approval_reason','string'],['payload_json','string'],['created_by','string'],['ts','string']];
+const msgCols = [['tenant_id','string'],['lead_id','string'],['message_id','string'],['direction','string'],['channel','string'],['sender','string'],['content','string'],['status','string'],['execution_id','string'],['created_by','string'],['ts','string']];
 const auditCols = [['tenant_id','string'],['entity_type','string'],['entity_id','string'],['action','string'],['old_value','string'],['new_value','string'],['actor','string'],['execution_id','string'],['reason','string'],['ts','string']];
 const inputs = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']];
 const builderInputs = inputs.concat([['research_brief','string'],['research_json','string']]);
@@ -291,6 +295,65 @@ const logAudit = node({
   output: [{ id: 1 }]
 });
 
+// What Google could not tell us goes back to John (Ryan, 2026-09-27): the questions are saved for John's next replies
+// and, on WhatsApp/email, John asks the customer at once — the mock-up is built in parallel with placeholders.
+const infoGate = ifElse({
+  version: 2.3,
+  config: { name: 'Missing Details?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'nj', leftValue: expr("{{ ${F}.needs_john }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3140, 520] }
+});
+
+const saveInfoTask = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: 'Save Questions for John',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'insert', dataTableId: ${j(table('ceo_tasks'))}, columns: { mappingMode: 'defineBelow', value: {
+      tenant_id: expr("{{ ${F}.input.tenant_id }}"), task_id: expr("{{ 'task_webinfo_' + String(${F}.input.lead_id).replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + ${F}.run_id }}"), lead_id: expr("{{ ${F}.input.lead_id }}"), task_type: 'website_info_needed', title: expr("{{ 'Website details to ask: ' + (${F}.input.company_name || ${F}.input.lead_id) }}"), description: expr("{{ ${F}.questions_for_john.join(' | ') }}"), due_at: '', status: 'open', assigned_to: 'sales-agent', requires_approval: false, approval_reason: '', payload_json: expr("{{ JSON.stringify({ questions_for_john: ${F}.questions_for_john, source: 'website-intelligence' }) }}"), created_by: 'agent:website-intelligence', ts: expr("{{ ${F}.finished_at }}")
+    }, schema: ${j(schemaFor(taskCols))} } },
+    position: [3360, 520]
+  },
+  output: [{ id: 1 }]
+});
+
+const askGate = ifElse({
+  version: 2.3,
+  config: { name: 'John Can Ask Now?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'ask', leftValue: expr("{{ ${F}.ask_customer.send }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3580, 520] }
+});
+
+const saveAskMsg = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: "Log John's Question",
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'insert', dataTableId: ${j(table('ceo_messages'))}, columns: { mappingMode: 'defineBelow', value: {
+      tenant_id: expr("{{ ${F}.input.tenant_id }}"), lead_id: expr("{{ ${F}.input.lead_id }}"), message_id: expr("{{ ${F}.ask_customer.message_id }}"), direction: 'outbound', channel: expr("{{ ${F}.ask_customer.channel }}"), sender: 'agent:john', content: expr("{{ ${F}.ask_customer.text }}"), status: 'draft', execution_id: expr("{{ $execution.id }}"), created_by: 'agent:website-intelligence', ts: expr("{{ ${F}.finished_at }}")
+    }, schema: ${j(schemaFor(msgCols))} } },
+    position: [3800, 440]
+  },
+  output: [{ id: 1 }]
+});
+
+const sendAsk = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'John Asks the Customer (Outbound Sender)',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once', source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(SENDER_ID)}, cachedResultName: 'CEO Brain — Outbound Sender' },
+      workflowInputs: { mappingMode: 'defineBelow', value: {
+        tenant_id: expr("{{ ${F}.input.tenant_id }}"), lead_id: expr("{{ ${F}.input.lead_id }}"), message_id: expr("{{ ${F}.ask_customer.message_id }}"), channel: expr("{{ ${F}.ask_customer.channel }}"), to: expr("{{ ${F}.ask_customer.to }}"), text: expr("{{ ${F}.ask_customer.text }}"), subject: 'A quick question about your website mock-up', test_mode: expr("{{ ${F}.input.test_mode }}"), actor: 'agent:john@website-intelligence'
+      }, matchingColumns: [], schema: ${j([['tenant_id','string'],['lead_id','string'],['message_id','string'],['channel','string'],['to','string'],['text','string'],['subject','string'],['test_mode','boolean'],['actor','string']].map(([id, type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))}, attemptToConvertTypes: false, convertFieldsToString: false },
+      options: { waitForSubWorkflow: true }
+    },
+    position: [4020, 440]
+  },
+  output: [{ sent: true }]
+});
+
 const readyGate = ifElse({
   version: 2.3,
   config: { name: 'Ready for Creator?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'ready', leftValue: expr("{{ ${F}.ready }}"), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3140, 300] }
@@ -343,7 +406,13 @@ export default workflow('ceo-brain-website-intelligence', 'CEO Brain — Website
   .add(finalize)
   .to(logRun)
   .to(logAudit)
-  .to(readyGate
+  .to(infoGate
+    .onTrue(saveInfoTask.to(askGate))
+    .onFalse(readyGate))
+  .add(askGate
+    .onTrue(saveAskMsg.to(sendAsk.to(readyGate)))
+    .onFalse(readyGate))
+  .add(readyGate
     .onTrue(handOff.to(notify))
     .onFalse(notify))
   .add(note);

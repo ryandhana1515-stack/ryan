@@ -206,3 +206,8 @@ tags: [zaphiel, changelog]
   [[10_Agents/ATLAS_Discovery_Playbook]], template `80_Clients/_TEMPLATE_Client/edg/discovery/`, ADR-4 amended. John's
   live playbook gained "Ask like a consultant" (ATLAS's discovery questions in plain words; websites still start from
   the name alone).
+- 2026-09-27 (night) — **Website Intelligence → John → customer; ATLAS on every mock-up.** When Google leaves gaps,
+  Website Intelligence saves the missing details as a `website_info_needed` task and John messages the customer
+  straight away (WhatsApp/email, max two questions, mock-up keeps building with placeholders); John's question list now
+  reads website details first, then ATLAS's, one per reply, skipping anything already asked. ATLAS starts for every
+  named company that asks for a mock-up. Tests 80/80.

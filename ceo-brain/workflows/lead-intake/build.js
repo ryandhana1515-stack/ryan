@@ -446,7 +446,7 @@ const loadAtlasQs = node({
     name: 'Load ATLAS Questions',
     alwaysOutputData: true,
     onError: 'continueRegularOutput',
-    parameters: { resource: 'row', operation: 'get', dataTableId: ${j(table('ceo_tasks'))}, matchType: 'allConditions', filters: { conditions: [{ keyName: 'task_type', condition: 'eq', keyValue: 'edg_design' }, { keyName: 'lead_id', condition: 'eq', keyValue: expr("{{ ${R}.lead.lead_id }}") }] }, returnAll: false, limit: 3 },
+    parameters: { resource: 'row', operation: 'get', dataTableId: ${j(table('ceo_tasks'))}, matchType: 'allConditions', filters: { conditions: [{ keyName: 'lead_id', condition: 'eq', keyValue: expr("{{ ${R}.lead.lead_id }}") }] }, returnAll: false, limit: 25 },
     position: [1670, 480]
   },
   output: [{}]

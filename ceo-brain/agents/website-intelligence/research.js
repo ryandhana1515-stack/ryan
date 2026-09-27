@@ -377,5 +377,27 @@ function wrFinalize(o) {
   return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0 };
 }
 
+/** What Google could not tell us goes back to John, who asks the customer at once (Ryan, 2026-09-27): at most two
+ *  questions, in John's voice, while the mock-up is already being built with placeholders. Never asks what the
+ *  customer already said; never on test leads. Returns { send, channel, to, text, questions, message_id }. */
+function wrCustomerAsk(o) {
+  o = o || {};
+  var input = o.input || {};
+  var qs = wrArr(o.questions, 5).filter(function (q) { return q && q.length > 8; });
+  var said = String([input.message || ''].concat((input.conversation || []).map(function (m) { return m && m.content; })).join('\n')).toLowerCase();
+  qs = qs.filter(function (q) { return said.indexOf(q.toLowerCase().slice(0, 40)) === -1; }).slice(0, 2);
+  var channel = input.channel === 'whatsapp' ? 'whatsapp' : (input.channel === 'email' ? 'email' : null);
+  var to = channel === 'whatsapp' ? wrStr(input.phone, 40) : (channel === 'email' ? wrStr(input.email, 160) : '');
+  var first = wrStr(input.contact_name, 60).split(' ')[0];
+  var biz = wrStr(input.company_name, 80);
+  var text = '';
+  if (qs.length) {
+    text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + 'while our team builds your ' + (biz ? biz + ' ' : '') + 'mock-up, ' +
+      (qs.length === 1 ? 'one quick detail we could not find online: ' + qs[0] : 'two quick details we could not find online: 1) ' + qs[0] + ' 2) ' + qs[1]) +
+      ' If you are not sure, no problem, we will use clear placeholders you can change later.';
+  }
+  var send = !!(o.needs_john && qs.length && !input.test_mode && channel && to);
+  return { send: send, channel: channel || '', to: to || '', text: text, questions: qs, message_id: 'msg_wi_' + String(input.lead_id || 'x').replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + Date.now().toString(36) };
+}
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };
+if (typeof module !== 'undefined') module.exports = { wrCustomerAsk: wrCustomerAsk, WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };

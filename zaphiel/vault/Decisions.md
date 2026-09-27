@@ -5,6 +5,14 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-27 — **Missing website details go back to John; ATLAS joins every mock-up** (Ryan: "if the website
+  intelligence can't find more details on Google … tell John … and then John will ask the customer … not the same
+  question but what's left"; "can you involve Atlas also?"). The mock-up still starts from the name alone and is never
+  delayed: Website Intelligence builds with placeholders and, when Google leaves gaps, John messages the customer at
+  once on WhatsApp/email (max two questions, never already-answered ones, placeholders are fine); on the web chat John
+  asks them in his next replies. ATLAS starts in the background for every named company that asks for a mock-up; John
+  asks ATLAS's questions after the website ones, one per reply, never repeating.
+
 - 2026-09-27 — **The business name is enough to start a mock-up** (Ryan: "Once I give the name, he'll say, okay,
   building the mock-up now … the website intelligence … will search it up on Google … then he will send it to the
   website creator … John's like, here's the website link"). John no longer asks what the business does, its customers

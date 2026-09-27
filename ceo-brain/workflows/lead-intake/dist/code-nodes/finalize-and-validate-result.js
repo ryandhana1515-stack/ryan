@@ -376,6 +376,7 @@ function atNeeded(o) {
   var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
   var company = atStr(o.company_name || ex.company_name, 160);
   if (!company) return false;
+  if (atArr(ex.desired_automation).indexOf('website_build') !== -1) return true;
   var wants = atArr(ex.desired_automation).filter(function (w) { return w !== 'website_build'; });
   var said = [o.message || '', o.history_text || ''].join('\n');
   var systemsNeed = wants.length > 0 || AT_EXPLICIT.test(said);
@@ -386,10 +387,12 @@ function atNeeded(o) {
 var AT_UNSAFE_Q = /(s?\$|\b(sgd|usd|rm))\s?\d|\b(price|pricing|cost|discount|guarantee\w*|refund|contract|agreement|password|api key|token|credential)s?\b/i;
 function atQuestionsFromRows(rows) {
   var out = [];
-  (Array.isArray(rows) ? rows : []).forEach(function (r) {
-    if (!r || r.task_type !== 'edg_design') return;
-    var p = atParse(r.payload_json, {}) || {};
-    atArr(p.questions_for_john).forEach(function (q) { if (out.indexOf(q) === -1) out.push(q); });
+  ['website_info_needed', 'edg_design'].forEach(function (type) {
+    (Array.isArray(rows) ? rows : []).forEach(function (r) {
+      if (!r || r.task_type !== type) return;
+      var p = atParse(r.payload_json, {}) || {};
+      atArr(p.questions_for_john).forEach(function (q) { if (out.indexOf(q) === -1) out.push(q); });
+    });
   });
   return out;
 }
