@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:17:38.150Z
+updated: 2026-09-27T15:18:20.453Z
 tags: [lead]
 ---
 # Ryan
@@ -69,3 +69,10 @@ _Summary:_ Ryan has messaged twice asking what FusionTech can help with (mention
 **John:** Hi Ryan, happy to explain properly. We build an AI workforce around how your business already runs: we connect tools like WhatsApp, email, your CRM and accounting software so every enquiry gets answered and followed up, nothing falls through the cracks, and you can see it all in one place. We also design the CRM setup itself (what you called EDG) around how you sell, and it works whether you're an SME or a larger team. What does your company do, and what's the biggest bottleneck your team deals with today?
 
 _Summary:_ Ryan asked twice what FusionTech can help his company with (mentioning CRM, EDG, SME) and requested more info. The system had previously misread this as a website build request and kept asking mock-up questions instead of answering his actual question. No company name, industry or specific problem has been shared yet.
+
+### 2026-09-27 15:18 UTC · QUALIFYING / warm · next: ask_qualifying_questions · anthropic
+**Prospect:** How can your ceo brain help my company?
+
+**John:** Good question, Ryan. The CEO Brain sits above the tools you already use, WhatsApp, email, CRM, accounting, your website, and lets you ask it things like which leads haven't been followed up or what happened in your business today, while the AI agents underneath handle the actual follow-ups and admin. To show you exactly how it would help your company rather than in general terms, what does your business do, and what's the one task or bottleneck eating up most of your team's time right now?
+
+_Summary:_ Ryan has asked multiple times what FusionTech and specifically the CEO Brain can do for his company, but has not yet shared his company name, industry, or any operational details. Previous agent replies explained the offering generally; no business facts have been extracted yet.
