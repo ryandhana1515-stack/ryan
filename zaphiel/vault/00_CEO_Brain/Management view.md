@@ -1,33 +1,37 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-09-27T18:07:02.007Z
+updated: 2026-09-27T19:07:02.039Z
 ---
-# Management view — Mon, 28 Sept, 02:07 am SGT
+# Management view — Mon, 28 Sept, 03:07 am SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
 | | |
 |---|---|
 | Real leads (new 24 h) | 1 (1) |
-| Pipeline | QUALIFYING 1 |
-| Open tasks | 16 |
-| Approvals waiting | 4 |
+| Pipeline | HUMAN_REVIEW 1 |
+| Open tasks | 17 |
+| Approvals waiting | 5 |
 | Exceptions open | 0 |
 | Website builds | building 0 · built 3 · failed 0 |
-| Agent runs 24 h | 63 (failed 0, AI fallback 4) |
+| Agent runs 24 h | 53 (failed 0, AI fallback 1) |
 | Test leads excluded | 23 |
 
-## Unresolved (6, 1 high)
+## Unresolved (8, 4 high)
 
-### Approvals waiting (4)
-- **APPROVAL: build MEDICAL business website for Dashboard tester** · 49 h · `task_web_lead_dash_v2medtest1`
-- APPROVAL: Ryan — ask qualifying questions · 3 h · `task_mujy2u7k7vj21`
-- ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart · 3 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
-- REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n · 3 h · `task_evt_3lrywe`
+### Approvals waiting (5)
+- **APPROVAL: build MEDICAL business website for Dashboard tester** · 50 h · `task_web_lead_dash_v2medtest1`
+- **APPROVAL: Ryan — ask qualifying questions** · 4 h · `task_mujy2u7k7vj21`
+- **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 4 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
+- **REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n** · 4 h · `task_evt_3lrywe`
+- APPROVAL: Ryan @ Free & Easy Minimart — human review · 1 h · `task_muk537y1951na`
+
+### Leads needing a human (1)
+- Ryan @ Free & Easy Minimart needs a human · 1 h · `lead_mujy2p8v3o4tx_1suvdli`
 
 ### Overdue follow-ups (1)
-- Follow up: Ryan @ Free & Easy Minimart — send reply · 2 h · `task_mujz6ojo5a82r`
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 3 h · `task_mujz6ojo5a82r`
 
 ### AI fallback (1)
-- 4 run(s) used the rule fallback (AI unavailable)
+- 1 run(s) used the rule fallback (AI unavailable)
