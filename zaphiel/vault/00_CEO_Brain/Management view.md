@@ -1,9 +1,9 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-09-27T03:07:02.062Z
+updated: 2026-09-27T04:07:02.037Z
 ---
-# Management view — Sun, 27 Sept, 11:07 am SGT
+# Management view — Sun, 27 Sept, 12:07 pm SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
@@ -15,13 +15,13 @@ updated: 2026-09-27T03:07:02.062Z
 | Approvals waiting | 1 |
 | Exceptions open | 0 |
 | Website builds | building 0 · built 2 · failed 0 |
-| Agent runs 24 h | 50 (failed 0, AI fallback 15) |
+| Agent runs 24 h | 51 (failed 0, AI fallback 15) |
 | Test leads excluded | 20 |
 
 ## Unresolved (2, 1 high)
 
 ### Approvals waiting (1)
-- **APPROVAL: build MEDICAL business website for Dashboard tester** · 34 h · `task_web_lead_dash_v2medtest1`
+- **APPROVAL: build MEDICAL business website for Dashboard tester** · 35 h · `task_web_lead_dash_v2medtest1`
 
 ### AI fallback (1)
 - 15 run(s) used the rule fallback (AI unavailable)
