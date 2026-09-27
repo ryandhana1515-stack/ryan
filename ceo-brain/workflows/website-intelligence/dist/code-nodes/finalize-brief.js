@@ -1,7 +1,7 @@
 var WR_VERSION = 'website-intelligence-1.1.0';
 var WR_SOCIAL_HOSTS = ['facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'x.com', 'twitter.com'];
 var WR_DIRECTORY_HOSTS = ['google.com', 'maps.google', 'yelp.com', 'tripadvisor', 'wikipedia.org', 'yellowpages', 'sgpbusiness', 'recordowl', 'streetdirectory', 'carousell', 'shopee', 'lazada', 'glassdoor', 'indeed', 'bing.com', 'duckduckgo', 'reddit.com', 'hardwarezone', 'mycareersfuture', 'acra.gov.sg', 'trustpilot', 'sgcarmart'];
-var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and bring the page to life with the MOTION_3D_DIRECTION (a generated video scrubbed by the scroll, or 3D where it adds clarity). For medical clients follow the MEDICAL_VISUAL_DIRECTION exactly: photorealistic, medically accurate anatomy, never cartoon 3D.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
+var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and keep the page FLAT as the MOTION_3D_DIRECTION says (no scroll animation, parallax, 3D or video backgrounds). For medical clients follow the MEDICAL_VISUAL_DIRECTION exactly as a still photograph: photorealistic, medically accurate anatomy, never cartoon.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
 var WR_MED_SPECIALTY = [
   ['cardiology', /\b(cardi\w*|heart|vascular|arter\w*|vein clinic|cholesterol|hypertension)\b/i, 'a photorealistic, medically accurate human heart beating in slow motion, coronary arteries and veins on its surface, blood visibly flowing through the vessels, cinematic macro lighting on a deep clinical background'],
   ['dental', /\b(dental|dentist\w*|orthodont\w*|teeth|tooth|implants?|braces|invisalign|root canal)\b/i, 'photorealistic macro of healthy human teeth and gums, enamel texture and light, a dental implant seating into the jawbone in a clean cross-section, calm clinical lighting'],
@@ -29,11 +29,9 @@ var WR_MOTION = [
   [/school|tuition|academy|education|course/i, 'a 3D journey from a confused student to confident results, pages and ideas unfolding as the visitor scrolls'],
   [/retail|shop|store|brand|product|e-?commerce/i, 'the hero product rotating in 3D with exploded-view details revealing materials and features on scroll']
 ];
+var WR_FLAT = 'Flat, fast page (Ryan, 2026-09-27): no scroll animations, no parallax, no 3D, no scroll film and no video backgrounds; only simple hover and focus states. The page sells through the offer, the headline, proof, answered objections and the repeated call to action.';
 function wrMotionFor(industry, text) {
-  var t = String(industry || '') + ' ' + String(text || '');
-  if (wrIsMedical(t)) { var sp = wrSpecialty(t); if (sp) return 'photorealistic 3D anatomy scroll film: ' + sp.visual + '; the film scrubs with the scroll and each section (the condition, the treatment, the doctor, book) appears inside it'; return 'calm cinematic scroll film through the real clinic: reception, treatment room, the doctor at work (with consent), ending on the booking action'; }
-  for (var i = 0; i < WR_MOTION.length; i++) if (WR_MOTION[i][0].test(t)) return WR_MOTION[i][1];
-  return 'depth-parallax scroll film built from the business\'s own photography: foreground, subject and background move at different speeds, sections revealed inside the film';
+  return WR_FLAT; // Ryan, 2026-09-27: one flat, high-converting site; no scroll or 3D motion.
 }
 /** The funnel to build (landing page -> qualify -> convert -> follow-up), shaped by the primary conversion. */
 function wrFunnelFor(conv, industry, text) {
@@ -56,7 +54,7 @@ var WR_CONVERSION_STRATEGY = [
   'Speed and focus: fast images, no auto-carousels, landing pages without top navigation, every section earns its place',
   'Tracking: GA4 / Meta pixel events on cta_click, whatsapp_click, form_submit, booking_complete so the funnel can be optimised'
 ];
-var WR_VARIATIONS = 'VARIATIONS REQUIRED (Ryan, ADR-2): build TWO versions of this mock-up from the same brief — A: a cinematic scroll film site (Higgsfield animated website; the premium option) and B: a photo-led site on Lovable with generated photography (Higgsfield, Kling fallback). Same pages, copy direction, CTAs and placeholders in both. No prices anywhere; John sends both links.';
+var WR_VARIATIONS = 'ONE VERSION (Ryan, 2026-09-27): build ONE flat, high-converting website from this brief (photography generated by Kling, built on Lovable, published to a public link). No scroll animation, parallax, 3D or scroll film. No prices anywhere; John sends the link.';
 function wrStr(v, max) { if (v === undefined || v === null) return ''; var s = String(v).replace(/\s+/g, ' ').trim(); return max && s.length > max ? s.slice(0, max) : s; }
 function wrArr(v, max) { if (!v) return []; if (!Array.isArray(v)) v = [v]; return v.map(function (x) { return typeof x === 'string' ? wrStr(x, 300) : (x && typeof x === 'object' ? wrStr(x.fact || x.text || x.name || JSON.stringify(x), 300) : wrStr(x, 300)); }).filter(Boolean).slice(0, max || 20); }
 function wrHost(url) { var m = /^(?:https?:\/\/)?(?:www\.)?([^\/?#:]+)/i.exec(String(url || '').trim()); return m ? m[1].toLowerCase() : ''; }
@@ -166,7 +164,7 @@ function wrFinalize(o) {
   var brief = wrCoerceBrief(parsed || fallback, fallback);
   if (!parsed) brief = fallback;
   if (fallback.medical_visual_direction && !/photoreal/i.test(brief.medical_visual_direction || '')) brief.medical_visual_direction = fallback.medical_visual_direction;
-  if (!brief.motion_3d_direction) brief.motion_3d_direction = fallback.motion_3d_direction;
+  brief.motion_3d_direction = fallback.motion_3d_direction; // always flat (Ryan, 2026-09-27)
   if (digest.identity.confidence === 'low') { brief.company_url = ''; brief.identity_confidence = 'low'; if (!brief.questions_for_john.length) brief.questions_for_john = fallback.questions_for_john; }
   var status = input.company_name ? 'READY_FOR_WEBSITE_CREATOR' : 'MORE_INFORMATION_REQUIRED';
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
@@ -181,6 +179,11 @@ function wrCustomerAsk(o) {
   var qs = wrArr(o.questions, 5).filter(function (q) { return q && q.length > 8; });
   var said = String([input.message || ''].concat((input.conversation || []).map(function (m) { return m && m.content; })).join('\n')).toLowerCase();
   qs = qs.filter(function (q) { return said.indexOf(q.toLowerCase().slice(0, 40)) === -1; }).slice(0, 2);
+  qs = qs.map(function (q) {
+    return q.replace(/\bdoes the (customer|client|owner) have\b/gi, 'do you have').replace(/\bis the (customer|client|owner)\b/gi, 'are you')
+      .replace(/\bthe (customer|client|owner)'s\b/gi, 'your').replace(/\bthe (customer|client|owner)\b/gi, 'you')
+      .replace(/\b(this|the) business\b/gi, 'your business');
+  });
   var channel = input.channel === 'whatsapp' ? 'whatsapp' : (input.channel === 'email' ? 'email' : null);
   var to = channel === 'whatsapp' ? wrStr(input.phone, 40) : (channel === 'email' ? wrStr(input.email, 160) : '');
   var first = wrStr(input.contact_name, 60).split(' ')[0];

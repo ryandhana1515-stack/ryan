@@ -211,3 +211,12 @@ tags: [zaphiel, changelog]
   straight away (WhatsApp/email, max two questions, mock-up keeps building with placeholders); John's question list now
   reads website details first, then ATLAS's, one per reply, skipping anything already asked. ATLAS starts for every
   named company that asks for a mock-up. Tests 80/80.
+- 2026-09-27 (night) — **Build worker updated live** (Ryan: "update the build worker", "Kling all"). Lovable builds
+  without stopping for plan approval (the worker nudges it if it pauses and checks pages exist), every mock-up is
+  published to a public lovable.app link (no login), and Kling makes all photos, the anatomy video and the scroll
+  film; variation A is a Kling film scrubbed on a Lovable scroll site. Website Intelligence's questions now speak to the
+  customer ("do you have a logo"). Live test "Ah Seng Kopi Corner": ATLAS started, Website Intelligence saved three
+  questions for John, the mock-up kept building.
+- 2026-09-27 (night) — **Flat websites only** (Ryan). Website Intelligence now always plans a flat page (no scroll,
+  parallax, 3D, film or video), the Creator's prompt and design rules say the same, John promises one link, the build
+  worker builds one site (Kling photos, still anatomy photo for clinics) and publishes it publicly. Tests 81/81.

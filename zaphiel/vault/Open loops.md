@@ -4,6 +4,10 @@ tags: [zaphiel, open-loops]
 # Open loops
 
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
+- **Zaphiel, on Ryan's go (2026-09-27):** flat-website change is in the repo and the build worker, but six n8n Code
+  nodes still carry the old scroll/3D wording: Lead Intake (Finalize & Validate Result, Rule-Based Qualification),
+  Website Builder (Compose System Prompt, Finalize Website Brief), Website Intelligence (Compose Research Prompt,
+  Finalize Brief). Deploy from `ceo-brain/workflows/*/dist/code-nodes/` and publish; no test run needed.
 - **WhatsApp is live for testing (2026-09-27).** Meta app "AI AGENTS" (1415986013818104) on Ryan's Meta business
   portfolio; free Meta test number (phone number ID `1321607761025022`, WhatsApp account `1034122678981935`); n8n
   credential "WHATSAPP FUSION TECH"; webhook → `/webhook/ceo-brain/whatsapp`, field `messages`; Outbound Sender sends
