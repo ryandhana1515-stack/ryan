@@ -84,14 +84,25 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       (never flat black panels), with clearly labelled image slots for the customer's photos." Finish with
       "Build the complete site now with real copy for <business_name>. Follow the STRATEGY FROM WEBSITE INTELLIGENCE section
       exactly (section order, one primary CTA, the funnel pages and steps, the 3D/scroll motion, the medical
-      visual). Do not ask questions; make sensible
+      visual). Do not use plan mode and do not stop for approval: build everything in this turn. Do not ask
+      questions; make sensible
       assumptions and label placeholders."
    g. Poll `get_project` every ~90 seconds (up to 8 times) until `project.agentFinished` is true or the
-      status is `failed`. The preview URL is live from the first response and keeps updating, so stop
-      polling after the budget and report anyway.
+      status is `failed`. Then check it really built (Ryan, 2026-09-27: the Free & Easy Minimart build stopped at
+      Lovable's "approve plan" step and an empty project was sent): `list_messages` (limit 1) — if the last
+      assistant message shows a plan waiting for approval (`plan--show` / `requires-approval`) or asks a question,
+      `send_message` (wait true, timeout 600): "The plan is approved exactly as written. Build the complete site now
+      … do not stop for approval or questions; finish the whole build in this turn." and poll again. Also confirm
+      `list_files` has page/components files under `src/` beyond the blank template; if not, send the same message
+      once more. At most two such nudges, then report `build_failed` with the reason.
+   g2. Publish the mock-up so the customer can open it with no login (Ryan, 2026-09-27: "the customer don't want
+      to log in"): `deploy_project` with `name` = `<business-slug>-mockup` (lowercase, hyphens; add `-2`, `-3` if
+      taken). Use the returned public `url` (https://<slug>.lovable.app) as `preview_url` in the report. Never send
+      an `id-preview--…lovable.app` link or the editor link to a customer — they require a Lovable login. The
+      lovable.app mock-up address is a preview, not the customer's live domain.
    h. Report: `execute_workflow` on `RVPBGpBzj2SUQlgX` (production, "Website Built Webhook") with body
       `{task_id, lead_id, status, project_id, preview_url, editor_url, notes, actor:
-      "agent:zaphiel-build-worker", source_execution_id: ""}` where `status` is `built`, `build_failed`
+      "agent:zaphiel-build-worker", source_execution_id: ""}` where `status` is `built` (only after g2 gave a public URL), `build_failed`
       (Lovable returned an error or `failed`) or `skipped_test_mode`; `notes` = what happened in one line
       (photos generated count, Lovable finished or still finishing, test lead skipped).
 
