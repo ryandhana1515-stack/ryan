@@ -128,7 +128,17 @@ function wbIntake(o) {
 }
 /** True when John already asked the intake questions in an earlier turn. */
 function wbIntakeInProgress(history) {
-  return wiAgentText(history).toLowerCase().indexOf('first mock-up built for you') !== -1;
+  // John is collecting mock-up details only if his LAST turn asked for them AND the customer really asked for a
+  // build earlier (or said yes to the offer). A wrong intake reply must not trap the chat (WhatsApp 2026-09-27).
+  var h = Array.isArray(history) ? history : [];
+  var lastAgent = -1;
+  for (var i = h.length - 1; i >= 0; i--) if (h[i] && h[i].role === 'agent') { lastAgent = i; break; }
+  if (lastAgent === -1 || String(h[lastAgent].content || '').toLowerCase().indexOf('first mock-up built for you') === -1) return false;
+  for (var k = 0; k < lastAgent; k++) {
+    if (!h[k] || h[k].role === 'agent') continue;
+    if (wiAsksForBuild(h[k].content) || wiAcceptedOffer(h.slice(0, k), h[k].content)) return true;
+  }
+  return false;
 }
 /** True when John already told this customer the build has started (marker in an agent turn). */
 function wbBuildAlreadyStarted(history) {

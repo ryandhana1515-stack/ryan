@@ -911,6 +911,16 @@ test("John's live playbook explains EDG, CRM, SME and the CEO Brain in FusionTec
   assert.ok(/EDG = End-to-end Digital business system/.test(pb) && /Enterprise Development Grant/.test(pb) && /never promise a grant/.test(pb));
   assert.ok(/\*\*The CEO Brain\*\*/.test(pb) && /\*\*CRM\*\*/.test(pb) && /\*\*SME operating system\*\*/.test(pb) && /\*\*AI workforce\*\*/.test(pb));
 });
+test('one wrong mock-up reply does not trap the chat; a real website ask still continues the intake (WhatsApp 2026-09-27)', () => {
+  const wi = require('../agents/website-builder/intake.js');
+  const intakeQ = 'Hi Ryan, happy to get a first mock-up built for you. A few quick details so it is right the first time: What is the name of your business?';
+  const trapped = [{ role: 'customer', content: 'Hi' }, { role: 'agent', content: 'Hi Ryan, welcome to FusionTech AI.' }, { role: 'customer', content: 'What can you help us with like crm edg sme' }, { role: 'agent', content: intakeQ }];
+  const r = wi.wbIntake({ contact_name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', message: 'What can you help my company with and can I get more info?', history: trapped });
+  assert.strictEqual(r.intent, false); assert.strictEqual(r.reply, '');
+  const real = [{ role: 'customer', content: 'Can you build us a website?' }, { role: 'agent', content: intakeQ }];
+  const r2 = wi.wbIntake({ contact_name: 'Ryan', channel: 'whatsapp', phone: '+6587587170', message: 'We are Sunrise Dental, a family dentist; patients should book appointments online', history: real });
+  assert.strictEqual(r2.intent, true, 'answers to the intake questions keep the build going');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
