@@ -108,7 +108,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_FLAT', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;

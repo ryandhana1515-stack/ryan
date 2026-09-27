@@ -278,7 +278,7 @@ test('website intake: details given in later turns → hand-off fires once, cont
   assert.strictEqual(run.fin.website_requested, true);
   assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
   assert.strictEqual(run.fin.contact_found.email, 'daniel@prestige.sg');
-  assert.ok(/building your first mock-up/.test(run.fin.result.recommended_reply) && /two versions/.test(run.fin.result.recommended_reply) && /premium option/.test(run.fin.result.recommended_reply));
+  assert.ok(/building your first mock-up/.test(run.fin.result.recommended_reply) && !/two versions|scroll/.test(run.fin.result.recommended_reply));
   const history2 = history.concat([{ role: 'customer', content: 'We are Prestige Motors…' }, { role: 'agent', content: run.fin.result.recommended_reply }]);
   const again = simulate({ name: 'Daniel', channel: 'web_chat', source: 'website', message: 'Great, thanks!', conversation_history: history2, test_mode: true, ai_mode: 'mock', external_ids: { chat_session: 's4' } });
   assert.strictEqual(again.fin.website_requested, false, 'no second build for the same lead');
@@ -352,7 +352,8 @@ test('BMW dealership: business name from "I\'m Daniel from Prestige Motors", aut
   assert.strictEqual(r.ready_to_build, true);
   assert.strictEqual(r.image_shots.length, 3);
   assert.ok(/BMW/.test(r.image_shots[0].prompt) && /no text, no logos/.test(r.image_shots[0].prompt));
-  assert.strictEqual(r.variations.length, 2); assert.strictEqual(r.variations[0].tier, 'premium'); assert.strictEqual(r.variations[1].tool, 'lovable');
+  // Ryan, 2026-09-27: one flat, high-converting site (no scroll film version).
+  assert.strictEqual(r.variations.length, 1); assert.strictEqual(r.variations[0].key, 'flat_site'); assert.ok(/no scroll animation/.test(r.variations[0].description));
   assert.strictEqual(r.film_brief.scenes.length, 3); assert.ok(!/\$|price/i.test(JSON.stringify(r.variations)));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
 });
@@ -597,13 +598,13 @@ test('html → text/signals/links; page picking; digest labels facts and never l
   assert.ok(wr.wrFetchedPage({ json: { error: { message: 'timeout' } } }, 'https://x').ok === false);
   assert.ok(wr.wrFetchedPage({ json: { content: WR_HTML } }, 'https://x').ok);
 });
-test('finalize: model JSON is coerced to the brief; fallback when the model fails; text carries the two variations + creator instruction; never delays', () => {
+test('finalize: model JSON is coerced to the brief; fallback when the model fails; text carries the one-version rule + creator instruction; never delays', () => {
   const input = wr.wrInput(WR_HANDOFF);
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [{ url: 'https://prestigemotors.sg', ok: true, html: WR_HTML }] });
   const ok = wr.wrFinalize({ raw_text: '```json\n' + JSON.stringify({ company_name: 'Prestige Motors', primary_conversion: 'BOOK TEST DRIVE', services: ['New BMW sales', 'Certified pre-owned'], questions_for_john: [] }) + '\n```', input, digest });
   assert.strictEqual(ok.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(ok.provider, 'anthropic'); assert.strictEqual(ok.needs_john, false);
   assert.deepStrictEqual(ok.brief.services, ['New BMW sales', 'Certified pre-owned']); assert.ok(ok.brief.recommended_sitemap.length, 'missing lists filled from the deterministic brief');
-  assert.ok(/^STATUS:\nREADY_FOR_WEBSITE_CREATOR/.test(ok.brief_text) && /VARIATIONS REQUIRED/.test(ok.brief_text) && /WEBSITE CREATOR INSTRUCTION/.test(ok.brief_text) && /JOHN — FUSION AI SALES AGENT/.test(ok.brief_text));
+  assert.ok(/^STATUS:\nREADY_FOR_WEBSITE_CREATOR/.test(ok.brief_text) && /ONE VERSION/.test(ok.brief_text) && !/VARIATIONS REQUIRED/.test(ok.brief_text) && /WEBSITE CREATOR INSTRUCTION/.test(ok.brief_text) && /JOHN — FUSION AI SALES AGENT/.test(ok.brief_text));
   assert.ok(!/\$\s?\d/.test(ok.brief_text), 'no prices');
   const fb = wr.wrFinalize({ error: 'model_error: Payment required', input, digest });
   assert.strictEqual(fb.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(fb.provider, 'rules'); assert.strictEqual(fb.brief.primary_conversion, 'BOOK TEST DRIVE'); assert.ok(fb.brief.placeholders_required.length);
@@ -833,22 +834,21 @@ test('Lead Intake: an AI reply that says "I don\'t know" is replaced by John\'s 
   assert.ok(run.fin.audit.includes('reply_replaced:dont_know'));
 });
 console.log('\n[16] Website Intelligence plans the sale; the creator builds it (Ryan, 2026-09-26: funnels, high-converting 3D, realistic anatomy)');
-test('cardiology clinic: WI plans a funnel, conversion rules, 3D motion and a photoreal beating heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
+test('cardiology clinic: WI plans a funnel, conversion rules, a flat page and a photoreal heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
   const H = { tenant_id: 'fusiontech', lead_id: 'lead_heart', contact_name: 'Dr Lim', company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: 'We are a heart specialist clinic. Can you build us a website and a funnel for ads?', conversation_json: '[]', extracted_json: '{}', test_mode: true };
   const input = wr.wrInput(H);
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [] });
   const plan = wr.wrFinalize({ error: 'x', input, digest }).brief;
   assert.ok(/photoreal/i.test(plan.medical_visual_direction) && /heart/i.test(plan.medical_visual_direction) && /blood/i.test(plan.medical_visual_direction), plan.medical_visual_direction);
   assert.ok(plan.funnel_plan.length >= 5 && /main deliverable/.test(plan.funnel_plan[0]), 'the customer asked for a funnel');
-  assert.ok(plan.conversion_strategy.length >= 6 && plan.motion_3d_direction);
+  assert.ok(plan.conversion_strategy.length >= 6 && /no scroll animations/.test(plan.motion_3d_direction), 'flat page (Ryan, 2026-09-27)');
   const research_json = JSON.stringify({ brief: plan });
   const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: H.message, research_json } });
   assert.strictEqual(out.brief.mode, 'medical');
   const p = out.build_prompt;
-  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /3D and scroll motion/.test(p) && /Medical visual \(hero\)/.test(p), p.slice(-1500));
+  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /Flat page: no scroll animation/.test(p) && /Medical visual \(hero\)/.test(p) && /still image/.test(p) && !/ScrollTrigger/.test(p), p.slice(-1500));
   assert.ok(p.length <= wb.WB_MAX_PROMPT || p.length <= 9000);
   assert.ok(/heart/i.test(out.image_shots[0].prompt) && /anatomically accurate/.test(out.image_shots[0].prompt) && /not cartoon/.test(out.image_shots[0].prompt));
-  assert.ok(/heart/i.test(out.film_brief.scenes[0].scene), 'the scroll film opens on the heart');
   // A model-written prompt also gets the strategy, exactly once.
   const again = wb.wbWithStrategy(p, wb.wbResearchPlan({ research_json }));
   assert.strictEqual(again.split(wb.WB_STRATEGY_MARK).length, 2);
@@ -872,14 +872,14 @@ test('every agent parses a fenced JSON answer that itself contains a ``` block (
     assert.strictEqual(fn('no json here'), null, name);
   }
 });
-test('a rich research plan never pushes the 3D motion or the anatomy visual out of the Lovable prompt (execution 390)', () => {
+test('a rich research plan never pushes the flat-page rule or the anatomy visual out of the Lovable prompt (execution 390)', () => {
   const long = (w, n) => Array.from({ length: n }, (_, i) => w + ' ' + i + ' ' + 'x'.repeat(300));
   const plan = { brief: { primary_cta: 'Book a Heart Screening Consultation', target_customers: long('buyer', 3), customer_objections: long('objection', 4), homepage_conversion_flow: long('section', 9), funnel_plan: long('step', 8), conversion_strategy: long('rule', 8), placeholders_required: long('ph', 8), motion_3d_direction: 'A photorealistic 3D human heart scrubbed by scroll. ' + 'm'.repeat(900), medical_visual_direction: 'Specialty: cardiology. Use photorealistic, medically accurate anatomy: a realistic beating human heart with blood flowing. ' + 'v'.repeat(900) } };
   const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: JSON.stringify(plan) } });
   const p = out.build_prompt;
   assert.ok(p.length <= wb.WB_MAX_PROMPT, p.length);
   const sec = p.slice(p.indexOf(wb.WB_STRATEGY_MARK));
-  for (const k of ['Primary CTA everywhere', '3D and scroll motion', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
+  for (const k of ['Primary CTA everywhere', 'Flat page', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
   assert.ok(/Never a cartoon/.test(sec) && /Build a premium/.test(p), 'strategy complete and the base prompt still leads');
 });
 test('John sends the mock-up link where the customer asked: a typed email beats the phone on file (execution 385)', () => {
@@ -887,9 +887,9 @@ test('John sends the mock-up link where the customer asked: a typed email beats 
   const fn = wi.wbIntake;
   const r = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation. Send the link to drtan@example.com', history: [] });
   assert.ok(r.ready, JSON.stringify(r.missing));
-  assert.ok(/send both links to drtan@example\.com/.test(r.reply), r.reply);
+  assert.ok(/send the link to drtan@example\.com/.test(r.reply), r.reply);
   const r2 = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation.', history: [] });
-  assert.ok(/send both links to \+6590000002/.test(r2.reply), r2.reply);
+  assert.ok(/send the link to \+6590000002/.test(r2.reply), r2.reply);
 });
 test('a bare "hi" on WhatsApp from a new lead is answered automatically, not held (execution 435)', () => {
   const raw = JSON.stringify({ schema_version: '1.0', lead_status: 'NEW', intent: 'unclear', lead_temperature: 'cold', summary: 'Greeting only.', extracted: {}, missing_information: ['company_name'], recommended_reply: 'Hi Ryan, welcome to FusionTech AI. What does your business do?', questions_to_ask: ['What does your business do?'], next_action: 'ask_qualifying_questions', follow_up_at: null, human_review_required: false, escalation_reasons: [], confidence: 0.9, reasoning: 'r' });

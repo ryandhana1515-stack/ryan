@@ -217,3 +217,6 @@ tags: [zaphiel, changelog]
   film; variation A is a Kling film scrubbed on a Lovable scroll site. Website Intelligence's questions now speak to the
   customer ("do you have a logo"). Live test "Ah Seng Kopi Corner": ATLAS started, Website Intelligence saved three
   questions for John, the mock-up kept building.
+- 2026-09-27 (night) — **Flat websites only** (Ryan). Website Intelligence now always plans a flat page (no scroll,
+  parallax, 3D, film or video), the Creator's prompt and design rules say the same, John promises one link, the build
+  worker builds one site (Kling photos, still anatomy photo for clinics) and publishes it publicly. Tests 81/81.

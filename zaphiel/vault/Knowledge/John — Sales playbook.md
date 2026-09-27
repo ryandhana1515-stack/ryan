@@ -59,7 +59,7 @@ with?", answer with the parts that fit them (never a list of everything), in the
 - **ERP / operations** (when needed) — orders, suppliers, stock, service jobs, invoices status, staff roles; existing
   ERPs are integrated, not forcibly replaced.
 - **Premium websites, funnels and web apps** — agency-grade sites and high-converting funnels (landing page → form or
-  WhatsApp → thank-you → follow-up), incl. 3D/scroll sites and medical sites with realistic anatomy visuals. A free
+  WhatsApp → thank-you → follow-up), flat, fast pages built to convert (no scroll animation or 3D), and medical sites with realistic anatomy photography. A free
   first mock-up is offered only when the customer asks for a website/mock-up or says yes to the offer.
 - **How we work** — start with one workflow (e.g. WhatsApp follow-up + CRM + booking + CEO report), prove it, then
   expand. Every customer's data is isolated; OAuth, no passwords in chat.
@@ -98,7 +98,7 @@ backup mode (`ceo-brain/agents/sales-qualification/rules.js`), so keep the two i
 - **Is this just a chatbot?** — It is more than a chatbot. A chatbot only answers messages; we build AI agents that do the work around them: they qualify enquiries, update your CRM, follow up on time, book appointments and report to you, with a person approving anything important.
 - **Do we have to change our software?** — You do not have to replace what already works. Wherever it is practical we connect the systems you already use, like your CRM, spreadsheets, accounting software, calendar and WhatsApp, and our systems architect checks each connection properly before anything is built.
 - **Does it work with WhatsApp?** — Yes. WhatsApp is usually where it starts: every enquiry gets an instant, helpful reply, follow-ups go out on time, and each conversation is saved to your CRM, using the official WhatsApp Business setup.
-- **Do you build websites, funnels, stores, 3D sites?** — Yes. We build business websites, landing pages and full sales funnels, online stores, booking sites, customer portals and web apps, including premium 3D and cinematic scroll-animated sites, and they connect to your WhatsApp and CRM so every visitor who enquires gets followed up.
+- **Do you build websites, funnels, stores?** — Yes. We build business websites, landing pages and full sales funnels, online stores, booking sites, customer portals and web apps, all designed to convert visitors into enquiries and sales, and they connect to your WhatsApp and CRM so every visitor who enquires gets followed up.
 - **Can I see examples / past work?** — The best example is one made for your own business: we can have a first website mock-up made for you to look at, and you are chatting with one of our AI agents right now. For past projects, Ryan walks you through them personally on a call.
 - **Where are you based?** — We are based in Singapore and work with businesses in Singapore and beyond. Everything is set up and supported online, so location is not a barrier.
 - **Do you work with my industry?** — Yes. It fits any business that handles enquiries, customers and follow-ups, from property agencies and clinics to construction, retail, F&B, logistics and professional services, and we design it around how your business actually runs rather than forcing a template.
@@ -142,3 +142,5 @@ backup mode (`ceo-brain/agents/sales-qualification/rules.js`), so keep the two i
   first mock-up made for your business, so you can see it before deciding anything?" Only start collecting the
   build details when the customer asks for a build ("build me a website", "can you make us a funnel", "send me a
   mock-up") or says yes to the offer. A complaint about their current website is a reason to offer, not to build.
+- 2026-09-27 (Ryan, newest — replaces the two-version line of 2026-09-26) — One mock-up per customer: a flat,
+  fast, high-converting website (no scroll animation, parallax, 3D or scroll film). Send one link, never "two versions".
