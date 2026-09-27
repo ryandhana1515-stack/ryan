@@ -5,13 +5,13 @@ contact: "Ryan"
 company: ""
 industry: ""
 status: QUALIFYING
-temperature: warm
+temperature: cold
 intent: unclear
 channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:18:20.453Z
+updated: 2026-09-27T15:19:05.720Z
 tags: [lead]
 ---
 # Ryan
@@ -76,3 +76,10 @@ _Summary:_ Ryan asked twice what FusionTech can help his company with (mentionin
 **John:** Good question, Ryan. The CEO Brain sits above the tools you already use, WhatsApp, email, CRM, accounting, your website, and lets you ask it things like which leads haven't been followed up or what happened in your business today, while the AI agents underneath handle the actual follow-ups and admin. To show you exactly how it would help your company rather than in general terms, what does your business do, and what's the one task or bottleneck eating up most of your team's time right now?
 
 _Summary:_ Ryan has asked multiple times what FusionTech and specifically the CEO Brain can do for his company, but has not yet shared his company name, industry, or any operational details. Previous agent replies explained the offering generally; no business facts have been extracted yet.
+
+### 2026-09-27 15:19 UTC · QUALIFYING / cold · next: ask_qualifying_questions · anthropic
+**Prospect:** What your agents can do?
+
+**John:** Good to keep talking, Ryan. In short, our agents work like AI staff: they answer enquiries on WhatsApp, email or your website instantly, qualify and follow up leads, book appointments, send quotations for approval, handle customer service, and report to you, all connected to your CRM and other tools, with a person approving anything involving money or contracts. To show you specifically how this fits, what does your business do, and what is the one task or bottleneck taking up most of your team's time right now?
+
+_Summary:_ Ryan (WhatsApp contact, phone provided) has asked repeatedly what our AI agents/CEO Brain can do, but has not yet shared his company, industry, or any business specifics despite the agent asking multiple times. Previous replies already covered the mock-up intake and the CEO Brain explanation; the prospect is re-asking a general capability question rather than answering the qualifying questions.
