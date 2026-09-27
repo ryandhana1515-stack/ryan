@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T15:30:14.013Z
+updated: 2026-09-27T15:30:35.839Z
 tags: [lead]
 ---
 # Ryan
@@ -19,7 +19,7 @@ tags: [lead]
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: true
+- Company size: - · Users: - · Decision maker: -
 - Problem: -
 - Wants: website_build
 - Tools: -
@@ -104,3 +104,10 @@ _Summary:_ Ryan from Free & Easy Minimart (Minimart / retail). Wants: website bu
 **John:** Hi Ryan, happy to get a first mock-up built for you at Free & Easy Minimart. One thing I need: What should visitors be able to do on the site (enquire, book, buy, browse), and which pages do you need?
 
 _Summary:_ Ryan runs Free & Easy Minimart, a minimart/retail business, and has asked twice for a website to be built, most recently saying 'just build it.' The business name is known. Per playbook, the business name is enough to start the first mock-up; John should stop asking for pages/features and confirm the build is starting now.
+
+### 2026-09-27 15:30 UTC · QUALIFYING / warm · next: send_reply · hand-off: website-builder · anthropic
+**Prospect:** Can you build a website for my company? It's called Free & Easy Minimart."
+
+**John:** Hi Ryan, perfect, I have what I need for Free & Easy Minimart. Our website team is building your first mock-up now, in two versions for you to compare: a photo-led site and a cinematic scroll film site (our premium option). I will send both links to +6587587170 in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.
+
+_Summary:_ Ryan of Free & Easy Minimart has asked three times to build a website for his company. He has already given the business name. Previous agent replies incorrectly asked him for pages/features instead of starting the build, which should have started as soon as the name was given.
