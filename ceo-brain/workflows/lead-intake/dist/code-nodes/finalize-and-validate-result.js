@@ -162,7 +162,8 @@ function finalizeResult(input) {
   if (lead.test_mode) notes.push('test_mode:no_customer_contact');
   var allowed = CB_LEAD_STATUS.transitions[prev] || CB_LEAD_STATUS.transitions.NEW;
   var to = result.lead_status;
-  if (allowed.indexOf(to) === -1) { notes.push('transition_rejected:' + prev + '->' + to); to = prev === 'WON' || prev === 'LOST' ? prev : 'HUMAN_REVIEW'; result.lead_status = to; result.human_review_required = true; if (result.escalation_reasons.indexOf('invalid_status_transition') === -1) result.escalation_reasons.push('invalid_status_transition'); }
+  if (to === 'NEW' && result.recommended_reply && allowed.indexOf('QUALIFYING') !== -1) { to = 'QUALIFYING'; result.lead_status = to; }
+  if (to !== prev && allowed.indexOf(to) === -1) { notes.push('transition_rejected:' + prev + '->' + to); to = prev === 'WON' || prev === 'LOST' ? prev : 'HUMAN_REVIEW'; result.lead_status = to; result.human_review_required = true; if (result.escalation_reasons.indexOf('invalid_status_transition') === -1) result.escalation_reasons.push('invalid_status_transition'); }
   var statusChange = { from: prev, to: to, changed: prev !== to };
   if (!result.follow_up_at) {
     var h = PP_FOLLOW_UP_HOURS[to];

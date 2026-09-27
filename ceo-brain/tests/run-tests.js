@@ -889,6 +889,14 @@ test('John sends the mock-up link where the customer asked: a typed email beats 
   const r2 = fn({ contact_name: 'Dr Tan', phone: '+6590000002', company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'Please build me a website mock-up for our heart clinic, the site must get patients to book a consultation.', history: [] });
   assert.ok(/send both links to \+6590000002/.test(r2.reply), r2.reply);
 });
+test('a bare "hi" on WhatsApp from a new lead is answered automatically, not held (execution 435)', () => {
+  const raw = JSON.stringify({ schema_version: '1.0', lead_status: 'NEW', intent: 'unclear', lead_temperature: 'cold', summary: 'Greeting only.', extracted: {}, missing_information: ['company_name'], recommended_reply: 'Hi Ryan, welcome to FusionTech AI. What does your business do?', questions_to_ask: ['What does your business do?'], next_action: 'ask_qualifying_questions', follow_up_at: null, human_review_required: false, escalation_reasons: [], confidence: 0.9, reasoning: 'r' });
+  const run = simulate({ name: 'Ryan', phone: '+6587587170', channel: 'whatsapp', source: 'whatsapp', message: 'Hi', test_mode: false, ai_mode: 'live' }, { modelText: raw });
+  assert.strictEqual(run.fin.provider, 'anthropic');
+  assert.strictEqual(run.fin.result.lead_status, 'QUALIFYING', JSON.stringify(run.fin.audit));
+  assert.ok(!run.fin.result.escalation_reasons.includes('invalid_status_transition'));
+  assert.strictEqual(run.fin.approval_needed, false);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
