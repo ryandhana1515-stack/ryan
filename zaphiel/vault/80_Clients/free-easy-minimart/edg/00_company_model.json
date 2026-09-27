@@ -1,0 +1,128 @@
+{
+  "company_name": {
+    "value": "Free & Easy Minimart",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_name": {
+    "value": "Ryan",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_role": {
+    "value": "Decision maker (self-identified)",
+    "label": "INFERENCE"
+  },
+  "contact_phone": {
+    "value": "+6587587170",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "preferred_channel": {
+    "value": "WhatsApp",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Minimart / retail",
+    "label": "CLIENT-PROVIDED"
+  },
+  "business_model": {
+    "value": "UNKNOWN — likely a physical convenience/minimart store; not confirmed if single or multi-outlet, walk-in only or also takes online/phone orders",
+    "label": "INFERENCE"
+  },
+  "company_size": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "locations": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "customer_types": {
+    "value": "UNKNOWN — likely walk-in retail consumers; not confirmed if also B2B/bulk orders",
+    "label": "INFERENCE"
+  },
+  "products_services": {
+    "value": "UNKNOWN — general minimart goods assumed, not confirmed",
+    "label": "INFERENCE"
+  },
+  "current_tools": {
+    "value": [],
+    "label": "CLIENT-PROVIDED"
+  },
+  "accounting_or_erp": {
+    "value": [],
+    "label": "CLIENT-PROVIDED"
+  },
+  "lead_sources": {
+    "value": [
+      "website",
+      "whatsapp"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_whatsapp": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_email": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_follow_up_process": {
+    "value": "manual (as described by prospect)",
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_website": {
+    "value": "None yet — requesting a new build",
+    "label": "INFERENCE"
+  },
+  "problem_stated": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "desired_automation": {
+    "value": [
+      "website_build",
+      "whatsapp_auto_reply",
+      "appointment_booking",
+      "lead_follow_up",
+      "lead_qualification",
+      "quote_generation",
+      "customer_support",
+      "email_automation",
+      "crm_sync",
+      "reporting"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "appointment_booking_relevance": {
+    "value": "UNKNOWN — appointment booking is an unusual need for a minimart; may indicate delivery slot booking, supplier meetings, or a different service line not yet described",
+    "label": "INFERENCE"
+  },
+  "quote_generation_relevance": {
+    "value": "UNKNOWN — quotations are unusual for a walk-in minimart; may indicate bulk/wholesale orders or a separate B2B side of the business",
+    "label": "INFERENCE"
+  },
+  "users_needed": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "desired_outcome": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": "Customer said 'Just build it' — urgency signal, no firm date given",
+    "label": "INFERENCE"
+  },
+  "decision_maker": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  }
+}
