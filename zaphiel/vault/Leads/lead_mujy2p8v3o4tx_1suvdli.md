@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-28T08:26:17.875Z
+updated: 2026-09-28T08:26:57.901Z
 tags: [lead]
 ---
 # Ryan
@@ -19,7 +19,7 @@ tags: [lead]
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: true
+- Company size: - · Users: - · Decision maker: -
 - Problem: -
 - Wants: website_build
 - Tools: -
@@ -132,3 +132,10 @@ _Summary:_ Ryan of Free & Easy Minimart asked for a website build and has been t
 **John:** Hi Ryan, good to hear from you again. Your first mock-up for Free & Easy Minimart is being built now and the link will land here shortly, no need to resend anything. While we wait, it would help to know: what does the minimart sell and how do customers usually reach you, and is there a task like restocking, orders or customer questions that takes up most of your team's time? ATLAS, our systems architect, would like to know: You mentioned wanting appointment booking and quote generation — can you tell us what these are for in a minimart (e.g. delivery slots, bulk orders, supplier visits)? This helps us design the right th
 
 _Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a website and already gave the business name. The agent already confirmed the build was underway and promised links; the customer's latest message is just a plain greeting, so we should not repeat the mock-up promise again but instead give a short status update and move the conversation forward.
+
+### 2026-09-28 08:26 UTC · HUMAN_REVIEW / warm · next: human_review · hand-off: atlas · anthropic
+**Prospect:** No I’m. New customer
+
+**John:** Hi Ryan, thanks for the reply, apologies if my last message was confusing. Just to confirm, your first mock-up for Free & Easy Minimart is still being built and the link will land here shortly. In the meantime, could you tell us what the minimart mainly sells, and how customers usually reach you (walk-in, phone, WhatsApp orders)? That helps us make sure the site and any automation fit how your shop actually runs. ATLAS, our systems architect, would like to know: What should visitors be able to do on your website — just find your info/hours, browse products, place orders, or something else?
+
+_Summary:_ Ryan of Free & Easy Minimart asked for a website mock-up over WhatsApp; the mock-up build was already confirmed underway by the agent. His latest message 'No I'm. New customer' is unclear, possibly a typo or a reply to a prior question, and does not add new business facts.
