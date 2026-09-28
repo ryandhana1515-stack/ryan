@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-27T18:15:52.051Z
+updated: 2026-09-28T08:26:17.875Z
 tags: [lead]
 ---
 # Ryan
@@ -125,3 +125,10 @@ _Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a we
 **John:** Thanks for your patience, Ryan. Your mock-up for Free & Easy Minimart is with our website team right now and the link is coming to this number shortly. While we finish that, it would help to know: what does the minimart mainly sell, and do customers only walk in, or can they also order for delivery or bulk?
 
 _Summary:_ Ryan of Free & Easy Minimart asked for a website build and has been told the mock-up is in progress. He is now chasing a response ('Hi any response?') after multiple prior agent replies already promised the link. He has not yet provided business details (what they sell, delivery/wholesale) but the mock-up commitment has already been made twice with no link delivered, risking credibility.
+
+### 2026-09-28 08:26 UTC · HUMAN_REVIEW / warm · next: ask_qualifying_questions · hand-off: atlas · anthropic
+**Prospect:** Hi
+
+**John:** Hi Ryan, good to hear from you again. Your first mock-up for Free & Easy Minimart is being built now and the link will land here shortly, no need to resend anything. While we wait, it would help to know: what does the minimart sell and how do customers usually reach you, and is there a task like restocking, orders or customer questions that takes up most of your team's time? ATLAS, our systems architect, would like to know: You mentioned wanting appointment booking and quote generation — can you tell us what these are for in a minimart (e.g. delivery slots, bulk orders, supplier visits)? This helps us design the right th
+
+_Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a website and already gave the business name. The agent already confirmed the build was underway and promised links; the customer's latest message is just a plain greeting, so we should not repeat the mock-up promise again but instead give a short status update and move the conversation forward.
