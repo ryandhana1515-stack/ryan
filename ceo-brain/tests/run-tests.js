@@ -316,7 +316,7 @@ test('fallback brief for the logistics lead validates against the schema', () =>
   assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= wb.WB_MAX_PROMPT);
   assert.strictEqual(r.brief.mode, 'sme');
   assert.strictEqual(r.brief.industry_category, 'logistics');
-  assert.ok(r.build_prompt.includes('Never use:') && /navy-to-purple SaaS gradient/.test(r.build_prompt) && /Photo-led/.test(r.build_prompt), 'anti-generic + cinematic rules must be in the prompt');
+  assert.ok(r.build_prompt.includes('Never use:') && /navy-to-purple SaaS gradient/.test(r.build_prompt) && /Film-led/.test(r.build_prompt) && /phones first/.test(r.build_prompt), 'anti-generic + cinematic rules must be in the prompt');
   assert.ok(r.build_prompt.includes('Typography:'), 'design direction must be in the prompt');
   assert.ok(r.brief.qa_checklist.length >= 15 && r.brief.verification_required.length === 0);
   assert.ok(r.lovable_url.startsWith('https://lovable.dev/#prompt='));
@@ -864,7 +864,7 @@ test('the scroll film opens on the clinic anatomy: heart beating, arteries, bloo
   const p = wb.wbWithStrategy('Build the site.', wb.wbResearchPlan({ research_json: JSON.stringify(plan) }));
   assert.ok(/heart beating/.test(p) && /scrubbed by the scroll/.test(p) && /parallax/.test(p) && !/no scroll animation/.test(p), p.slice(-1200));
   const routine = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/image_to_video/.test(routine) && /3D PARALLAX SCROLL FILM/.test(routine) && /currentTime driven by scroll progress/.test(routine) && /generate_3d/.test(routine) && /3D MODEL/.test(routine) && /Never for clinics/.test(routine) && !/Never use Higgsfield/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker: Kling scroll film + Higgsfield 3D model (Ryan, 2026-09-28)');
+  assert.ok(/image_to_video/.test(routine) && /3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST/.test(routine) && /NEVER turn the film off below a breakpoint/.test(routine) && /Scroll-film check/.test(routine) && /generate_3d/.test(routine) && /3D MODEL/.test(routine) && /Never for clinics/.test(routine) && !/Never use Higgsfield/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker: Kling scroll film + Higgsfield 3D model (Ryan, 2026-09-28)');
 });
 
 test('no research → the creator works as before; general practice gets no anatomy render', () => {

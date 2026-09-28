@@ -20,16 +20,16 @@ var WB_ANTI_GENERIC = [
   'the same font pairing as every other AI site'
 ];
 var WB_CINEMATIC = [
-  'Photo-led: a full-bleed cinematic photograph (or looping video still) in the hero and at the top of every major section; the imagery carries the page.',
-  'Colour with depth: rich colour pulled from the imagery, cinematic gradient overlays (dark-to-transparent, brand-tinted) for legibility and mood; never a flat single-colour block.',
-  'Large, confident display typography over the imagery; short lines; generous spacing.',
-  'Motion: 3D parallax scroll film (Ryan, 2026-09-27): the Kling film is pinned in the hero and scrubbed by the scroll, imagery moves in layered depth parallax (foreground and background at different speeds, a slight 3D perspective), sections and CTAs are revealed over the film, smooth scrolling; fast on mobile and prefers-reduced-motion shows stills.',
-  'Every section has a visual: photo, product/vehicle shot, showroom, team or detail; text-only sections are not allowed except legal.',
-  'Placeholders for the customer\'s own photos are labelled, but the mock-up itself ships with the generated photography so it already looks finished.'
+  'Film-led (Ryan, 2026-09-29: "an actual scroll website, 3D video … no photos, just colours"): the Kling film chapters are the imagery. No static photo sections and no image used twice; each generated photo is only the poster (first frame) of its film chapter. Between chapters: clean solid brand-colour panels with big typography, like an Apple product page.',
+  'Colour with depth: rich colour pulled from the film, cinematic gradient overlays (dark-to-transparent, brand-tinted) for legibility over the film; solid panels use the brand palette with strong contrast.',
+  'Large, confident display typography over the film and on the panels; short lines; generous spacing.',
+  'Motion: 3D scroll film on EVERY screen size, phones first (Ryan, 2026-09-29: the Smile Plus mock-up turned the film off on phones and showed a still). Each film chapter is pinned full-screen and scrubbed by the scroll (GSAP ScrollTrigger scrub + pin, Lenis smooth scroll) on a <canvas>: the clip\'s frames are extracted in the browser (hidden muted playsinline video, seek frame by frame, createImageBitmap, about 48 frames per clip, 640px wide on phones and 960px on desktop) and scroll progress picks the frame; while frames load, a smoothed video.currentTime fallback. Never switch the film off below a breakpoint; only prefers-reduced-motion shows stills.',
+  'Every section moves: headline mask reveals, pinned sticky stories, count-ups, a pinned horizontal gallery, depth parallax and staggered 3D-tilt reveals; no static section except legal. Animate transform and opacity only (60fps).',
+  'Placeholders for the customer\'s own photos are labelled; the mock-up itself ships with the film so it already looks finished.'
 ];
 var WB_APPLE = 'Apple-grade: one idea per screen, huge confident headlines in few words, generous breathing room, the product or the business as the hero under cinematic light, pixel-precise spacing and alignment, silky 60fps scrolling (GSAP ScrollTrigger with Lenis smooth scroll), a premium finish everywhere.';
 var WB_SCROLL_EFFECTS = {
-  film_scrub: 'Pinned hero film: the Kling film fills the screen and plays forward as the visitor scrolls (video currentTime from scroll progress)',
+  film_scrub: 'Pinned hero film on every screen size: the Kling film fills the screen and plays forward as the visitor scrolls (canvas frame scrubbing driven by GSAP ScrollTrigger, frames extracted in the browser; never turned off on phones)',
   product_reveal: 'Product reveal: the hero subject stays pinned and turns, zooms or opens into an exploded view as the visitor scrolls, like an Apple product page (a real 3D model made by Higgsfield when the build provides one, rendered with model-viewer or react-three-fiber)',
   zoom_through: 'Zoom-through: the camera pushes into an image until it becomes the next section',
   depth_layers: 'Depth parallax: foreground, subject and background layers move at different speeds with a slight 3D perspective tilt',

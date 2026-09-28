@@ -95,20 +95,29 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       clearly, then `jobs_wait` (at most ~8 minutes). Keep the GLB URL. Never for clinics (their anatomy stays the
       photoreal Kling film). If it fails, skip it and say so in `notes`.
    f. Lovable: `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
-      `initial_message` = `brief.build_prompt` + a blank line + the photography block:
-      "Photography generated for this customer (use as real content, not placeholders; load by URL):"
-      then one line per shot — `hero` = "HERO — full-bleed hero background with a cinematic gradient
-      overlay and the headline over it: <url>", `section` = "SECTION — full-width image opening the first
-      major section (parallax layer): <url>", `detail` = "DETAIL — split section or feature card image (parallax
-      layer): <url>" — then the film block: "3D PARALLAX SCROLL FILM — pin the hero full-screen and scrub these
-      Kling clips in order with the scroll as one continuous film (sticky <video muted playsinline preload="auto">,
-      its currentTime driven by scroll progress with GSAP ScrollTrigger or framer-motion useScroll); the hero, the
-      offer and the book/enquire sections and their CTAs appear over the film as the visitor scrolls; after the film,
-      layered depth parallax on the photos (foreground and background moving at different speeds, a slight 3D
-      perspective tilt), staggered reveals and smooth scrolling. Keep the sticky mobile CTA and WhatsApp button;
-      keep it fast (compressed video, lazy-load below the fold); with prefers-reduced-motion show the photos as
-      stills. Film clips in order: 1) <url> 2) <url> 3) <url> (4) <url> 5) <url> for a property walkthrough; label every generated
-      image and clip on a property site "Artist's impression")." — when step e3 made a model, add: "3D MODEL — the
+      `initial_message` = `brief.build_prompt` + a blank line + the poster block:
+      "Film posters generated for this customer (each is ONLY the first frame of its film chapter, never a static
+      section, never used twice; load by URL):" then one line per shot — `hero` = "CHAPTER 1 poster: <url>",
+      `section` = "CHAPTER 2 poster: <url>", `detail` = "CHAPTER 3 poster: <url>" — then the film block (Ryan,
+      2026-09-29: the Smile Plus mock-up turned the film off on phones and showed stills; "I want an actual scroll
+      website, 3D video … no photos, just colours"): "3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST — each
+      Kling clip is a pinned full-screen film chapter scrubbed by the scroll: a <ScrollFilm> component with a
+      <canvas>, GSAP ScrollTrigger (pin: true, scrub: true, about 150vh of scroll per clip) and Lenis smooth scroll.
+      Frames: for each clip load a hidden <video muted playsinline preload="auto"> (no crossOrigin), seek it step
+      by step on the 'seeked' event and grab about 48 frames with createImageBitmap (resizeWidth 640 on phones, 960
+      on desktop); scroll progress picks the frame and draws it cover-fit, scaled 1.1x from the centre, each animation frame (the scale crops
+      the Kling corner watermark off the bottom edge; the video fallback gets the same scale); decode chapter 1
+      first; while frames load, fall back to a visible video whose currentTime follows the scroll smoothed by a lerp;
+      on iOS call play() then pause() on the first touch. NEVER turn the film off below a breakpoint and never swap
+      it for a still on phones; only prefers-reduced-motion shows the posters. Chapter 1 = the hero (headline and
+      CTAs rise and fade over the film), chapter 2 = the offer, chapter 3 = book/enquire; a zoom-through transition
+      between chapters into the next section. NO STATIC PHOTO SECTIONS: every other section is a clean solid
+      brand-colour panel with big typography. EVERY SECTION MOVES: headline mask reveals, a pinned sticky story,
+      count-ups, a pinned horizontal gallery of services or products, depth parallax and staggered 3D-tilt reveals, a
+      scroll-progress bar; transform and opacity only, 60fps. Keep the sticky mobile CTA and WhatsApp button. If you
+      can download files, copy the clips into public/film/ and use the local paths. Film clips in order: 1) <url>
+      2) <url> 3) <url> (4) <url> 5) <url> for a property walkthrough; label every generated image and clip on a
+      property site "Artist's impression")." — when step e3 made a model, add: "3D MODEL — the
       product reveal: render this GLB with <model-viewer> or react-three-fiber in a pinned section; it turns and
       zooms as the visitor scrolls (rotation driven by scroll progress), under soft studio light, with the benefit
       lines appearing beside it; poster = the hero photo: <glb url>." — then "If an image or clip fails to load, keep the
@@ -129,6 +138,15 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       … do not stop for approval or questions; finish the whole build in this turn." and poll again. Also confirm
       `list_files` has page/components files under `src/` beyond the blank template, including a page for each page in
       the FULL WEBSITE section; if pages are missing, send "Build the missing pages now, fully: <names>" once more. At most two such nudges, then report `build_failed` with the reason.
+   g1. Scroll-film check (Ryan, 2026-09-29: "no scroll effects, no nothing"): `read_file` the home route and the
+      film component it imports (`list_files` shows them under `src/`). It passes only when: the clips are drawn
+      or played under scroll control (ScrollTrigger, `useScroll` or a scroll listener) with pinning; nothing turns
+      the film off on phones (no `innerWidth <` / `matchMedia("(max-width` guard around the film, no
+      `md:hidden` still or `hidden md:block` film); Lenis is used; at least five sections use scroll animations;
+      no static `<img>` section other than logos and the customer's own photos. If it fails, `send_message` (wait
+      true, timeout 600): "The scroll film and scroll effects are missing or turned off on phones. Rebuild them
+      exactly as the 3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST block says: <the failed points>. Build it
+      now, no questions." and check again once. Say in `notes` whether the check passed.
    g2. Publish the mock-up so the customer can open it with no login (Ryan, 2026-09-27: "the customer don't want
       to log in"): `deploy_project` with `name` = `<business-slug>-mockup` (lowercase, hyphens; add `-2`, `-3` if
       taken). Use the returned public `url` (https://<slug>.lovable.app) as `preview_url` in the report. Never send

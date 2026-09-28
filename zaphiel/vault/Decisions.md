@@ -208,3 +208,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   placeholder); a business it cannot find is asked one thing: its website link. It asks only before the build, never
   while building. Only the customer's first reply to its question sends it back for another look. John does not
   relay its questions. ATLAS never asks what the customer already said. Every message asks at most one question.
+
+- 2026-09-29 — **Film-led websites: the 3D scroll film on every screen, phones first; no static photo sections**
+  (Ryan, on the Smile Plus mock-up: "no scroll effects, no nothing … I want an actual scroll website, 3D video …
+  no photos, just colours"). Each Kling clip is a pinned film chapter scrubbed by the scroll on a canvas (frames
+  extracted in the browser), never turned off on phones; generated photos are only film posters; everything else is
+  clean solid brand-colour panels; every section has a scroll animation (GSAP ScrollTrigger + Lenis). The build
+  worker checks the code after Lovable finishes and sends it back if the film or the effects are missing. Kling
+  output carries a corner watermark, so the film is drawn 1.1x from the centre to crop it (Ryan's Kling Pro plan
+  covers commercial use).

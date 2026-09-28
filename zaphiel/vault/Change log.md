@@ -285,3 +285,10 @@ tags: [zaphiel, changelog]
   `atAlreadyAnswered` + `atOneQuestion` (atlas.js); John's prompt: one question, never repeated, never public facts;
   Website Intelligence prompt: a business found online is always enough; transcription language set to English.
   Tests 109/109.
+- 2026-09-29 — **Smile Plus mock-up had no scroll film** (Ryan: "it was shit, no scroll effects"). Cause: Lovable
+  turned the film off below 768px (phones saw a still), scrubbed remote Kling MP4s with `currentTime` (choppy), and
+  filled the page with static photos; the build also started from the first, thinner brief (addresses and hours as
+  placeholders). Fixes: `WB_CINEMATIC` (brief.js) is film-led and phones-first; the routine's film block describes the
+  canvas frame scrubber, solid colour panels and effects in every section, crops the Kling watermark, and a new step
+  g1 checks the built code and sends Lovable a fix once. The Smile Plus mock-up was rebuilt this way with the real
+  addresses, hours and WhatsApp numbers. Tests 109/109.
