@@ -42,7 +42,7 @@ var WB_APPLE = 'Apple-grade: one idea per screen, huge confident headlines in fe
 // The scroll-effect library the creator picks from; every effect is built from the Kling film and photos and serves the sale.
 var WB_SCROLL_EFFECTS = {
   film_scrub: 'Pinned hero film: the Kling film fills the screen and plays forward as the visitor scrolls (video currentTime from scroll progress)',
-  product_reveal: 'Product reveal: the hero subject stays pinned and turns, zooms or opens into an exploded view as the visitor scrolls, like an Apple product page',
+  product_reveal: 'Product reveal: the hero subject stays pinned and turns, zooms or opens into an exploded view as the visitor scrolls, like an Apple product page (a real 3D model made by Higgsfield when the build provides one, rendered with model-viewer or react-three-fiber)',
   zoom_through: 'Zoom-through: the camera pushes into an image until it becomes the next section',
   depth_layers: 'Depth parallax: foreground, subject and background layers move at different speeds with a slight 3D perspective tilt',
   sticky_story: 'Sticky scrollytelling: the visual stays pinned while short benefit lines change beside it, step by step',
@@ -455,9 +455,9 @@ function wbImageShots(brief, input) {
   }
   return shots;
 }
-/** One 3D parallax scroll-film website per mock-up (Ryan, 2026-09-27; replaces ADR-2's two variations and the flat rule). Kling makes the film and photos, Lovable builds and publishes; never Higgsfield. */
+/** One 3D parallax scroll-film website per mock-up (Ryan, 2026-09-27; replaces ADR-2's two variations and the flat rule). Kling makes the film and photos, Higgsfield the 3D product model (Ryan, 2026-09-28), Lovable builds and publishes. */
 var WB_VARIATIONS = [
-  { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One Apple-grade, high-converting website with a Kling film of the business scrubbed by the scroll, layered 3D depth parallax and a set of premium scroll effects, Kling photography and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27).' }
+  { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One Apple-grade, high-converting website with a Kling film of the business scrubbed by the scroll, layered 3D depth parallax and a set of premium scroll effects, Kling photography, a Higgsfield 3D model for product businesses and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27/28).' }
 ];
 /** Scenes for variation A single-take film (no text, no logos; the business own world). */
 function wbFilmBrief(brief, input) {

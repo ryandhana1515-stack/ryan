@@ -5,6 +5,12 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **Kling and Higgsfield together** (Ryan: "I also want to add Higgsfield there also"). Replaces "Kling
+  for all website images and video; never Higgsfield" (2026-09-27). Kling makes the photos and the 3D parallax scroll
+  film; Higgsfield turns the product/hero photo into a real 3D model (GLB) for the Apple-style product reveal that turns
+  as the visitor scrolls (cars, food and drink, shops, devices; never for clinics, whose anatomy stays the photoreal
+  Kling film), and makes a scene when a Kling clip fails. Lovable builds and publishes.
+
 - 2026-09-27 — **Apple-grade websites; ATLAS speaks; Website Intelligence searches wider** (Ryan: "as premium as Apple
   videos but as a website … premium golden website with parallax, with 3D videos … make sure Atlas knows Atlas can talk
   and then John also can talk … the website intelligence … can search every single thing on Google … the website

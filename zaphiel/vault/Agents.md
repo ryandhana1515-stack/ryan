@@ -31,7 +31,7 @@ John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1
 **Models (2026-09-26, see [[Decisions]]):** John, ATLAS, Discovery = Claude Sonnet 5 (thinking off, fast chat);
 Website Intelligence, Website Builder = Claude Fable 5.1 (thinking on, premium plans and builds). All through n8n
 Gateway credits; when the credits run out every agent answers from its rule backup. Website Intelligence now plans
-the funnel, the sales strategy, the 3D parallax scroll film (Kling) and realistic medical anatomy (9 Google searches incl. socials, maps and competitors; 5 pages read); the creator builds Apple-grade sites with 5–6 scroll effects per industry; ATLAS asks its questions in its own name in John's chat; the builder follows that plan in
+the funnel, the sales strategy, the 3D parallax scroll film (Kling) and realistic medical anatomy (9 Google searches incl. socials, maps and competitors; 5 pages read); the creator builds Apple-grade sites with 5–6 scroll effects per industry (Kling film + a Higgsfield 3D product model); ATLAS asks its questions in its own name in John's chat; the builder follows that plan in
 every Lovable prompt; the Build Worker makes the anatomy video for specialist clinics.
 
 ## The twelve-agent workforce
