@@ -202,7 +202,7 @@ var WB_CATEGORY_RULES = [
   ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
   ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
-  ['food_beverage', /\b(restaurant|cafe|café|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b)\b/i],
+  ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],
   ['logistics', /\b(logistic\w*|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
   ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['home_services', /\b(plumb\w*|electric(ian|al)s?|aircon|air-con|renovat\w*|contractors?|cleaning|pest|handyman|movers?|moving|landscap\w*|roofing|roofers?|painters?)\b/i],

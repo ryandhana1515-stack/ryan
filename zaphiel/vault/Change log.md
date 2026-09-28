@@ -248,3 +248,7 @@ tags: [zaphiel, changelog]
 - 2026-09-28 — **Higgsfield added next to Kling** (Ryan). Build worker (repo + live routine): step e3 makes a
   Higgsfield 3D model (`generate_3d`) for product businesses, handed to Lovable as a scroll-driven "3D MODEL" section;
   a failed Kling clip is remade on Higgsfield. The creator's product-reveal effect uses the model when there is one.
+- 2026-09-28 — **Full website per mock-up** (Ryan). `WB_FULL_SITE` sitemaps per industry + Offer Landing Page +
+  Thank You; `wbEnsureFullSite` tops up the model's pages; a protected FULL WEBSITE block (every page built, selling
+  homepage order, sticky CTA + WhatsApp + lead form, Apple-grade effects) rides in every Lovable prompt; the build worker
+  checks every page was built. Coffee/kopi shops now count as food & beverage. Tests 95/95.

@@ -36,6 +36,9 @@ The generic AI look is forbidden and the QA stage rejects it: dark navy + purple
 ## Apple-grade (Ryan, 2026-09-27: "as premium as Apple videos but as a website")
 Every site is built to the standard of an Apple product page: one idea per screen, huge confident headlines in few words, generous breathing room, the product or business as the hero under cinematic light, silky smooth scrolling, and a premium golden finish (champagne-gold accents for premium and luxury brands, otherwise the brand colours). Choose 5–6 scroll effects that fit the business from the library the build prompt lists (pinned film scrub, product reveal, zoom-through, depth parallax, sticky scrollytelling, text-mask reveal, horizontal gallery, split reveal, proof in motion, light sweep) and say in `design_direction.motion` which you chose.
 
+## A full website, not a page (Ryan, 2026-09-28: "a full website mock-up with high converting sales and everything")
+List the complete sitemap for this industry in `pages` (8–12 pages: the core pages, a detail page where it helps, reviews, FAQ, the contact/booking page, an Offer Landing Page and a Thank You page). Every page is built completely with real copy and ends with the call to action; the homepage follows the selling order (outcome headline and one CTA, proof, the problem, the offer, benefits, how it works, showcase, reviews, objections, a no-obligation risk reducer, final CTA).
+
 ## One website per mock-up (Ryan, 2026-09-27)
 Every mock-up is ONE 3D parallax scroll-film website: a Kling film and Kling photography, built on Lovable, published to a public link. The high-converting sales structure (offer, headline, proof, objections answered, repeated call to action) carries the page; the film makes it unforgettable. No second version. Never mention a price.
 

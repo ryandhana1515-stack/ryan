@@ -313,7 +313,7 @@ test('fallback brief for the logistics lead validates against the schema', () =>
   assert.strictEqual(r.brief.primary_goal, 'leads');
   assert.ok(r.brief.integrations.includes('WhatsApp click-to-chat'));
   assert.ok(r.brief.pages.length >= 3);
-  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= 5200);
+  assert.ok(r.build_prompt.length > 200 && r.build_prompt.length <= wb.WB_MAX_PROMPT);
   assert.strictEqual(r.brief.mode, 'sme');
   assert.strictEqual(r.brief.industry_category, 'logistics');
   assert.ok(r.build_prompt.includes('Never use:') && /navy-to-purple SaaS gradient/.test(r.build_prompt) && /Photo-led/.test(r.build_prompt), 'anti-generic + cinematic rules must be in the prompt');
@@ -1079,6 +1079,30 @@ test('website questions stay John\'s; only ATLAS\'s own questions are asked in A
   const at = require('../agents/atlas/atlas.js');
   assert.strictEqual(at.atIsAtlasQuestion('Which accounting software do you use?', rows), true);
   assert.strictEqual(at.atIsAtlasQuestion('What are your opening hours?', rows), false);
+});
+console.log('\n[20] A full website mock-up with high-converting sales (Ryan, 2026-09-28)');
+test('every business gets its industry sitemap plus the offer and thank-you pages, fully built', () => {
+  const cases = [['Prestige Motors', 'BMW car dealership, I want a website', 'Book a Test Drive'], ['Ah Seng Kopi', 'coffee shop cafe, build me a website', 'Menu'], ['Tan Plumbing', 'plumber, need a website', 'Get a Quote'], ['Heartline Cardiology', 'heart specialist clinic website', 'Our Doctors']];
+  cases.forEach(([c, m, page]) => {
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: m } });
+    const names = r.brief.pages.map((p) => p.name);
+    assert.ok(names.length >= 8 && names.length <= 12 && names.includes(page) && names.includes('Offer Landing Page') && names.includes('Thank You'), c + ': ' + names.join(', '));
+    const p = r.build_prompt;
+    assert.ok(p.includes(wb.WB_FULLSITE_MARK) && /Build EVERY page below completely/.test(p) && /Homepage, in this order: hero with an outcome headline/.test(p) && /sticky mobile CTA bar with WhatsApp/.test(p) && /Apple-grade/.test(p), c);
+    assert.ok(!/guarantee|\$\s?\d/i.test(p), c + ': no prices or guarantees');
+    assert.ok(p.length <= wb.WB_MAX_PROMPT);
+  });
+});
+test('a model brief with only four pages is topped up to the full site, and the full-website block survives a long research plan', () => {
+  const brief = wb.wbFallbackBrief({ company_name: 'Ah Seng Kopi', industry: 'coffee shop', message: 'website please' });
+  brief.pages = [{ name: 'Home', purpose: '' }, { name: 'Menu', purpose: '' }, { name: 'About Us', purpose: '' }, { name: 'Contact', purpose: '' }];
+  assert.strictEqual(wb.wbEnsureFullSite(brief), true);
+  const names = brief.pages.map((p) => p.name);
+  assert.ok(names.includes('Catering & Events') && names.includes('Offer Landing Page') && !names.includes('Menu 2') && names.filter((n) => /menu/i.test(n)).length === 1, names.join(', '));
+  const long = (k, n) => Array.from({ length: n }, (_, i) => k + ' ' + i + ' ' + 'x'.repeat(120));
+  const plan = { primary_cta: 'Order now', funnel_plan: long('step', 10), conversion_strategy: long('rule', 10), homepage_conversion_flow: long('s', 10), customer_objections: long('o', 6), placeholders_required: long('ph', 8), motion_3d_direction: 'scroll film parallax ' + 'm'.repeat(800) };
+  const p = wb.wbWithStrategy('BASE '.repeat(3000), wb.wbResearchPlan({ research_json: JSON.stringify({ brief: plan }) }), brief);
+  assert.ok(p.length <= wb.WB_MAX_PROMPT && p.includes(wb.WB_STRATEGY_MARK) && p.includes(wb.WB_FULLSITE_MARK) && /Catering & Events/.test(p.slice(p.indexOf(wb.WB_FULLSITE_MARK))));
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

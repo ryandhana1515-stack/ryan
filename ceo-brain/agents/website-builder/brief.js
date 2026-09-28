@@ -130,7 +130,7 @@ var WB_CATEGORY_RULES = [
   ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
   ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
-  ['food_beverage', /\b(restaurant|cafe|café|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b)\b/i],
+  ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],
   ['logistics', /\b(logistic\w*|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
   ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['home_services', /\b(plumb\w*|electric(ian|al)s?|aircon|air-con|renovat\w*|contractors?|cleaning|pest|handyman|movers?|moving|landscap\w*|roofing|roofers?|painters?)\b/i],
@@ -180,19 +180,37 @@ function wbDetectIntegrations(text) {
   for (var i = 0; i < WB_INTEGRATIONS.length; i++) if (WB_INTEGRATIONS[i][0].test(text)) out.push(WB_INTEGRATIONS[i][1]);
   return out;
 }
-function wbDefaultPages(siteType, goal, mode) {
+// A full website per mock-up (Ryan, 2026-09-28: "a full website mock-up with high converting sales and everything"):
+// an industry sitemap, plus the offer landing page and a thank-you page. Names are short; purposes steer the copy.
+var WB_FULL_SITE = {
+  food_beverage: [['Home', 'Signature dishes, why people come back, order or reserve'], ['Menu', 'Full menu by category with photos; prices [CLIENT TO PROVIDE]'], ['Our Story', 'The owners, the recipes, the neighbourhood'], ['Catering & Events', 'Packages for offices and parties, enquiry form'], ['Order & Delivery', 'Delivery partners, pick-up and WhatsApp orders'], ['Reviews', 'Customer reviews [CLIENT TO PROVIDE] and press'], ['Find Us', 'Address, opening hours, map, parking']],
+  retail: [['Home', 'Featured products, the reason to buy here, shop now'], ['Shop', 'Products by category with filters'], ['Product Detail', 'Photos, benefits, specs, add to cart or enquire'], ['About', 'The brand story and promise'], ['Reviews', 'Customer reviews [CLIENT TO PROVIDE]'], ['Delivery & Returns', 'Delivery areas, times and the returns policy [CLIENT TO CONFIRM]'], ['FAQ', 'Buying questions answered'], ['Contact', 'Store address, hours, WhatsApp, form']],
+  automotive: [['Home', 'The hero car, the brand promise, book a test drive'], ['Models & Inventory', 'Every model with specs and photos'], ['Model Detail', 'Gallery, specs, features, book a test drive'], ['Book a Test Drive', 'Date, time, model, contact details'], ['Service & Maintenance', 'Servicing, warranty support, book a service'], ['Financing & Trade-in', 'How financing and trade-in work (no rates) [CLIENT TO CONFIRM]'], ['About', 'The dealership, team and showroom'], ['Reviews', 'Owner reviews [CLIENT TO PROVIDE]'], ['Contact', 'Showroom address, hours, map, WhatsApp']],
+  property: [['Home', 'Signature listing, the promise, book a viewing'], ['Listings', 'Properties with filters'], ['Listing Detail', 'Gallery, floor plan, location, book a viewing'], ['Services', 'Buy, sell, rent, invest'], ['About', 'The team and track record [CLIENT TO PROVIDE]'], ['Reviews', 'Client reviews [CLIENT TO PROVIDE]'], ['Book a Viewing', 'Date, property, contact details'], ['Contact', 'Office, WhatsApp, form']],
+  beauty: [['Home', 'The signature treatment, the result clients want, book'], ['Treatments', 'All treatments by concern'], ['Treatment Detail', 'What it is, who it is for, what to expect, book'], ['Results Gallery', 'Before/after only with consent [CLIENT TO PROVIDE]'], ['About', 'The therapists and the studio'], ['Reviews', 'Client reviews [CLIENT TO PROVIDE]'], ['FAQ', 'Aftercare, safety, booking questions'], ['Book', 'Treatment, date, time, contact']],
+  construction: [['Home', 'Flagship project, the promise, request a quote'], ['Services', 'Each service with scope and process'], ['Projects', 'Portfolio with photos and scope [CLIENT TO PROVIDE]'], ['Our Process', 'Consult → design → build → handover'], ['About', 'The company, licences and safety record [CLIENT TO PROVIDE]'], ['Reviews', 'Client reviews [CLIENT TO PROVIDE]'], ['FAQ', 'Timelines, permits, budgets (no prices)'], ['Get a Quote', 'Project type, size, location, timeline, contact']],
+  home_services: [['Home', 'The job done right, fast response, get a quote'], ['Services', 'Each service with what is included'], ['Our Work', 'Before/after jobs [CLIENT TO PROVIDE]'], ['How It Works', 'Book → visit → fix → follow-up'], ['About', 'The team and licences [CLIENT TO PROVIDE]'], ['Reviews', 'Customer reviews [CLIENT TO PROVIDE]'], ['FAQ', 'Call-out, timing, warranty questions (no prices)'], ['Get a Quote', 'Job type, address, photos, contact']],
+  technology: [['Home', 'The outcome the product delivers, book a demo'], ['Product', 'How it works, the main screens'], ['Features', 'Each feature as a benefit'], ['Use Cases', 'By industry or role'], ['Integrations', 'Tools it connects to [CLIENT TO CONFIRM]'], ['Customers', 'Case studies and logos [CLIENT TO PROVIDE]'], ['FAQ', 'Security, setup, support'], ['Book a Demo', 'Company, size, need, contact']],
+  education: [['Home', 'The result students get, book a trial'], ['Programmes', 'Each course or class, level and schedule'], ['Programme Detail', 'Syllabus, outcomes, schedule, enrol'], ['Results', 'Student results [CLIENT TO PROVIDE]'], ['Teachers', 'Profiles and credentials [CLIENT TO PROVIDE]'], ['FAQ', 'Levels, schedules, make-up classes'], ['Book a Trial', 'Student level, subject, contact']],
+  other: [['Home', 'Who you are, who you serve, the one thing a visitor should do'], ['Services', 'Each service with the outcome, what is included and the process'], ['How It Works', 'Three clear steps from enquiry to result'], ['About', 'The real story, team and credentials [CLIENT TO PROVIDE]'], ['Reviews & Results', 'Testimonials and results [CLIENT TO PROVIDE]'], ['FAQ', 'The buying questions and objections answered'], ['Contact', 'Enquiry form, WhatsApp, map, opening hours']]
+};
+var WB_FUNNEL_PAGES = [['Offer Landing Page', 'One offer, no navigation, the lead form above the fold (/offer)'], ['Thank You', 'Confirmation, what happens next, WhatsApp button (/thank-you)']];
+/** The high-converting homepage, in order (Ryan, 2026-09-28). */
+var WB_HOME_BLUEPRINT = 'hero with an outcome headline for this buyer, one primary CTA and a trust line → proof bar (rating, years, clients [CLIENT TO PROVIDE]) → the problem or desire in the buyer\'s words → the offer → benefits (not features) → how it works in 3 steps → showcase of the products/services → reviews [CLIENT TO PROVIDE] → objections answered (FAQ) → risk reducer (a free, no-obligation consultation or visit) → final CTA → footer with contact, hours, map link and socials';
+var WB_FULLSITE_MARK = '=== FULL WEBSITE (build every page) ===';
+function wbDefaultPages(siteType, goal, mode, category) {
   if (mode === 'medical') {
     var med = [{ name: 'Home', purpose: 'Who the clinic is, the reassurance a patient needs, book an appointment' }, { name: 'Our Doctors', purpose: 'Doctor profiles: name, specialty, credentials [VERIFY WITH CLINIC], languages' }, { name: 'Treatments & Services', purpose: 'One section per treatment: what it is, who it is for, what to expect' }, { name: 'Clinic & Locations', purpose: 'Addresses, opening hours, map, parking, accessibility' }, { name: 'Book an Appointment', purpose: 'Booking form or link; phone and WhatsApp alternatives' }, { name: 'Patient Information & FAQ', purpose: 'First visit, fees policy placeholder, insurance, privacy notice, disclaimers' }, { name: 'Contact', purpose: 'Contact details and enquiry form' }];
     if (siteType === 'portal' || siteType === 'web_app') med.splice(5, 0, { name: 'Patient Portal (login)', purpose: 'Appointments and documents for registered patients' });
-    return med;
+    return med.concat(WB_FUNNEL_PAGES.map(function (p) { return { name: p[0], purpose: p[1] }; })).slice(0, 12);
   }
   if (siteType === 'landing_page') return [{ name: 'Landing page', purpose: 'Single page: one specific promise, proof, how it works, one call to action' }];
   if (siteType === 'online_store') return [{ name: 'Home', purpose: 'Featured collections and the reason to buy here' }, { name: 'Shop', purpose: 'Product catalogue with categories and filters' }, { name: 'Product', purpose: 'Product detail, real photos, add to cart' }, { name: 'Cart & Checkout', purpose: 'Purchase flow' }, { name: 'About', purpose: 'Brand story in the owner\'s words' }, { name: 'Contact', purpose: 'Contact details and enquiry form' }];
   if (siteType === 'web_app' || siteType === 'portal') return [{ name: 'Home', purpose: 'What the service does, for whom, and how to start' }, { name: 'Login / Sign up', purpose: 'Customer accounts' }, { name: 'Dashboard', purpose: 'Main customer workspace' }, { name: 'Contact', purpose: 'Support and enquiries' }];
-  var pages = [{ name: 'Home', purpose: 'Who you are, who you serve, the one thing a visitor should do' }, { name: 'Services', purpose: 'One section per service with outcome and process' }, { name: 'About', purpose: 'The real story, team, credentials the customer supplies' }, { name: 'Contact', purpose: 'Enquiry form, WhatsApp, map, opening hours' }];
-  if (goal === 'bookings') pages.splice(3, 0, { name: 'Book', purpose: 'Appointment booking' });
-  if (goal === 'leads') pages.splice(3, 0, { name: 'Get a Quote', purpose: 'Structured quote request form' });
-  return pages;
+  var set = WB_FULL_SITE[category] || WB_FULL_SITE.other;
+  var pages = set.concat(WB_FUNNEL_PAGES).map(function (p) { return { name: p[0], purpose: p[1] }; });
+  if (goal === 'bookings' && !pages.some(function (p) { return /book/i.test(p.name); })) pages.splice(pages.length - 3, 0, { name: 'Book', purpose: 'Appointment booking' });
+  return pages.slice(0, 12);
 }
 function wbGuessBusinessName(input, text) {
   if (input.company_name) return wbStr(input.company_name, 160);
@@ -221,7 +239,7 @@ function wbFallbackBrief(input) {
   var integrations = wbDetectIntegrations(text);
   if (mode === 'medical' && integrations.indexOf('Appointment booking / calendar') === -1) integrations.unshift('Appointment booking / calendar');
   var businessName = wbGuessBusinessName(input, text);
-  var pages = wbDefaultPages(siteType, goal, mode);
+  var pages = wbDefaultPages(siteType, goal, mode, category);
   var d = wbDesignFor(category);
   var features = [];
   if (goal === 'leads') features.push('Enquiry form that emails the owner');
@@ -377,11 +395,39 @@ function wbStrategySection(plan) {
   if (plan.placeholders_required.length) L.push(wbCap('- Placeholders to label clearly: ' + plan.placeholders_required.join('; '), 400));
   return L.join('\n');
 }
-/** Append the strategy section to a build prompt (once), keeping the total under WB_MAX_PROMPT by trimming the base, never the strategy. */
-function wbWithStrategy(prompt, plan) {
+/** Every business website and clinic site gets the full sitemap: the model's pages first, missing ones added (max 12). */
+function wbEnsureFullSite(brief) {
+  if (!brief || !Array.isArray(brief.pages)) return false;
+  if (brief.site_type !== 'business_website' && brief.mode !== 'medical') return false;
+  var full = wbDefaultPages(brief.site_type, brief.primary_goal, brief.mode, brief.industry_category);
+  var norm = function (n) { return String(n || '').toLowerCase().replace(/[^a-z]/g, ''); };
+  var have = brief.pages.map(function (p) { return norm(p.name); });
+  var added = false;
+  full.forEach(function (p) {
+    if (brief.pages.length >= 12) return;
+    var k = norm(p.name);
+    if (have.some(function (h) { return h === k || h.indexOf(k) !== -1 || k.indexOf(h) !== -1; })) return;
+    brief.pages.push({ name: p.name, purpose: p.purpose }); have.push(k); added = true;
+  });
+  return added;
+}
+/** The protected FULL WEBSITE block: every page built, the selling homepage, sales elements site-wide, Apple-grade effects. */
+function wbFullSiteSection(brief) {
+  var L = [WB_FULLSITE_MARK];
+  L.push('- Build EVERY page below completely with real, persuasive copy for this business (no empty, "coming soon" or lorem pages), working navigation between them, and a call to action closing every page: ' + brief.pages.map(function (p) { return p.name; }).join(', ') + '.');
+  L.push('- Homepage, in this order: ' + WB_HOME_BLUEPRINT + '.');
+  L.push('- On every page: a sticky header with the primary CTA, a sticky mobile CTA bar with WhatsApp, a short lead form (name, phone, what they need, PDPA consent) with a success state, a trust line next to every CTA. The Offer Landing Page has no navigation and the form above the fold; the Thank You page gives next steps and the WhatsApp button.');
+  L.push('- ' + WB_APPLE + ' Scroll effects: ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
+  return wbCap(L.join('\n'), 3200);
+}
+/** Append the strategy and full-website sections to a build prompt (once each), keeping the total under WB_MAX_PROMPT by trimming the base, never these sections. */
+function wbWithStrategy(prompt, plan, brief) {
   prompt = String(prompt || '');
-  if (!plan || prompt.indexOf(WB_STRATEGY_MARK) !== -1) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
-  var sec = wbStrategySection(plan);
+  var parts = [];
+  if (plan && prompt.indexOf(WB_STRATEGY_MARK) === -1) parts.push(wbStrategySection(plan));
+  if (brief && prompt.indexOf(WB_FULLSITE_MARK) === -1) parts.push(wbFullSiteSection(brief));
+  if (!parts.length) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
+  var sec = parts.join('\n');
   var room = WB_MAX_PROMPT - sec.length - 1;
   if (prompt.length > room) prompt = prompt.slice(0, room - 1) + '…';
   return prompt + '\n' + sec;
@@ -398,7 +444,6 @@ function wbBuildPrompt(brief, input) {
   lines.push('Primary goal: ' + brief.primary_goal + (brief.audience ? '. Audience: ' + brief.audience : '') + '.');
   lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: Apple-grade 3D parallax scroll film (Kling film scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
   lines.push('Look and feel (mandatory): ' + WB_CINEMATIC.join(' '));
-  lines.push(WB_APPLE + ' Scroll effects to build (from the Kling film and photos, each one serving the sale): ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
   lines.push('Never use: ' + WB_ANTI_GENERIC.join('; ') + '.');
   lines.push('Pages: ' + brief.pages.map(function (p) { return p.name + (p.purpose ? ' (' + p.purpose + ')' : ''); }).join('; ') + '.');
   if (brief.features.length) lines.push('Features: ' + brief.features.join('; ') + '.');
@@ -411,7 +456,7 @@ function wbBuildPrompt(brief, input) {
   if (brief.content_notes) lines.push('What the customer said: "' + brief.content_notes.slice(0, 260) + '"');
   lines.push('Content rules: ' + brief.content_rules.join(' '));
   lines.push('Engineering: React + Tailwind; mobile-first; semantic HTML; WCAG AA contrast; fast (sized images, no layout shift); SEO meta tags and one H1 per page; forms post to a placeholder webhook and show a success state; WhatsApp click-to-chat if listed; footer with contact placeholders.' + (med ? ' Add an information-only medical disclaimer and a privacy notice.' : ''));
-  return wbWithStrategy(lines.join('\n'), wbResearchPlan(input));
+  return wbWithStrategy(lines.join('\n'), wbResearchPlan(input), brief);
 }
 /** Photography the mock-up ships with: 3 cinematic shots per site, generated by the build worker with Kling (Ryan 2026-09-27: Kling for all images and video). No text, logos or plates in the images. */
 function wbImageShots(brief, input) {
@@ -530,6 +575,8 @@ function finalizeBrief(opts) {
       brief.reasoning = (brief.reasoning ? brief.reasoning + ' ' : '') + '[guardrail] medical mode enforced from the customer\'s words.';
       brief.build_prompt = '';
     }
+    // A full website every time (Ryan, 2026-09-28): the model's pages plus the industry sitemap and funnel pages.
+    wbEnsureFullSite(brief);
     // The build prompt must carry the design direction and the anti-generic rules; regenerate if the model's is thin or too long.
     if (!brief.build_prompt || brief.build_prompt.length > WB_MAX_PROMPT || brief.build_prompt.indexOf('Never use:') === -1) brief.build_prompt = wbBuildPrompt(brief, input);
   }
@@ -544,7 +591,7 @@ function finalizeBrief(opts) {
     }
   }
   // The research plan (funnel, conversion strategy, 3D motion, medical visuals) always rides in the Lovable prompt.
-  brief.build_prompt = wbWithStrategy(brief.build_prompt || wbBuildPrompt(brief, input), wbResearchPlan(input));
+  brief.build_prompt = wbWithStrategy(brief.build_prompt || wbBuildPrompt(brief, input), wbResearchPlan(input), brief);
   var readiness = wbReadyToBuild(brief);
   return {
     brief: brief,
@@ -563,4 +610,4 @@ function finalizeBrief(opts) {
 }
 
 // ---- Node module wrapper (stripped by build.js) ----
-module.exports = { WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_APPLE, WB_SCROLL_EFFECTS, WB_EFFECTS_BY_CATEGORY, wbEffectsFor, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };
+module.exports = { WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_APPLE, WB_SCROLL_EFFECTS, WB_EFFECTS_BY_CATEGORY, wbEffectsFor, WB_FULL_SITE, WB_FUNNEL_PAGES, WB_HOME_BLUEPRINT, WB_FULLSITE_MARK, wbDefaultPages, wbEnsureFullSite, wbFullSiteSection, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };
