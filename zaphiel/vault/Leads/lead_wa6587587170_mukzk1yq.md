@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-28
-updated: 2026-09-28T17:57:08.739Z
+updated: 2026-09-28T17:58:16.997Z
 tags: [lead]
 ---
 # Ryan
@@ -23,10 +23,10 @@ Links: [[Industries/clinic-healthcare|clinic-healthcare]] · [[Automations/websi
 
 - Company size: - · Users: - · Decision maker: -
 - Problem: -
-- Wants: website_build
-- Tools: -
+- Wants: website_build, appointment_booking
+- Tools: smileplusdento.com.sg
 - Budget: - · Timeline: -
-- Outcome wanted: A better website than their current one (smileplusdento.com.sg), including photos, signboards and opening hours, with branches in Bukit Merah/Redhill and Hougang
+- Outcome wanted: A better website than their current one, including photos, signboards, opening hours and appointment booking
 
 ## Conversation log
 
@@ -50,3 +50,10 @@ _Summary:_ Ryan runs Smile Plus Dental Surgery, a dental clinic, and already has
 **John:** Thank you, Ryan — noted: Bukit Merah/Redhill and Hougang branches, and we'll make sure the mock-up includes photos, signboards and opening hours. Our team is already researching Smile Plus Dental Surgery and smileplusdento.com.sg to build your first mock-up, and I'll send the link here to this number, usually within about an hour. While that's being built, may I ask: what would you most like new patients to do when they land on the site — book an appointment, call, or WhatsApp you directly? One more question so we get your website right: Which treatments should the site feature (e.g. wisdom tooth surgery, implants, dentures, general dentistry)? Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
 
 _Summary:_ Ryan of Smile Plus Dental Surgery (clinic, existing site smileplusdento.com.sg) confirmed branches at Bukit Merah/Redhill and Hougang, and asked that current photos, signboards and opening hours be included in the new website mock-up.
+
+### 2026-09-28 17:58 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: website-builder, atlas · anthropic
+**Prospect:** Saya ingin mereka memutuskan janji temu. Ia pasti mempunyai semua itu.
+
+**John:** Noted, Ryan — we will make sure appointment booking is built into the site so patients can request a visit directly. Our team is already working on your mock-up with the details you have shared. While that is underway: do most of your new patients currently reach you by calling, WhatsApp, or walking in, and do you have staff who manage bookings day to day? ATLAS, our systems architect, would like to know: Could you share the link to your current website so we can take a look at it first? Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
+
+_Summary:_ Ryan of Smile Plus Dental Surgery (Bukit Merah/Redhill and Hougang branches) is having a website mock-up built. His latest message confirms he wants appointment booking included as a website feature.
