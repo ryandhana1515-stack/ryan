@@ -74,7 +74,7 @@ function wrIsSocial(host) { return WR_SOCIAL_HOSTS.some(function (h) { return ho
 function wrIsDirectory(host) { return WR_DIRECTORY_HOSTS.some(function (h) { return host.indexOf(h) !== -1; }); }
 function wrTokens(s) { return wrStr(s).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(' ').filter(function (t) { return t.length > 2 && ['pte', 'ltd', 'llp', 'the', 'and', 'singapore', 'company', 'co', 'inc', 'llc', 'sdn', 'bhd'].indexOf(t) === -1; }); }
 /** John's hand-off → normalized input (same fields as the Website Builder + the website John or the customer mentioned). */
-var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'questions_for_john', 'identity_confidence', 'reasoning'];
+var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'enough_to_build', 'questions_for_john', 'identity_confidence', 'reasoning'];
 var WR_LIST_KEYS = ['verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'secondary_conversions', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'page_requirements', 'media_requirements', 'trust_sections', 'form_requirements', 'crm_opportunities', 'automation_opportunities', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'questions_for_john'];
 function wrConversionFor(industry, signals) {
   var s = (industry || '').toLowerCase();
@@ -131,7 +131,7 @@ function wrFallbackBrief(input, digest) {
     mobile_requirements: ['Sticky CTA / WhatsApp on mobile', 'Thumb-friendly buttons', 'Fast images'], accessibility_requirements: ['Readable contrast, alt text, keyboard-friendly forms'],
     compliance_considerations: /clinic|dental|aesthetic|medical|doctor/i.test(input.industry) ? ['Healthcare advertising rules (MOH) — flag claims for human review'] : (/property|real estate/i.test(input.industry) ? ['CEA advertising rules for property agents'] : (/insurance|financial|wealth/i.test(input.industry) ? ['MAS promotion rules'] : ['PDPA consent on forms'])),
     placeholders_required: digest.unknown, do_not_invent: ['testimonials', 'awards', 'certifications', 'customer counts', 'years operating', 'revenue', 'results', 'prices', 'addresses', 'team members'],
-    questions_for_john: questions.slice(0, 3), identity_confidence: digest.identity.confidence,
+    enough_to_build: wrEnoughFallback(input, digest), questions_for_john: questions.slice(0, 3), identity_confidence: digest.identity.confidence,
     reasoning: 'Deterministic brief (model unavailable): built from John\'s facts, ' + digest.site.pages_read.length + ' page(s) read, ' + digest.competitors.length + ' competitor(s) found.'
   };
 }
@@ -141,6 +141,7 @@ function wrCoerceBrief(raw, fallback) {
     var v = raw[k];
     if (WR_LIST_KEYS.indexOf(k) !== -1) { v = wrArr(v, 25); if (!v.length && fallback[k] && k !== 'questions_for_john') v = fallback[k]; b[k] = v; }
     else if (k === 'identity_confidence') b[k] = ['high', 'medium', 'low'].indexOf(v) !== -1 ? v : fallback.identity_confidence;
+    else if (k === 'enough_to_build') { var e = String(v === true ? 'yes' : (v === false ? 'no' : (v || ''))).toLowerCase().trim(); b[k] = e === 'yes' || e === 'no' ? e : fallback.enough_to_build; }
     else b[k] = wrStr(v, k === 'business_summary' || k === 'reasoning' ? 1200 : 600) || fallback[k] || '';
   });
   return b;
@@ -158,7 +159,21 @@ function wrBriefText(brief, digest) {
   var order = WR_BRIEF_KEYS.filter(function (k) { return ['questions_for_john', 'identity_confidence', 'reasoning'].indexOf(k) === -1; });
   return 'STATUS:\nREADY_FOR_WEBSITE_CREATOR\n\nWEBSITE_CREATOR_BRIEF\n\n' + order.map(function (k) { return line(k.toUpperCase(), brief[k]); }).join('\n') + '\nIDENTITY_CONFIDENCE: ' + brief.identity_confidence + ' (' + digest.identity.reason + ')\nSOURCES: ' + (digest.site.pages_read.concat(digest.reviews.map(function (r) { return r.source; })).join(', ') || 'John\'s hand-off only') + '\n\n' + WR_VARIATIONS + '\n\n' + WR_INSTRUCTION;
 }
-/** Model output (or error) → validated brief + status + text for the Website Creator. Never blocks a mock-up (Rule 12). */
+var WR_ASK_MARK = 'quick detail';
+var WR_HOLD_MARK = 'before our team builds your';
+var WR_MAX_INFO_ROUNDS = 2;
+/** How many times John has already asked for website details in this conversation. */
+function wrInfoRounds(input) {
+  var conv = (input && Array.isArray(input.conversation)) ? input.conversation : [];
+  return conv.filter(function (m) { var t = m && m.role === 'agent' ? String(m.content || '').toLowerCase() : ''; return t && (t.indexOf(WR_ASK_MARK) !== -1 || t.indexOf('so we get your website right') !== -1); }).length;
+}
+/** Without the model: enough when the company was identified online, or the customer described the business. */
+function wrEnoughFallback(input, digest) {
+  if (digest && digest.identity && digest.identity.confidence !== 'low') return 'yes';
+  var said = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return m.content; })).join(' '));
+  return (input.industry && said.replace(/\s+/g, ' ').trim().length >= 60) ? 'yes' : 'no';
+}
+/** Model output (or error) → validated brief + status + text for the Website Creator. Holds the build (hold: true) until there are enough details, at most WR_MAX_INFO_ROUNDS rounds of questions. */
 function wrFinalize(o) {
   var input = o.input, digest = o.digest;
   var fallback = wrFallbackBrief(input, digest);
@@ -173,7 +188,11 @@ function wrFinalize(o) {
   if (digest.identity.confidence === 'low') { brief.company_url = ''; brief.identity_confidence = 'low'; if (!brief.questions_for_john.length) brief.questions_for_john = fallback.questions_for_john; }
   var status = input.company_name ? 'READY_FOR_WEBSITE_CREATOR' : 'MORE_INFORMATION_REQUIRED';
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
-  return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0 };
+  var custSaid = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).slice(-2).map(function (m) { return m.content; })).join(' '));
+  if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder)/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
+  var rounds = wrInfoRounds(input);
+  var hold = status === 'READY_FOR_WEBSITE_CREATOR' && brief.enough_to_build === 'no' && rounds < WR_MAX_INFO_ROUNDS && brief.questions_for_john.length > 0;
+  return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0, enough: brief.enough_to_build === 'yes', info_rounds: rounds, hold: hold };
 }
 /** What Google could not tell us goes back to John, who asks the customer at once (Ryan, 2026-09-27): at most two
  *  questions, in John's voice, while the mock-up is already being built with placeholders. Never asks what the
@@ -194,7 +213,11 @@ function wrCustomerAsk(o) {
   var first = wrStr(input.contact_name, 60).split(' ')[0];
   var biz = wrStr(input.company_name, 80);
   var text = '';
-  if (qs.length) {
+  if (qs.length && o.hold) {
+    text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + WR_HOLD_MARK + ' ' + (biz ? biz + ' ' : '') + 'website, ' +
+      (qs.length === 1 ? 'one quick detail so it is right for you: ' + qs[0] : 'two quick details so it is right for you: 1) ' + qs[0] + ' 2) ' + qs[1]) +
+      ' If you are not sure, just say so and we will start with clear placeholders you can change later.';
+  } else if (qs.length) {
     text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + 'while our team builds your ' + (biz ? biz + ' ' : '') + 'mock-up, ' +
       (qs.length === 1 ? 'one quick detail we could not find online: ' + qs[0] : 'two quick details we could not find online: 1) ' + qs[0] + ' 2) ' + qs[1]) +
       ' If you are not sure, no problem, we will use clear placeholders you can change later.';
@@ -221,9 +244,11 @@ const now = new Date().toISOString();
 const started = d.started_at || now;
 const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
+// Hold the build until the details are enough (Ryan, 2026-09-28); nothing left to ask → build now with placeholders.
+const ask = wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john, hold: fin.hold });
 return [{ json: {
-  input, status: fin.status, ready: fin.status === 'READY_FOR_WEBSITE_CREATOR', needs_john: fin.needs_john, questions_for_john: fin.questions_for_john,
-  ask_customer: wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john }),
+  input, status: fin.status, ready: fin.status === 'READY_FOR_WEBSITE_CREATOR' && !(fin.hold && ask.questions.length), held_for_details: !!(fin.hold && ask.questions.length), enough: fin.enough, info_rounds: fin.info_rounds, needs_john: fin.needs_john, questions_for_john: fin.questions_for_john,
+  ask_customer: ask,
   brief: fin.brief, brief_text: fin.brief_text, research_json: JSON.stringify(researchSlim), identity_confidence: fin.identity_confidence,
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, role_source: pre.role_source, config: pre.config,
   event: { type: eventType, source: 'website-intelligence', tenant_id: input.tenant_id, lead_id: input.lead_id, entity_type: 'lead', entity_id: input.lead_id, severity: eventType === 'website.info_needed' ? 'medium' : 'info', summary: (fin.status === 'READY_FOR_WEBSITE_CREATOR' ? 'Research brief ready for ' + (input.company_name || input.lead_id) + ' (' + fin.identity_confidence + ' identity)' : 'Website Intelligence needs information for ' + input.lead_id) + (fin.questions_for_john.length ? ' — questions for John: ' + fin.questions_for_john.join(' | ') : ''), payload: { questions_for_john: fin.questions_for_john, identity_confidence: fin.identity_confidence, website: d.identity.website, pages_read: researchSlim.site.pages_read, provider: fin.provider }, test_mode: input.test_mode, correlation_id: 'lead:' + input.lead_id },

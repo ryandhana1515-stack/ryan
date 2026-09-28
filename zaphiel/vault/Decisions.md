@@ -5,6 +5,16 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **Build only with enough details; John asks first** (Ryan: "the website intelligence only asks the
+  website creator to create the website when he got all the enough sufficient details"). Replaces "the mock-up starts
+  from the name alone and is never delayed" (2026-09-27, the placeholder-first part). Website Intelligence reads what
+  the customer told John and searches Google; if it still does not know what the business does or sells, who its
+  customers are or what the site must achieve, it does not call the Website Creator: John asks the customer only those
+  missing essentials (max two per message, never repeated). The customer's answer goes back to Website Intelligence,
+  which checks again and builds when it is enough. Never stuck: after two rounds of questions, or when the customer
+  says they are not sure / just build, it builds with clear placeholders. Logo, photos, colours, prices and
+  testimonials never hold a build.
+
 - 2026-09-28 — **Every mock-up is a full website with high-converting sales** (Ryan: "I want a full website mock-up
   with high converting sales and everything"). Not a single page: an 8–12 page sitemap for the industry (for example a
   café: Home, Menu, Our Story, Catering & Events, Order & Delivery, Reviews, Find Us; a car dealer: Models, Model

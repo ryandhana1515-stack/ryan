@@ -78,6 +78,9 @@ exists: `Knowledge/AI Workforce — roster`.
   node — the plain Anthropic node cannot switch Claude 5's default thinking off. John, ATLAS and
   Discovery: Sonnet 5, thinking disabled. Website Intelligence and Website Builder: Fable 5.1, adaptive
   thinking (effort medium), streaming, 32k tokens. Claude 5 models reject `temperature`/`top_p`/`top_k`.
+- Enough details first (2026-09-28): Website Intelligence's `enough_to_build` = "no" holds the build and John asks
+  the missing essentials; Lead Intake re-runs Website Intelligence on the customer's answer while a `website_info_needed`
+  task is open and no `website_build` task exists; max 2 rounds, then build with placeholders.
 - Website Intelligence → creator: WI's brief (funnel_plan, conversion_strategy, motion_3d_direction,
   medical_visual_direction) travels in `research_json`; `wbWithStrategy` always appends it to the
   Lovable prompt. Every mock-up is ONE 3D parallax scroll-film site (Ryan, 2026-09-27): the build worker makes

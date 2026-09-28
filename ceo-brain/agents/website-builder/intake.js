@@ -10,6 +10,8 @@ var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test driv
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;
 var WI_STARTED_MARK = 'building your first mock-up';
+// When the customer answers Website Intelligence's questions (Ryan, 2026-09-28: build only with enough details).
+var WI_INFO_THANKS = 'Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.';
 // John's judgement (Ryan, 2026-09-26): talking ABOUT websites never starts a build. A build starts only when
 // the customer asks for one ("build me a website", "can you make us a funnel", "send me a mock-up") or says
 // yes to John's offer. Capability questions ("what websites can you build?") are answered, then John offers.
@@ -120,7 +122,7 @@ function wbIntake(o) {
   else if (ready) {
     // The address the customer typed wins ("send the link to me@x.com"); otherwise WhatsApp/phone, then email (execution 385).
     var to = emailInText ? email : (phone ? phone : (email ? email : 'this chat'));
-    reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now. I will send the link to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
+    reply = greet + 'perfect, I have what I need to start on ' + businessName + '. Our website team is researching your business now before ' + WI_STARTED_MARK + '; if they need any detail, I will ask you here first, then I will send the link to ' + to + ', usually within about 20 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
   } else {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
   }
@@ -154,5 +156,5 @@ function wbBuildAlreadyStarted(history) {
 if (typeof module !== 'undefined') {
   var _b = require('./brief.js');
   wbDetectMode = _b.wbDetectMode; wbDetectCategory = _b.wbDetectCategory; wbGuessBusinessName = _b.wbGuessBusinessName; wbDetectSiteType = _b.wbDetectSiteType; wbDetectGoal = _b.wbDetectGoal;
-  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
+  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, WI_INFO_THANKS: WI_INFO_THANKS, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
 }

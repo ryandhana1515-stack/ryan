@@ -252,3 +252,8 @@ tags: [zaphiel, changelog]
   Thank You; `wbEnsureFullSite` tops up the model's pages; a protected FULL WEBSITE block (every page built, selling
   homepage order, sticky CTA + WhatsApp + lead form, Apple-grade effects) rides in every Lovable prompt; the build worker
   checks every page was built. Coffee/kopi shops now count as food & beverage. Tests 95/95.
+- 2026-09-28 — **Enough details before building** (Ryan). Website Intelligence returns `enough_to_build`; when "no" it
+  holds the build (`hold`, `ready` false), saves the questions and John asks the customer ("before our team builds
+  your … website, … so it is right for you"). John's next turn sends the answer back to Website Intelligence while a
+  `website_info_needed` task is open and no `website_build` task exists. Max 2 rounds (`WR_MAX_INFO_ROUNDS`), "not
+  sure" counts as enough. John's hand-off reply now says the team researches first. Tests 100/100.

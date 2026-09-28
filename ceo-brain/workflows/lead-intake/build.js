@@ -145,7 +145,13 @@ const histAll = Array.isArray(ctx.lead.conversation_history) ? ctx.lead.conversa
 const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_name: ctx.lead.company_name || r.extracted.company_name, industry: ctx.lead.industry || r.extracted.industry, contact_name: ctx.lead.contact_name || r.extracted.contact_name, phone: ctx.lead.phone, email: ctx.lead.email, channel: ctx.lead.channel, extracted: r.extracted });
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
-const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+// Website Intelligence holds the build until it has enough details (Ryan, 2026-09-28). While its questions are open
+// (a website_info_needed task and no website_build task yet), the customer's reply goes back to it for another look.
+let leadTasks = [];
+try { leadTasks = $('Load ATLAS Questions').all().map((i) => i.json).filter(Boolean); } catch (e) { leadTasks = []; }
+const infoOpen = leadTasks.some((t) => t.task_type === 'website_info_needed') && !leadTasks.some((t) => t.task_type === 'website_build');
+const infoAnswered = notPitch && buildStarted && infoOpen;
+const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || infoAnswered;
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\\n');
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
@@ -184,6 +190,7 @@ if (holdForRyan) {
   fin.audit.push('reply_from_rules:empty_reply');
 }
 const autoSend = ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
+if (infoAnswered && !holdForRyan && r.recommended_reply && !/website team/i.test(r.recommended_reply)) { r.recommended_reply = r.recommended_reply.trim() + ' ' + WI_INFO_THANKS; fin.audit.push('website_info_answered:back_to_website_intelligence'); }
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
