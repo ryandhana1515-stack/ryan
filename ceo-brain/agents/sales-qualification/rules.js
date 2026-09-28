@@ -65,6 +65,9 @@ var RB_SPAM = /(seo services|backlinks|guest post|crypto|forex signals|loan appr
 var RB_PRICING = /(how much|price|pricing|cost|quote|quotation|rates?)\b/i;
 var RB_SUPPORT = /(not working|broken|bug|error|issue with|help me fix|cancel my)/i;
 var RB_PARTNER = /(partner(ship)?|reseller|white[- ]label|collaborat)/i;
+// Not a customer, so no reply at all (Ryan, 2026-09-28: "those customers who … come in for fun … just don't respond
+// to them"). Judged only by what the message says, never by who sends it (nationality, race or language).
+var RB_INAPPROPRIATE = /\b(sex|sexy|nude|nudes|naked|horny|porn\w*|xxx|boobs?|dick|pussy|send (me )?(a )?(pic|pics|photo) of you|are you single|be my (girlfriend|boyfriend)|wanna date|date me|fuck (you|off)|f\*+k you|you (stupid|idiot|dumb) (bot|ai)|just (for fun|kidding|playing)|for fun only|prank\w*|trolling|lol{2,}|haha{2,}ha)\b/i;
 var RB_VENDOR = /(we offer|our services|hire me|freelancer available|job application|resume|cv attached)/i;
 var RB_NOT_INTERESTED = /(not interested|stop contacting|remove me|do not contact)/i;
 var RB_CALL_LATER = /(call me (back )?(later|tomorrow|next week)|contact me (later|next)|get back to me (in|next))/i;
@@ -230,7 +233,8 @@ function classifyWithRules(lead) {
   var faq = rbFaqTopics(msg);
   var isAbout = RB_ABOUT.test(msg);
   var intent = 'unclear';
-  if (RB_SPAM.test(text) || RB_VENDOR.test(text)) intent = RB_VENDOR.test(text) && !RB_SPAM.test(text) ? 'vendor_or_job_pitch' : 'spam';
+  if (RB_INAPPROPRIATE.test(msg)) intent = 'spam';
+  else if (RB_SPAM.test(text) || RB_VENDOR.test(text)) intent = RB_VENDOR.test(text) && !RB_SPAM.test(text) ? 'vendor_or_job_pitch' : 'spam';
   else if (RB_PARTNER.test(text)) intent = 'partnership';
   else if (RB_SUPPORT.test(text)) intent = 'support_request';
   else if (extracted.desired_automation.length || /\b(ai|automat|chatbot|bot)\b/i.test(text)) intent = 'ai_automation_enquiry';
@@ -300,7 +304,7 @@ function classifyWithRules(lead) {
   else ack = 'thanks for getting in touch. ';
   var rbLower = function (a) { return /^(I|I'm|Ryan|FusionTech|WhatsApp|Claude|ChatGPT)\b/.test(a) ? a : a.charAt(0).toLowerCase() + a.slice(1); };
   var reply = '';
-  if (intent === 'spam') reply = '';
+  if (intent === 'spam' || intent === 'vendor_or_job_pitch') reply = ''; // not a customer: no reply (Ryan, 2026-09-28)
   else if (nextAction === 'close_lost') reply = '';
   else if (status === 'HUMAN_REVIEW') reply = greet + (riskM ? rbHoldingReply(msg) : ack + 'I have passed your message to Ryan, our founder, so he can answer it personally.');
   else if (status === 'PROPOSAL_REQUIRED') reply = greet + ack + 'We will prepare a tailored proposal and come back to you with the details. ' + (questions.length ? 'To scope it correctly: ' + questions.slice(0, 2).join(' ') : '');

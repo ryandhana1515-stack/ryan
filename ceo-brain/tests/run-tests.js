@@ -1168,6 +1168,28 @@ test('houses, condos, show flats and interior designers get the walkthrough site
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/5 walkthrough\s+scenes/.test(routine) && /Artist's impression/.test(routine));
 });
+console.log('\n[23] Every website starts from the customer\'s details; no replies to non-customers (Ryan, 2026-09-28)');
+test('the customer\'s wish for the look is asked before building, unless they gave it or left it to us', () => {
+  const described = (msg) => { const i = mkInput([], msg); i.industry = 'kopitiam'; return i; };
+  const enoughNoStyle = JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'yes', questions_for_john: [] });
+  let input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast to office workers in Tiong Bahru, we want more catering orders');
+  let fin = wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, true); assert.ok(fin.questions_for_john.includes(wrE.WR_STYLE_Q));
+  const ask = wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold });
+  assert.ok(ask.text.includes('look and feel'), ask.text);
+  input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast, warm and classic look with our brown and cream colours');
+  assert.strictEqual(wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) }).hold, false, 'style given');
+  input = mkInput([{ role: 'agent', content: 'Hi, before our team builds your Ah Seng Kopi website, one quick detail so it is right for you: ' + wrE.WR_STYLE_Q }], 'up to you, just build it');
+  assert.strictEqual(wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) }).hold, false, 'left to us');
+});
+test('no reply to sexual, abusive or prank messages, scams, job seekers or vendors; rude real customers still get an answer', () => {
+  ['are you single? send me a pic of you', 'hahahaha just for fun', 'fuck you stupid bot', 'I am looking for a job, resume attached', 'crypto signals, click here'].forEach((m) => {
+    const run = simulate(Object.assign({}, waLead, { message: m }), { modelText: JSON.stringify(aiObj({ intent: 'ai_automation_enquiry', recommended_reply: 'Hi! Happy to help.' })), config: { auto_send_low_risk: 'true' } });
+    assert.strictEqual(run.fin.result.recommended_reply, '', m); assert.strictEqual(run.fin.auto_send, false, m); assert.strictEqual(run.fin.website_requested, false, m);
+  });
+  const rude = simulate(Object.assign({}, waLead, { message: 'why is this taking so long, my shop website still not ready' }), { modelText: JSON.stringify(aiObj({ recommended_reply: 'Sorry for the wait, Ryan. Your mock-up is being built.' })), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(rude.fin.auto_send, true);
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
