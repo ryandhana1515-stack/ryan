@@ -60,7 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
-const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'atNextQuestion']);   // when John wakes ATLAS
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -149,11 +149,12 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 // Website Intelligence holds the build until it has enough details (Ryan, 2026-09-28). While its questions are open
-// (a website_info_needed task and no website_build task yet), the customer's reply goes back to it for another look.
+// (a website_info_needed task and no website_build task yet), the customer's first reply to them goes back to it for
+// another look; later messages do not re-run it (Ryan, 2026-09-29: repeated questions).
 let leadTasks = [];
 try { leadTasks = $('Load ATLAS Questions').all().map((i) => i.json).filter(Boolean); } catch (e) { leadTasks = []; }
 const infoOpen = leadTasks.some((t) => t.task_type === 'website_info_needed') && !leadTasks.some((t) => t.task_type === 'website_build');
-const infoAnswered = notPitch && buildStarted && infoOpen;
+const infoAnswered = notPitch && buildStarted && infoOpen && wbInfoReplyDue(histAll);
 const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || infoAnswered;
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\\n');
@@ -169,9 +170,9 @@ try {
   const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
   const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
-  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"); Website Intelligence's gaps stay John's.
-  const intro = atIsAtlasQuestion(nextQ, atRows) ? ' ' + AT_VOICE : ' One more question so we get your website right: ';
-  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + intro + nextQ; atlasQuestion = nextQ; }
+  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"), one question per
+  // message (Ryan, 2026-09-29): John's own questions wait, and nothing is added while the customer answers the website team.
+  if (nextQ && johnsOwnReply && !infoAnswered && !holdForRyan && r.recommended_reply) { r.recommended_reply = atOneQuestion(r.recommended_reply, nextQ); atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.

@@ -956,20 +956,18 @@ test('John never sends the same message twice in a row (Ryan, 2026-09-27)', () =
   assert.notStrictEqual(norm(run.fin.result.recommended_reply), norm(last), run.fin.result.recommended_reply);
   assert.ok(run.fin.audit.includes('reply_replaced:repeat'));
 });
-test('what Google cannot find goes back to John: he asks the customer at once (max 2, never repeated) and ATLAS questions come after (Ryan, 2026-09-27)', () => {
+test('what Google cannot find goes back to John: he asks the customer before the build (max 2, never repeated); ATLAS never relays them (Ryan, 2026-09-27/29)', () => {
   const inputBase = { channel: 'whatsapp', phone: '+6587587170', contact_name: 'Ryan Dhana', company_name: 'Free & Easy Minimart', lead_id: 'lead_1', message: 'build a website', conversation: [], test_mode: false };
-  const ask = wr.wrCustomerAsk({ needs_john: true, questions: ['Which products or categories should we feature first?', 'What are your opening hours?', 'Do you deliver?'], input: inputBase });
+  const ask = wr.wrCustomerAsk({ needs_john: true, hold: true, questions: ['Which products or categories should we feature first?', 'What are your opening hours?', 'Do you deliver?'], input: inputBase });
   assert.strictEqual(ask.send, true); assert.strictEqual(ask.questions.length, 2); assert.strictEqual(ask.to, '+6587587170');
-  assert.ok(/while our team builds your Free & Easy Minimart mock-up/.test(ask.text) && /placeholders/.test(ask.text), ask.text);
-  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { test_mode: true }) }).send, false, 'never on test leads');
-  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { channel: 'web_chat' }) }).send, false, 'web chat: John asks in his next reply instead');
+  assert.ok(/before our team builds your Free & Easy Minimart website/.test(ask.text) && /placeholders/.test(ask.text), ask.text);
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, hold: false, questions: ['Do you deliver?'], input: inputBase }).send, false, 'once it is building, nothing more is asked');
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, hold: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { test_mode: true }) }).send, false, 'never on test leads');
+  assert.strictEqual(wr.wrCustomerAsk({ needs_john: true, hold: true, questions: ['What are your opening hours?'], input: Object.assign({}, inputBase, { channel: 'web_chat' }) }).send, false, 'web chat: John asks in his next reply instead');
   assert.strictEqual(wr.wrCustomerAsk({ needs_john: false, questions: [], input: inputBase }).send, false);
   const at = require('../agents/atlas/atlas.js');
   const rows = [{ task_type: 'edg_design', payload_json: JSON.stringify({ questions_for_john: ['When a new enquiry comes in, who replies first?'] }) }, { task_type: 'website_info_needed', payload_json: JSON.stringify({ questions_for_john: ['What are your opening hours?', 'Do you deliver?'] }) }, { task_type: 'follow_up', payload_json: '{}' }];
-  const qs = at.atQuestionsFromRows(rows);
-  assert.deepStrictEqual(qs, ['What are your opening hours?', 'Do you deliver?', 'When a new enquiry comes in, who replies first?'], 'website details first, then ATLAS');
-  const hist = [{ role: 'agent', content: ask.text }];
-  assert.strictEqual(at.atNextQuestion(qs, hist), 'Do you deliver?', 'already-asked questions are skipped');
+  assert.deepStrictEqual(at.atQuestionsFromRows(rows), ['When a new enquiry comes in, who replies first?'], 'Website Intelligence asks its own questions; John does not relay them again');
 });
 test("John's question speaks to the customer, not about them (Ah Seng test, 2026-09-27)", () => {
   const ask = wr.wrCustomerAsk({ needs_john: true, questions: ["Is this business the same as 'Ah Seng (Hai Nam) Coffee' at Amoy Street Food Centre, or a different shop?", 'What exactly does Ah Seng Kopi Corner sell, and does the customer have a logo, menu and photos?'], input: { channel: 'whatsapp', phone: '+6590000005', contact_name: 'Ah Seng', company_name: 'Ah Seng Kopi Corner', lead_id: 'l', message: 'build a website', conversation: [], test_mode: false } });
@@ -1073,10 +1071,12 @@ test('the creator asks Lovable for an Apple-grade site with a set of scroll effe
   assert.ok(/Apple-grade/.test(p) && /Pinned hero film/.test(p) && /Product reveal/.test(p) && /Premium golden finish/.test(p) && /Lenis/.test(p), p.slice(0, 2500));
   assert.ok(p.length <= wb.WB_MAX_PROMPT);
 });
-test('website questions stay John\'s; only ATLAS\'s own questions are asked in ATLAS\'s name', () => {
+test('only ATLAS\'s own questions are asked, in ATLAS\'s name, one question per message (Ryan, 2026-09-29)', () => {
   const rows = [{ task_type: 'website_info_needed', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['What are your opening hours?'] }) }, { task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting software do you use?'] }) }];
   const run = simulate(fx('john-tan.json'), { atlasRows: rows });
-  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get your website right: What are your opening hours?'), run.fin.result.recommended_reply);
+  const reply = run.fin.result.recommended_reply;
+  assert.ok(reply.endsWith('ATLAS, our systems architect, would like to know: Which accounting software do you use?') && !/opening hours/.test(reply), reply);
+  assert.strictEqual((reply.match(/\?/g) || []).length, 1, 'one question per message: ' + reply);
   const at = require('../agents/atlas/atlas.js');
   assert.strictEqual(at.atIsAtlasQuestion('Which accounting software do you use?', rows), true);
   assert.strictEqual(at.atIsAtlasQuestion('What are your opening hours?', rows), false);
@@ -1119,11 +1119,11 @@ test('not enough details → Website Intelligence holds the build and John asks 
   const glue = fs.readFileSync(path.join(__dirname, '../workflows/website-intelligence/dist/code-nodes/finalize-brief.js'), 'utf8');
   assert.ok(/ready: fin\.status === 'READY_FOR_WEBSITE_CREATOR' && !\(fin\.hold && ask\.questions\.length\)/.test(glue), 'the creator is not called while held');
 });
-test('enough details → build at once; nice-to-have questions are asked while it builds', () => {
+test('enough details → build at once; nothing more is asked while it builds', () => {
   const input = mkInput([], 'build me a website for Ah Seng Kopi, warm classic kopitiam look');
   const fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'yes', questions_for_john: ['Do you have a logo?'] }), input, digest: lowDigest(input) });
   assert.strictEqual(fin.hold, false);
-  assert.ok(/while our team builds/.test(wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold }).text));
+  assert.strictEqual(wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold }).send, false, 'nice-to-haves are never asked once it builds (Ryan, 2026-09-29)');
 });
 test('never stuck: after two rounds, or when the customer is not sure, it builds with placeholders', () => {
   const asked = (n) => Array.from({ length: n }, (_, i) => [{ role: 'agent', content: 'Hi Ryan, before our team builds your Ah Seng Kopi website, one quick detail so it is right for you: q' + i }, { role: 'customer', content: 'we sell kopi and kaya toast to office workers' }]).flat();
@@ -1194,6 +1194,51 @@ test('no reply to sexual, abusive or prank messages, scams, job seekers or vendo
   const rude = simulate(Object.assign({}, waLead, { message: 'why is this taking so long, my shop website still not ready' }), { modelText: JSON.stringify(aiObj({ recommended_reply: 'Sorry for the wait, Ryan. Your mock-up is being built.' })), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(rude.fin.auto_send, true);
 });
+console.log('\n[24] Smile Plus Dental test: no public-fact questions, no repeats, no duplicates (Ryan, 2026-09-29)');
+{
+  const spIn = (conv, msg) => wrE.wrInput({ tenant_id: 'fusiontech', lead_id: 'lead_sp', contact_name: 'Ryan', company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', phone: '+6587587170', channel: 'whatsapp', message: msg || 'Hi, my clinic is called Smile Plus Dental Surgery, I already have a website, can you make a better one?', conversation_json: JSON.stringify(conv || []), extracted_json: '{}', test_mode: false });
+  const digestAt = (input, conf) => { const d = lowDigest(input); d.identity = Object.assign({}, d.identity, { confidence: conf }); return d; };
+  const model = (qs, enough) => JSON.stringify({ company_name: 'Smile Plus Dental Surgery', enough_to_build: enough || 'no', questions_for_john: qs });
+  test('found on Google: no questions about addresses, branches, opening hours, services or the website; it builds at once', () => {
+    const input = spIn([]);
+    const fin = wrE.wrFinalize({ raw_text: model(['Exact street address of each branch (Redhill/Bukit Merah and Hougang)?', 'Opening hours for each branch?', 'Which treatments should be featured most prominently?']), input, digest: digestAt(input, 'medium') });
+    assert.deepStrictEqual(fin.questions_for_john, []); assert.strictEqual(fin.enough, true); assert.strictEqual(fin.hold, false);
+  });
+  test('the customer gave the website link: the same public questions are dropped even if the page could not be read', () => {
+    const input = spIn([{ role: 'customer', content: 'It is smileplusdento.com.sg, that is the website now' }]);
+    const fin = wrE.wrFinalize({ raw_text: model(['Clinic address(es)/branches and opening hours?', 'What is the URL of the clinic\'s current website?']), input, digest: digestAt(input, 'low') });
+    assert.deepStrictEqual(fin.questions_for_john, []); assert.strictEqual(fin.hold, false);
+  });
+  test('not found online: only one question first, the website link', () => {
+    const input = spIn([]);
+    const fin = wrE.wrFinalize({ raw_text: model(['What is the URL of the clinic\'s current website? (is it smileplusdental.com.sg?)', 'Clinic address(es)/branches and opening hours?']), input, digest: digestAt(input, 'low') });
+    assert.strictEqual(fin.questions_for_john.length, 1); assert.ok(/URL/.test(fin.questions_for_john[0])); assert.strictEqual(fin.hold, true);
+  });
+  test('a topic already asked is never asked again, and "can you search it for me?" means go ahead', () => {
+    const conv = [{ role: 'agent', content: 'Hi Ryan, before our team builds your Smile Plus Dental Surgery website, one quick detail so it is right for you: What are your opening hours?' }, { role: 'customer', content: 'Can you help search it for me?' }];
+    const input = spIn(conv, 'Can you help search it for me?');
+    const fin = wrE.wrFinalize({ raw_text: model(['What are the opening hours for each branch?']), input, digest: digestAt(input, 'low') });
+    assert.deepStrictEqual(fin.questions_for_john, []); assert.strictEqual(fin.hold, false); assert.strictEqual(fin.enough, true);
+  });
+  test('only the first customer reply to a website-team question goes back to Website Intelligence', () => {
+    const w = require('../agents/website-builder/intake.js');
+    const ask = { role: 'agent', content: 'Hi Ryan, before our team builds your Smile Plus Dental Surgery website, one quick detail so it is right for you: What is your website?' };
+    assert.strictEqual(w.WI_HOLD_MARK, wrE.WR_HOLD_MARK);
+    assert.strictEqual(w.wbInfoReplyDue([ask]), true);
+    assert.strictEqual(w.wbInfoReplyDue([ask, { role: 'agent', content: 'Thank you, noted.' }]), true, 'John\'s own reply in between does not count');
+    assert.strictEqual(w.wbInfoReplyDue([ask, { role: 'customer', content: 'smileplusdental.com.sg' }]), false, 'the second message does not re-run it');
+    assert.strictEqual(w.wbInfoReplyDue([{ role: 'agent', content: 'Hi Ryan, perfect, I have what I need' }]), false);
+    const glue = fs.readFileSync(path.join(__dirname, '../workflows/lead-intake/dist/code-nodes/finalize-and-validate-result.js'), 'utf8');
+    assert.ok(/const infoAnswered = notPitch && buildStarted && infoOpen && wbInfoReplyDue\(histAll\);/.test(glue));
+  });
+  test('ATLAS never asks for the website link the customer already gave, and asks one question per message', () => {
+    const at = require('../agents/atlas/atlas.js');
+    const hist = [{ role: 'customer', content: 'Ia adalah smileplusdento.com.sg Itulah situs web sekarang' }];
+    assert.strictEqual(at.atNextQuestion(['Could you share the link to your current website so we can take a look at it first?', 'Do you use any software to track appointments?'], hist), 'Do you use any software to track appointments?');
+    const one = at.atOneQuestion('Noted, Ryan. Our team is working on your mock-up. Do most new patients call, WhatsApp or walk in? And do you have staff who manage bookings?', 'Do you use any software to track appointments?');
+    assert.strictEqual((one.match(/\?/g) || []).length, 1, one); assert.ok(one.startsWith('Noted, Ryan. Our team is working on your mock-up.') && one.includes(at.AT_VOICE), one);
+  });
+}
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

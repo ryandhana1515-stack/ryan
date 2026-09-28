@@ -169,6 +169,42 @@ function wrRoomsKnown(input) {
   var said = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return m.content; })).join(' '));
   return WR_ROOMS_RE.test(said) || /\b(up to you|you decide|anything is fine|not sure|no preference|just build|go ahead|placeholders?)\b/i.test(said);
 }
+var WR_PUBLIC_Q = /\b(address(es)?|located|locations?|branch(es)?|outlets?|opening hours|operating hours|business hours|hours|opening times?|open on|phone( number)?|contact (number|details)|whatsapp (number|line)|hotline|e-?mail|(current|existing|your|clinic'?s?|company'?s?|business'?s?) web ?site|web ?site (link|url|address)|url|link|domain|services?|treatments?|menu|products?|social media|facebook|instagram|tiktok|google (maps|reviews|listing)|reviews?|ratings?|chas|medisave|insurance|payment methods?)\b/i;
+var WR_WEBSITE_Q = /\b(current|existing|your|clinic'?s?|company'?s?|business'?s?) web ?site\b|\bweb ?site (link|url|address)\b|\burl\b|\blink\b|\bdomain\b/i;
+var WR_URL_RE = /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my|com\.sg|org\.sg)\b)/i;
+/** True when the customer has given a website address anywhere in the conversation. */
+function wrUrlGiven(input) {
+  input = input || {};
+  var said = [input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return m.content; })).join(' ');
+  return WR_URL_RE.test(said) || !!input.company_url;
+}
+/** Drops questions Google can answer once the business is found online; otherwise asks for the website first. */
+function wrDropPublicQuestions(questions, o) {
+  var qs = wrArr(questions, 10);
+  if (o && (o.found_online || o.url_given)) return qs.filter(function (q) { return q === WR_ROOMS_Q || !WR_PUBLIC_Q.test(q); });
+  var site = qs.filter(function (q) { return WR_WEBSITE_Q.test(q); });
+  return site.length ? [site[0]] : qs;
+}
+var WR_TOPICS = [
+  ['hours', /\b(opening|operating|business) hours|\bhours\b|opening times?|open on/i],
+  ['address', /\baddress(es)?|\blocat(ed|ion|ions)\b|\bbranch(es)?\b|\boutlets?\b/i],
+  ['website', /\b(current|existing|your|clinic'?s?|company'?s?|business'?s?) web ?site\b|\bweb ?site (link|url|address)\b|\burl\b|\blink\b|\bdomain\b/i],
+  ['services', /\bservices?\b|\btreatments?\b|\bmenu\b|\bproducts?\b/i],
+  ['booking', /\bbook(ing|ings)?\b|\bappointments?\b|\breservations?\b/i],
+  ['phone', /\bphone\b|\bwhatsapp (number|line)\b|\bcontact number\b|\bhotline\b/i],
+  ['rooms', /\bbedrooms?\b|\bbathrooms?\b|\brooms\b|\bwalkthrough\b/i],
+  ['subsidy', /\bchas\b|\bmedisave\b|\binsurance\b/i]
+];
+function wrTopicsOf(text) { var t = String(text || ''); return WR_TOPICS.filter(function (x) { return x[1].test(t); }).map(function (x) { return x[0]; }); }
+/** Topics already asked in agent messages that contained a question. */
+function wrAskedTopics(conversation) {
+  var out = [];
+  (Array.isArray(conversation) ? conversation : []).forEach(function (m) {
+    if (!m || m.role !== 'agent' || String(m.content || '').indexOf('?') === -1) return;
+    wrTopicsOf(m.content).forEach(function (t) { if (out.indexOf(t) === -1) out.push(t); });
+  });
+  return out;
+}
 /** How many times John has already asked for website details in this conversation. */
 function wrInfoRounds(input) {
   var conv = (input && Array.isArray(input.conversation)) ? input.conversation : [];
@@ -196,9 +232,12 @@ function wrFinalize(o) {
   var status = input.company_name ? 'READY_FOR_WEBSITE_CREATOR' : 'MORE_INFORMATION_REQUIRED';
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
   var custSaid = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).slice(-2).map(function (m) { return m.content; })).join(' '));
-  if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder)/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
+  if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder|search (it|for it|them|online)|find (it|them|out)|look (it|them) up|google it|check (it )?online|you (can )?(search|find|check))/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
   var rounds = wrInfoRounds(input);
   brief.questions_for_john = brief.questions_for_john.filter(function (q) { return !/\b(look and feel|style|colou?rs?|website you like|design preference|brand colou?rs?)\b/i.test(q); });
+  var asked = wrAskedTopics(input.conversation);
+  brief.questions_for_john = wrDropPublicQuestions(brief.questions_for_john, { found_online: digest.identity.confidence !== 'low', url_given: wrUrlGiven(input) })
+    .filter(function (q) { var t = wrTopicsOf(q); return t.every(function (x) { return asked.indexOf(x) === -1; }); });
   var isProperty = /\b(property|properties|real estate|realtor|condo|landed|villa|bungalow|penthouse|apartment|show ?flat|new launch|interior design)/i.test(String(input.industry || '') + ' ' + String(brief.industry || '') + ' ' + String(input.message || ''));
   if (status === 'READY_FOR_WEBSITE_CREATOR' && isProperty && !wrRoomsKnown(input) && rounds < WR_MAX_INFO_ROUNDS) {
     if (brief.questions_for_john.indexOf(WR_ROOMS_Q) === -1) brief.questions_for_john = [WR_ROOMS_Q].concat(brief.questions_for_john);
@@ -209,7 +248,8 @@ function wrFinalize(o) {
   return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0, enough: brief.enough_to_build === 'yes', info_rounds: rounds, hold: hold };
 }
 /** What Google could not tell us goes back to John, who asks the customer at once (Ryan, 2026-09-27): at most two
- *  questions, in John's voice, while the mock-up is already being built with placeholders. Never asks what the
+ *  questions, in John's voice. Only when the build waits for the answers (o.hold): once the mock-up is being built
+ *  with placeholders, nothing more is asked (Ryan, 2026-09-29: duplicate and repeated questions). Never asks what the
  *  customer already said; never on test leads. Returns { send, channel, to, text, questions, message_id }. */
 function wrCustomerAsk(o) {
   o = o || {};
@@ -236,7 +276,7 @@ function wrCustomerAsk(o) {
       (qs.length === 1 ? 'one quick detail we could not find online: ' + qs[0] : 'two quick details we could not find online: 1) ' + qs[0] + ' 2) ' + qs[1]) +
       ' If you are not sure, no problem, we will use clear placeholders you can change later.';
   }
-  var send = !!(o.needs_john && qs.length && !input.test_mode && channel && to);
+  var send = !!(o.hold && o.needs_john && qs.length && !input.test_mode && channel && to);
   return { send: send, channel: channel || '', to: to || '', text: text, questions: qs, message_id: 'msg_wi_' + String(input.lead_id || 'x').replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + Date.now().toString(36) };
 }
 // ---- n8n glue ----

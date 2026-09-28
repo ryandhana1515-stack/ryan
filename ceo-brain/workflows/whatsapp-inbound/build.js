@@ -3,7 +3,8 @@
 // The other nodes of that workflow (webhooks, data-table reads/writes, Outbound Sender call) are plain n8n nodes:
 //   Extract WhatsApp Message → Is a Text Message? ─ yes → Prepare Message
 //                                                 └ no → Is a Voice Message? → Get Voice Note Link → Download Voice Note →
-//                                                        Name Voice File → Transcribe Voice Note (OpenAI) → Prepare Message
+//                                                        Name Voice File → Transcribe Voice Note (OpenAI, language "en":
+//                                                        auto-detect turned English voice notes into Malay, 2026-09-29) → Prepare Message
 //   Prepare Message → Find Lead by Phone (newest row first) → Check New Chat →
 //   New Chat? ─ yes → Save New Chat Lead (ceo_leads insert) → Confirm New Chat (Outbound Sender)
 //             └ no  → Get Recent Conversation → Build Lead Payload → POST to Lead Intake

@@ -371,6 +371,17 @@ function wbIntakeInProgress(history) {
 function wbBuildAlreadyStarted(history) {
   return wiAgentText(history).toLowerCase().indexOf(WI_STARTED_MARK) !== -1;
 }
+var WI_HOLD_MARK = 'before our team builds your';
+/** True when Website Intelligence's latest question round is waiting and the customer has not replied to it yet. */
+function wbInfoReplyDue(history) {
+  var h = Array.isArray(history) ? history : [];
+  for (var i = h.length - 1; i >= 0; i--) {
+    if (!h[i]) continue;
+    if (h[i].role !== 'agent') return false;
+    if (String(h[i].content || '').toLowerCase().indexOf(WI_HOLD_MARK) !== -1) return true;
+  }
+  return false;
+}
 function atStr(v, max) {
   if (v === undefined || v === null) return '';
   var s = String(v).replace(/\s+/g, ' ').trim();
@@ -399,7 +410,7 @@ function atNeeded(o) {
 var AT_UNSAFE_Q = /(s?\$|\b(sgd|usd|rm))\s?\d|\b(price|pricing|cost|discount|guarantee\w*|refund|contract|agreement|password|api key|token|credential)s?\b/i;
 function atQuestionsFromRows(rows) {
   var out = [];
-  ['website_info_needed', 'edg_design'].forEach(function (type) {
+  ['edg_design'].forEach(function (type) {
     (Array.isArray(rows) ? rows : []).forEach(function (r) {
       if (!r || r.task_type !== type) return;
       var p = atParse(r.payload_json, {}) || {};
@@ -420,6 +431,15 @@ function atIsAtlasQuestion(q, rows) {
 }
 /** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
 var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
+var AT_ANSWERED = [
+  [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
+  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us)\b/i],
+  [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
+];
+function atAlreadyAnswered(q, history) {
+  var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
+  return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
+}
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -428,9 +448,17 @@ function atNextQuestion(questions, history) {
     var q = qs[i].slice(0, 300);
     if (AT_UNSAFE_Q.test(q)) continue;
     if (asked.indexOf(q.toLowerCase()) !== -1) continue;
+    if (atAlreadyAnswered(q, history)) continue;
     return q;
   }
   return null;
+}
+/** One question per message (Ryan, 2026-09-29): when ATLAS asks, John's own questions in that reply are dropped. */
+function atOneQuestion(reply, question) {
+  var parts = String(reply || '').trim().split(/(?<=[.!?])\s+/);
+  var kept = parts.filter(function (p) { return !/\?\s*$/.test(p); });
+  if (!kept.length) kept = parts.slice(0, 1).map(function (p) { return p.replace(/\?\s*$/, '.'); });
+  return kept.join(' ').trim() + ' ' + AT_VOICE + question;
 }
 // ---- n8n glue ----
 function cbMakeId(prefix) { return prefix + '_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36); }
@@ -473,11 +501,12 @@ const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_n
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
 // Website Intelligence holds the build until it has enough details (Ryan, 2026-09-28). While its questions are open
-// (a website_info_needed task and no website_build task yet), the customer's reply goes back to it for another look.
+// (a website_info_needed task and no website_build task yet), the customer's first reply to them goes back to it for
+// another look; later messages do not re-run it (Ryan, 2026-09-29: repeated questions).
 let leadTasks = [];
 try { leadTasks = $('Load ATLAS Questions').all().map((i) => i.json).filter(Boolean); } catch (e) { leadTasks = []; }
 const infoOpen = leadTasks.some((t) => t.task_type === 'website_info_needed') && !leadTasks.some((t) => t.task_type === 'website_build');
-const infoAnswered = notPitch && buildStarted && infoOpen;
+const infoAnswered = notPitch && buildStarted && infoOpen && wbInfoReplyDue(histAll);
 const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || infoAnswered;
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\n');
@@ -493,9 +522,9 @@ try {
   const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
   const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
-  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"); Website Intelligence's gaps stay John's.
-  const intro = atIsAtlasQuestion(nextQ, atRows) ? ' ' + AT_VOICE : ' One more question so we get your website right: ';
-  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + intro + nextQ; atlasQuestion = nextQ; }
+  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"), one question per
+  // message (Ryan, 2026-09-29): John's own questions wait, and nothing is added while the customer answers the website team.
+  if (nextQ && johnsOwnReply && !infoAnswered && !holdForRyan && r.recommended_reply) { r.recommended_reply = atOneQuestion(r.recommended_reply, nextQ); atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.

@@ -152,9 +152,24 @@ function wbBuildAlreadyStarted(history) {
   return wiAgentText(history).toLowerCase().indexOf(WI_STARTED_MARK) !== -1;
 }
 
+// Website Intelligence's "before our team builds your … website" questions (research.js WR_HOLD_MARK). Only the
+// customer's first reply after such a question goes back to Website Intelligence (Ryan, 2026-09-29: every reply
+// re-ran the research, which sent the same questions again and again).
+var WI_HOLD_MARK = 'before our team builds your';
+/** True when Website Intelligence's latest question round is waiting and the customer has not replied to it yet. */
+function wbInfoReplyDue(history) {
+  var h = Array.isArray(history) ? history : [];
+  for (var i = h.length - 1; i >= 0; i--) {
+    if (!h[i]) continue;
+    if (h[i].role !== 'agent') return false;
+    if (String(h[i].content || '').toLowerCase().indexOf(WI_HOLD_MARK) !== -1) return true;
+  }
+  return false;
+}
+
 // ---- Node module wrapper (stripped when inlined into n8n) ----
 if (typeof module !== 'undefined') {
   var _b = require('./brief.js');
   wbDetectMode = _b.wbDetectMode; wbDetectCategory = _b.wbDetectCategory; wbGuessBusinessName = _b.wbGuessBusinessName; wbDetectSiteType = _b.wbDetectSiteType; wbDetectGoal = _b.wbDetectGoal;
-  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, WI_INFO_THANKS: WI_INFO_THANKS, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
+  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, WI_INFO_THANKS: WI_INFO_THANKS, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, WI_HOLD_MARK: WI_HOLD_MARK, wbInfoReplyDue: wbInfoReplyDue, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
 }
