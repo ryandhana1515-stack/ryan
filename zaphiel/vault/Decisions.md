@@ -5,6 +5,17 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **Every website starts from the customer's details; no replies to non-customers** (Ryan: "the customer
+  must give the details … how the website wants to be … for every single website … the website creator must be able
+  to build any website … not those weird inappropriate ones … just don't respond to them"). (1) Before any build John
+  (or ATLAS) makes sure we know what the business does/sells, who its customers are, what the site should achieve AND
+  how the customer wants it to look and feel (style, colours or a site they like), unless they leave it to us ("up to
+  you", "just build"); max two rounds. (2) Any website for any business is built (business site, store, booking site,
+  landing page, funnel, web app). (3) No reply at all to sexual, abusive or prank messages, people chatting for fun,
+  scams, and people selling to FusionTech (freelancers, agencies, job seekers). A business owner who says "we offer …"
+  and asks for a website or automation is a customer. Judged only by what the message says, never by who sends it
+  (never nationality, race, religion or language) — Zaphiel declined a nationality-based filter.
+
 - 2026-09-28 — **Property sites: a cinematic walkthrough of the home** (Ryan: "be able to build property houses …
   of the house or inside, cinematic scroll, parallax, everything … don't actually build it"). Agents, developers and
   new launches, condos, landed homes, villas, show flats and interior designers get a 5-scene Kling walkthrough scrubbed

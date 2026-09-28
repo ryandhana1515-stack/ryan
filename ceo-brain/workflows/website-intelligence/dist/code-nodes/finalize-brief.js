@@ -162,6 +162,13 @@ function wrBriefText(brief, digest) {
 var WR_ASK_MARK = 'quick detail';
 var WR_HOLD_MARK = 'before our team builds your';
 var WR_MAX_INFO_ROUNDS = 2;
+var WR_STYLE_Q = 'How would you like the website to look and feel? For example a style, your colours, or a website you like.';
+var WR_STYLE_RE = /\b(colou?rs?|style|look|feel|vibe|theme|modern|minimal\w*|luxur\w*|elegant|premium|classic|clean|bold|playful|warm|dark|light|gold\w*|black|white|blue|green|red|pink|purple|orange|brand colou?rs?|logo|like (the |this |that )?(website|site)|similar to|inspired by|apple)\b/i;
+/** True when the customer has said anything about how the website should look, or left it to us. */
+function wrStyleKnown(input) {
+  var said = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return m.content; })).join(' '));
+  return WR_STYLE_RE.test(said) || /\b(up to you|you decide|anything is fine|not sure|no preference|just build|go ahead|placeholders?)\b/i.test(said);
+}
 /** How many times John has already asked for website details in this conversation. */
 function wrInfoRounds(input) {
   var conv = (input && Array.isArray(input.conversation)) ? input.conversation : [];
@@ -191,6 +198,10 @@ function wrFinalize(o) {
   var custSaid = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).slice(-2).map(function (m) { return m.content; })).join(' '));
   if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder)/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
   var rounds = wrInfoRounds(input);
+  if (status === 'READY_FOR_WEBSITE_CREATOR' && !wrStyleKnown(input) && rounds < WR_MAX_INFO_ROUNDS) {
+    if (brief.questions_for_john.indexOf(WR_STYLE_Q) === -1) brief.questions_for_john = brief.questions_for_john.concat([WR_STYLE_Q]);
+    brief.enough_to_build = 'no';
+  }
   var hold = status === 'READY_FOR_WEBSITE_CREATOR' && brief.enough_to_build === 'no' && rounds < WR_MAX_INFO_ROUNDS && brief.questions_for_john.length > 0;
   return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0, enough: brief.enough_to_build === 'yes', info_rounds: rounds, hold: hold };
 }

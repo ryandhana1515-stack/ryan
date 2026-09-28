@@ -461,10 +461,13 @@ if (fin.provider !== 'rules' && r.recommended_reply && JOHN_DONT_KNOW.test(r.rec
 const approvalNeeded = r.human_review_required || r.next_action === 'request_proposal_approval';
 const sendChannel = ctx.lead.channel === 'email' ? 'email' : (ctx.lead.channel === 'whatsapp' ? 'whatsapp' : null);
 const sendTo = sendChannel === 'email' ? ctx.lead.email : (sendChannel === 'whatsapp' ? ctx.lead.phone : null);
-const holdForRyan = approvalNeeded && ppMustHold(r);
+// Not a customer (spam, scams, sexual/abusive messages, pranks, job seekers, vendors): no reply at all (Ryan,
+// 2026-09-28). The rules engine's check counts even when the model misses it. Judged by the message, never the sender.
+const notACustomer = r.intent === 'spam' || r.intent === 'vendor_or_job_pitch' || !!(rulesResult && (rulesResult.intent === 'spam' || rulesResult.intent === 'vendor_or_job_pitch'));
+const holdForRyan = approvalNeeded && ppMustHold(r) && !notACustomer;
 // Website intake + hand-off (Ryan, 2026-09-25: zero approvals). When the customer asks for a site or a
 // mock-up, John collects the four details; once he has them the Website Builder is called and builds.
-const notPitch = r.intent !== 'spam' && r.intent !== 'vendor_or_job_pitch';
+const notPitch = !notACustomer;
 const histAll = Array.isArray(ctx.lead.conversation_history) ? ctx.lead.conversation_history : [];
 const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_name: ctx.lead.company_name || r.extracted.company_name, industry: ctx.lead.industry || r.extracted.industry, contact_name: ctx.lead.contact_name || r.extracted.contact_name, phone: ctx.lead.phone, email: ctx.lead.email, channel: ctx.lead.channel, extracted: r.extracted });
 const buildStarted = wbBuildAlreadyStarted(histAll);
@@ -509,10 +512,11 @@ if (holdForRyan) {
   if (r.recommended_reply) r.summary = r.summary + ' | Draft from John (not sent): ' + r.recommended_reply;
   r.recommended_reply = ppHoldingReply(ctx.lead);
   fin.audit.push('reply_held_for_ryan:holding_reply_sent');
-} else if (!r.recommended_reply && rulesResult && rulesResult.recommended_reply) {
+} else if (!r.recommended_reply && !notACustomer && rulesResult && rulesResult.recommended_reply) {
   r.recommended_reply = rulesResult.recommended_reply;
   fin.audit.push('reply_from_rules:empty_reply');
 }
+if (notACustomer) { r.recommended_reply = ''; fin.audit.push('no_reply:not_a_customer'); }
 const autoSend = ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
 if (infoAnswered && !holdForRyan && r.recommended_reply && !/website team/i.test(r.recommended_reply)) { r.recommended_reply = r.recommended_reply.trim() + ' ' + WI_INFO_THANKS; fin.audit.push('website_info_answered:back_to_website_intelligence'); }
 const contactFound = { email: intake.email || null, phone: intake.phone || null };

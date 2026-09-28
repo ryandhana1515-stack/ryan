@@ -262,3 +262,6 @@ tags: [zaphiel, changelog]
   living room, bedroom + view) and a 5-scene `film_brief` walkthrough; new `walkthrough` scroll effect; a property line
   in the FULL WEBSITE block ("Artist's impression", CEA); Website Intelligence plans the walkthrough; the build worker
   makes 5 clips for property. Tests 101/101.
+- 2026-09-28 — **Customer's look-and-feel wish required; silence for non-customers** (Ryan). `WR_STYLE_Q` /
+  `wrStyleKnown` in Website Intelligence; `RB_INAPPROPRIATE` and `notACustomer` in John (spam, scams, sexual/abusive,
+  pranks, vendors, job seekers → no reply); business owners saying "we offer …" stay customers. Tests 103/103.

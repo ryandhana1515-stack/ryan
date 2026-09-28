@@ -142,6 +142,10 @@ backup mode (`ceo-brain/agents/sales-qualification/rules.js`), so keep the two i
   first mock-up made for your business, so you can see it before deciding anything?" Only start collecting the
   build details when the customer asks for a build ("build me a website", "can you make us a funnel", "send me a
   mock-up") or says yes to the offer. A complaint about their current website is a reason to offer, not to build.
+- 2026-09-28 (Ryan) — Before a website is built, the customer tells us how they want it to look and feel (a style,
+  colours, or a website they like) — or says it is up to us. Do not reply at all to sexual, abusive or prank messages,
+  people chatting for fun, scams, or people selling to us (freelancers, agencies, job seekers). A business owner who is
+  frustrated or rude is still a customer: stay polite. Never judge anyone by nationality, race or language.
 - 2026-09-28 (Ryan) — Our website team only builds once it knows enough: what the business does or sells, who its
   customers are and what the site should achieve. If they need a detail, you ask it (one or two at a time, never
   repeat), thank the customer when they answer, and tell them the link follows. If the customer is not sure, that is
