@@ -197,10 +197,21 @@ function wbDetectMode(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
   return WB_MEDICAL_RE.test(t) ? 'medical' : 'sme';
 }
+var WB_LUXURY_KINDS = [
+  ['watch', /\b(watch(es|maker|makers)?|timepieces?|horolog\w*|chronograph|tourbillon|wristwatch|rolex|omega|patek|audemars|tudor|breitling|iwc|hublot|richard mille|longines|grand seiko|tag heuer|panerai|vacheron)\b/i],
+  ['jewellery', /\b(jewel(le)?ry|jewell?ers?|diamonds?|engagement rings?|wedding bands?|necklaces?|bracelets?|earrings?|pendants?|goldsmith|gemstones?|pearls?|fine jewel\w*|tiffany|bulgari|van cleef|chopard)\b/i],
+  ['electronics', /\b(consumer electronics|electronics (store|shop|brand)|gadgets?|headphones?|earbuds?|hi-?fi|audio equipment|loudspeakers?|smartphones?|laptops?|cameras? (store|shop)|wearables?|smart home devices?)\b/i],
+  ['furniture', /\b(furniture|sofas?|armchairs?|dining tables?|cabinetry|bespoke joinery|mattress(es)?|homeware|home d[eé]cor|lighting (design|store|showroom)|rugs?|carpets?)\b/i],
+  ['fashion', /\b(fashion|couture|atelier|handbags?|leather goods|apparel|tailor(ing|s)?|bespoke suits?|sneakers?|eyewear|sunglasses|menswear|womenswear|boutique label)\b/i],
+  ['luxury', /\b(luxury|luxe|high-end|haute|prestige|premium brand|fragrance|perfume|parfum|crystal|porcelain|fine wine|cigars?|yachts?)\b/i]
+];
+var WB_LUXURY_RE = new RegExp(WB_LUXURY_KINDS.map(function (k) { return k[1].source; }).join('|'), 'i');
+/** The luxury retail kind from any text about the business, or null. */
 var WB_CATEGORY_RULES = [
   ['healthcare', WB_MEDICAL_RE],
-  ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
+  ['automotive', /\b(dealership|car dealer|car showrooms?|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
+  ['retail', WB_LUXURY_RE],
   ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['property', /\b(property|properties|real estate|realtor|condo(minium)?s?|hdb|landed|listings?|tenant|landlord|rental|villas?|bungalows?|penthouses?|apartments?|show ?flats?|new launch(es)?|property developer|houses? for (sale|rent)|interior design(er|ers)?)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],

@@ -87,9 +87,10 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       step-e photos with `media_import_url` to get media ids. For each chapter: `generate_video` with model `kling3_0`
       (mode `pro`, sound `off`; check `models_explore` get if it fails, `flux_3_video` also takes start/end frames),
       medias `start_image` = this chapter's photo and `end_image` = the next chapter's photo (the last chapter has no
-      end image), prompt = the scene text + one slow, smooth camera move with strong depth (clear foreground, subject,
-      background; a gentle push-in, dolly or orbit), consistent light and colour grade across chapters so the clips
-      join as one continuous film. Submit all chapters, then `jobs_wait` (at most ~10 minutes) and keep each video URL.
+      end image), prompt = the scene text + its `shot` package, every field written out (camera, lens, framing,
+      lighting, colour grade, movement, speed, start and end frame, continuity, duration, safe text zone, mobile crop)
+      and its `negative` constraints as "avoid: …"; one slow, smooth camera move with strong depth, consistent light
+      and colour grade across chapters so the clips join as one continuous film. Submit all chapters, then `jobs_wait` (at most ~10 minutes) and keep each video URL.
       Specialist clinics (the brief's research has a `medical_visual_direction` with a specialty): chapter 1 is the
       photoreal, medically accurate, non-gory anatomy of the hero shot (for example the heart beating with blood
       flowing through the arteries and vessels), illustrative only; never cartoon, no labels, gore, injection points or
@@ -99,6 +100,12 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       beyond the brief. If a Higgsfield chapter fails, make it with Kling `image_to_video` (the most photorealistic
       model, `enable_audio` false) from the same photo; if that fails too, that chapter uses its poster with CSS depth
       parallax, and say so in `notes`.
+      Luxury retail (`film_brief.mode` `luxury_chapters`: watches, jewellery, electronics, furniture, fashion, luxury
+      goods; Ryan 2026-09-29 "any retail luxury 10,000 website"): the three chapters are reveal → craft → lifestyle and
+      boutique, the 360 turn between chapters 1 and 2 comes from the step-e3 3D model (REAL_TIME_3D), and there is no
+      exploded or internal view unless the customer supplied CAD or an accurate model. Generated products are
+      illustrative: add to the Lovable message "Label every generated product 'Illustrative — [CLIENT TO PROVIDE
+      product photography]'".
    e3. The 3D model with Higgsfield (Ryan, 2026-09-28) for businesses whose hero is a product — a car, a dish or
       drink, a product in a shop, a device (`brief.industry_category` automotive, food_beverage, retail or
       technology): Higgsfield `generate_3d` from the step-e `hero` or `detail` photo that shows the product most
@@ -156,10 +163,13 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       no static `<img>` section other than logos and the customer's own photos; `docs/storyboard.md` exists with the
       component map, the per-chapter scroll timeline and the asset map; the story is reversible — core chapter
       animations are scrubbed by scroll progress (no `once: true`, no play-only `toggleActions`, no autoplay loop or
-      timer driving a chapter), so scrolling up restores every earlier state. If it fails, `send_message` (wait
+      timer driving a chapter), so scrolling up restores every earlier state; `docs/qa-report.md` exists (the QA /
+      conversion agent's torture-test report, each finding BLOCKER / HIGH / MEDIUM / POLISH with fix and owner) and
+      no BLOCKER or HIGH is left open. If it fails, `send_message` (wait
       true, timeout 600): "The scroll film and scroll effects are missing or turned off on phones. Rebuild them
-      exactly as the 3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST block says: <the failed points>. Build it
-      now, no questions." and check again once. Say in `notes` whether the check passed.
+      exactly as the 3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST block says, fix every open BLOCKER and HIGH
+      in docs/qa-report.md, and update the report: <the failed points>. Build it now, no questions." and check again
+      once. Say in `notes` whether the check passed and the QA counts (blocker/high/medium/polish).
    g2. Publish the mock-up so the customer can open it with no login (Ryan, 2026-09-27: "the customer don't want
       to log in"): `deploy_project` with `name` = `<business-slug>-mockup` (lowercase, hyphens; add `-2`, `-3` if
       taken). Use the returned public `url` (https://<slug>.lovable.app) as `preview_url` in the report. Never send

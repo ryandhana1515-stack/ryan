@@ -58,7 +58,7 @@ function pick(file, names) {
   }
   return names.map((n) => { if (!blocks[n]) throw new Error('pick: ' + n + ' not found in ' + file); return blocks[n].join('\n'); }).join('\n');
 }
-const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
+const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_LUXURY_KINDS', 'WB_LUXURY_RE', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
 const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
 

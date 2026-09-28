@@ -298,3 +298,9 @@ tags: [zaphiel, changelog]
   modules), `wbDoctrineSection` in every Lovable prompt; prompt limit 18,000. Routine: Higgsfield Director (e2, start/end
   frames, sound off; Kling backup), check g1 also requires `docs/storyboard.md` and reversible scrubbed chapters.
   Tests 112/112.
+- 2026-09-29 — **Luxury retail layer** (`brief.js`): `WB_LUXURY_KINDS` / `wbLuxuryKind` / `wbKindOf`,
+  `WB_LUXURY_STORY` (doctrine 8, 13, 14, 15 + fashion), `WB_DESIGN_LUXURY`, `wbLuxuryPages`, `WB_LUXURY_HOME`,
+  `WB_LUXURY_DIRECTIONS` + `wbArtDirections` (three directions for every site), `wbShot` + `WB_LUXURY_SHOTS` (the
+  doctrine-22 shot package on every film chapter), QA report `docs/qa-report.md` in the doctrine block. Detection
+  fixes: "showroom" alone is no longer a car dealer; watch and jewellery house names recognised. Routine: e2 writes
+  the full shot package into the Higgsfield prompt, luxury chapters rule, g1 requires a clean QA report. Tests 115/115.

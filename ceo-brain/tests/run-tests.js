@@ -1264,6 +1264,34 @@ test('the build worker: Higgsfield directs the film with matching start/end fram
   assert.ok(/Higgsfield Director/.test(routine) && /start_image/.test(routine) && /end_image/.test(routine) && /media_import_url/.test(routine) && /sound `off`/.test(routine));
   assert.ok(/make it with Kling `image_to_video`/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
 });
+console.log('\n[26] Luxury retail at the S$10,000 standard (Ryan, 2026-09-29: "any retail luxury 10,000 website")');
+test('watches, jewellery, electronics, furniture, fashion and luxury goods are luxury retail; others are not', () => {
+  [['We are a luxury watch boutique in Orchard', 'watch'], ['rolex dealer', 'watch'], ['fine jewellery atelier, engagement rings', 'jewellery'], ['premium headphones and hi-fi store', 'electronics'], ['designer furniture showroom, sofas and dining tables', 'furniture'], ['handbags and leather goods label', 'fashion'], ['luxury fragrance house', 'luxury']].forEach(([t, k]) => {
+    assert.strictEqual(wb.wbDetectCategory(t), 'retail', t); assert.strictEqual(wb.wbLuxuryKind(t), k, t);
+  });
+  [['BMW car dealership', 'automotive'], ['dental clinic', 'healthcare'], ['I am an interior designer', 'property'], ['coffee shop cafe', 'food_beverage'], ['tuition centre', 'education']].forEach(([t, c]) => assert.strictEqual(wb.wbDetectCategory(t), c, t));
+});
+test('a luxury brief: luxury design, the maison sitemap, three art directions, the kind\'s doctrine module, quiet selling, illustrative labels', () => {
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'build me a website for my luxury watch boutique' } });
+  const names = r.brief.pages.map((p) => p.name);
+  ['Collections', 'Product Detail', 'Craftsmanship', 'Book a Private Viewing', 'Boutique & Contact', 'Servicing & Warranty'].forEach((n) => assert.ok(names.includes(n), n + ': ' + names.join(', ')));
+  assert.ok(/quiet luxury/.test(r.brief.design_direction.brand_personality));
+  const p = r.build_prompt;
+  assert.ok(/Watch \(doctrine 8\)/.test(p) && /NO exploded view/.test(p) && /A\) Noir Atelier/.test(p) && /B\) Salon Ivory/.test(p) && /C\) Graphite Precision/.test(p), p.slice(-3000));
+  assert.ok(/private viewing/.test(p) && /no discount strips, countdown timers/.test(p) && /Price on request/.test(p) && /Illustrative/.test(p) && /docs\/qa-report\.md/.test(p) && /BLOCKER \/ HIGH \/ MEDIUM \/ POLISH/.test(p));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT && !/guarantee|\$\s?\d/i.test(p), String(p.length));
+});
+test('the Higgsfield shot package: every doctrine field on every chapter, matching end frames, luxury posters without brand marks', () => {
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Maison Lumiere', industry: 'fine jewellery atelier', message: 'website for my jewellery atelier' } });
+  assert.strictEqual(r.film_brief.mode, 'luxury_chapters'); assert.strictEqual(r.film_brief.scenes.length, 3); assert.strictEqual(r.image_shots.length, 3);
+  const fields = ['camera', 'lens', 'framing', 'lighting', 'grade', 'movement', 'speed', 'start_frame', 'end_frame', 'continuity', 'duration_s', 'aspect_ratio', 'safe_text_zone', 'mobile_crop', 'negative'];
+  r.film_brief.scenes.forEach((sc, i) => fields.forEach((f) => assert.ok(sc.shot && sc.shot[f], 'scene ' + i + ' ' + f)));
+  assert.ok(/chapter 2 poster/.test(r.film_brief.scenes[0].shot.end_frame) && /no brand marks/.test(r.image_shots[0].prompt) && /caustic/.test(r.image_shots[0].prompt));
+  const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Plumbing', industry: 'plumber', message: 'need a website' } });
+  plain.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.negative && sc.shot.end_frame));
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/`shot` package, every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

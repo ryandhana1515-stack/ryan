@@ -57,6 +57,112 @@ function wbEffectsFor(category) {
   var keys = WB_EFFECTS_BY_CATEGORY[category] || WB_EFFECTS_BY_CATEGORY.other;
   return keys.map(function (k) { return { key: k, text: WB_SCROLL_EFFECTS[k] }; });
 }
+var WB_LUXURY_KINDS = [
+  ['watch', /\b(watch(es|maker|makers)?|timepieces?|horolog\w*|chronograph|tourbillon|wristwatch|rolex|omega|patek|audemars|tudor|breitling|iwc|hublot|richard mille|longines|grand seiko|tag heuer|panerai|vacheron)\b/i],
+  ['jewellery', /\b(jewel(le)?ry|jewell?ers?|diamonds?|engagement rings?|wedding bands?|necklaces?|bracelets?|earrings?|pendants?|goldsmith|gemstones?|pearls?|fine jewel\w*|tiffany|bulgari|van cleef|chopard)\b/i],
+  ['electronics', /\b(consumer electronics|electronics (store|shop|brand)|gadgets?|headphones?|earbuds?|hi-?fi|audio equipment|loudspeakers?|smartphones?|laptops?|cameras? (store|shop)|wearables?|smart home devices?)\b/i],
+  ['furniture', /\b(furniture|sofas?|armchairs?|dining tables?|cabinetry|bespoke joinery|mattress(es)?|homeware|home d[eé]cor|lighting (design|store|showroom)|rugs?|carpets?)\b/i],
+  ['fashion', /\b(fashion|couture|atelier|handbags?|leather goods|apparel|tailor(ing|s)?|bespoke suits?|sneakers?|eyewear|sunglasses|menswear|womenswear|boutique label)\b/i],
+  ['luxury', /\b(luxury|luxe|high-end|haute|prestige|premium brand|fragrance|perfume|parfum|crystal|porcelain|fine wine|cigars?|yachts?)\b/i]
+];
+var WB_LUXURY_RE = new RegExp(WB_LUXURY_KINDS.map(function (k) { return k[1].source; }).join('|'), 'i');
+/** The luxury retail kind from any text about the business, or null. */
+function wbLuxuryKind(text) {
+  var t = String(text || '');
+  for (var i = 0; i < WB_LUXURY_KINDS.length; i++) if (WB_LUXURY_KINDS[i][1].test(t)) return WB_LUXURY_KINDS[i][0];
+  return null;
+}
+/** The luxury kind of a brief (retail only), from the brief's own words. */
+function wbKindOf(brief, input) {
+  if (!brief || brief.industry_category !== 'retail') return null;
+  return wbLuxuryKind([brief.industry, brief.business_name, brief.content_notes, brief.audience, input ? wbText(input) : ''].join(' '));
+}
+var WB_LUXURY_NOUN = { watch: 'watch', jewellery: 'piece of fine jewellery', electronics: 'device', furniture: 'signature furniture piece', fashion: 'signature piece', luxury: 'signature product' };
+var WB_LUXURY_STORY = {
+  watch: 'Watch (doctrine 8): reveal → macro dial → controlled 360/orbit → accurate component explosion → callouts → reassembly + purchase CTA. Reverse: reassembly → explosion → orbit → reveal. p=0 assembled hero; .2 macro; .4 rotation; .55 separation begins; .75 maximum accurate exploded state; .88 reassembly; 1 assembled alternate hero + CTA. Use the supplied accurate watch model/reference; never invent parts; DOM/SVG labels; mobile: pre-rendered reversible sequence. Without the customer\'s CAD or an accurate model there is NO exploded view: that chapter becomes the macro craft film.',
+  jewellery: 'Jewellery (doctrine 13): material reveal → 360 → macro craft (setting, stones, polish) → optional accurate construction view → lifestyle → purchase / private appointment. Reverse restores the piece. Actual geometry/reference only; studio-light gradients mimic reflections and caustics; construction views only if the construction is real.',
+  electronics: 'Electronics/device (doctrine 14): hero → 360 → accurate internal layers → verified feature callouts → product/UI → reassembly → buy/demo. Real CAD/3D/reference only; never invent chips, sensors, battery or internals; without real internals, skip the layer chapter and show verified features on the exterior. Scroll drives separation and camera; reverse reassembles exactly.',
+  furniture: 'Furniture/interior (doctrine 15): room reveal → hero product/material → real joinery/construction → configuration/transformation → quote/shop/showroom visit. Rotate or reveal materials, or transition room states; never fabricate dimensions or materials; reverse restores the configuration.',
+  fashion: 'Fashion/leather goods (doctrine 13 applied to fashion): material reveal (fabric, leather, hardware) → craft (stitching, edge finishing, fit) → the piece in motion → lifestyle editorial → shop / fitting appointment. Real materials only; no unrealistic retouching; reverse restores the piece.',
+  luxury: 'Luxury product (doctrine 13): material reveal → 360 → macro craft → optional accurate construction view → lifestyle → purchase / private appointment. Reverse restores the product. Actual geometry/reference only; studio-light gradients mimic reflections.'
+};
+var WB_DESIGN_LUXURY = { personality: 'quiet luxury, precise, sensory, heritage', typography: 'a high-contrast didone or refined display serif for headlines (e.g. Bodoni Moda, Cormorant, Canela-like) with a restrained grotesque for body (e.g. Inter Tight, Neue Haas-like); small caps labels with generous tracking', layout: 'one product per screen, vast negative space, editorial rhythm, pinned product chapters; never a discount strip, countdown timer or pop-up', imagery: 'the product under studio light as the hero, macro craft details, material textures, lifestyle only when real; generated products labelled illustrative until the customer supplies photography', motion: 'slow, weighted, scroll-scrubbed reveals, 360 turns and macro light sweeps; reversible', palette: 'a 3-5 colour material palette: deep base (onyx, graphite or warm ivory), metal highlight (champagne gold, platinum or bronze), soft shadow, one material accent, one CTA accent; gradients behave like studio light' };
+var WB_LUXURY_PAGES = {
+  base: [['Home', 'The signature piece revealed, the one action (book a private viewing or discover the collection)'], ['Collections', 'Every collection as an editorial chapter'], ['Product Detail', '360 view, macro craft details, materials and specifications [CLIENT TO CONFIRM], price on request [CLIENT TO CONFIRM], enquire or reserve'], ['Craftsmanship', 'How it is made: materials, hands, time; real process only']],
+  watch: [['Servicing & Warranty', 'Service, warranty and authenticity [CLIENT TO CONFIRM]'], ['Heritage', 'The maison or boutique story [CLIENT TO PROVIDE]']],
+  jewellery: [['Bespoke & Engagement', 'Custom design journey, ring sizing, engraving [CLIENT TO CONFIRM]'], ['Diamond & Material Guide', 'Certification and materials explained [CLIENT TO CONFIRM]']],
+  electronics: [['Features', 'Each verified feature as a benefit'], ['Specs & Compare', 'Verified specifications only [CLIENT TO CONFIRM]']],
+  furniture: [['Materials & Finishes', 'Woods, fabrics, leathers and finishes [CLIENT TO CONFIRM]'], ['Projects & Spaces', 'Real installed spaces [CLIENT TO PROVIDE]']],
+  fashion: [['Lookbook', 'The season as an editorial story'], ['Fit & Fitting', 'Size guide and fitting appointments [CLIENT TO CONFIRM]']],
+  luxury: [['Heritage', 'The brand story [CLIENT TO PROVIDE]'], ['Care & Authenticity', 'Care, warranty and authenticity [CLIENT TO CONFIRM]']],
+  tail: [['Book a Private Viewing', 'Date, time, boutique, piece of interest, contact'], ['Journal & Press', 'Stories and press [CLIENT TO PROVIDE]'], ['Boutique & Contact', 'Address, hours, map, WhatsApp, concierge form']]
+};
+function wbLuxuryPages(kind) {
+  return WB_LUXURY_PAGES.base.concat(WB_LUXURY_PAGES[kind] || WB_LUXURY_PAGES.luxury, WB_LUXURY_PAGES.tail);
+}
+var WB_LUXURY_HOME = 'the signature piece revealed from darkness with one CTA (book a private viewing or discover the collection) and a discreet trust line → the craft chapter (macro, materials) → the 360 product chapter → collection highlights as an editorial gallery → the maison story → the service promise (authenticity, warranty, after-care [CLIENT TO CONFIRM]) → the boutique and private viewing → press and client words [CLIENT TO PROVIDE] → questions answered → final CTA → footer with boutique address, hours, WhatsApp and socials';
+var WB_LUXURY_DIRECTIONS = {
+  watch: [['Noir Atelier', 'onyx base, champagne-gold highlight, warm shadow, sapphire accent', 'didone display + precise grotesque', 'the watch floats in darkness; light sweeps reveal the case; macro dial chapters'], ['Salon Ivory', 'warm ivory base, bronze highlight, soft taupe shadow, deep green accent', 'refined serif + humanist sans', 'daylight salon, the watch on travertine, calm editorial rhythm'], ['Graphite Precision', 'graphite base, platinum highlight, cool shadow, signal-orange CTA', 'technical grotesque + mono labels', 'engineering precision: orbit, callouts and measured grids']],
+  jewellery: [['Lumière', 'midnight-black base, diamond-white highlight, soft grey shadow, blush accent', 'high-contrast didone + light grotesque', 'caustic light and sparkle on black; slow macro turns'], ['Maison Rose', 'rose-ivory base, rose-gold highlight, warm shadow, deep burgundy accent', 'elegant serif italic + clean sans', 'soft skin light, the piece worn, romantic editorial'], ['Atelier Stone', 'warm stone base, yellow-gold highlight, charcoal shadow, emerald accent', 'classic serif + small caps', 'the bench and the hand: craft, tools and setting']],
+  electronics: [['Studio Black', 'pure black base, cool white highlight, graphite shadow, one electric accent', 'geometric grotesque', 'the device from darkness, orbit and light sweeps'], ['Daylight Minimal', 'white base, silver highlight, soft shadow, one bold colour accent', 'neo-grotesque', 'airy product-on-white, exploded-free feature chapters'], ['Lifestyle Warm', 'warm grey base, brushed-metal highlight, deep shadow, amber accent', 'humanist sans', 'the device in real life, calm homes and desks']],
+  furniture: [['Gallery Light', 'warm white base, oak highlight, soft shadow, terracotta accent', 'editorial serif + grotesque', 'sunlit rooms, the piece as sculpture'], ['Dark Timber', 'deep walnut base, brass highlight, warm shadow, olive accent', 'classic serif', 'evening interiors, joinery macro, lamp light'], ['Architectural Grey', 'concrete grey base, steel highlight, cool shadow, cobalt accent', 'architectural grotesque', 'plans morph into rooms; modular configurations']],
+  fashion: [['Runway Noir', 'black base, silver highlight, deep shadow, red CTA', 'condensed display + grotesque', 'fabric in motion, bold editorial crops'], ['Atelier Cream', 'cream base, camel highlight, soft shadow, navy accent', 'refined serif', 'the atelier: stitching, leather edges, fittings'], ['Gallery White', 'white base, black highlight, grey shadow, one seasonal accent', 'modern grotesque', 'gallery lookbook, pieces as art']],
+  luxury: [['Noir Maison', 'onyx base, champagne highlight, warm shadow, deep jewel accent', 'didone + grotesque', 'the product from darkness under studio light'], ['Ivory Salon', 'ivory base, bronze highlight, taupe shadow, forest accent', 'refined serif + humanist sans', 'daylight salon, calm editorial'], ['Stone & Metal', 'warm stone base, platinum highlight, charcoal shadow, one CTA accent', 'architectural grotesque', 'material macro and precise orbits']]
+};
+/** Doctrine 4 "CREATIVE": three materially different directions, the first chosen (luxury retail by kind; others from the category). */
+function wbArtDirections(brief, input) {
+  var kind = wbKindOf(brief, input);
+  if (kind) return (WB_LUXURY_DIRECTIONS[kind] || WB_LUXURY_DIRECTIONS.luxury).map(function (d) { return { name: d[0], palette: d[1], typography: d[2], story_mood: d[3] }; });
+  var d0 = brief.design_direction || wbDesignFor(brief.industry_category);
+  return [
+    { name: 'Signature', palette: d0.palette, typography: d0.typography, story_mood: d0.brand_personality },
+    { name: 'Editorial Light', palette: 'warm white base, one deep brand colour, soft shadow, one CTA accent', typography: 'a refined serif with a clean grotesque', story_mood: 'calm, spacious, magazine-like chapters' },
+    { name: 'Cinematic Dark', palette: 'deep brand-tinted base, metallic highlight, warm shadow, one CTA accent', typography: 'a bold display face with a quiet sans', story_mood: 'the film carries the page; light and depth' }
+  ];
+}
+/** Doctrine 22: the Higgsfield shot package for one chapter (every field the PDF lists). */
+function wbShot(o) {
+  return {
+    camera: o.camera || 'cinema camera on a slider', lens: o.lens || '50mm', framing: o.framing || 'subject right of centre, left third clear for text',
+    lighting: o.lighting || 'soft key with a rim light', grade: o.grade || 'natural, rich, filmic', movement: o.movement || 'one slow push-in',
+    speed: o.speed || 'slow and steady', start_frame: o.start_frame || 'this chapter\'s poster', end_frame: o.end_frame || 'the next chapter\'s poster composition',
+    continuity: o.continuity || 'same light direction, colour grade and subject scale as the neighbouring chapters', duration_s: o.duration_s || 5, aspect_ratio: '16:9',
+    safe_text_zone: o.safe_text_zone || 'left third', mobile_crop: o.mobile_crop || '9:16 centred on the subject', negative: o.negative || 'no text, logos, watermarks, plates, faces, extra products, invented parts, fast cuts'
+  };
+}
+var WB_LUXURY_SHOTS = {
+  watch: [
+    { key: 'hero', prompt: 'A luxury wristwatch emerging from darkness on a black stone plinth, a slow light sweep across the polished case, sapphire crystal and dial', shot: { lens: '100mm macro', lighting: 'black studio, one moving strip light and a warm rim', grade: 'deep blacks, champagne highlights', movement: 'very slow push-in with a light sweep', framing: 'watch right of centre at a three-quarter angle, left third dark' } },
+    { key: 'section', prompt: 'Extreme macro across a luxury watch dial: the hands, applied indices and sunray finish catching light', shot: { lens: '100mm macro with a probe feel', lighting: 'raking light that travels across the dial', movement: 'slow lateral glide across the dial', grade: 'rich metal tones, soft bokeh' } },
+    { key: 'detail', prompt: 'The same luxury watch on a wrist in warm evening light at a Singapore rooftop, city lights softly out of focus, face not visible', shot: { lens: '85mm', lighting: 'golden-hour key with city bokeh', movement: 'slow orbit around the wrist', framing: 'wrist and watch centred low, sky above for text', negative: 'no faces, no logos on the dial, no text' } }
+  ],
+  jewellery: [
+    { key: 'hero', prompt: 'A fine jewellery piece (diamond ring or necklace) on black velvet, brilliant caustic sparkle as a light sweeps across it', shot: { lens: '100mm macro', lighting: 'black studio, pinpoint lights for fire and brilliance', movement: 'slow turn of the piece on a turntable', grade: 'deep black, diamond white, warm gold' } },
+    { key: 'section', prompt: 'Macro of a jeweller\'s hands setting a stone at the bench, loupe and tools, warm lamp light, hands only', shot: { lens: '65mm macro', lighting: 'warm bench lamp', movement: 'slow push towards the setting', negative: 'no faces, no text, no brand marks' } },
+    { key: 'detail', prompt: 'The piece worn on skin in soft window light, collarbone or hand only, elegant and calm', shot: { lens: '85mm', lighting: 'soft window light', movement: 'gentle drift and rack focus', negative: 'no faces, no retouched skin, no text' } }
+  ],
+  electronics: [
+    { key: 'hero', prompt: 'A premium consumer device emerging from darkness, a light sweep along its brushed metal edges', shot: { lens: '90mm', lighting: 'black studio, moving strip light', movement: 'slow orbit of the device', grade: 'cool neutrals, crisp highlights', negative: 'no invented internals, no text, no logos' } },
+    { key: 'section', prompt: 'The same device at a hero angle on a clean surface, materials and finish in detail, soft reflections', shot: { lens: '100mm macro', lighting: 'soft top light with edge reflections', movement: 'slow slide along the device' } },
+    { key: 'detail', prompt: 'The device in use in a calm, modern home in Singapore, hands only, soft daylight', shot: { lens: '50mm', lighting: 'soft daylight', movement: 'slow push-in', negative: 'no faces, no on-screen text, no logos' } }
+  ],
+  furniture: [
+    { key: 'hero', prompt: 'A signature designer furniture piece in a sunlit, minimal room, long shadows across a stone floor', shot: { lens: '35mm', lighting: 'low sun through tall windows', movement: 'slow dolly towards the piece', grade: 'warm naturals' } },
+    { key: 'section', prompt: 'Macro of the furniture joinery and material: wood grain, a precise joint, leather stitching or fabric weave', shot: { lens: '100mm macro', lighting: 'raking side light', movement: 'slow glide along the joint' } },
+    { key: 'detail', prompt: 'The same piece styled in an evening living room, lamp light, calm and lived-in, no people', shot: { lens: '35mm', lighting: 'warm lamp light at dusk', movement: 'slow orbit' } }
+  ],
+  fashion: [
+    { key: 'hero', prompt: 'Luxury fabric or leather moving slowly in dark studio light, texture and sheen revealed', shot: { lens: '85mm', lighting: 'black studio, soft top light', movement: 'slow motion drift of the material', grade: 'rich blacks, deep colour' } },
+    { key: 'section', prompt: 'Atelier macro: hand stitching, leather edge finishing and hardware being fitted, hands only', shot: { lens: '65mm macro', lighting: 'warm workbench light', movement: 'slow push-in', negative: 'no faces, no brand marks, no text' } },
+    { key: 'detail', prompt: 'An editorial lifestyle shot of the finished piece worn in Singapore at dusk, cropped so no face is visible', shot: { lens: '85mm', lighting: 'blue-hour ambient with a warm key', movement: 'slow tracking shot', negative: 'no faces, no logos, no text' } }
+  ],
+  luxury: [
+    { key: 'hero', prompt: 'A luxury product revealed from darkness on a stone plinth, a slow light sweep across its materials', shot: { lens: '100mm macro', lighting: 'black studio, moving strip light, warm rim', movement: 'slow push-in with a light sweep', grade: 'deep blacks, metal highlights' } },
+    { key: 'section', prompt: 'Macro craft details of the same product: materials, finishing and the maker\'s hand, hands only', shot: { lens: '100mm macro', lighting: 'raking warm light', movement: 'slow glide' } },
+    { key: 'detail', prompt: 'The product in its world: an elegant Singapore interior at dusk, calm and aspirational, no people', shot: { lens: '50mm', lighting: 'warm evening interior', movement: 'slow orbit' } }
+  ]
+};
+var WB_LUXURY_SECTIONS = ['reveal: the signature piece and the one action', 'craft: materials and making', 'lifestyle and the boutique: book a private viewing'];
 var WB_DESIGN = {
   professional_services: { personality: 'credible, precise, calm', typography: 'a refined serif for headings with a neutral grotesque for body (e.g. Fraunces + Inter)', layout: 'editorial: generous whitespace, asymmetric two-column sections, a quiet hero with one sentence and one action', imagery: 'real office, people at work, documents and process; no handshake stock photos', motion: 'subtle reveal on scroll, nothing decorative', palette: 'ink and paper neutrals with one deep accent (forest, oxblood or navy used as text, not as a gradient)' },
   beauty: { personality: 'luxurious, warm, sensory', typography: 'high-contrast display serif for headings (e.g. Cormorant / Playfair) with a light sans body', layout: 'image-led with full-bleed photography, thin rules, treatments as an elegant menu', imagery: 'skin, texture, light, the actual salon/clinic; muted, warm grading', motion: 'slow crossfades and soft parallax on hero imagery', palette: 'warm neutrals (sand, cream, blush) with one dark accent' },
@@ -108,8 +214,9 @@ function wbDetectMode(text, industry) {
 }
 var WB_CATEGORY_RULES = [
   ['healthcare', WB_MEDICAL_RE],
-  ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
+  ['automotive', /\b(dealership|car dealer|car showrooms?|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
+  ['retail', WB_LUXURY_RE],
   ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['property', /\b(property|properties|real estate|realtor|condo(minium)?s?|hdb|landed|listings?|tenant|landlord|rental|villas?|bungalows?|penthouses?|apartments?|show ?flats?|new launch(es)?|property developer|houses? for (sale|rent)|interior design(er|ers)?)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],
@@ -176,7 +283,7 @@ var WB_FUNNEL_PAGES = [['Offer Landing Page', 'One offer, no navigation, the lea
 /** The high-converting homepage, in order (Ryan, 2026-09-28). */
 var WB_HOME_BLUEPRINT = 'hero with an outcome headline for this buyer, one primary CTA and a trust line → proof bar (rating, years, clients [CLIENT TO PROVIDE]) → the problem or desire in the buyer\'s words → the offer → benefits (not features) → how it works in 3 steps → showcase of the products/services → reviews [CLIENT TO PROVIDE] → objections answered (FAQ) → risk reducer (a free, no-obligation consultation or visit) → final CTA → footer with contact, hours, map link and socials';
 var WB_FULLSITE_MARK = '=== FULL WEBSITE (build every page) ===';
-function wbDefaultPages(siteType, goal, mode, category) {
+function wbDefaultPages(siteType, goal, mode, category, kind) {
   if (mode === 'medical') {
     var med = [{ name: 'Home', purpose: 'Who the clinic is, the reassurance a patient needs, book an appointment' }, { name: 'Our Doctors', purpose: 'Doctor profiles: name, specialty, credentials [VERIFY WITH CLINIC], languages' }, { name: 'Treatments & Services', purpose: 'One section per treatment: what it is, who it is for, what to expect' }, { name: 'Clinic & Locations', purpose: 'Addresses, opening hours, map, parking, accessibility' }, { name: 'Book an Appointment', purpose: 'Booking form or link; phone and WhatsApp alternatives' }, { name: 'Patient Information & FAQ', purpose: 'First visit, fees policy placeholder, insurance, privacy notice, disclaimers' }, { name: 'Contact', purpose: 'Contact details and enquiry form' }];
     if (siteType === 'portal' || siteType === 'web_app') med.splice(5, 0, { name: 'Patient Portal (login)', purpose: 'Appointments and documents for registered patients' });
@@ -185,7 +292,7 @@ function wbDefaultPages(siteType, goal, mode, category) {
   if (siteType === 'landing_page') return [{ name: 'Landing page', purpose: 'Single page: one specific promise, proof, how it works, one call to action' }];
   if (siteType === 'online_store') return [{ name: 'Home', purpose: 'Featured collections and the reason to buy here' }, { name: 'Shop', purpose: 'Product catalogue with categories and filters' }, { name: 'Product', purpose: 'Product detail, real photos, add to cart' }, { name: 'Cart & Checkout', purpose: 'Purchase flow' }, { name: 'About', purpose: 'Brand story in the owner\'s words' }, { name: 'Contact', purpose: 'Contact details and enquiry form' }];
   if (siteType === 'web_app' || siteType === 'portal') return [{ name: 'Home', purpose: 'What the service does, for whom, and how to start' }, { name: 'Login / Sign up', purpose: 'Customer accounts' }, { name: 'Dashboard', purpose: 'Main customer workspace' }, { name: 'Contact', purpose: 'Support and enquiries' }];
-  var set = WB_FULL_SITE[category] || WB_FULL_SITE.other;
+  var set = (category === 'retail' && kind) ? wbLuxuryPages(kind) : (WB_FULL_SITE[category] || WB_FULL_SITE.other);
   var pages = set.concat(WB_FUNNEL_PAGES).map(function (p) { return { name: p[0], purpose: p[1] }; });
   if (goal === 'bookings' && !pages.some(function (p) { return /book/i.test(p.name); })) pages.splice(pages.length - 3, 0, { name: 'Book', purpose: 'Appointment booking' });
   return pages.slice(0, 12);
@@ -195,7 +302,7 @@ function wbGuessBusinessName(input, text) {
   var m = text.match(/\b(?:[Ww]e are|[Ww]e're|[Ii] run|[Ii] own|[Mm]y company is|[Oo]ur company is|company called|clinic called|[Oo]ur clinic is|[Ii]'m from|[Ii] am from|[Ii]'m [A-Z][a-z]+ from|[Ii] am [A-Z][a-z]+ from|calling from|[Tt]his is [A-Z][a-z]+ from|(?:[Ii]t'?s|[Ii]t is|[Ii]ts|[Ii]t) called|(?:[Ii]t'?s|[Ii]t is) named|[Nn]ame is|business called|shop called|store called|restaurant called)\s+([A-Z][\w&'.\- ]{2,60}?(?:Pte\.? Ltd\.?|Ltd\.?|LLP|Inc\.?|Co\.?|Clinic|Dental|Medical|Motors|Group|Agency|Studio)?)(?=[,.!?\n]| and | with | that | in | based |; |\s*$)/);
   return m ? wbStr(m[1], 160) : null;
 }
-function wbDesignFor(category) { return WB_DESIGN[category] || WB_DESIGN.other; }
+function wbDesignFor(category, kind) { return (category === 'retail' && kind) ? WB_DESIGN_LUXURY : (WB_DESIGN[category] || WB_DESIGN.other); }
 function wbQaChecklist(mode) { return mode === 'medical' ? WB_QA_BASE.concat(WB_QA_MEDICAL) : WB_QA_BASE.slice(); }
 function wbContentRules(mode) { return mode === 'medical' ? WB_SME_CONTENT_RULES.concat(WB_MEDICAL_CONTENT_RULES) : WB_SME_CONTENT_RULES.slice(); }
 function wbVerificationFor(mode, brief) {
@@ -216,8 +323,9 @@ function wbFallbackBrief(input) {
   var integrations = wbDetectIntegrations(text);
   if (mode === 'medical' && integrations.indexOf('Appointment booking / calendar') === -1) integrations.unshift('Appointment booking / calendar');
   var businessName = wbGuessBusinessName(input, text);
-  var pages = wbDefaultPages(siteType, goal, mode, category);
-  var d = wbDesignFor(category);
+  var kind = category === 'retail' ? wbLuxuryKind(text + ' ' + (industry || '')) : null;
+  var pages = wbDefaultPages(siteType, goal, mode, category, kind);
+  var d = wbDesignFor(category, kind);
   var features = [];
   if (goal === 'leads') features.push('Enquiry form that emails the owner');
   if (goal === 'bookings') features.push('Booking form with date and time');
@@ -373,7 +481,7 @@ function wbStrategySection(plan) {
 function wbEnsureFullSite(brief) {
   if (!brief || !Array.isArray(brief.pages)) return false;
   if (brief.site_type !== 'business_website' && brief.mode !== 'medical') return false;
-  var full = wbDefaultPages(brief.site_type, brief.primary_goal, brief.mode, brief.industry_category);
+  var full = wbDefaultPages(brief.site_type, brief.primary_goal, brief.mode, brief.industry_category, wbKindOf(brief));
   var norm = function (n) { return String(n || '').toLowerCase().replace(/[^a-z]/g, ''); };
   var have = brief.pages.map(function (p) { return norm(p.name); });
   var added = false;
@@ -389,11 +497,13 @@ function wbEnsureFullSite(brief) {
 function wbFullSiteSection(brief) {
   var L = [WB_FULLSITE_MARK];
   L.push('- Build EVERY page below completely with real, persuasive copy for this business (no empty, "coming soon" or lorem pages), working navigation between them, and a call to action closing every page: ' + brief.pages.map(function (p) { return p.name; }).join(', ') + '.');
-  L.push('- Homepage, in this order: ' + WB_HOME_BLUEPRINT + '.');
+  var kind = wbKindOf(brief);
+  L.push('- Homepage, in this order: ' + (kind ? WB_LUXURY_HOME : WB_HOME_BLUEPRINT) + '.');
+  if (kind) L.push('- Luxury retail at our top agency standard (Ryan, 2026-09-29): quiet, confident selling. The primary CTA is a private viewing or boutique appointment (plus enquire/reserve on every product); no discount strips, countdown timers, pop-ups or stock-urgency tricks; prices only as the customer supplies them, otherwise "Price on request" [CLIENT TO CONFIRM]. Every generated ' + WB_LUXURY_NOUN[kind] + ' is labelled "Illustrative — [CLIENT TO PROVIDE product photography]" until real photography, references or CAD arrive; never invent models, references, calibres, carats, materials, specifications or certifications. Concierge touches: WhatsApp concierge, boutique map, appointment form with preferred piece and time.');
   L.push('- On every page: a sticky header with the primary CTA, a sticky mobile CTA bar with WhatsApp, a short lead form (name, phone, what they need, PDPA consent) with a success state, a trust line next to every CTA. The Offer Landing Page has no navigation and the form above the fold; the Thank You page gives next steps and the WhatsApp button.');
   if (brief.industry_category === 'property') L.push('- Property (Ryan, 2026-09-28): the homepage opens on the cinematic walkthrough (outside to inside, room by room, a floor-plan mini-map); every listing and project page has its own gallery walkthrough and a Book a Viewing form. Label every generated image and film "Artist\'s impression"; real listing photos, prices, sizes, addresses and floor plans are [CLIENT TO PROVIDE]; follow CEA advertising rules, no misleading claims.');
   L.push('- ' + WB_APPLE + ' Scroll effects: ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
-  return wbCap(L.join('\n'), 3200);
+  return wbCap(L.join('\n'), 4000);
 }
 var WB_DOCTRINE_MARK = 'CINEMATIC SCROLL DOCTRINE (Fusion Tech AI 2026 — follow exactly)';
 var WB_STORY_BY_CATEGORY = {
@@ -414,19 +524,21 @@ var WB_STORY_BY_CATEGORY = {
   local_business: 'Local business: the place and the craft → what you get → how it works → proof → visit/book. Scrubbed cinematic media; booking stays fast and accessible.',
   other: 'Business story: the customer\'s problem → the offer in action → how it works → proof → the call to action. Scrubbed cinematic media plus DOM/SVG motion.'
 };
-function wbStoryFor(category) { return WB_STORY_BY_CATEGORY[category] || WB_STORY_BY_CATEGORY.other; }
+function wbStoryFor(category, kind) { return (category === 'retail' && kind && WB_LUXURY_STORY[kind]) || WB_STORY_BY_CATEGORY[category] || WB_STORY_BY_CATEGORY.other; }
 /** The protected doctrine block for the Lovable build prompt. */
 function wbDoctrineSection(brief) {
   var L = [WB_DOCTRINE_MARK];
   L.push('- Build an interactive conversion story in chapters, not stacked template sections. Scroll down progresses the story; scroll up reverses it exactly. Core animation state comes from normalized scroll progress p in [0,1], never one-way timers or autoplay; at any p the state is reproducible (refresh mid-page restores it). Every effect must explain, demonstrate, dramatize or convert. Do not scroll-jack; pin only where the story needs it.');
-  L.push('- Chapter story for this business: ' + wbStoryFor(brief.industry_category));
+  L.push('- Chapter story for this business: ' + wbStoryFor(brief.industry_category, wbKindOf(brief)));
+  var dirs = wbArtDirections(brief);
+  L.push('- Creative director: three materially different art directions were considered: ' + dirs.map(function (d, i) { return String.fromCharCode(65 + i) + ') ' + d.name + ' (' + d.palette + '; ' + d.typography + '; ' + d.story_mood + ')'; }).join(' ') + ' Build A; record all three and why A in docs/storyboard.md.');
   L.push('- Engine per chapter (choose one and say why in the storyboard): REAL_TIME_3D only with an accurate 3D model (e.g. the Higgsfield GLB); SCROLL_SCRUB_VIDEO for the cinematic film chapters; IMAGE_SEQUENCE for precise frame control; CSS_SVG_DOM for type, diagrams, masks, callouts and light depth; STATIC_FALLBACK for reduced motion and weak devices. Never WebGL just to look expensive; never an exploded product view without accurate geometry.');
   L.push('- Timeline per chapter: scroll start/end, pin yes/no + length, states at p=0, .25, .5, .75, 1 (camera, object, parts, opacity, blur, text, depth layers, media frame, CTA), reverse restores every state, engine, assets (CLIENT_REAL / HIGGSFIELD / 3D_MODEL / LOVABLE_CODE / DATA_API), mobile (lighter pre-rendered media, same story), reduced motion (static chapter states, normal flow), CTA, performance.');
   L.push('- Parallax depth: atmosphere/light fixed or slow; background slowest; hero object moderate; foreground detail faster but restrained; typography/UI stable enough to read. Material palette of 3-5 colours (base, highlight, shadow, material accent, CTA accent); gradients behave like light (radial highlight, edge reflection, atmospheric depth), never rainbow or gradient-everywhere.');
   L.push('- Before coding, write docs/storyboard.md with the component map, the scroll timeline per chapter and the asset dependency map, then build it in this same turn without stopping. Semantic text and CTAs stay in the DOM; lazy-load below-the-fold media, preload only the hero; CTA reachable at key moments; instrument CTA and form events.');
-  L.push('- QA before you finish (fix every BLOCKER and HIGH): scroll forward slowly and quickly, reverse slowly and quickly, rapid direction changes, stop at arbitrary progress, refresh mid-page, resize, rotate a phone, touch scroll, reduced motion, slow network; check factual fidelity, story continuity, CTA reachability, readability, pin release, layout shift, keyboard access and forms. Not done until reverse scroll is deterministic.');
+  L.push('- QA / conversion agent before you finish: write docs/qa-report.md with every finding classified BLOCKER / HIGH / MEDIUM / POLISH, its exact fix and its owner (Higgsfield media, Lovable code, client facts); fix every BLOCKER and HIGH in this turn and mark them fixed. Test: scroll forward slowly and quickly, reverse slowly and quickly, rapid direction changes, stop at arbitrary progress, refresh mid-page, resize, rotate a phone, touch scroll, reduced motion, slow network; check factual fidelity, story continuity, CTA reachability, readability, pin release, layout shift, keyboard access and forms. Not done until reverse scroll is deterministic.');
   L.push('- Never fabricate facts, geometry, rooms, specs or outcomes; client facts and real reference assets override examples.');
-  return wbCap(L.join('\n'), 4200);
+  return wbCap(L.join('\n'), 5600);
 }
 /** Append the strategy and full-website sections to a build prompt (once each), keeping the total under WB_MAX_PROMPT by trimming the base, never these sections. */
 function wbWithStrategy(prompt, plan, brief) {
@@ -451,7 +563,7 @@ function wbBuildPrompt(brief, input) {
   var lines = [];
   lines.push('Build a premium ' + brief.site_type.replace(/_/g, ' ') + ' for ' + name + ' (' + industry + ', Singapore). It must look like an agency-grade site produced by a brand strategist, UX/UI designer, copywriter, art director and front-end engineer — never an AI template.');
   lines.push('Primary goal: ' + brief.primary_goal + (brief.audience ? '. Audience: ' + brief.audience : '') + '.');
-  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: Apple-grade 3D parallax scroll film (Kling film scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
+  lines.push('Brand personality: ' + d.brand_personality + '. Typography: ' + d.typography + '. Layout: ' + d.layout + '. Imagery: ' + d.imagery + '. Motion: Apple-grade reversible 3D scroll film (Higgsfield film chapters scrubbed by the scroll, layered depth parallax). Palette: ' + d.palette + '.');
   lines.push('Look and feel (mandatory): ' + WB_CINEMATIC.join(' '));
   lines.push('Never use: ' + WB_ANTI_GENERIC.join('; ') + '.');
   lines.push('Pages: ' + brief.pages.map(function (p) { return p.name + (p.purpose ? ' (' + p.purpose + ')' : ''); }).join('; ') + '.');
@@ -484,6 +596,9 @@ function wbImageShots(brief, input) {
       { key: 'section', aspect_ratio: '16:9', prompt: 'Low-angle three-quarter view of a ' + car + ' driving through Singapore at blue hour, motion blur on the road, headlights on, cinematic colour grade' + base },
       { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail of a ' + car + ' interior, leather and stitching, ambient cabin lighting, premium showroom mood' + base }
     ];
+  } else if (cat === 'retail' && wbKindOf(brief, input)) {
+    var lbase = ', photorealistic luxury product photography, cinematic studio lighting, 8k detail, no text, no logos, no brand marks, no watermarks';
+    shots = (WB_LUXURY_SHOTS[wbKindOf(brief, input)] || WB_LUXURY_SHOTS.luxury).map(function (x) { return { key: x.key, aspect_ratio: x.key === 'detail' ? '3:2' : '16:9', prompt: x.prompt + lbase }; });
   } else if (cat === 'property') {
     var pbase = ', Singapore, photorealistic architectural visualisation, cinematic natural light, wide-angle interior photography, no people, no text, no logos, no watermarks';
     shots = [
@@ -539,13 +654,23 @@ function wbFilmBrief(brief, input) {
       rules: ['no text, logos or people in the film', 'one smooth continuous camera move, outside to inside', 'label every generated visual on the site "Artist\'s impression"', 'tone: ' + brief.design_direction.brand_personality]
     };
   }
+  var kind = wbKindOf(brief, input);
+  if (kind) {
+    var ls = WB_LUXURY_SHOTS[kind] || WB_LUXURY_SHOTS.luxury;
+    return {
+      duration_seconds: 15,
+      mode: 'luxury_chapters',
+      scenes: ls.map(function (x, i) { return { at: (i * 5) + '-' + (i * 5 + 5) + 's', scene: shots[i] ? shots[i].prompt : x.prompt, section: WB_LUXURY_SECTIONS[i], shot: wbShot(Object.assign({}, x.shot, { end_frame: i < ls.length - 1 ? 'chapter ' + (i + 2) + ' poster composition' : 'hold on the piece for the CTA' })) }; }),
+      rules: ['doctrine: the story reverses exactly on scroll-up', 'no text, logos, brand marks, faces or invented parts in the film', 'every generated product is illustrative until the customer supplies photography, references or CAD', 'the 360 chapter uses the Higgsfield 3D model (REAL_TIME_3D) between chapters 1 and 2; no exploded view without the customer\'s CAD', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
+    };
+  }
   return {
     duration_seconds: 15,
     mode: 'single-shot',
     scenes: [
-      { at: '0-5s', scene: hero, section: 'hero: the one message and one action' },
-      { at: '5-10s', scene: section, section: brief.mode === 'medical' ? 'doctors and treatments' : 'what we offer / models or services' },
-      { at: '10-15s', scene: detail, section: brief.primary_goal === 'bookings' ? 'book' : 'enquire / contact' }
+      { at: '0-5s', scene: hero, section: 'hero: the one message and one action', shot: wbShot({ end_frame: 'chapter 2 poster composition' }) },
+      { at: '5-10s', scene: section, section: brief.mode === 'medical' ? 'doctors and treatments' : 'what we offer / models or services', shot: wbShot({ end_frame: 'chapter 3 poster composition' }) },
+      { at: '10-15s', scene: detail, section: brief.primary_goal === 'bookings' ? 'book' : 'enquire / contact', shot: wbShot({ end_frame: 'hold for the CTA' }) }
     ],
     rules: ['no text, logos, plates or faces in the film', 'the camera moves through the real world of this business', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
   };

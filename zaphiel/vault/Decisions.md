@@ -226,3 +226,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   torture-tests reverse scroll before the link goes out. Higgsfield now makes the film (matching start/end frames
   so chapters join), Kling makes the posters and is the backup. It sits inside the design standard the Website
   Builder reads live, so Ryan can edit it in Obsidian.
+
+- 2026-09-29 — **Any luxury retail website at the top standard** (Ryan: "make the website agent able to do all this
+  for any retail luxury 10,000 website"). Watches, jewellery, electronics, furniture, fashion and luxury goods are
+  recognised automatically and get: the matching doctrine module (reveal → craft → 360 → lifestyle; no exploded or
+  internal view without the customer's CAD), a quiet-luxury design system, three art directions (the first is
+  built), the maison sitemap (Collections, Product Detail, Craftsmanship, Book a Private Viewing, Boutique…), quiet
+  selling (private viewing CTA, no discount strips or countdowns, "Price on request" until the customer confirms),
+  generated products labelled "Illustrative" until real photography arrives, a full Higgsfield shot package per
+  chapter, and a QA report (blocker/high/medium/polish) that must be clean before the link goes out.
