@@ -561,7 +561,7 @@ function wbFullSiteSection(brief) {
 // Ryan's Full Master Cinematic Website Agent 2026 (vault: Knowledge/Full Master Cinematic Website Agent 2026, 2026-09-29).
 // Every build prompt carries the doctrine: a chapter story for the industry, one engine per chapter, a reversible
 // scroll timeline, the Lovable scroll engine rules and the QA torture test.
-var WB_DOCTRINE_MARK = 'CINEMATIC SCROLL DOCTRINE (Fusion Tech AI 2026 — follow exactly)';
+var WB_DOCTRINE_MARK = 'MASTER ORCHESTRATOR — FUSION TECH AI FULL CINEMATIC WEBSITE AGENT 2026 (follow exactly)';
 // Industry scroll modules (the PDF's sections 8-21), mapped onto our categories.
 var WB_STORY_BY_CATEGORY = {
   healthcare: 'Clinic/medical: human/doctor → concern/treatment area → educational anatomy → clinician-reviewed mechanism → outward return → suitability/safety → consultation. Reverse: anatomy outward to patient view. Approved anatomical references only; never invent injection points, dosage, needle depth, protocols, outcomes or anatomical claims; generated visuals are illustrative; non-gory; HTML labels; reduced motion uses static diagrams.',
@@ -582,28 +582,36 @@ var WB_STORY_BY_CATEGORY = {
   other: 'Business story: the customer\'s problem → the offer in action → how it works → proof → the call to action. Scrubbed cinematic media plus DOM/SVG motion.'
 };
 function wbStoryFor(category, kind) { return (category === 'retail' && kind && WB_LUXURY_STORY[kind]) || WB_STORY_BY_CATEGORY[category] || WB_STORY_BY_CATEGORY.other; }
-/** The protected doctrine block for the Lovable build prompt. */
-function wbDoctrineSection(brief) {
+/** The protected doctrine block for the Lovable build prompt, laid out as the PDF's MASTER ORCHESTRATOR (steps 1-10;
+ *  Ryan, 2026-09-29: "every time the website agent creates the website, it will use this prompt"). */
+function wbDoctrineSection(brief, input) {
+  var kind = wbKindOf(brief, input);
+  var plan = wbResearchPlan(input) || { real_photos: [], target_customers: [], customer_objections: [] };
+  var film = wbFilmBrief(brief, input);
+  var shots = wbImageShots(brief, input);
   var L = [WB_DOCTRINE_MARK];
-  L.push('- Build an interactive conversion story in chapters, not stacked template sections. Scroll down progresses the story; scroll up reverses it exactly. Core animation state comes from normalized scroll progress p in [0,1], never one-way timers or autoplay; at any p the state is reproducible (refresh mid-page restores it). Every effect must explain, demonstrate, dramatize or convert. Do not scroll-jack; pin only where the story needs it.');
-  L.push('- Chapter story for this business: ' + wbStoryFor(brief.industry_category, wbKindOf(brief)));
-  var dirs = wbArtDirections(brief);
-  L.push('- Creative director: three materially different art directions were considered: ' + dirs.map(function (d, i) { return String.fromCharCode(65 + i) + ') ' + d.name + ' (' + d.palette + '; ' + d.typography + '; ' + d.story_mood + ')'; }).join(' ') + ' Build A; record all three and why A in docs/storyboard.md.');
-  L.push('- Engine per chapter (choose one and say why in the storyboard): REAL_TIME_3D only with an accurate 3D model (e.g. the Higgsfield GLB); SCROLL_SCRUB_VIDEO for the cinematic film chapters; IMAGE_SEQUENCE for precise frame control; CSS_SVG_DOM for type, diagrams, masks, callouts and light depth; STATIC_FALLBACK for reduced motion and weak devices. Never WebGL just to look expensive; never an exploded product view without accurate geometry.');
-  L.push('- Timeline per chapter: scroll start/end, pin yes/no + length, states at p=0, .25, .5, .75, 1 (camera, object, parts, opacity, blur, text, depth layers, media frame, CTA), reverse restores every state, engine, assets (CLIENT_REAL / HIGGSFIELD / 3D_MODEL / LOVABLE_CODE / DATA_API), mobile (lighter pre-rendered media, same story), reduced motion (static chapter states, normal flow), CTA, performance.');
-  L.push('- Parallax depth: atmosphere/light fixed or slow; background slowest; hero object moderate; foreground detail faster but restrained; typography/UI stable enough to read. Material palette of 3-5 colours (base, highlight, shadow, material accent, CTA accent); gradients behave like light (radial highlight, edge reflection, atmospheric depth), never rainbow or gradient-everywhere.');
-  L.push('- Before coding, write docs/storyboard.md with the component map, the scroll timeline per chapter and the asset dependency map, then build it in this same turn without stopping. Semantic text and CTAs stay in the DOM; lazy-load below-the-fold media, preload only the hero; CTA reachable at key moments; instrument CTA and form events.');
-  L.push('- QA / conversion agent before you finish: write docs/qa-report.md with every finding classified BLOCKER / HIGH / MEDIUM / POLISH, its exact fix and its owner (Higgsfield media, Lovable code, client facts); fix every BLOCKER and HIGH in this turn and mark them fixed. Test: scroll forward slowly and quickly, reverse slowly and quickly, rapid direction changes, stop at arbitrary progress, refresh mid-page, resize, rotate a phone, touch scroll, reduced motion, slow network; check factual fidelity, story continuity, CTA reachability, readability, pin release, layout shift, keyboard access and forms. Not done until reverse scroll is deterministic.');
-  L.push('- Never fabricate facts, geometry, rooms, specs or outcomes; client facts and real reference assets override examples.');
-  return wbCap(L.join('\n'), 5600);
+  L.push('You are the Fusion Tech AI Full Cinematic Website Agent. Work through steps 1-10 in order. Before coding, write docs/storyboard.md (intelligence → directions → storyboard → scroll timeline → assets → Higgsfield media → Lovable implementation → QA); then build it all in this same turn without stopping.');
+  L.push('1 INTELLIGENCE: the business, audience, offer, proof, objections, competitors and conversion come from the STRATEGY FROM WEBSITE INTELLIGENCE section and the facts above' + (plan.target_customers.length ? ' (buyer: ' + plan.target_customers.join('; ').slice(0, 200) + ')' : '') + '. Never fabricate facts, geometry, rooms, specs or outcomes; client facts and real reference assets override examples.');
+  var dirs = wbArtDirections(brief, input);
+  L.push('2 CREATIVE: three materially different art directions were considered: ' + dirs.map(function (d, i) { return String.fromCharCode(65 + i) + ') ' + d.name + ' (' + d.palette + '; ' + d.typography + '; ' + d.story_mood + ')'; }).join(' ') + ' Build A; record all three and why A in the storyboard.');
+  L.push('3 STORY: an interactive conversion story in chapters, not stacked template sections. Chapter story for this business: ' + wbStoryFor(brief.industry_category, kind) + ' Film chapters: ' + film.scenes.map(function (sc, i) { return (i + 1) + ') ' + sc.section; }).join('; ') + '. Each chapter has a purpose, visual, copy, CTA and transition.');
+  L.push('4 ANIMATION: scroll down progresses the story; scroll up reverses it exactly. Core animation state comes from normalized scroll progress p in [0,1], never one-way timers or autoplay; at any p the state is reproducible (refresh mid-page restores it). Per chapter: scroll start/end, pin yes/no + length, states at p=0, .25, .5, .75, 1 (camera, object, parts, opacity, blur, text, depth layers, media frame, CTA), reverse restores every state, mobile (lighter pre-rendered media, same story), reduced motion (static chapter states, normal flow), CTA, performance. Parallax depth: atmosphere/light fixed or slow; background slowest; hero object moderate; foreground detail faster but restrained; typography/UI stable enough to read. Do not scroll-jack; pin only where the story needs it; every effect must explain, demonstrate, dramatize or convert.');
+  L.push('5 ENGINE (choose one per chapter and say why): REAL_TIME_3D only with an accurate 3D model (e.g. the Higgsfield GLB); SCROLL_SCRUB_VIDEO for the cinematic film chapters; IMAGE_SEQUENCE for precise frame control; CSS_SVG_DOM for type, diagrams, masks, callouts and light depth; STATIC_FALLBACK for reduced motion and weak devices. Never WebGL just to look expensive; never an exploded product view without accurate geometry.');
+  var real = plan.real_photos.filter(function (p) { return p.use !== 'logo'; }).length;
+  L.push('6 ASSETS (tag each in the storyboard): CLIENT_REAL = ' + (real ? real + ' real photos of the business (listed under REAL PHOTOS; used first)' : 'none found yet: placeholders for the customer\'s photos') + '; HIGGSFIELD = the film chapters and posters' + (shots.some(function (x) { return !x.real_url; }) ? ' (generated only where no real photo exists)' : '') + '; 3D_MODEL = the Higgsfield GLB when provided; LOVABLE_CODE = type, SVG, masks and UI; DATA_API = forms, WhatsApp, booking (stub endpoints).');
+  L.push('7 HIGGSFIELD: coherent shots with continuity; each chapter ends on the next chapter\'s start frame; no copy, logos or faces baked in. Shots: ' + film.scenes.map(function (sc, i) { var sh = sc.shot || {}; return (i + 1) + ') ' + [sh.lens, sh.lighting, sh.movement].filter(Boolean).join(', '); }).join('; ') + '.');
+  L.push('8 LOVABLE: implement the storyboard exactly (the 3D SCROLL FILM block and the look-and-feel rules above): deterministic scroll timelines mapped from scroll progress, forward and reverse; semantic text and CTAs in the DOM; lazy-load below-the-fold media, preload only the hero; refresh and resize keep state; no scroll-jacking. Material palette of 3-5 colours (base, highlight, shadow, material accent, CTA accent); gradients behave like light (radial highlight, edge reflection, atmospheric depth), never rainbow or gradient-everywhere.');
+  L.push('9 CONVERSION: ' + (plan.primary_cta ? '"' + plan.primary_cta + '" ' : 'the primary CTA ') + 'stays reachable at key moments of the story (after the hero, mid-story, at the end), a sticky mobile CTA and WhatsApp, instrument CTA and form events' + (kind ? '; luxury: quiet selling, private viewing first, no discount strips, countdowns or pop-ups' : '') + '.');
+  L.push('10 QA / conversion agent before you finish: write docs/qa-report.md with every finding classified BLOCKER / HIGH / MEDIUM / POLISH, its exact fix and its owner (Higgsfield media, Lovable code, client facts); fix every BLOCKER and HIGH in this turn and mark them fixed. Test: scroll forward slowly and quickly, reverse slowly and quickly, rapid direction changes, stop at arbitrary progress, refresh mid-page, resize, rotate a phone, touch scroll, reduced motion, slow network; check factual fidelity, story continuity, CTA reachability, readability, pin release, layout shift, keyboard access and forms. Not done until reverse scroll is deterministic.');
+  return wbCap(L.join('\n'), 7200);
 }
 /** Append the strategy and full-website sections to a build prompt (once each), keeping the total under WB_MAX_PROMPT by trimming the base, never these sections. */
-function wbWithStrategy(prompt, plan, brief) {
+function wbWithStrategy(prompt, plan, brief, input) {
   prompt = String(prompt || '');
   var parts = [];
   if (plan && prompt.indexOf(WB_STRATEGY_MARK) === -1) parts.push(wbStrategySection(plan));
   if (brief && prompt.indexOf(WB_FULLSITE_MARK) === -1) parts.push(wbFullSiteSection(brief));
-  if (brief && prompt.indexOf(WB_DOCTRINE_MARK) === -1) parts.push(wbDoctrineSection(brief));
+  if (brief && prompt.indexOf(WB_DOCTRINE_MARK) === -1) parts.push(wbDoctrineSection(brief, input));
   if (!parts.length) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
   var sec = parts.join('\n');
   var room = WB_MAX_PROMPT - sec.length - 1;
@@ -634,7 +642,7 @@ function wbBuildPrompt(brief, input) {
   if (brief.content_notes) lines.push('What the customer said: "' + brief.content_notes.slice(0, 260) + '"');
   lines.push('Content rules: ' + brief.content_rules.join(' '));
   lines.push('Engineering: React + Tailwind; mobile-first; semantic HTML; WCAG AA contrast; fast (sized images, no layout shift); SEO meta tags and one H1 per page; forms post to a placeholder webhook and show a success state; WhatsApp click-to-chat if listed; footer with contact placeholders.' + (med ? ' Add an information-only medical disclaimer and a privacy notice.' : ''));
-  return wbWithStrategy(lines.join('\n'), wbResearchPlan(input), brief);
+  return wbWithStrategy(lines.join('\n'), wbResearchPlan(input), brief, input);
 }
 /** Photography the mock-up ships with: 3 cinematic shots per site, generated by the build worker with Kling (Ryan 2026-09-27: Kling for all images and video). No text, logos or plates in the images. */
 function wbImageShots(brief, input) {
@@ -705,6 +713,33 @@ function wbImageShots(brief, input) {
 var WB_VARIATIONS = [
   { key: 'parallax_film_site', label: '3D parallax scroll website', tier: 'premium', tool: 'kling_film_lovable', template: 'scroll-scrub', description: 'One Apple-grade, high-converting website with a Kling film of the business scrubbed by the scroll, layered 3D depth parallax and a set of premium scroll effects, Kling photography, a Higgsfield 3D model for product businesses and the Website Intelligence sales strategy; built and published on Lovable (Ryan, 2026-09-27/28).' }
 ];
+/** Chapter labels and shot direction per industry (doctrine 3 STORY + 22 HIGGSFIELD), for the three film chapters. */
+function wbChapterShots(brief, input) {
+  var goalCta = brief.primary_goal === 'bookings' ? 'book' : 'enquire / contact';
+  if (brief.mode === 'medical') {
+    var anat = wbHasAnatomy(wbResearchPlan(input));
+    return {
+      sections: [anat ? 'the concern and the educational anatomy (illustrative, clinician-reviewed copy)' : 'the patient and the reassurance they need', 'how the treatment works and the doctors (clinician-reviewed mechanism)', 'suitability, safety and the consultation: ' + goalCta],
+      shots: [
+        anat ? { lens: '100mm macro', lighting: 'dark clean studio, soft rim light', movement: 'slow orbit around the anatomy', grade: 'clinical cool with warm highlights', negative: 'no gore, no labels, not cartoon, no text, no injection points' } : { lens: '35mm', lighting: 'soft daylight', movement: 'slow push-in through the reception', negative: 'no faces, no text, no logos' },
+        { lens: '35mm', lighting: 'soft daylight, clean clinical whites', movement: 'slow dolly through the treatment room', negative: 'no faces, no text, no outcome claims' },
+        { lens: '85mm', lighting: 'warm soft key', movement: 'gentle push-in on the clinician\'s hands', negative: 'no faces, no text, no logos' }
+      ]
+    };
+  }
+  if (brief.industry_category === 'automotive') return {
+    sections: ['silhouette and reveal: the car and one action (book a test drive)', 'the 360 exterior and the cabin features (verified only)', 'the drive and the test-drive booking'],
+    shots: [{ lens: '50mm', lighting: 'dark showroom, strip lights tracing the body', movement: 'slow orbit from silhouette to reveal', negative: 'no plates, no logos, no text, no invented parts' }, { lens: '35mm', lighting: 'blue hour street', movement: 'low tracking shot alongside the car', negative: 'no plates, no text' }, { lens: '50mm', lighting: 'warm ambient cabin light', movement: 'slow push through the cabin', negative: 'no faces, no text, no invented features' }]
+  };
+  if (brief.industry_category === 'food_beverage') return {
+    sections: ['ingredient and place: the one action (order or reserve)', 'preparation and craft', 'the finished dish or drink, the atmosphere and the reservation/order'],
+    shots: [{ lens: '100mm macro', lighting: 'warm window light', movement: 'slow push over the ingredients', negative: 'no text, no logos' }, { lens: '50mm', lighting: 'kitchen practical light', movement: 'slow slide along the counter', negative: 'no faces, no text' }, { lens: '85mm', lighting: 'warm evening ambience', movement: 'slow orbit around the dish', negative: 'no text, no logos' }]
+  };
+  return {
+    sections: ['hero: the one message and one action', 'what we offer / models or services', goalCta],
+    shots: [{}, {}, {}]
+  };
+}
 /** Scenes for variation A single-take film (no text, no logos; the business own world). */
 function wbFilmBrief(brief, input) {
   var shots = wbImageShots(brief, input);
@@ -717,11 +752,11 @@ function wbFilmBrief(brief, input) {
       duration_seconds: 25,
       mode: 'walkthrough',
       scenes: [
-        { at: '0-5s', scene: hero + '; slow drone push-in from the street towards the front door', section: 'hero: the home and the one action (book a viewing)' },
-        { at: '5-10s', scene: 'The front door opens and the camera glides into the entrance foyer, light spilling in, photorealistic architectural visualisation, no people', section: 'arrival: the promise of the home' },
-        { at: '10-15s', scene: section + '; slow dolly through the living room towards the windows', section: 'living spaces and features' },
-        { at: '15-20s', scene: 'Slow glide through an open kitchen and dining area with an island, premium finishes, warm evening light, photorealistic, no people', section: 'kitchen, dining and finishes' },
-        { at: '20-25s', scene: detail + '; the camera drifts through the bedroom and out onto the balcony view', section: 'bedrooms, the view, book a viewing' }
+        { at: '0-5s', scene: hero + '; slow drone push-in from the street towards the front door', section: 'hero: the home and the one action (book a viewing)', shot: wbShot({ camera: 'drone', lens: '24mm', lighting: 'golden hour', movement: 'slow drone push-in to the door', end_frame: 'the front door, chapter 2 start', negative: 'no people, no invented rooms or facilities, no text' }) },
+        { at: '5-10s', scene: 'The front door opens and the camera glides into the entrance foyer, light spilling in, photorealistic architectural visualisation, no people', section: 'arrival: the promise of the home', shot: wbShot({ camera: 'gimbal', lens: '20mm', lighting: 'daylight spilling in', movement: 'glide through the door', end_frame: 'the living room, chapter 3 start', negative: 'no people, no text' }) },
+        { at: '10-15s', scene: section + '; slow dolly through the living room towards the windows', section: 'living spaces and features', shot: wbShot({ camera: 'dolly', lens: '24mm', lighting: 'soft afternoon light', movement: 'slow dolly to the windows', end_frame: 'the kitchen, chapter 4 start', negative: 'no people, no invented rooms, no text' }) },
+        { at: '15-20s', scene: 'Slow glide through an open kitchen and dining area with an island, premium finishes, warm evening light, photorealistic, no people', section: 'kitchen, dining and finishes', shot: wbShot({ camera: 'gimbal', lens: '24mm', lighting: 'warm evening light', movement: 'slow glide past the island', end_frame: 'the bedroom, chapter 5 start', negative: 'no people, no text' }) },
+        { at: '20-25s', scene: detail + '; the camera drifts through the bedroom and out onto the balcony view', section: 'bedrooms, the view, book a viewing', shot: wbShot({ camera: 'gimbal', lens: '24mm', lighting: 'dusk, city lights', movement: 'drift out onto the balcony', end_frame: 'hold on the view for the CTA', negative: 'no people, no invented views, no text' }) }
       ],
       rules: ['no text, logos or people in the film', 'one smooth continuous camera move, outside to inside', 'label every generated visual on the site "Artist\'s impression"', 'tone: ' + brief.design_direction.brand_personality]
     };
@@ -736,13 +771,14 @@ function wbFilmBrief(brief, input) {
       rules: ['doctrine: the story reverses exactly on scroll-up', 'no text, logos, brand marks, faces or invented parts in the film', 'every generated product is illustrative until the customer supplies photography, references or CAD', 'the 360 chapter uses the Higgsfield 3D model (REAL_TIME_3D) between chapters 1 and 2; no exploded view without the customer\'s CAD', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
     };
   }
+  var cs = wbChapterShots(brief, input);
   return {
     duration_seconds: 15,
     mode: 'single-shot',
     scenes: [
-      { at: '0-5s', scene: hero, section: 'hero: the one message and one action', shot: wbShot({ end_frame: 'chapter 2 poster composition' }) },
-      { at: '5-10s', scene: section, section: brief.mode === 'medical' ? 'doctors and treatments' : 'what we offer / models or services', shot: wbShot({ end_frame: 'chapter 3 poster composition' }) },
-      { at: '10-15s', scene: detail, section: brief.primary_goal === 'bookings' ? 'book' : 'enquire / contact', shot: wbShot({ end_frame: 'hold for the CTA' }) }
+      { at: '0-5s', scene: hero, section: cs.sections[0], shot: wbShot(Object.assign({}, cs.shots[0], { end_frame: 'chapter 2 poster composition' })) },
+      { at: '5-10s', scene: section, section: cs.sections[1], shot: wbShot(Object.assign({}, cs.shots[1], { end_frame: 'chapter 3 poster composition' })) },
+      { at: '10-15s', scene: detail, section: cs.sections[2], shot: wbShot(Object.assign({}, cs.shots[2], { end_frame: 'hold for the CTA' })) }
     ],
     rules: ['no text, logos, plates or faces in the film', 'the camera moves through the real world of this business', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
   };
@@ -817,7 +853,7 @@ function finalizeBrief(opts) {
     }
   }
   // The research plan (funnel, conversion strategy, 3D motion, medical visuals) always rides in the Lovable prompt.
-  brief.build_prompt = wbWithStrategy(brief.build_prompt || wbBuildPrompt(brief, input), wbResearchPlan(input), brief);
+  brief.build_prompt = wbWithStrategy(brief.build_prompt || wbBuildPrompt(brief, input), wbResearchPlan(input), brief, input);
   var readiness = wbReadyToBuild(brief);
   return {
     brief: brief,
@@ -836,4 +872,4 @@ function finalizeBrief(opts) {
 }
 
 // ---- Node module wrapper (stripped by build.js) ----
-module.exports = { wbRealPhotosFrom, WB_LUXURY_KINDS, WB_LUXURY_RE, wbLuxuryKind, wbKindOf, WB_LUXURY_STORY, WB_DESIGN_LUXURY, WB_LUXURY_PAGES, wbLuxuryPages, WB_LUXURY_HOME, WB_LUXURY_DIRECTIONS, wbArtDirections, wbShot, WB_LUXURY_SHOTS, WB_DOCTRINE_MARK, WB_STORY_BY_CATEGORY, wbStoryFor, wbDoctrineSection, WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_APPLE, WB_SCROLL_EFFECTS, WB_EFFECTS_BY_CATEGORY, wbEffectsFor, WB_FULL_SITE, WB_FUNNEL_PAGES, WB_HOME_BLUEPRINT, WB_FULLSITE_MARK, wbDefaultPages, wbEnsureFullSite, wbFullSiteSection, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };
+module.exports = { wbChapterShots, wbRealPhotosFrom, WB_LUXURY_KINDS, WB_LUXURY_RE, wbLuxuryKind, wbKindOf, WB_LUXURY_STORY, WB_DESIGN_LUXURY, WB_LUXURY_PAGES, wbLuxuryPages, WB_LUXURY_HOME, WB_LUXURY_DIRECTIONS, wbArtDirections, wbShot, WB_LUXURY_SHOTS, WB_DOCTRINE_MARK, WB_STORY_BY_CATEGORY, wbStoryFor, wbDoctrineSection, WB_MAX_PROMPT, WB_VERSION, WB_SCHEMA_VERSION, WB_MODES, WB_SITE_TYPES, WB_GOALS, WB_CATEGORIES, WB_MISSING, WB_ANTI_GENERIC, WB_CINEMATIC, WB_APPLE, WB_SCROLL_EFFECTS, WB_EFFECTS_BY_CATEGORY, wbEffectsFor, WB_FULL_SITE, WB_FUNNEL_PAGES, WB_HOME_BLUEPRINT, WB_FULLSITE_MARK, wbDefaultPages, wbEnsureFullSite, wbFullSiteSection, WB_DESIGN, wbText, wbDetectMode, wbDetectCategory, wbGuessBusinessName, wbDetectSiteType, wbDetectGoal, wbImageShots, wbReadyToBuild, WB_VARIATIONS, wbFilmBrief, wbDesignFor, wbQaChecklist, wbContentRules, wbFallbackBrief, wbCoerce, wbValidate, wbBuildPrompt, wbLovableUrl, wbParseJson, finalizeBrief, WB_STRATEGY_MARK, wbResearchPlan, wbHasAnatomy, wbStrategySection, wbWithStrategy };

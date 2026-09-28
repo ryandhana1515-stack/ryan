@@ -1334,6 +1334,34 @@ console.log('\n[27] Real photos first; research everything about the company (Ry
     assert.ok(/`real_url`/.test(routine) && /do NOT generate it/.test(routine) && /the customer's own photo/.test(routine));
   });
 }
+console.log('\n[28] One clean test: John never repeats or asks about the look; every build uses the master prompt (Ryan, 2026-09-29)');
+test('John drops a repeated question and any look/style question; statements stay; ATLAS skips near-duplicates', () => {
+  const w = require('../agents/website-builder/intake.js');
+  const hist = [{ role: 'customer', content: 'I run a dental clinic' }, { role: 'agent', content: 'Noted. Do most of your new patients currently reach you by calling, WhatsApp, or walking in?' }];
+  const out = w.wbCleanQuestions('Thank you, Ryan, the team is on it. Do most new patients reach you by calling, WhatsApp or walking in? What style or colours would you like for the website?', hist);
+  assert.strictEqual(out, 'Thank you, Ryan, the team is on it.', out);
+  assert.strictEqual(w.wbCleanQuestions('Great. How many staff handle bookings today?', hist), 'Great. How many staff handle bookings today?', 'a new question stays');
+  assert.ok(w.WB_LOOK_Q.test('How should the website look?') && w.WB_LOOK_Q.test('Do you have brand colours you want?') && !w.WB_LOOK_Q.test('Which treatments do you offer most?'));
+  const at = require('../agents/atlas/atlas.js');
+  assert.strictEqual(at.atNextQuestion(['How do patients usually reach you today, by calling, WhatsApp or walking in?', 'Which software do you use for appointments?'], hist), 'Which software do you use for appointments?');
+  const glue = fs.readFileSync(path.join(__dirname, '../workflows/lead-intake/dist/code-nodes/finalize-and-validate-result.js'), 'utf8');
+  assert.ok(glue.indexOf('wbCleanQuestions(r.recommended_reply, histAll)') !== -1 && glue.indexOf('wbCleanQuestions(r.recommended_reply, histAll)') < glue.indexOf('const johnAiReply = r.recommended_reply;'));
+  const prompt = fs.readFileSync(path.join(__dirname, '../prompts/sales-qualification.system.md'), 'utf8');
+  assert.ok(/NEVER ask how the website should look/.test(prompt) && /Ask at most ONE question/.test(prompt));
+});
+test('every build prompt is the master prompt: steps 1-10 in order, with the industry story, shots, assets and QA', () => {
+  [['Smile Plus Dental Surgery', 'dental clinic'], ['Heure Atelier', 'luxury watch boutique'], ['Skyline Realty', 'real estate agency'], ['Prestige Motors', 'BMW car dealership'], ['Tan Plumbing', 'plumber']].forEach(([c, m]) => {
+    const p = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: 'build me a website for my ' + m } }).build_prompt;
+    const at = ['1 INTELLIGENCE', '2 CREATIVE', '3 STORY', '4 ANIMATION', '5 ENGINE', '6 ASSETS', '7 HIGGSFIELD', '8 LOVABLE', '9 CONVERSION', '10 QA'].map((k) => p.indexOf(k));
+    assert.ok(at.every((x, i) => x > 0 && (i === 0 || x > at[i - 1])), c + ': ' + at.join(','));
+    assert.ok(p.includes(wb.WB_MAX_PROMPT > p.length ? 'MASTER ORCHESTRATOR' : '??') && p.length <= wb.WB_MAX_PROMPT, c);
+  });
+  const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Hero and section visuals: photoreal jaw and teeth anatomy', real_photos: [] } });
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json: med } });
+  assert.ok(/educational anatomy/.test(r.film_brief.scenes[0].section) && /100mm macro/.test(r.film_brief.scenes[0].shot.lens) && /no gore/.test(r.film_brief.scenes[0].shot.negative));
+  const prop = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website' } });
+  prop.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.lens && sc.shot.negative, 'property shot'));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

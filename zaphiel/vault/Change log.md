@@ -310,3 +310,7 @@ tags: [zaphiel, changelog]
   PHOTOS section and verified facts, `wrRealPhotos` + brief key `real_photos` (only URLs research found), 13 queries,
   7 pages + 2 social profiles read. `brief.js`: `wbRealPhotosFrom`, `real_url` on image shots, REAL PHOTOS line in
   every Lovable prompt. Routine: shots with `real_url` are not generated. Tests 118/118.
+- 2026-09-29 — **Final test prep** (Ryan). `intake.js` `wbCleanQuestions` / `WB_LOOK_Q` (run on John's own reply
+  before the intake step); `atlas.js` `atAskedBefore`; John's prompt: never ask about the look, answer first.
+  `brief.js`: `wbDoctrineSection` rewritten as the master prompt steps 1-10; `wbChapterShots` (clinic, car, F&B
+  chapters and shots); property scenes carry shot packages. Tests 120/120.

@@ -243,6 +243,21 @@ function atAlreadyAnswered(q, history) {
   var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
   return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
 }
+/** True when an earlier agent message already asked nearly the same question (Ryan, 2026-09-29: no repeated questions). */
+function atAskedBefore(q, history) {
+  var words = function (t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 3; }); };
+  var Q = words(q); if (!Q.length) return false;
+  return (Array.isArray(history) ? history : []).some(function (m) {
+    if (!m || m.role !== 'agent') return false;
+    return String(m.content || '').split(/(?<=[.!?])\s+/).some(function (sent) {
+      if (!/\?\s*$/.test(sent)) return false;
+      var S = words(sent); if (!S.length) return false;
+      var inter = Q.filter(function (w, i) { return S.indexOf(w) !== -1 && Q.indexOf(w) === i; }).length;
+      var uni = Q.concat(S).filter(function (w, i, a) { return a.indexOf(w) === i; }).length;
+      return inter / uni >= 0.5;
+    });
+  });
+}
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -252,6 +267,7 @@ function atNextQuestion(questions, history) {
     if (AT_UNSAFE_Q.test(q)) continue;
     if (asked.indexOf(q.toLowerCase()) !== -1) continue;
     if (atAlreadyAnswered(q, history)) continue;
+    if (atAskedBefore(q, history)) continue;
     return q;
   }
   return null;
@@ -264,4 +280,4 @@ function atOneQuestion(reply, question) {
   return kept.join(' ').trim() + ' ' + AT_VOICE + question;
 }
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atOneQuestion: atOneQuestion };
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atAskedBefore: atAskedBefore, atOneQuestion: atOneQuestion };

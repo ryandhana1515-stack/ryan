@@ -60,7 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_LUXURY_KINDS', 'WB_LUXURY_RE', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
-const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atAskedBefore', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -159,6 +159,8 @@ const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || info
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\\n');
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
+// John never repeats a question and never asks how the site should look (Ryan, 2026-09-29).
+if (r.recommended_reply && !notACustomer) { const cleaned = wbCleanQuestions(r.recommended_reply, histAll); if (cleaned !== r.recommended_reply) { r.recommended_reply = cleaned; fin.audit.push('reply_cleaned:repeat_or_look_question'); } }
 const johnAiReply = r.recommended_reply;
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !holdForRyan && r.recommended_reply) r.recommended_reply = intake.reply;

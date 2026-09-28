@@ -245,3 +245,11 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   cover. Never another business's photos, never invented URLs, never for a business it could not confirm. Clinics
   keep the anatomy film as the opening. Limit: Google Maps/Business photos are not reachable by our search tools;
   the website and social pages are.
+
+- 2026-09-29 — **John never repeats a question or asks about the look; every build uses the master prompt** (Ryan:
+  "make sure John doesn't repeat questions and answers accurately … every time the website agent creates the
+  website, it will use this prompt"). Code now removes any question in John's reply that he (or ATLAS) already asked,
+  and any look/style/colour question; ATLAS skips near-duplicates. The Lovable build prompt is laid out as the PDF's
+  MASTER ORCHESTRATOR, steps 1-10 (intelligence, creative, story, animation, engine, assets, Higgsfield, Lovable,
+  conversion, QA), filled in for each business, with industry chapter labels and shot direction (clinics: anatomy,
+  mechanism and doctors, consultation; property walkthrough; cars; F&B; luxury retail).
