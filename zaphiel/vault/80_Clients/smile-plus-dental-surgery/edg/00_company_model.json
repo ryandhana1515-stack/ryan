@@ -1,0 +1,96 @@
+{
+  "company_name": {
+    "value": "Smile Plus Dental Surgery",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_name": {
+    "value": "Ryan",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_channel": {
+    "value": "WhatsApp, +6587587170",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Dental clinic / healthcare",
+    "label": "CLIENT-PROVIDED"
+  },
+  "company_size": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "existing_website": {
+    "value": "Yes, an existing website exists but Ryan considers it not good enough",
+    "label": "CLIENT-PROVIDED"
+  },
+  "website_url": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "products_services": {
+    "value": "Dental surgery / dental clinic services (specific treatments not yet described)",
+    "label": "INFERENCE"
+  },
+  "customer_types": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "locations_branches": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "current_tools": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "lead_sources": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "uses_whatsapp": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "current_follow_up_process": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "accounting_or_erp": {
+    "value": [],
+    "label": "UNKNOWN"
+  },
+  "current_appointment_booking_method": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "stated_problem": {
+    "value": "Current website is not good enough",
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_outcome": {
+    "value": "A better website for the clinic",
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_automation": {
+    "value": [
+      "website_build"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "decision_maker": {
+    "value": "Ryan (assumed, unconfirmed)",
+    "label": "INFERENCE"
+  }
+}
