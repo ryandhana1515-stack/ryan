@@ -604,7 +604,7 @@ test('finalize: model JSON is coerced to the brief; fallback when the model fail
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [{ url: 'https://prestigemotors.sg', ok: true, html: WR_HTML }] });
   const ok = wr.wrFinalize({ raw_text: '```json\n' + JSON.stringify({ company_name: 'Prestige Motors', primary_conversion: 'BOOK TEST DRIVE', services: ['New BMW sales', 'Certified pre-owned'], questions_for_john: [] }) + '\n```', input, digest });
   assert.strictEqual(ok.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(ok.provider, 'anthropic');
-  assert.deepStrictEqual(ok.questions_for_john, [wr.WR_STYLE_Q], 'only the customer\'s look-and-feel wish is missing (Ryan, 2026-09-28)'); assert.strictEqual(ok.hold, true);
+  assert.strictEqual(ok.needs_john, false); assert.strictEqual(ok.hold, false, 'never asks how it should look (Ryan, 2026-09-28)');
   assert.deepStrictEqual(ok.brief.services, ['New BMW sales', 'Certified pre-owned']); assert.ok(ok.brief.recommended_sitemap.length, 'missing lists filled from the deterministic brief');
   assert.ok(/^STATUS:\nREADY_FOR_WEBSITE_CREATOR/.test(ok.brief_text) && /ONE VERSION/.test(ok.brief_text) && !/VARIATIONS REQUIRED/.test(ok.brief_text) && /WEBSITE CREATOR INSTRUCTION/.test(ok.brief_text) && /JOHN — FUSION AI SALES AGENT/.test(ok.brief_text));
   assert.ok(!/\$\s?\d/.test(ok.brief_text), 'no prices');
@@ -636,8 +636,7 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   store['Compose Research Prompt'] = run('compose-research-prompt.js', items([{}])).map((i) => i.json);
   assert.strictEqual(store['Compose Research Prompt'][0].role_source, 'vault'); assert.ok(/^FUSION AI — WEBSITE INTELLIGENCE AGENT/.test(store['Compose Research Prompt'][0].system_prompt)); assert.ok(/RESEARCH DIGEST/.test(store['Compose Research Prompt'][0].user_prompt));
   const fin = run('finalize-brief.js', items([{ error: { message: 'Payment required' } }]))[0].json;
-  assert.strictEqual(fin.ready, false, 'held: the customer has not said how the site should look'); assert.strictEqual(fin.held_for_details, true); assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.event.type, 'website.info_needed'); assert.ok(fin.brief_text.length > 2000); assert.ok(JSON.parse(fin.research_json).site.pages_read.length === 4);
-  store['Digest Research'][0].input.message += ' We want a premium black and gold look.';
+  assert.strictEqual(fin.ready, true); assert.strictEqual(fin.held_for_details, false); assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.event.type, 'website.info_needed'); assert.ok(fin.brief_text.length > 2000); assert.ok(JSON.parse(fin.research_json).site.pages_read.length === 4);
   const fin2 = run('finalize-brief.js', items([{ text: JSON.stringify({ company_name: 'Prestige Motors', primary_conversion: 'BOOK TEST DRIVE', questions_for_john: [] }) }]))[0].json;
   assert.strictEqual(fin2.event.type, 'website.research'); assert.strictEqual(fin2.needs_john, false); assert.strictEqual(fin2.ready, true, 'enough details incl. the look → build');
 });
@@ -1171,18 +1170,17 @@ test('houses, condos, show flats and interior designers get the walkthrough site
   assert.ok(/5 walkthrough\s+scenes/.test(routine) && /Artist's impression/.test(routine));
 });
 console.log('\n[23] Every website starts from the customer\'s details; no replies to non-customers (Ryan, 2026-09-28)');
-test('the customer\'s wish for the look is asked before building, unless they gave it or left it to us', () => {
-  const described = (msg) => { const i = mkInput([], msg); i.industry = 'kopitiam'; return i; };
-  const enoughNoStyle = JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'yes', questions_for_john: [] });
-  let input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast to office workers in Tiong Bahru, we want more catering orders');
-  let fin = wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) });
-  assert.strictEqual(fin.hold, true); assert.ok(fin.questions_for_john.includes(wrE.WR_STYLE_Q));
-  const ask = wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold });
-  assert.ok(ask.text.includes('look and feel'), ask.text);
-  input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast, warm and classic look with our brown and cream colours');
-  assert.strictEqual(wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) }).hold, false, 'style given');
-  input = mkInput([{ role: 'agent', content: 'Hi, before our team builds your Ah Seng Kopi website, one quick detail so it is right for you: ' + wrE.WR_STYLE_Q }], 'up to you, just build it');
-  assert.strictEqual(wrE.wrFinalize({ raw_text: enoughNoStyle, input, digest: lowDigest(input) }).hold, false, 'left to us');
+test('never asks how the site should look; property asks for the rooms (Ryan, 2026-09-28)', () => {
+  const described = (msg, ind) => { const i = mkInput([], msg); i.industry = ind; return i; };
+  let input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast to office workers in Tiong Bahru', 'kopitiam');
+  const modelAsksLook = JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'no', questions_for_john: ['How would you like the website to look and feel, any colours or style?'] });
+  let fin = wrE.wrFinalize({ raw_text: modelAsksLook, input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, false, 'a look question alone never holds the build'); assert.ok(!fin.questions_for_john.some((q) => /look|colou?r|style/i.test(q)));
+  input = described('Build a website for Skyline Homes, we sell landed homes and condos', 'real estate');
+  fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Skyline Homes', enough_to_build: 'yes', questions_for_john: [] }), input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, true); assert.strictEqual(fin.questions_for_john[0], wrE.WR_ROOMS_Q);
+  input = described('Website for Skyline Homes: a 4 bedroom landed home with a pool, open kitchen and rooftop terrace', 'real estate');
+  assert.strictEqual(wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Skyline Homes', enough_to_build: 'yes', questions_for_john: [] }), input, digest: lowDigest(input) }).hold, false, 'rooms given');
 });
 test('no reply to sexual, abusive or prank messages, scams, job seekers or vendors; rude real customers still get an answer', () => {
   ['are you single? send me a pic of you', 'hahahaha just for fun', 'fuck you stupid bot', 'I am looking for a job, resume attached', 'crypto signals, click here'].forEach((m) => {

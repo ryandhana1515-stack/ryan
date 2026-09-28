@@ -265,3 +265,6 @@ tags: [zaphiel, changelog]
 - 2026-09-28 — **Customer's look-and-feel wish required; silence for non-customers** (Ryan). `WR_STYLE_Q` /
   `wrStyleKnown` in Website Intelligence; `RB_INAPPROPRIATE` and `notACustomer` in John (spam, scams, sexual/abusive,
   pranks, vendors, job seekers → no reply); business owners saying "we offer …" stay customers. Tests 103/103.
+- 2026-09-28 — **No look question; property rooms only** (Ryan). `WR_STYLE_Q` removed: look/style/colour questions are
+  filtered out; `WR_ROOMS_Q` / `wrRoomsKnown` ask property customers for rooms and features; the Website Intelligence
+  prompt lists the real facts (sell, services, location, opening hours). Tests 103/103.

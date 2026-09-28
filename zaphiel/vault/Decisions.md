@@ -5,6 +5,15 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **We design the look; we only ask for real facts** (Ryan: "John won't ask the customer how you want it
+  to look … the website intelligence … will generate the best 3D scrolling website … how it looks is only for property,
+  the property needs to give the room … only needs to know the important details like opening hours … the real
+  things"). Replaces the look-and-feel part of the entry below. Website Intelligence and the Creator choose the best
+  high-converting 3D scroll design themselves and never ask about style or colours. The customer is asked only for
+  real facts the research could not find (what they sell, main services, location and opening hours for walk-in
+  businesses). Property is the one exception: the rooms and features for the walkthrough (bedrooms, bathrooms, living
+  and kitchen areas, pool, balcony, view).
+
 - 2026-09-28 — **Every website starts from the customer's details; no replies to non-customers** (Ryan: "the customer
   must give the details … how the website wants to be … for every single website … the website creator must be able
   to build any website … not those weird inappropriate ones … just don't respond to them"). (1) Before any build John
