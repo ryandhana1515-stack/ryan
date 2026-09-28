@@ -1104,6 +1104,55 @@ test('a model brief with only four pages is topped up to the full site, and the 
   const p = wb.wbWithStrategy('BASE '.repeat(3000), wb.wbResearchPlan({ research_json: JSON.stringify({ brief: plan }) }), brief);
   assert.ok(p.length <= wb.WB_MAX_PROMPT && p.includes(wb.WB_STRATEGY_MARK) && p.includes(wb.WB_FULLSITE_MARK) && /Catering & Events/.test(p.slice(p.indexOf(wb.WB_FULLSITE_MARK))));
 });
+console.log('\n[21] Build only with enough details; John asks first (Ryan, 2026-09-28)');
+const wrE = require('../agents/website-intelligence/research.js');
+const lowDigest = (input) => wrE.wrDigest({ input, identity: wrE.wrIdentify(input, []), results: [], pages: [] });
+const mkInput = (conv, msg) => wrE.wrInput({ tenant_id: 'fusiontech', lead_id: 'lead_e', contact_name: 'Ryan Dhana', company_name: 'Ah Seng Kopi', industry: '', phone: '+6587587170', channel: 'whatsapp', message: msg || 'build me a website for Ah Seng Kopi', conversation_json: JSON.stringify(conv || []), extracted_json: '{}', test_mode: false });
+const notEnough = JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'no', questions_for_john: ['What does Ah Seng Kopi sell, and who are its main customers?', 'What should the website help you get more of: walk-ins, orders or catering enquiries?'] });
+test('not enough details → Website Intelligence holds the build and John asks the missing essentials first', () => {
+  const input = mkInput([]);
+  const fin = wrE.wrFinalize({ raw_text: notEnough, input, digest: lowDigest(input) });
+  assert.strictEqual(fin.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(fin.enough, false); assert.strictEqual(fin.hold, true); assert.strictEqual(fin.info_rounds, 0);
+  const ask = wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john, hold: fin.hold });
+  assert.strictEqual(ask.send, true); assert.ok(ask.text.includes(wrE.WR_HOLD_MARK) && ask.text.includes('quick details so it is right for you') && !/while our team builds/.test(ask.text), ask.text);
+  const glue = fs.readFileSync(path.join(__dirname, '../workflows/website-intelligence/dist/code-nodes/finalize-brief.js'), 'utf8');
+  assert.ok(/ready: fin\.status === 'READY_FOR_WEBSITE_CREATOR' && !\(fin\.hold && ask\.questions\.length\)/.test(glue), 'the creator is not called while held');
+});
+test('enough details → build at once; nice-to-have questions are asked while it builds', () => {
+  const input = mkInput([]);
+  const fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'yes', questions_for_john: ['Do you have a logo?'] }), input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, false);
+  assert.ok(/while our team builds/.test(wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold }).text));
+});
+test('never stuck: after two rounds, or when the customer is not sure, it builds with placeholders', () => {
+  const asked = (n) => Array.from({ length: n }, (_, i) => [{ role: 'agent', content: 'Hi Ryan, before our team builds your Ah Seng Kopi website, one quick detail so it is right for you: q' + i }, { role: 'customer', content: 'we sell kopi and kaya toast to office workers' }]).flat();
+  let input = mkInput(asked(1));
+  assert.strictEqual(wrE.wrFinalize({ raw_text: notEnough, input, digest: lowDigest(input) }).hold, true, 'round 2 may still ask');
+  input = mkInput(asked(2));
+  const f2 = wrE.wrFinalize({ raw_text: notEnough, input, digest: lowDigest(input) });
+  assert.strictEqual(f2.info_rounds, 2); assert.strictEqual(f2.hold, false, 'after two rounds it builds');
+  input = mkInput(asked(1), 'not sure, just build it');
+  assert.strictEqual(wrE.wrFinalize({ raw_text: notEnough, input, digest: lowDigest(input) }).hold, false, '"not sure" is enough');
+  input = mkInput([{ role: 'agent', content: 'Hi. One more question so we get your website right: What do you sell?' }, { role: 'customer', content: 'toast' }]);
+  assert.strictEqual(wrE.wrInfoRounds(input), 1, 'web-chat questions count as a round');
+});
+test('the fallback (model down) holds only when nothing is known about the business', () => {
+  const input = mkInput([]);
+  assert.strictEqual(wrE.wrEnoughFallback(input, lowDigest(input)), 'no');
+  const described = mkInput([], 'Please build a website for Ah Seng Kopi, we are a traditional kopitiam in Tiong Bahru selling kopi, kaya toast and nasi lemak to office workers');
+  described.industry = 'kopitiam';
+  assert.strictEqual(wrE.wrEnoughFallback(described, lowDigest(described)), 'yes');
+});
+test('John: the customer\'s answer goes back to Website Intelligence while its questions are open; not after the build', () => {
+  const hist = [{ role: 'customer', content: 'build me a website, it is called Ah Seng Kopi' }, { role: 'agent', content: 'Hi Ryan, perfect, I have what I need to start on Ah Seng Kopi. Our website team is researching your business now before building your first mock-up; if they need any detail, I will ask you here first.' }, { role: 'agent', content: 'Hi Ryan, before our team builds your Ah Seng Kopi website, two quick details so it is right for you: 1) What do you sell? 2) Who are your customers?' }];
+  const lead = Object.assign({}, waLead, { message: 'We sell kopi and kaya toast, mostly office workers nearby', conversation_history: hist });
+  const open = [{ task_type: 'website_info_needed', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['What do you sell?'] }) }];
+  const run = simulate(lead, { atlasRows: open, config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(run.fin.website_requested, true, 'back to Website Intelligence');
+  assert.ok(run.fin.result.recommended_reply.includes('passed that to our website team'), run.fin.result.recommended_reply);
+  const built = simulate(lead, { atlasRows: open.concat([{ task_type: 'website_build', lead_id: 'x', payload_json: '{}' }]), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(built.fin.website_requested, false, 'the build already started: no second research');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

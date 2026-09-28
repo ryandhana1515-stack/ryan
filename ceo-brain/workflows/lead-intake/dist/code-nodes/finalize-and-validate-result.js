@@ -246,6 +246,7 @@ var WI_PURPOSE_RE = /\b(book|booking|bookings|appointment|appointments|test driv
 var WI_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 var WI_PHONE_RE = /(?:\+65[\s-]?)?(?:[689]\d{3}[\s-]?\d{4})\b/;
 var WI_STARTED_MARK = 'building your first mock-up';
+var WI_INFO_THANKS = 'Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.';
 var WI_OFFER_MARK = 'first mock-up made for your business';
 var WI_OFFER = 'Would you like me to have a first mock-up made for your business, so you can see it before deciding anything?';
 var WI_SITE_NOUN = '(websites?|web ?sites?|sites?|funnels?|landing pages?|sales pages?|web ?apps?|online stores?|e-?commerce (site|store)|portals?|web ?pages?|homepages?)';
@@ -343,7 +344,7 @@ function wbIntake(o) {
   else if (!intent) reply = '';
   else if (ready) {
     var to = emailInText ? email : (phone ? phone : (email ? email : 'this chat'));
-    reply = greet + 'perfect, I have what I need for ' + businessName + '. Our website team is ' + WI_STARTED_MARK + ' now. I will send the link to ' + to + ' in about 10 to 15 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
+    reply = greet + 'perfect, I have what I need to start on ' + businessName + '. Our website team is researching your business now before ' + WI_STARTED_MARK + '; if they need any detail, I will ask you here first, then I will send the link to ' + to + ', usually within about 20 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
   } else {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
   }
@@ -468,7 +469,13 @@ const histAll = Array.isArray(ctx.lead.conversation_history) ? ctx.lead.conversa
 const intake = wbIntake({ history: histAll, message: ctx.lead.message, company_name: ctx.lead.company_name || r.extracted.company_name, industry: ctx.lead.industry || r.extracted.industry, contact_name: ctx.lead.contact_name || r.extracted.contact_name, phone: ctx.lead.phone, email: ctx.lead.email, channel: ctx.lead.channel, extracted: r.extracted });
 const buildStarted = wbBuildAlreadyStarted(histAll);
 const websiteTopic = notPitch && intake.topic;
-const websiteRequested = websiteTopic && intake.ready && !buildStarted;
+// Website Intelligence holds the build until it has enough details (Ryan, 2026-09-28). While its questions are open
+// (a website_info_needed task and no website_build task yet), the customer's reply goes back to it for another look.
+let leadTasks = [];
+try { leadTasks = $('Load ATLAS Questions').all().map((i) => i.json).filter(Boolean); } catch (e) { leadTasks = []; }
+const infoOpen = leadTasks.some((t) => t.task_type === 'website_info_needed') && !leadTasks.some((t) => t.task_type === 'website_build');
+const infoAnswered = notPitch && buildStarted && infoOpen;
+const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || infoAnswered;
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\n');
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
@@ -507,6 +514,7 @@ if (holdForRyan) {
   fin.audit.push('reply_from_rules:empty_reply');
 }
 const autoSend = ctx.config.auto_send_low_risk === true && !ctx.lead.test_mode && !!sendChannel && !!sendTo && !!r.recommended_reply;
+if (infoAnswered && !holdForRyan && r.recommended_reply && !/website team/i.test(r.recommended_reply)) { r.recommended_reply = r.recommended_reply.trim() + ' ' + WI_INFO_THANKS; fin.audit.push('website_info_answered:back_to_website_intelligence'); }
 const contactFound = { email: intake.email || null, phone: intake.phone || null };
 const handoffs = (websiteRequested ? ['website-builder'] : []).concat(edgRequested ? ['atlas'] : []);
 const followUpTask = {
