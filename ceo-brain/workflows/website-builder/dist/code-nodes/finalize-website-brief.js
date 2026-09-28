@@ -5,7 +5,7 @@ var WB_SITE_TYPES = ['business_website', 'landing_page', 'online_store', 'web_ap
 var WB_GOALS = ['leads', 'bookings', 'sales', 'information', 'support', 'other'];
 var WB_CATEGORIES = ['professional_services', 'beauty', 'property', 'technology', 'consulting', 'retail', 'education', 'home_services', 'b2b', 'local_business', 'food_beverage', 'logistics', 'healthcare', 'automotive', 'construction', 'other'];
 var WB_MISSING = ['business_name', 'industry', 'audience', 'primary_goal', 'pages', 'features', 'integrations', 'style', 'existing_domain', 'logo_and_brand', 'content', 'examples', 'timeline', 'decision_maker', 'competitors', 'existing_website', 'brand_personality', 'doctor_profiles', 'treatments', 'clinic_locations', 'credentials'];
-var WB_MAX_PROMPT = 14000;
+var WB_MAX_PROMPT = 18000;
 var WB_STRATEGY_MARK = 'STRATEGY FROM WEBSITE INTELLIGENCE (follow it):';
 var WB_LOVABLE_BASE = 'https://lovable.dev/#prompt=';
 var WB_ANTI_GENERIC = [
@@ -20,7 +20,7 @@ var WB_ANTI_GENERIC = [
   'the same font pairing as every other AI site'
 ];
 var WB_CINEMATIC = [
-  'Film-led (Ryan, 2026-09-29: "an actual scroll website, 3D video … no photos, just colours"): the Kling film chapters are the imagery. No static photo sections and no image used twice; each generated photo is only the poster (first frame) of its film chapter. Between chapters: clean solid brand-colour panels with big typography, like an Apple product page.',
+  'Film-led (Ryan, 2026-09-29: "an actual scroll website, 3D video … no photos, just colours"): the Higgsfield film chapters are the imagery. No static photo sections and no image used twice; each generated photo is only the poster (first frame) of its film chapter. Between chapters: clean solid brand-colour panels with big typography, like an Apple product page.',
   'Colour with depth: rich colour pulled from the film, cinematic gradient overlays (dark-to-transparent, brand-tinted) for legibility over the film; solid panels use the brand palette with strong contrast.',
   'Large, confident display typography over the film and on the panels; short lines; generous spacing.',
   'Motion: 3D scroll film on EVERY screen size, phones first (Ryan, 2026-09-29: the Smile Plus mock-up turned the film off on phones and showed a still). Each film chapter is pinned full-screen and scrubbed by the scroll (GSAP ScrollTrigger scrub + pin, Lenis smooth scroll) on a <canvas>: the clip\'s frames are extracted in the browser (hidden muted playsinline video, seek frame by frame, createImageBitmap, about 48 frames per clip, 640px wide on phones and 960px on desktop) and scroll progress picks the frame; while frames load, a smoothed video.currentTime fallback. Never switch the film off below a breakpoint; only prefers-reduced-motion shows stills.',
@@ -29,7 +29,7 @@ var WB_CINEMATIC = [
 ];
 var WB_APPLE = 'Apple-grade: one idea per screen, huge confident headlines in few words, generous breathing room, the product or the business as the hero under cinematic light, pixel-precise spacing and alignment, silky 60fps scrolling (GSAP ScrollTrigger with Lenis smooth scroll), a premium finish everywhere.';
 var WB_SCROLL_EFFECTS = {
-  film_scrub: 'Pinned hero film on every screen size: the Kling film fills the screen and plays forward as the visitor scrolls (canvas frame scrubbing driven by GSAP ScrollTrigger, frames extracted in the browser; never turned off on phones)',
+  film_scrub: 'Pinned hero film on every screen size: the Higgsfield film fills the screen and plays forward as the visitor scrolls (canvas frame scrubbing driven by GSAP ScrollTrigger, frames extracted in the browser; never turned off on phones)',
   product_reveal: 'Product reveal: the hero subject stays pinned and turns, zooms or opens into an exploded view as the visitor scrolls, like an Apple product page (a real 3D model made by Higgsfield when the build provides one, rendered with model-viewer or react-three-fiber)',
   zoom_through: 'Zoom-through: the camera pushes into an image until it becomes the next section',
   depth_layers: 'Depth parallax: foreground, subject and background layers move at different speeds with a slight 3D perspective tilt',
@@ -38,7 +38,7 @@ var WB_SCROLL_EFFECTS = {
   horizontal_gallery: 'Horizontal gallery: a pinned section that scrolls sideways through products, rooms or projects',
   split_reveal: 'Split reveal: two panels slide apart to reveal the offer and its call to action',
   stat_counters: 'Proof in motion: numbers and review stars count up and cards scale in as they enter (placeholders until confirmed)',
-  walkthrough: 'Cinematic home walkthrough: the Kling film moves from the street and the facade through the front door into each room as the visitor scrolls, the room name and its features appear beside it, and a floor-plan mini-map highlights where the visitor is',
+  walkthrough: 'Cinematic home walkthrough: the Higgsfield film moves from the street and the facade through the front door into each room as the visitor scrolls, the room name and its features appear beside it, and a floor-plan mini-map highlights where the visitor is',
   light_sweep: 'Premium golden finish: a slow light sweep across the hero type and accents; champagne-gold accents for premium and luxury brands, otherwise the brand colours'
 };
 var WB_EFFECTS_BY_CATEGORY = {
@@ -358,7 +358,7 @@ function wbStrategySection(plan) {
   if (!plan) return '';
   var L = [WB_STRATEGY_MARK];
   if (plan.primary_cta) L.push('- Primary CTA everywhere: "' + plan.primary_cta + '"' + (plan.secondary_cta ? '; secondary: "' + plan.secondary_cta + '"' : '') + '.');
-  L.push(wbCap('- 3D parallax scroll film: ' + (plan.motion_3d_direction || 'a Kling film of the business scrubbed by the scroll, layered depth parallax'), 650) + ' Pin the hero and drive the film video currentTime from scroll progress (GSAP ScrollTrigger or framer-motion useScroll), layer the photos in depth parallax, reveal each section and CTA over the film; respect prefers-reduced-motion (show the posters).');
+  L.push(wbCap('- 3D parallax scroll film: ' + (plan.motion_3d_direction || 'a Higgsfield film of the business scrubbed by the scroll, layered depth parallax'), 650) + ' Pin the hero and drive the film video currentTime from scroll progress (GSAP ScrollTrigger or framer-motion useScroll), layer the photos in depth parallax, reveal each section and CTA over the film; respect prefers-reduced-motion (show the posters).');
   if (wbHasAnatomy(plan)) L.push(wbCap('- Medical visual (hero): ' + plan.medical_visual_direction, 750) + ' It is the opening scene of the scroll film: the Kling anatomy video, full-bleed, scrubbed by the scroll with the still photo as its poster (until attached, a slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly model.');
   else if (plan.medical_visual_direction) L.push(wbCap('- Medical visuals: ' + plan.medical_visual_direction, 500));
   if (plan.funnel_plan.length) L.push(wbCap('- Funnel (build these pages and steps): ' + plan.funnel_plan.join(' | '), 1300));
@@ -395,12 +395,46 @@ function wbFullSiteSection(brief) {
   L.push('- ' + WB_APPLE + ' Scroll effects: ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
   return wbCap(L.join('\n'), 3200);
 }
+var WB_DOCTRINE_MARK = 'CINEMATIC SCROLL DOCTRINE (Fusion Tech AI 2026 — follow exactly)';
+var WB_STORY_BY_CATEGORY = {
+  healthcare: 'Clinic/medical: human/doctor → concern/treatment area → educational anatomy → clinician-reviewed mechanism → outward return → suitability/safety → consultation. Reverse: anatomy outward to patient view. Approved anatomical references only; never invent injection points, dosage, needle depth, protocols, outcomes or anatomical claims; generated visuals are illustrative; non-gory; HTML labels; reduced motion uses static diagrams.',
+  beauty: 'Beauty/aesthetics: natural macro → technique/layer → genuine transformation → specialist/process → booking. Surface-to-layer-to-surface reverses. Genuine consented transformation material only; no unrealistic retouching; keep booking reachable.',
+  automotive: 'Car: silhouette → 360 exterior → optional accurate body/wheel/interior separation → cabin/feature → reassembly → test-drive CTA. Reverse: cabin → exploded → orbit → silhouette. Never invent mechanical components or specs; if geometry is incomplete use cinematic video rather than fake internals; verified feature labels in the DOM; mobile: simplified orbit or pre-rendered sequence.',
+  property: 'Property: exterior/aerial → approach → entrance → interior → real floor plan → neighbourhood/map → agent → viewing/valuation CTA. Reverse exits the property in order. Real property assets; never fabricate rooms, views, facilities or dimensions; transition-compatible start/end frames.',
+  food_beverage: 'F&B/hospitality: ingredient/environment → preparation/craft → macro finished product → atmosphere → menu/package → reservation/order. Prefer scrubbed cinematic media over heavy 3D; down-scroll advances the craft, up-scroll reverses it; menus and booking stay normal, fast and accessible.',
+  retail: 'Luxury/product: material reveal → 360 → macro craft → optional accurate exploded/construction view → lifestyle → purchase. Reverse restores the product. Actual geometry/reference only; studio-light gradients mimic reflections; exploded views only if the construction is real.',
+  technology: 'Technology/AI/software (or device): outcome → product/workflow → integrations → automation/data flow → proof/ROI → demo (devices: hero → 360 → accurate internal layers → verified callouts → reassembly → buy/demo). Real product UI and SVG data-flow; never invent chips, sensors or internals; no abstract AI blobs in place of product proof.',
+  construction: 'Renovation/architecture: before → plan/floorplan → material/build stages → finished space → proof → quote. Reverse: finished → stages → plan → before. Real project references and plans; never fabricate completed work.',
+  home_services: 'Renovation/home services: before → plan → material/build stages → finished space → proof → quote. Reverse: finished → stages → plan → before. Never fabricate completed work.',
+  education: 'Education/training: learner problem → curriculum path → teacher/class → milestone/outcome → student story → trial/enrol. Lightweight progress diagrams; heavy 3D only if educationally relevant; milestones advance and reverse cleanly.',
+  b2b: 'Industrial/engineering: facility/machine → process → accurate machine visualisation → certifications/capacity → case → RFQ. Technical credibility first; never invent specs or expose confidential internals; procurement content readable without animation.',
+  logistics: 'Industrial/logistics: facility/fleet → process → accurate operations visualisation → capacity/certifications → case → RFQ/quote. Never invent specs; content readable without animation.',
+  professional_services: 'Finance/insurance/personal brand: customer problem → life-stage/planning journey → transparent calculator/diagram → advisor authority → proof/process → consultation. Human storytelling plus DOM/SVG data motion; no spectacle for financial claims; numbers and assumptions verified and transparent; reverse retraces the stages.',
+  consulting: 'Consulting/personal brand: customer problem → journey → transparent diagram → advisor authority → proof/process → consultation. DOM/SVG data motion; no spectacle for claims.',
+  local_business: 'Local business: the place and the craft → what you get → how it works → proof → visit/book. Scrubbed cinematic media; booking stays fast and accessible.',
+  other: 'Business story: the customer\'s problem → the offer in action → how it works → proof → the call to action. Scrubbed cinematic media plus DOM/SVG motion.'
+};
+function wbStoryFor(category) { return WB_STORY_BY_CATEGORY[category] || WB_STORY_BY_CATEGORY.other; }
+/** The protected doctrine block for the Lovable build prompt. */
+function wbDoctrineSection(brief) {
+  var L = [WB_DOCTRINE_MARK];
+  L.push('- Build an interactive conversion story in chapters, not stacked template sections. Scroll down progresses the story; scroll up reverses it exactly. Core animation state comes from normalized scroll progress p in [0,1], never one-way timers or autoplay; at any p the state is reproducible (refresh mid-page restores it). Every effect must explain, demonstrate, dramatize or convert. Do not scroll-jack; pin only where the story needs it.');
+  L.push('- Chapter story for this business: ' + wbStoryFor(brief.industry_category));
+  L.push('- Engine per chapter (choose one and say why in the storyboard): REAL_TIME_3D only with an accurate 3D model (e.g. the Higgsfield GLB); SCROLL_SCRUB_VIDEO for the cinematic film chapters; IMAGE_SEQUENCE for precise frame control; CSS_SVG_DOM for type, diagrams, masks, callouts and light depth; STATIC_FALLBACK for reduced motion and weak devices. Never WebGL just to look expensive; never an exploded product view without accurate geometry.');
+  L.push('- Timeline per chapter: scroll start/end, pin yes/no + length, states at p=0, .25, .5, .75, 1 (camera, object, parts, opacity, blur, text, depth layers, media frame, CTA), reverse restores every state, engine, assets (CLIENT_REAL / HIGGSFIELD / 3D_MODEL / LOVABLE_CODE / DATA_API), mobile (lighter pre-rendered media, same story), reduced motion (static chapter states, normal flow), CTA, performance.');
+  L.push('- Parallax depth: atmosphere/light fixed or slow; background slowest; hero object moderate; foreground detail faster but restrained; typography/UI stable enough to read. Material palette of 3-5 colours (base, highlight, shadow, material accent, CTA accent); gradients behave like light (radial highlight, edge reflection, atmospheric depth), never rainbow or gradient-everywhere.');
+  L.push('- Before coding, write docs/storyboard.md with the component map, the scroll timeline per chapter and the asset dependency map, then build it in this same turn without stopping. Semantic text and CTAs stay in the DOM; lazy-load below-the-fold media, preload only the hero; CTA reachable at key moments; instrument CTA and form events.');
+  L.push('- QA before you finish (fix every BLOCKER and HIGH): scroll forward slowly and quickly, reverse slowly and quickly, rapid direction changes, stop at arbitrary progress, refresh mid-page, resize, rotate a phone, touch scroll, reduced motion, slow network; check factual fidelity, story continuity, CTA reachability, readability, pin release, layout shift, keyboard access and forms. Not done until reverse scroll is deterministic.');
+  L.push('- Never fabricate facts, geometry, rooms, specs or outcomes; client facts and real reference assets override examples.');
+  return wbCap(L.join('\n'), 4200);
+}
 /** Append the strategy and full-website sections to a build prompt (once each), keeping the total under WB_MAX_PROMPT by trimming the base, never these sections. */
 function wbWithStrategy(prompt, plan, brief) {
   prompt = String(prompt || '');
   var parts = [];
   if (plan && prompt.indexOf(WB_STRATEGY_MARK) === -1) parts.push(wbStrategySection(plan));
   if (brief && prompt.indexOf(WB_FULLSITE_MARK) === -1) parts.push(wbFullSiteSection(brief));
+  if (brief && prompt.indexOf(WB_DOCTRINE_MARK) === -1) parts.push(wbDoctrineSection(brief));
   if (!parts.length) return prompt.length > WB_MAX_PROMPT ? prompt.slice(0, WB_MAX_PROMPT - 1) + '…' : prompt;
   var sec = parts.join('\n');
   var room = WB_MAX_PROMPT - sec.length - 1;

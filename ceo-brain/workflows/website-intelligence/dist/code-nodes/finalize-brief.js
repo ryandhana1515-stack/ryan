@@ -29,7 +29,7 @@ var WR_MOTION = [
   [/school|tuition|academy|education|course/i, 'a 3D journey from a confused student to confident results, pages and ideas unfolding as the visitor scrolls'],
   [/retail|shop|store|brand|product|e-?commerce/i, 'the hero product rotating in 3D with exploded-view details revealing materials and features on scroll']
 ];
-var WR_PARALLAX = '3D parallax scroll film (Ryan, 2026-09-27): a Kling film of this business is pinned in the hero and scrubbed by the scroll (it plays forward as the visitor scrolls), with layered depth parallax (foreground, subject and background moving at different speeds) and the sections and CTAs revealed over the film; the sales structure stays (one offer, outcome headline, proof, objections answered, the CTA repeated); fast on mobile, with prefers-reduced-motion showing stills.';
+var WR_PARALLAX = '3D parallax scroll film (Ryan, 2026-09-27): a Higgsfield film of this business is pinned in the hero and scrubbed by the scroll (it plays forward as the visitor scrolls), with layered depth parallax (foreground, subject and background moving at different speeds) and the sections and CTAs revealed over the film; the sales structure stays (one offer, outcome headline, proof, objections answered, the CTA repeated); fast on mobile, with prefers-reduced-motion showing stills.';
 function wrMotionFor(industry, text) {
   var t = String(industry || '') + ' ' + String(text || '');
   var concept;

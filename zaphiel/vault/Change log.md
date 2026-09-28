@@ -292,3 +292,9 @@ tags: [zaphiel, changelog]
   canvas frame scrubber, solid colour panels and effects in every section, crops the Kling watermark, and a new step
   g1 checks the built code and sends Lovable a fix once. The Smile Plus mock-up was rebuilt this way with the real
   addresses, hours and WhatsApp numbers. Tests 109/109.
+- 2026-09-29 — **Doctrine wired in** (Ryan's Full Master Cinematic Website Agent 2026). Vault note (verbatim) +
+  PDF in `_sources/`; appended to `Website design standard` (read live by the Website Builder; the old two-variation
+  and pipeline sections marked superseded). `brief.js`: `WB_DOCTRINE_MARK`, `WB_STORY_BY_CATEGORY` (the PDF's industry
+  modules), `wbDoctrineSection` in every Lovable prompt; prompt limit 18,000. Routine: Higgsfield Director (e2, start/end
+  frames, sound off; Kling backup), check g1 also requires `docs/storyboard.md` and reversible scrubbed chapters.
+  Tests 112/112.

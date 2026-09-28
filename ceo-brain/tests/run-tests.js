@@ -1239,6 +1239,31 @@ console.log('\n[24] Smile Plus Dental test: no public-fact questions, no repeats
     assert.strictEqual((one.match(/\?/g) || []).length, 1, one); assert.ok(one.startsWith('Noted, Ryan. Our team is working on your mock-up.') && one.includes(at.AT_VOICE), one);
   });
 }
+console.log('\n[25] Full Master Cinematic Website Agent 2026 governs every build (Ryan, 2026-09-29)');
+test('every build prompt carries the doctrine: industry chapter story, engine router, reversible timeline, storyboard first, QA torture test', () => {
+  const cases = [['Smile Plus Dental Surgery', 'dental clinic', 'anatomy outward to patient view'], ['Prestige Motors', 'BMW car dealership', 'test-drive CTA'], ['Skyline Realty', 'real estate agency', 'Reverse exits the property'], ['Ah Seng Kopi', 'coffee shop cafe', 'reservation/order'], ['Tan Renovation', 'home renovation contractor', 'finished → stages → plan → before']];
+  cases.forEach(([c, m, story]) => {
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: 'build me a website for ' + m } });
+    const p = r.build_prompt;
+    assert.ok(p.includes(wb.WB_DOCTRINE_MARK) && p.includes(story), c + ': ' + p.slice(-1500));
+    assert.ok(/scroll up reverses it exactly/.test(p) && /SCROLL_SCRUB_VIDEO/.test(p) && /docs\/storyboard\.md/.test(p) && /reverse scroll is deterministic/.test(p) && /Never fabricate/.test(p), c);
+    assert.ok(p.includes(wb.WB_FULLSITE_MARK) && p.length <= wb.WB_MAX_PROMPT && !/guarantee|\$\s?\d/i.test(p), c + ' ' + p.length);
+  });
+  const schema = JSON.parse(fs.readFileSync(path.join(__dirname, '../schemas/website-brief.schema.json'), 'utf8'));
+  assert.strictEqual(JSON.stringify(schema).includes('"maxLength":' + wb.WB_MAX_PROMPT), true, 'schema allows the full prompt');
+});
+test('the doctrine is in the vault verbatim and in the live design standard the Website Builder reads', () => {
+  const vault = path.join(__dirname, '../../zaphiel/vault/Knowledge');
+  const note = fs.readFileSync(path.join(vault, 'Full Master Cinematic Website Agent 2026.md'), 'utf8');
+  const std = fs.readFileSync(path.join(vault, 'Website design standard.md'), 'utf8');
+  ['Scroll down progresses the story; scroll up reverses it.', 'Never create an exploded', 'Do not approve until reverse-scroll is deterministic.', 'FEED THIS TO EVERY WEBSITE AGENT'].forEach((t) => { assert.ok(note.includes(t), t); assert.ok(std.includes(t), 'standard: ' + t); });
+  assert.ok(fs.existsSync(path.join(__dirname, '../../zaphiel/vault/_sources/FusionTech_Full_Master_Cinematic_Website_Agent_2026.pdf')));
+});
+test('the build worker: Higgsfield directs the film with matching start/end frames, Kling is the backup, and the check covers reverse scroll', () => {
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/Higgsfield Director/.test(routine) && /start_image/.test(routine) && /end_image/.test(routine) && /media_import_url/.test(routine) && /sound `off`/.test(routine));
+  assert.ok(/make it with Kling `image_to_video`/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

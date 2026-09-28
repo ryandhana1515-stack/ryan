@@ -217,3 +217,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   worker checks the code after Lovable finishes and sends it back if the film or the effects are missing. Kling
   output carries a corner watermark, so the film is drawn 1.1x from the centre to crop it (Ryan's Kling Pro plan
   covers commercial use).
+
+- 2026-09-29 — **The Full Master Cinematic Website Agent 2026 governs every website agent** (Ryan sent the PDF "for
+  website agent"; verbatim in [[Knowledge/Full Master Cinematic Website Agent 2026]], PDF in `_sources/`). Every
+  site is a chapter-based conversion story: scroll down advances it, scroll up reverses it exactly; one engine per
+  chapter (real-time 3D only with accurate models, otherwise scrubbed video, image sequence, CSS/SVG or static);
+  never fabricated facts or geometry; Lovable writes the storyboard and scroll timeline first, then builds; QA
+  torture-tests reverse scroll before the link goes out. Higgsfield now makes the film (matching start/end frames
+  so chapters join), Kling makes the posters and is the backup. It sits inside the design standard the Website
+  Builder reads live, so Ryan can edit it in Obsidian.

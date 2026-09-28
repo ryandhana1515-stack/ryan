@@ -13,7 +13,7 @@ Before proposing anything, analyse the business category and decide a visual dir
 - typography: a deliberate pairing for this brand. Never the same pairing on every site.
 - layout: intentional hierarchy; avoid repetitive AI section patterns.
 - imagery: appropriate to the actual business; never irrelevant stock photography. Note when custom visuals would materially help.
-- motion: a 3D parallax scroll film on every mock-up (Ryan, 2026-09-27): a Kling film of the business pinned in the hero and scrubbed by the scroll, layered depth parallax on the imagery, sections and CTAs revealed over the film; for specialist clinics the film opens on realistic anatomy (for example the heart beating, blood flowing through the arteries and vessels). The motion serves the sale; never decorative blobs.
+- motion: a 3D parallax scroll film on every mock-up (Ryan, 2026-09-27): a Higgsfield film of the business (Kling posters) pinned in the hero and scrubbed by the scroll, layered depth parallax on the imagery, sections and CTAs revealed over the film; for specialist clinics the film opens on realistic anatomy (for example the heart beating, blood flowing through the arteries and vessels). The motion serves the sale; never decorative blobs.
 - palette: chosen from the brand or business, never a default gradient.
 The generic AI look is forbidden and the QA stage rejects it: dark navy + purple/blue gradient, glowing orbs, glass cards, random stock image, huge generic headline, three feature boxes, generic SaaS layout. The mock-up must make the customer think "they understand my company", not "another AI template".
 
@@ -40,7 +40,7 @@ Every site is built to the standard of an Apple product page: one idea per scree
 List the complete sitemap for this industry in `pages` (8–12 pages: the core pages, a detail page where it helps, reviews, FAQ, the contact/booking page, an Offer Landing Page and a Thank You page). Every page is built completely with real copy and ends with the call to action; the homepage follows the selling order (outcome headline and one CTA, proof, the problem, the offer, benefits, how it works, showcase, reviews, objections, a no-obligation risk reducer, final CTA).
 
 ## One website per mock-up (Ryan, 2026-09-27)
-Every mock-up is ONE 3D parallax scroll-film website: a Kling film and Kling photography, built on Lovable, published to a public link. The high-converting sales structure (offer, headline, proof, objections answered, repeated call to action) carries the page; the film makes it unforgettable. No second version. Never mention a price.
+Every mock-up is ONE 3D parallax scroll-film website: a Higgsfield film with Kling posters, built on Lovable under the Full Master Cinematic Website Agent 2026 doctrine, published to a public link. The high-converting sales structure (offer, headline, proof, objections answered, repeated call to action) carries the page; the film makes it unforgettable. No second version. Never mention a price.
 
 ## When a WEBSITE_CREATOR_BRIEF is present (Website Intelligence agent, ADR-3)
 It was researched before you: treat its verified facts, business summary, website objective, primary/secondary conversion, CTAs, recommended sitemap, homepage conversion flow, form requirements and placeholders as authoritative. Keep every [CLIENT TO PROVIDE] placeholder visible in the build prompt; never fill one with a guess. Its questions_for_john go to John, not the customer. Design direction, mode and QA stay yours.
