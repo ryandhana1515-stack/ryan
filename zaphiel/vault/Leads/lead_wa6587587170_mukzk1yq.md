@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-28
-updated: 2026-09-28T17:58:16.997Z
+updated: 2026-09-28T17:59:17.177Z
 tags: [lead]
 ---
 # Ryan
@@ -21,12 +21,12 @@ Links: [[Industries/clinic-healthcare|clinic-healthcare]] · [[Automations/websi
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: -
-- Problem: -
+- Company size: - · Users: - · Decision maker: true
+- Problem: Current website is not good enough and needs improvement
 - Wants: website_build, appointment_booking
-- Tools: smileplusdento.com.sg
+- Tools: -
 - Budget: - · Timeline: -
-- Outcome wanted: A better website than their current one, including photos, signboards, opening hours and appointment booking
+- Outcome wanted: A better website with photos, signboards, opening hours and appointment booking, showing both branches (Bukit Merah/Redhill and Hougang)
 
 ## Conversation log
 
@@ -57,3 +57,10 @@ _Summary:_ Ryan of Smile Plus Dental Surgery (clinic, existing site smileplusden
 **John:** Noted, Ryan — we will make sure appointment booking is built into the site so patients can request a visit directly. Our team is already working on your mock-up with the details you have shared. While that is underway: do most of your new patients currently reach you by calling, WhatsApp, or walking in, and do you have staff who manage bookings day to day? ATLAS, our systems architect, would like to know: Could you share the link to your current website so we can take a look at it first? Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
 
 _Summary:_ Ryan of Smile Plus Dental Surgery (Bukit Merah/Redhill and Hougang branches) is having a website mock-up built. His latest message confirms he wants appointment booking included as a website feature.
+
+### 2026-09-28 17:59 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: website-builder, atlas · anthropic
+**Prospect:** https://www.smileplusdental.com.sg/
+
+**John:** Thank you, Ryan — that confirms it, smileplusdental.com.sg is the current site, and our team is already using it to build your first mock-up for Smile Plus Dental Surgery, covering both your Bukit Merah/Redhill and Hougang branches with photos, signboards, opening hours and appointment booking. The link will come to you here shortly. While we finish that, could you let me know how patients usually reach you today — phone calls, WhatsApp, or walk-ins — and whether you have staff handling bookings day to day? ATLAS, our systems architect, would like to know: What don't you like about the current website — is it how it looks, that it doesn't get you enough patients, that it's hard to update, or something else? Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
+
+_Summary:_ Ryan runs Smile Plus Dental Surgery (clinics in Bukit Merah/Redhill and Hougang) and wants a better website than his current one, with photos, signboards, opening hours and appointment booking. He has now shared the actual current website URL (smileplusdental.com.sg), confirming it over the earlier smileplusdento.com.sg. Mock-up is already underway.
