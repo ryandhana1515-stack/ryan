@@ -82,7 +82,8 @@ exists: `Knowledge/AI Workforce — roster`.
   medical_visual_direction) travels in `research_json`; `wbWithStrategy` always appends it to the
   Lovable prompt. Every mock-up is ONE 3D parallax scroll-film site (Ryan, 2026-09-27): the build worker makes
   three Kling clips (step e2, image_to_video from the Kling photos; clinics open on the anatomy film) and Lovable
-  pins them in the hero, scrubbed by the scroll, with layered depth parallax.
+  pins them in the hero, scrubbed by the scroll, with layered depth parallax. Higgsfield (2026-09-28) makes a 3D GLB
+  model for product businesses (step e3) for a scroll-driven product reveal, and is the backup for a failed Kling clip.
 - New agent: a folder under `ceo-brain/agents/` (manifest, prompts, schema, rules fallback,
   guardrails in code), a playbook note under `Knowledge/`, an entry in `Knowledge/agents.json`
   (with `chat_url` if it has a console), a row in `Agents.md`, the workflow id in

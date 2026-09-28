@@ -863,7 +863,7 @@ test('the scroll film opens on the clinic anatomy: heart beating, arteries, bloo
   const p = wb.wbWithStrategy('Build the site.', wb.wbResearchPlan({ research_json: JSON.stringify(plan) }));
   assert.ok(/heart beating/.test(p) && /scrubbed by the scroll/.test(p) && /parallax/.test(p) && !/no scroll animation/.test(p), p.slice(-1200));
   const routine = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/image_to_video/.test(routine) && /3D PARALLAX SCROLL FILM/.test(routine) && /currentTime driven by scroll progress/.test(routine) && !/Higgsfield `/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker makes the scroll film with Kling');
+  assert.ok(/image_to_video/.test(routine) && /3D PARALLAX SCROLL FILM/.test(routine) && /currentTime driven by scroll progress/.test(routine) && /generate_3d/.test(routine) && /3D MODEL/.test(routine) && /Never for clinics/.test(routine) && !/Never use Higgsfield/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker: Kling scroll film + Higgsfield 3D model (Ryan, 2026-09-28)');
 });
 
 test('no research → the creator works as before; general practice gets no anatomy render', () => {

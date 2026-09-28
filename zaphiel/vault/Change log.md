@@ -245,3 +245,6 @@ tags: [zaphiel, changelog]
   prompt now carries an Apple-grade standard and 5–6 scroll effects per industry (`wbEffectsFor`), prompt cap 14000;
   John's replies ask ATLAS's questions in ATLAS's name (`atIsAtlasQuestion`, `AT_VOICE`); Website Intelligence runs 9
   searches (adds socials, maps listing, competitors) and reads 5 pages, and reads the customer's own description first.
+- 2026-09-28 — **Higgsfield added next to Kling** (Ryan). Build worker (repo + live routine): step e3 makes a
+  Higgsfield 3D model (`generate_3d`) for product businesses, handed to Lovable as a scroll-driven "3D MODEL" section;
+  a failed Kling clip is remade on Higgsfield. The creator's product-reveal effect uses the model when there is one.
