@@ -17,10 +17,8 @@ tags: [zaphiel, open-loops]
   Website Build Worker". The mock-up chain is fully wired. The real test is Ryan through John on WhatsApp.
   Still optional for Ryan: delete the half-made "Lovable MCP (OAuth2)" credential in n8n and the test project
   "Sunrise Dental Clinic" in Lovable.
-- **Zaphiel (next session):** John promises "usually within 10 to 15 minutes" for the mock-up; the routine runs
-  hourly, so change the wording in `zaphiel/knowledge/fusiontech-master-brain.md`-derived prompt to "within the
-  hour" and redeploy Lead Intake + Website Builder. Ask Ryan whether the routine may run more often (platform
-  minimum is 1 hour unless the project allows shorter).
+- ~~**Zaphiel:** John promised "10 to 15 minutes" for the mock-up~~ — done 2026-09-28: John now says "usually within
+  about an hour" (Ryan: "change it to accurate timing").
 - **Ryan:** paste `ceo-brain/website-chat/embed-snippet.html` into FusionTech.com.sg before `</body>`
   so visitors talk to John there; until then use https://ryan1515.app.n8n.cloud/webhook/ceo-brain/chat.
 - **Ryan:** open the Training Room once (https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard),

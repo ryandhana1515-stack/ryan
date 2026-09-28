@@ -344,7 +344,7 @@ function wbIntake(o) {
   else if (!intent) reply = '';
   else if (ready) {
     var to = emailInText ? email : (phone ? phone : (email ? email : 'this chat'));
-    reply = greet + 'perfect, I have what I need to start on ' + businessName + '. Our website team is researching your business now before ' + WI_STARTED_MARK + '; if they need any detail, I will ask you here first, then I will send the link to ' + to + ', usually within about 20 minutes. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
+    reply = greet + 'perfect, I have what I need to start on ' + businessName + '. Our website team is researching your business now before ' + WI_STARTED_MARK + '; if they need any detail, I will ask you here first, then I will send the link to ' + to + ', usually within about an hour. If you have a logo, brand colours or photos you want used, send them here and we will work them in.';
   } else {
     reply = greet + 'happy to get a first mock-up built for you' + (businessName ? ' at ' + businessName : '') + '. ' + (questions.length === 1 ? 'One thing I need: ' : 'A few quick details so it is right the first time: ') + questions.join(' ');
   }

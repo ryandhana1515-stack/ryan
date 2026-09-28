@@ -272,3 +272,7 @@ tags: [zaphiel, changelog]
   Builder, Website Intelligence and WhatsApp Inbound are byte-identical to the repo (PR #69) and published; the build
   worker routine carries the property version. Ryan can test: send "new chat" on WhatsApp, then ask John for a
   website or funnel.
+- 2026-09-28 — **Accurate mock-up timing** (Ryan: "change it to accurate timing"). John now says the link comes
+  "usually within about an hour" (hand-off reply, the timing FAQ, John's prompt, company context, playbook). Why: the
+  only real build (Free & Easy Minimart) took 33 minutes from hand-off with a single clip; builds now make 3 clips
+  (5 for property) and a 3D model, and the worker checks every 2 minutes with a short gap between hourly sessions.

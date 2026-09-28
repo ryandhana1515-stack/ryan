@@ -197,3 +197,6 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   "John owns the customer" for ATLAS's discovery conversations only; Website Intelligence and the Website Creator still
   never talk to the customer. Playbook: [[10_Agents/ATLAS_Discovery_Playbook]]; agent file `.claude/agents/atlas.md`.
 
+
+- 2026-09-28 — **John promises the mock-up "usually within about an hour", never sooner** (Ryan: "change it to
+  accurate timing"). Based on the real build times; revisit when faster builds are measured.
