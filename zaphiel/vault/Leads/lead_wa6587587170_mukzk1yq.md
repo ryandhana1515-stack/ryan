@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-28
-updated: 2026-09-28T17:59:58.356Z
+updated: 2026-09-28T18:00:31.631Z
 tags: [lead]
 ---
 # Ryan
@@ -26,7 +26,7 @@ Links: [[Industries/clinic-healthcare|clinic-healthcare]] · [[Automations/websi
 - Wants: website_build, appointment_booking
 - Tools: -
 - Budget: - · Timeline: -
-- Outcome wanted: A new website with photos, signboards, opening hours and appointment booking so patients can book directly
+- Outcome wanted: Appointment booking built into the clinic website for new patients
 
 ## Conversation log
 
@@ -71,3 +71,10 @@ _Summary:_ Ryan runs Smile Plus Dental Surgery (clinics in Bukit Merah/Redhill a
 **John:** No problem at all, Ryan — our team will search for the exact addresses and opening hours for your Redhill/Bukit Merah and Hougang branches, and confirm your main services online. You don't need to look this up yourself; if we can't find something, we'll start with a clear placeholder you can update later. Your mock-up is already underway and the link will come to you here soon. While we wait, do you know if CHAS or MediSave are accepted at either branch? One more question so we get your website right: Clinic WhatsApp/phone number for bookings (a number 9325 5530 appears on a Facebook page — is that theirs?) Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
 
 _Summary:_ Ryan of Smile Plus Dental Surgery (Bukit Merah/Redhill and Hougang branches) is having a website mock-up built. He confirmed the current site (smileplusdental.com.sg) and wants appointment booking included. He now asks the team to 'help search it' for him, likely referring to the outstanding request for exact addresses/opening hours and confirmed services, which he does not have to hand himself.
+
+### 2026-09-28 18:00 UTC · QUALIFYING / warm · next: ask_qualifying_questions · hand-off: website-builder, atlas · anthropic
+**Prospect:** Yes.
+
+**John:** Thank you, Ryan — noted. Our team is continuing to build your Smile Plus Dental Surgery mock-up with everything you've shared, and will use clear placeholders for anything we can't confirm, like CHAS/MediSave acceptance or the exact WhatsApp number. The link will come to you here shortly. While we wait, could you tell me roughly how many staff manage patient enquiries and bookings across both branches, and do you currently use any software or app to track appointments? ATLAS, our systems architect, would like to know: When someone visits your website today, what do you want them to do — call you, WhatsApp you, book an appointment online, or just learn about your services? Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
+
+_Summary:_ Ryan from Smile Plus Dental Surgery (clinic, Bukit Merah/Redhill and Hougang branches) confirmed website build is underway with existing site smileplusdental.com.sg. Message 'Yes' is a short confirmation, likely answering the CHAS/MediSave or WhatsApp number question rather than new information. Mock-up already in progress; team has enough to build with placeholders for missing details.
