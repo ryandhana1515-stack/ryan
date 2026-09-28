@@ -268,3 +268,7 @@ tags: [zaphiel, changelog]
 - 2026-09-28 — **No look question; property rooms only** (Ryan). `WR_STYLE_Q` removed: look/style/colour questions are
   filtered out; `WR_ROOMS_Q` / `wrRoomsKnown` ask property customers for rooms and features; the Website Intelligence
   prompt lists the real facts (sell, services, location, opening hours). Tests 103/103.
+- 2026-09-28 — **Deployed and verified live** (Ryan: "deploy everything"). All 19 Code nodes of Lead Intake, Website
+  Builder, Website Intelligence and WhatsApp Inbound are byte-identical to the repo (PR #69) and published; the build
+  worker routine carries the property version. Ryan can test: send "new chat" on WhatsApp, then ask John for a
+  website or funnel.
