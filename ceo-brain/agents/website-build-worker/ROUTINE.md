@@ -76,7 +76,10 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
    d. `add_data_table_rows` on `ceo_audit_logs`: `{tenant_id, entity_type: "task", entity_id: task_id,
       action: "website_build_started", old_value: "building", new_value: "building", actor:
       "agent:zaphiel-build-worker", execution_id: "", reason: "routine", ts: now ISO}`.
-   e. Photography with Kling: `text_to_image`, one job per `image_shots` entry (the shot's `prompt` and
+   e. Photos — the customer's own first (Ryan, 2026-09-29: "only give out the photo if the website intelligence
+      cannot find" it): an `image_shots` entry with `real_url` is the business's own photo that Website
+      Intelligence found on its website or profiles — use that URL as the photo for that shot and do NOT generate it.
+      Generate with Kling `text_to_image` only the entries without `real_url`, one job each (the shot's `prompt` and
       `aspect_ratio`, highest photorealistic quality, 1 image each). Poll `query_tasks` until all are done (at most
       ~6 minutes). Collect the image URL per shot. If Kling fails a shot, retry it once on Kling. If no image at
       all, continue without photos.
@@ -113,8 +116,9 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       photoreal film). If it fails, skip it and say so in `notes`.
    f. Lovable: `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
       `initial_message` = `brief.build_prompt` + a blank line + the poster block:
-      "Film posters generated for this customer (each is ONLY the first frame of its film chapter, never a static
-      section, never used twice; load by URL):" then one line per shot — `hero` = "CHAPTER 1 poster: <url>",
+      "Film posters for this customer (each is ONLY the first frame of its film chapter, never a static section, never
+      used twice; load by URL; a poster marked 'the customer\'s own photo' is real and never labelled illustrative):"
+      then one line per shot (add "— the customer's own photo" when it came from `real_url`) — `hero` = "CHAPTER 1 poster: <url>",
       `section` = "CHAPTER 2 poster: <url>", `detail` = "CHAPTER 3 poster: <url>" — then the film block (Ryan,
       2026-09-29: the Smile Plus mock-up turned the film off on phones and showed stills; "I want an actual scroll
       website, 3D video … no photos, just colours"): "3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST — each

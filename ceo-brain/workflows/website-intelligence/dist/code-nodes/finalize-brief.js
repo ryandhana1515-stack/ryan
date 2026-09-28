@@ -74,8 +74,9 @@ function wrIsSocial(host) { return WR_SOCIAL_HOSTS.some(function (h) { return ho
 function wrIsDirectory(host) { return WR_DIRECTORY_HOSTS.some(function (h) { return host.indexOf(h) !== -1; }); }
 function wrTokens(s) { return wrStr(s).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(' ').filter(function (t) { return t.length > 2 && ['pte', 'ltd', 'llp', 'the', 'and', 'singapore', 'company', 'co', 'inc', 'llc', 'sdn', 'bhd'].indexOf(t) === -1; }); }
 /** John's hand-off → normalized input (same fields as the Website Builder + the website John or the customer mentioned). */
-var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'enough_to_build', 'questions_for_john', 'identity_confidence', 'reasoning'];
-var WR_LIST_KEYS = ['verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'secondary_conversions', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'page_requirements', 'media_requirements', 'trust_sections', 'form_requirements', 'crm_opportunities', 'automation_opportunities', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'questions_for_john'];
+var WR_MAX_IMAGES = 16;
+var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'real_photos', 'enough_to_build', 'questions_for_john', 'identity_confidence', 'reasoning'];
+var WR_LIST_KEYS = ['verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'secondary_conversions', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'page_requirements', 'media_requirements', 'trust_sections', 'form_requirements', 'crm_opportunities', 'automation_opportunities', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'real_photos', 'questions_for_john'];
 function wrConversionFor(industry, signals) {
   var s = (industry || '').toLowerCase();
   if (/clinic|dental|aesthetic|medical|doctor|physio|tcm|wellness|spa|salon|beauty|barber/.test(s)) return { primary: 'BOOK APPOINTMENT', secondary: ['WHATSAPP', 'CALL NOW'], cta: 'Book an appointment', cta2: 'WhatsApp us' };
@@ -88,6 +89,17 @@ function wrConversionFor(industry, signals) {
   return { primary: signals && signals.shop ? 'BUY NOW' : 'GET QUOTE', secondary: ['WHATSAPP', 'CALL NOW'], cta: signals && signals.shop ? 'Shop now' : 'Get a quote', cta2: 'WhatsApp us' };
 }
 /** Deterministic brief when the model is unavailable: John's facts + what research verified; nothing invented. */
+/** The company's own photos as "url | use | alt" lines: the strongest (og/structured) first as the hero, then section,
+ *  detail and gallery. Only when the company was identified (never another business's photos). */
+function wrRealPhotos(digest) {
+  if (!digest || !digest.site || !digest.identity || digest.identity.confidence === 'low') return [];
+  var rank = { og: 1, jsonld: 2, img: 3, bg: 4, social: 5 };
+  var ims = digest.site.images.slice().sort(function (a, b) { return (rank[a.kind] || 9) - (rank[b.kind] || 9); });
+  var uses = ['hero', 'section', 'detail'];
+  var out = ims.map(function (im, i) { return im.url + ' | ' + (uses[i] || 'gallery') + (im.alt ? ' | ' + im.alt : ''); });
+  if (digest.site.logo) out.push(digest.site.logo + ' | logo');
+  return out.slice(0, WR_MAX_IMAGES);
+}
 function wrFallbackBrief(input, digest) {
   var conv = wrConversionFor(input.industry, digest.site.signals);
   var name = input.company_name || '[CLIENT TO PROVIDE company name]';
@@ -130,7 +142,7 @@ function wrFallbackBrief(input, digest) {
     seo_direction: (input.industry || 'service') + ' ' + input.location + ' — local intent pages; titles and H1s per page', analytics_requirements: ['GA4 events: cta_click, whatsapp_click, form_submit' + (conv.primary.indexOf('BOOK') === 0 ? ', booking_complete' : '')],
     mobile_requirements: ['Sticky CTA / WhatsApp on mobile', 'Thumb-friendly buttons', 'Fast images'], accessibility_requirements: ['Readable contrast, alt text, keyboard-friendly forms'],
     compliance_considerations: /clinic|dental|aesthetic|medical|doctor/i.test(input.industry) ? ['Healthcare advertising rules (MOH) — flag claims for human review'] : (/property|real estate/i.test(input.industry) ? ['CEA advertising rules for property agents'] : (/insurance|financial|wealth/i.test(input.industry) ? ['MAS promotion rules'] : ['PDPA consent on forms'])),
-    placeholders_required: digest.unknown, do_not_invent: ['testimonials', 'awards', 'certifications', 'customer counts', 'years operating', 'revenue', 'results', 'prices', 'addresses', 'team members'],
+    real_photos: wrRealPhotos(digest), placeholders_required: digest.unknown, do_not_invent: ['testimonials', 'awards', 'certifications', 'customer counts', 'years operating', 'revenue', 'results', 'prices', 'addresses', 'team members'],
     enough_to_build: wrEnoughFallback(input, digest), questions_for_john: questions.slice(0, 3), identity_confidence: digest.identity.confidence,
     reasoning: 'Deterministic brief (model unavailable): built from John\'s facts, ' + digest.site.pages_read.length + ' page(s) read, ' + digest.competitors.length + ' competitor(s) found.'
   };
@@ -233,6 +245,10 @@ function wrFinalize(o) {
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
   var custSaid = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).slice(-2).map(function (m) { return m.content; })).join(' '));
   if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder|search (it|for it|them|online)|find (it|them|out)|look (it|them) up|google it|check (it )?online|you (can )?(search|find|check))/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
+  var found = (digest.site && digest.site.images ? digest.site.images.map(function (im) { return im.url; }) : []).concat(digest.site && digest.site.logo ? [digest.site.logo] : []);
+  brief.real_photos = digest.identity.confidence === 'low' ? [] : brief.real_photos.filter(function (l) { return found.indexOf(String(l).split('|')[0].trim()) !== -1; });
+  if (!brief.real_photos.length) brief.real_photos = wrRealPhotos(digest);
+  if (brief.real_photos.length) brief.questions_for_john = brief.questions_for_john.filter(function (q) { return !/\b(photos?|pictures?|images?|gallery)\b/i.test(q); });
   var rounds = wrInfoRounds(input);
   brief.questions_for_john = brief.questions_for_john.filter(function (q) { return !/\b(look and feel|style|colou?rs?|website you like|design preference|brand colou?rs?)\b/i.test(q); });
   var asked = wrAskedTopics(input.conversation);
@@ -296,7 +312,7 @@ else {
 const fin = wrFinalize({ raw_text: rawText, error, input, digest: d.digest });
 const now = new Date().toISOString();
 const started = d.started_at || now;
-const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
+const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals, images: d.digest.site.images || [], logo: d.digest.site.logo || '', addresses: d.digest.site.addresses || [], hours: d.digest.site.hours || [], socials: d.digest.site.socials || [] }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
 // Hold the build until the details are enough (Ryan, 2026-09-28); nothing left to ask → build now with placeholders.
 const ask = wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john, hold: fin.hold });

@@ -43,7 +43,11 @@ function wrQueries(input) {
     { key: 'name_location', query: name + ' ' + loc },
     { key: 'reviews', query: name + ' reviews' },
     { key: 'socials', query: name + ' ' + loc + ' instagram facebook' },
-    { key: 'maps', query: name + ' ' + loc + ' address opening hours' }
+    { key: 'maps', query: name + ' ' + loc + ' address opening hours' },
+    { key: 'socials2', query: name + ' ' + loc + ' tiktok linkedin youtube' },
+    { key: 'press', query: name + ' ' + loc + ' news press award' },
+    { key: 'team', query: name + ' founder owner team' },
+    { key: 'photos', query: name + ' ' + loc + ' photos gallery' }
   ];
   if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); q.push({ key: 'competitors', query: 'top ' + svc + ' ' + loc + ' reviews' }); }
   return q;

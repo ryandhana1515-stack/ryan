@@ -235,3 +235,13 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   selling (private viewing CTA, no discount strips or countdowns, "Price on request" until the customer confirms),
   generated products labelled "Illustrative" until real photography arrives, a full Higgsfield shot package per
   chapter, and a QA report (blocker/high/medium/polish) that must be clean before the link goes out.
+
+- 2026-09-29 — **Real photos first; research everything about the company** (Ryan: "only give out the photo if the
+  website intelligence cannot find … if they already show the photos, download from there … search every single
+  thing about their company"). Website Intelligence now collects every photo on the company's own website and its
+  Facebook/Instagram profile pages, plus the structured facts there (address, opening hours, phones, emails,
+  socials, rating), and runs 13 searches (adds more socials, press/news, the people behind it, photos). The
+  builder uses the company's own photos first (film posters, galleries); Kling generates only what they do not
+  cover. Never another business's photos, never invented URLs, never for a business it could not confirm. Clinics
+  keep the anatomy film as the opening. Limit: Google Maps/Business photos are not reachable by our search tools;
+  the website and social pages are.

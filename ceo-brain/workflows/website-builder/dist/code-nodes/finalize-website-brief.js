@@ -451,10 +451,25 @@ function wbResearchPlan(input) {
     target_customers: wbStrArr(b.target_customers, 3), customer_objections: wbStrArr(b.customer_objections, 4),
     homepage_conversion_flow: wbStrArr(b.homepage_conversion_flow, 9), funnel_plan: wbStrArr(b.funnel_plan, 8),
     conversion_strategy: wbStrArr(b.conversion_strategy, 8), motion_3d_direction: wbStr(b.motion_3d_direction, 600),
-    medical_visual_direction: wbStr(b.medical_visual_direction, 700), placeholders_required: wbStrArr(b.placeholders_required, 8)
+    medical_visual_direction: wbStr(b.medical_visual_direction, 700), placeholders_required: wbStrArr(b.placeholders_required, 8),
+    real_photos: wbRealPhotosFrom(b, obj)
   };
-  var any = plan.primary_cta || plan.funnel_plan.length || plan.conversion_strategy.length || plan.motion_3d_direction || plan.medical_visual_direction || plan.homepage_conversion_flow.length;
+  var any = plan.real_photos.length || plan.primary_cta || plan.funnel_plan.length || plan.conversion_strategy.length || plan.motion_3d_direction || plan.medical_visual_direction || plan.homepage_conversion_flow.length;
   return any ? plan : null;
+}
+/** The customer's own photos Website Intelligence found online (Ryan, 2026-09-29: real photos first, generate only
+ *  what cannot be found): [{ url, use, alt }] from the brief's "url | use | alt" lines, else the research's site images. */
+function wbRealPhotosFrom(b, obj) {
+  var out = [];
+  (Array.isArray(b && b.real_photos) ? b.real_photos : []).forEach(function (l) {
+    var p = String(l || '').split('|').map(function (x) { return x.trim(); });
+    if (/^https?:\/\//i.test(p[0]) && out.length < 16) out.push({ url: p[0].slice(0, 400), use: (p[1] || 'gallery').toLowerCase(), alt: wbStr(p[2], 120) || '' });
+  });
+  if (!out.length && obj && obj.site && Array.isArray(obj.site.images) && !(obj.identity && obj.identity.confidence === 'low')) {
+    obj.site.images.slice(0, 16).forEach(function (im, i) { if (im && /^https?:\/\//i.test(im.url)) out.push({ url: String(im.url).slice(0, 400), use: ['hero', 'section', 'detail'][i] || 'gallery', alt: wbStr(im.alt, 120) || '' }); });
+    if (obj.site.logo) out.push({ url: String(obj.site.logo).slice(0, 400), use: 'logo', alt: 'logo' });
+  }
+  return out;
 }
 /** True when the plan carries a real anatomy visual (a specialty), not the general-practice "no anatomy renders" line. */
 function wbHasAnatomy(plan) { return !!(plan && plan.medical_visual_direction && /photoreal/i.test(plan.medical_visual_direction) && !/no anatomy renders/i.test(plan.medical_visual_direction)); }
@@ -466,6 +481,7 @@ function wbStrategySection(plan) {
   if (!plan) return '';
   var L = [WB_STRATEGY_MARK];
   if (plan.primary_cta) L.push('- Primary CTA everywhere: "' + plan.primary_cta + '"' + (plan.secondary_cta ? '; secondary: "' + plan.secondary_cta + '"' : '') + '.');
+  if (plan.real_photos && plan.real_photos.length) L.push(wbCap('- REAL PHOTOS of this business (CLIENT_REAL, found on its own website and profiles): use them FIRST — as the film chapter posters, in the galleries, product and about pages — load by URL (or copy into public/ if you can download), never label them illustrative; generated imagery only fills what these do not cover: ' + plan.real_photos.map(function (p) { return p.use + ' ' + p.url + (p.alt ? ' (' + p.alt + ')' : ''); }).join('; '), 1800));
   L.push(wbCap('- 3D parallax scroll film: ' + (plan.motion_3d_direction || 'a Higgsfield film of the business scrubbed by the scroll, layered depth parallax'), 650) + ' Pin the hero and drive the film video currentTime from scroll progress (GSAP ScrollTrigger or framer-motion useScroll), layer the photos in depth parallax, reveal each section and CTA over the film; respect prefers-reduced-motion (show the posters).');
   if (wbHasAnatomy(plan)) L.push(wbCap('- Medical visual (hero): ' + plan.medical_visual_direction, 750) + ' It is the opening scene of the scroll film: the Kling anatomy video, full-bleed, scrubbed by the scroll with the still photo as its poster (until attached, a slot labelled [ANATOMY VIDEO]). Never a cartoon or low-poly model.');
   else if (plan.medical_visual_direction) L.push(wbCap('- Medical visuals: ' + plan.medical_visual_direction, 500));
@@ -499,7 +515,7 @@ function wbFullSiteSection(brief) {
   L.push('- Build EVERY page below completely with real, persuasive copy for this business (no empty, "coming soon" or lorem pages), working navigation between them, and a call to action closing every page: ' + brief.pages.map(function (p) { return p.name; }).join(', ') + '.');
   var kind = wbKindOf(brief);
   L.push('- Homepage, in this order: ' + (kind ? WB_LUXURY_HOME : WB_HOME_BLUEPRINT) + '.');
-  if (kind) L.push('- Luxury retail at our top agency standard (Ryan, 2026-09-29): quiet, confident selling. The primary CTA is a private viewing or boutique appointment (plus enquire/reserve on every product); no discount strips, countdown timers, pop-ups or stock-urgency tricks; prices only as the customer supplies them, otherwise "Price on request" [CLIENT TO CONFIRM]. Every generated ' + WB_LUXURY_NOUN[kind] + ' is labelled "Illustrative — [CLIENT TO PROVIDE product photography]" until real photography, references or CAD arrive; never invent models, references, calibres, carats, materials, specifications or certifications. Concierge touches: WhatsApp concierge, boutique map, appointment form with preferred piece and time.');
+  if (kind) L.push('- Luxury retail at our top agency standard (Ryan, 2026-09-29): quiet, confident selling. The primary CTA is a private viewing or boutique appointment (plus enquire/reserve on every product); no discount strips, countdown timers, pop-ups or stock-urgency tricks; prices only as the customer supplies them, otherwise "Price on request" [CLIENT TO CONFIRM]. The customer\'s own photos (REAL PHOTOS) are used first and never labelled; only a generated ' + WB_LUXURY_NOUN[kind] + ' is labelled "Illustrative — [CLIENT TO PROVIDE product photography]"; never invent models, references, calibres, carats, materials, specifications or certifications. Concierge touches: WhatsApp concierge, boutique map, appointment form with preferred piece and time.');
   L.push('- On every page: a sticky header with the primary CTA, a sticky mobile CTA bar with WhatsApp, a short lead form (name, phone, what they need, PDPA consent) with a success state, a trust line next to every CTA. The Offer Landing Page has no navigation and the form above the fold; the Thank You page gives next steps and the WhatsApp button.');
   if (brief.industry_category === 'property') L.push('- Property (Ryan, 2026-09-28): the homepage opens on the cinematic walkthrough (outside to inside, room by room, a floor-plan mini-map); every listing and project page has its own gallery walkthrough and a Book a Viewing form. Label every generated image and film "Artist\'s impression"; real listing photos, prices, sizes, addresses and floor plans are [CLIENT TO PROVIDE]; follow CEA advertising rules, no misleading claims.');
   L.push('- ' + WB_APPLE + ' Scroll effects: ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
@@ -627,6 +643,16 @@ function wbImageShots(brief, input) {
       { key: 'section', aspect_ratio: '16:9', prompt: 'Environmental photograph showing the work of a ' + industry + ' business in Singapore, people at work seen from behind or at distance, natural light, ' + d.brand_personality + base },
       { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail shot related to ' + industry + ' (tools, product, texture or space), shallow depth of field, ' + d.palette + base }
     ];
+  }
+  var real = (wbResearchPlan(input) || { real_photos: [] }).real_photos.filter(function (p) { return p.use !== 'logo'; });
+  if (real.length) {
+    var used = {};
+    var anatomyHero = brief.mode === 'medical' && wbHasAnatomy(wbResearchPlan(input));
+    shots.forEach(function (sh) {
+      if (anatomyHero && sh.key === 'hero') return; // the clinic's film opens on its anatomy (Ryan, 2026-09-26)
+      var pick = real.filter(function (p) { return p.use === sh.key && !used[p.url]; })[0] || real.filter(function (p) { return !used[p.url] && ['hero', 'section', 'detail'].indexOf(p.use) === -1; })[0] || real.filter(function (p) { return !used[p.url]; })[0];
+      if (pick) { used[pick.url] = true; sh.real_url = pick.url; sh.source = 'client_real'; }
+    });
   }
   return shots;
 }

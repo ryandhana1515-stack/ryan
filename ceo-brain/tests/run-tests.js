@@ -574,7 +574,7 @@ test('hand-off → input, queries, identity: the customer\'s URL wins; without o
   const input = wr.wrInput(WR_HANDOFF);
   assert.strictEqual(input.website, 'https://prestigemotors.sg'); assert.strictEqual(input.website_source, 'customer_words'); assert.strictEqual(input.location, 'Singapore');
   const qs = wr.wrQueries(input).map((q) => q.key);
-  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'name_service', 'market', 'buyer_intent', 'competitors'], 'wider Google pass (Ryan, 2026-09-27)');
+  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'socials2', 'press', 'team', 'photos', 'name_service', 'market', 'buyer_intent', 'competitors'], 'everything about the company (Ryan, 2026-09-27/29)');
   assert.strictEqual(wr.wrIdentify(input, []).confidence, 'high');
   const noUrl = wr.wrInput(Object.assign({}, WR_HANDOFF, { message: 'mock-up please' }));
   const results = wr.wrSearchItems([{ json: { query_key: 'name', results: [{ title: 'Prestige Motors Singapore | BMW', url: 'https://prestigemotors.sg/', description: 'official' }, { title: 'Prestige Motors | Facebook', url: 'https://www.facebook.com/pm' }, { title: 'Prestige Motors reviews', url: 'https://www.google.com/maps/x' }] } }]);
@@ -624,7 +624,7 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => input[0], all: () => input }, $execution: { id: '7' }, $workflow: { id: 'w' }, Buffer, Date, JSON, Math });
   const run = (f, input) => vm.runInNewContext('(function(){' + src(f) + '})()', mk(input));
   store['Plan Research'] = run('plan-research.js', items([WR_HANDOFF])).map((i) => i.json);
-  assert.strictEqual(store['Plan Research'].length, 9, 'wider Google pass (Ryan, 2026-09-27)');
+  assert.strictEqual(store['Plan Research'].length, 13, 'everything about the company (Ryan, 2026-09-27/29)');
   store['Identify Company'] = run('identify-company.js', items(store['Plan Research'].map(() => ({ results: [{ title: 'Prestige Motors BMW', url: 'https://prestigemotors.sg/', description: 'x' }] })))).map((i) => i.json);
   assert.strictEqual(store['Identify Company'][0].identity.confidence, 'high'); assert.strictEqual(store['Identify Company'][0].homepage_url, 'https://prestigemotors.sg');
   store['Fetch Homepage'] = [{ html: WR_HTML, status: 200 }];
@@ -1292,6 +1292,48 @@ test('the Higgsfield shot package: every doctrine field on every chapter, matchi
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/`shot` package, every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
 });
+console.log('\n[27] Real photos first; research everything about the company (Ryan, 2026-09-29)');
+{
+  const HTML = '<html><head><title>Heure Atelier | Luxury Watches</title><meta property="og:image" content="https://heure.sg/media/boutique-hero.jpg">' +
+    '<script type="application/ld+json">{"@context":"https://schema.org","@type":"JewelryStore","name":"Heure Atelier","telephone":"+65 6123 4567","email":"hello@heure.sg","address":{"streetAddress":"391 Orchard Road #02-10","addressLocality":"Singapore","postalCode":"238872"},"openingHours":"Mo-Sa 11:00-20:00","sameAs":["https://www.instagram.com/heureatelier","https://www.facebook.com/heureatelier"],"logo":"https://heure.sg/media/logo.png","aggregateRating":{"ratingValue":"4.9","reviewCount":"212"}}</script></head>' +
+    '<body><h1>Timepieces, kept for generations</h1><img src="/media/watch-macro.jpg" alt="Tourbillon macro"><img src="/media/icon-arrow.svg"><img srcset="/media/salon-800.jpg 800w, /media/salon-1600.jpg 1600w" alt="Private salon">' +
+    '<img src="/media/tiny.jpg" width="40"><div style="background-image:url(\'/media/wrist.jpg\')"></div><a href="tel:+6561234567">Call</a><a href="https://wa.me/6591234567">WhatsApp</a><p>Monday to Saturday 11am - 8pm</p></body></html>';
+  test('every photo and structured fact on the company\'s own page is collected; icons, tiny images and svgs are not', () => {
+    const ims = wrE.wrImagesFromHtml(HTML, 'https://heure.sg/');
+    const urls = ims.map((i) => i.url);
+    ['https://heure.sg/media/boutique-hero.jpg', 'https://heure.sg/media/watch-macro.jpg', 'https://heure.sg/media/salon-1600.jpg', 'https://heure.sg/media/wrist.jpg'].forEach((u) => assert.ok(urls.includes(u), u + ' in ' + urls.join(', ')));
+    assert.ok(!urls.some((u) => /icon-arrow|tiny\.jpg|salon-800/.test(u)), urls.join(', '));
+    assert.ok(ims.some((i) => i.kind === 'logo' && /logo\.png/.test(i.url)));
+    const st = wrE.wrStructured(HTML);
+    assert.ok(st.addresses[0].includes('391 Orchard Road') && st.hours.includes('Mo-Sa 11:00-20:00') && st.phones.includes('+65 6123 4567') && st.phones.includes('6591234567') && st.emails.includes('hello@heure.sg') && st.socials.length === 2 && /4\.9 from 212/.test(st.rating), JSON.stringify(st));
+  });
+  test('the digest lists the real photos and facts as verified; the brief picks them (never invented URLs, never for an unconfirmed business)', () => {
+    const input = wrE.wrInput({ tenant_id: 'fusiontech', lead_id: 'l_h', contact_name: 'Ryan', company_name: 'Heure Atelier', industry: 'luxury watch boutique', phone: '+6587587170', channel: 'whatsapp', message: 'my site is heure.sg, make a better one', conversation_json: '[]', extracted_json: '{}', test_mode: false });
+    const identity = wrE.wrIdentify(input, []);
+    const d = wrE.wrDigest({ input, identity, results: [], pages: [{ url: 'https://heure.sg/', ok: true, html: HTML }] });
+    assert.ok(d.site.images.length >= 4 && /heure\.sg\/media\/logo\.png/.test(d.site.logo));
+    assert.ok(/REAL PHOTOS FOUND/.test(d.digest_text) && /boutique-hero\.jpg/.test(d.digest_text) && d.facts.some((f) => /Address: 391 Orchard Road/.test(f.fact) && /VERIFIED/.test(f.label)) && d.facts.some((f) => /Opening hours/.test(f.fact)));
+    const fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Heure Atelier', enough_to_build: 'yes', real_photos: ['https://heure.sg/media/watch-macro.jpg | hero | macro', 'https://stock.example.com/fake.jpg | section'], questions_for_john: ['Can you send photos of the boutique?'] }), input, digest: d });
+    assert.deepStrictEqual(fin.brief.real_photos, ['https://heure.sg/media/watch-macro.jpg | hero | macro'], 'only URLs research found');
+    assert.deepStrictEqual(fin.questions_for_john, [], 'never asks for photos it found');
+    const fb = wrE.wrFinalize({ error: 'x', input, digest: d });
+    assert.ok(fb.brief.real_photos[0].startsWith('https://heure.sg/media/boutique-hero.jpg | hero'), fb.brief.real_photos[0]);
+    const low = Object.assign({}, d, { identity: Object.assign({}, d.identity, { confidence: 'low' }) });
+    assert.deepStrictEqual(wrE.wrFinalize({ error: 'x', input, digest: low }).brief.real_photos, [], 'no photos from an unconfirmed business');
+  });
+  test('the builder uses the real photos first: posters come from them, only the rest is generated, and the Lovable prompt lists them', () => {
+    const research = JSON.stringify({ identity: { confidence: 'high' }, brief: { primary_cta: 'Book a private viewing', real_photos: ['https://heure.sg/media/boutique-hero.jpg | hero', 'https://heure.sg/media/watch-macro.jpg | section | Tourbillon macro', 'https://heure.sg/media/logo.png | logo'] } });
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website for my watch boutique', research_json: research } });
+    assert.strictEqual(r.image_shots[0].real_url, 'https://heure.sg/media/boutique-hero.jpg'); assert.strictEqual(r.image_shots[1].real_url, 'https://heure.sg/media/watch-macro.jpg');
+    assert.ok(!r.image_shots[2].real_url, 'the detail shot is generated (no third real photo)');
+    assert.ok(/REAL PHOTOS of this business/.test(r.build_prompt) && r.build_prompt.includes('https://heure.sg/media/watch-macro.jpg') && /never labelled/.test(r.build_prompt));
+    const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: photoreal beating heart with coronary arteries', real_photos: ['https://heart.sg/clinic.jpg | hero'] } });
+    const m = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heart Clinic', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: med } });
+    assert.ok(!m.image_shots[0].real_url && m.image_shots[1].real_url === 'https://heart.sg/clinic.jpg', 'the anatomy film keeps the clinic hero');
+    const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+    assert.ok(/`real_url`/.test(routine) && /do NOT generate it/.test(routine) && /the customer's own photo/.test(routine));
+  });
+}
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

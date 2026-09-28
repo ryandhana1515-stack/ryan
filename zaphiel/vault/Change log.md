@@ -304,3 +304,9 @@ tags: [zaphiel, changelog]
   doctrine-22 shot package on every film chapter), QA report `docs/qa-report.md` in the doctrine block. Detection
   fixes: "showroom" alone is no longer a car dealer; watch and jewellery house names recognised. Routine: e2 writes
   the full shot package into the Higgsfield prompt, luxury chapters rule, g1 requires a clean QA report. Tests 115/115.
+- 2026-09-29 — **Real photos + deeper research** (`research.js`): `wrImagesFromHtml` (og/twitter images, img src,
+  data-src, largest srcset, CSS backgrounds, JSON-LD images/logo; icons, svgs, gifs and tiny images skipped),
+  `wrJsonLd` / `wrStructured` (address, hours, phones incl. tel/wa.me links, emails, socials, rating), digest REAL
+  PHOTOS section and verified facts, `wrRealPhotos` + brief key `real_photos` (only URLs research found), 13 queries,
+  7 pages + 2 social profiles read. `brief.js`: `wbRealPhotosFrom`, `real_url` on image shots, REAL PHOTOS line in
+  every Lovable prompt. Routine: shots with `real_url` are not generated. Tests 118/118.
