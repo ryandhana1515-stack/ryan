@@ -257,3 +257,14 @@ tags: [zaphiel, changelog]
   your … website, … so it is right for you"). John's next turn sends the answer back to Website Intelligence while a
   `website_info_needed` task is open and no `website_build` task exists. Max 2 rounds (`WR_MAX_INFO_ROUNDS`), "not
   sure" counts as enough. John's hand-off reply now says the team researches first. Tests 100/100.
+- 2026-09-28 — **Property walkthrough** (Ryan; not built, capability only). Property detection widened (villas,
+  penthouses, show flats, new launches, interior designers; construction checked first); property photos (facade,
+  living room, bedroom + view) and a 5-scene `film_brief` walkthrough; new `walkthrough` scroll effect; a property line
+  in the FULL WEBSITE block ("Artist's impression", CEA); Website Intelligence plans the walkthrough; the build worker
+  makes 5 clips for property. Tests 101/101.
+- 2026-09-28 — **Customer's look-and-feel wish required; silence for non-customers** (Ryan). `WR_STYLE_Q` /
+  `wrStyleKnown` in Website Intelligence; `RB_INAPPROPRIATE` and `notACustomer` in John (spam, scams, sexual/abusive,
+  pranks, vendors, job seekers → no reply); business owners saying "we offer …" stay customers. Tests 103/103.
+- 2026-09-28 — **No look question; property rooms only** (Ryan). `WR_STYLE_Q` removed: look/style/colour questions are
+  filtered out; `WR_ROOMS_Q` / `wrRoomsKnown` ask property customers for rooms and features; the Website Intelligence
+  prompt lists the real facts (sell, services, location, opening hours). Tests 103/103.

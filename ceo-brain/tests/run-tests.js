@@ -603,7 +603,8 @@ test('finalize: model JSON is coerced to the brief; fallback when the model fail
   const input = wr.wrInput(WR_HANDOFF);
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [{ url: 'https://prestigemotors.sg', ok: true, html: WR_HTML }] });
   const ok = wr.wrFinalize({ raw_text: '```json\n' + JSON.stringify({ company_name: 'Prestige Motors', primary_conversion: 'BOOK TEST DRIVE', services: ['New BMW sales', 'Certified pre-owned'], questions_for_john: [] }) + '\n```', input, digest });
-  assert.strictEqual(ok.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(ok.provider, 'anthropic'); assert.strictEqual(ok.needs_john, false);
+  assert.strictEqual(ok.status, 'READY_FOR_WEBSITE_CREATOR'); assert.strictEqual(ok.provider, 'anthropic');
+  assert.strictEqual(ok.needs_john, false); assert.strictEqual(ok.hold, false, 'never asks how it should look (Ryan, 2026-09-28)');
   assert.deepStrictEqual(ok.brief.services, ['New BMW sales', 'Certified pre-owned']); assert.ok(ok.brief.recommended_sitemap.length, 'missing lists filled from the deterministic brief');
   assert.ok(/^STATUS:\nREADY_FOR_WEBSITE_CREATOR/.test(ok.brief_text) && /ONE VERSION/.test(ok.brief_text) && !/VARIATIONS REQUIRED/.test(ok.brief_text) && /WEBSITE CREATOR INSTRUCTION/.test(ok.brief_text) && /JOHN — FUSION AI SALES AGENT/.test(ok.brief_text));
   assert.ok(!/\$\s?\d/.test(ok.brief_text), 'no prices');
@@ -635,9 +636,9 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   store['Compose Research Prompt'] = run('compose-research-prompt.js', items([{}])).map((i) => i.json);
   assert.strictEqual(store['Compose Research Prompt'][0].role_source, 'vault'); assert.ok(/^FUSION AI — WEBSITE INTELLIGENCE AGENT/.test(store['Compose Research Prompt'][0].system_prompt)); assert.ok(/RESEARCH DIGEST/.test(store['Compose Research Prompt'][0].user_prompt));
   const fin = run('finalize-brief.js', items([{ error: { message: 'Payment required' } }]))[0].json;
-  assert.strictEqual(fin.ready, true); assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.event.type, 'website.info_needed'); assert.ok(fin.brief_text.length > 2000); assert.ok(JSON.parse(fin.research_json).site.pages_read.length === 4);
+  assert.strictEqual(fin.ready, true); assert.strictEqual(fin.held_for_details, false); assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.event.type, 'website.info_needed'); assert.ok(fin.brief_text.length > 2000); assert.ok(JSON.parse(fin.research_json).site.pages_read.length === 4);
   const fin2 = run('finalize-brief.js', items([{ text: JSON.stringify({ company_name: 'Prestige Motors', primary_conversion: 'BOOK TEST DRIVE', questions_for_john: [] }) }]))[0].json;
-  assert.strictEqual(fin2.event.type, 'website.research'); assert.strictEqual(fin2.needs_john, false);
+  assert.strictEqual(fin2.event.type, 'website.research'); assert.strictEqual(fin2.needs_john, false); assert.strictEqual(fin2.ready, true, 'enough details incl. the look → build');
 });
 
 console.log('\n[11] funnels + construction (Ryan, 2026-09-26: the builder makes funnels and sites for every industry)');
@@ -1119,7 +1120,7 @@ test('not enough details → Website Intelligence holds the build and John asks 
   assert.ok(/ready: fin\.status === 'READY_FOR_WEBSITE_CREATOR' && !\(fin\.hold && ask\.questions\.length\)/.test(glue), 'the creator is not called while held');
 });
 test('enough details → build at once; nice-to-have questions are asked while it builds', () => {
-  const input = mkInput([]);
+  const input = mkInput([], 'build me a website for Ah Seng Kopi, warm classic kopitiam look');
   const fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'yes', questions_for_john: ['Do you have a logo?'] }), input, digest: lowDigest(input) });
   assert.strictEqual(fin.hold, false);
   assert.ok(/while our team builds/.test(wrE.wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: true, hold: fin.hold }).text));
@@ -1152,6 +1153,46 @@ test('John: the customer\'s answer goes back to Website Intelligence while its q
   assert.ok(run.fin.result.recommended_reply.includes('passed that to our website team'), run.fin.result.recommended_reply);
   const built = simulate(lead, { atlasRows: open.concat([{ task_type: 'website_build', lead_id: 'x', payload_json: '{}' }]), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(built.fin.website_requested, false, 'the build already started: no second research');
+});
+console.log('\n[22] Property: cinematic walkthrough from outside to inside (Ryan, 2026-09-28)');
+test('houses, condos, show flats and interior designers get the walkthrough site', () => {
+  ['ABC Realty, we sell condos and landed homes', 'I am an interior designer', 'new launch condo developer', 'we rent out villas in Bali'].forEach((t) => assert.strictEqual(wb.wbDetectCategory(t), 'property', t));
+  assert.notStrictEqual(wb.wbDetectCategory('our in-house team runs a tuition centre'), 'property');
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website for my property agency' } });
+  assert.strictEqual(r.brief.industry_category, 'property');
+  assert.strictEqual(r.film_brief.scenes.length, 5); assert.strictEqual(r.film_brief.mode, 'walkthrough');
+  assert.ok(/facade at golden hour/.test(r.image_shots[0].prompt) && /living room/.test(r.image_shots[1].prompt) && /no people/.test(r.image_shots[2].prompt));
+  const p = r.build_prompt;
+  assert.ok(/Cinematic home walkthrough/.test(p) && /floor-plan mini-map/.test(p) && /Artist's impression/.test(p) && /CEA advertising rules/.test(p) && /Book a Viewing/.test(p), p.slice(-2500));
+  assert.ok(!/guarantee|\$\s?\d/i.test(p) && p.length <= wb.WB_MAX_PROMPT);
+  assert.ok(/cinematic home walkthrough/.test(require('../agents/website-intelligence/research.js').wrMotionFor('real estate', '')));
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/5 walkthrough\s+scenes/.test(routine) && /Artist's impression/.test(routine));
+});
+console.log('\n[23] Every website starts from the customer\'s details; no replies to non-customers (Ryan, 2026-09-28)');
+test('never asks how the site should look; property asks for the rooms (Ryan, 2026-09-28)', () => {
+  const described = (msg, ind) => { const i = mkInput([], msg); i.industry = ind; return i; };
+  let input = described('Build a website for Ah Seng Kopi, a kopitiam selling kopi and kaya toast to office workers in Tiong Bahru', 'kopitiam');
+  const modelAsksLook = JSON.stringify({ company_name: 'Ah Seng Kopi', enough_to_build: 'no', questions_for_john: ['How would you like the website to look and feel, any colours or style?'] });
+  let fin = wrE.wrFinalize({ raw_text: modelAsksLook, input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, false, 'a look question alone never holds the build'); assert.ok(!fin.questions_for_john.some((q) => /look|colou?r|style/i.test(q)));
+  input = described('Build a website for Skyline Homes, we sell landed homes and condos', 'real estate');
+  fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Skyline Homes', enough_to_build: 'yes', questions_for_john: [] }), input, digest: lowDigest(input) });
+  assert.strictEqual(fin.hold, true); assert.strictEqual(fin.questions_for_john[0], wrE.WR_ROOMS_Q);
+  input = described('Website for Skyline Homes: a 4 bedroom landed home with a pool, open kitchen and rooftop terrace', 'real estate');
+  assert.strictEqual(wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Skyline Homes', enough_to_build: 'yes', questions_for_john: [] }), input, digest: lowDigest(input) }).hold, false, 'rooms given');
+});
+test('no reply to sexual, abusive or prank messages, scams, job seekers or vendors; rude real customers still get an answer', () => {
+  ['are you single? send me a pic of you', 'hahahaha just for fun', 'fuck you stupid bot', 'I am looking for a job, resume attached', 'crypto signals, click here'].forEach((m) => {
+    const run = simulate(Object.assign({}, waLead, { message: m }), { modelText: JSON.stringify(aiObj({ intent: 'ai_automation_enquiry', recommended_reply: 'Hi! Happy to help.' })), config: { auto_send_low_risk: 'true' } });
+    assert.strictEqual(run.fin.result.recommended_reply, '', m); assert.strictEqual(run.fin.auto_send, false, m); assert.strictEqual(run.fin.website_requested, false, m);
+  });
+  const { classifyWithRules } = require('../agents/sales-qualification/rules.js');
+  ['We offer aircon servicing, can you build us a website?', 'Our services are home cleaning, we need a booking system on WhatsApp'].forEach((m) => assert.notStrictEqual(classifyWithRules({ message: m, conversation_history: [] }).intent, 'vendor_or_job_pitch', m));
+  assert.strictEqual(classifyWithRules({ message: 'Hi, we offer SEO services and guest posts for your site', conversation_history: [] }).intent, 'spam');
+  assert.strictEqual(classifyWithRules({ message: 'Freelancer available, hire me for your projects', conversation_history: [] }).intent, 'vendor_or_job_pitch');
+  const rude = simulate(Object.assign({}, waLead, { message: 'why is this taking so long, my shop website still not ready' }), { modelText: JSON.stringify(aiObj({ recommended_reply: 'Sorry for the wait, Ryan. Your mock-up is being built.' })), config: { auto_send_low_risk: 'true' } });
+  assert.strictEqual(rude.fin.auto_send, true);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

@@ -38,11 +38,12 @@ var WB_SCROLL_EFFECTS = {
   horizontal_gallery: 'Horizontal gallery: a pinned section that scrolls sideways through products, rooms or projects',
   split_reveal: 'Split reveal: two panels slide apart to reveal the offer and its call to action',
   stat_counters: 'Proof in motion: numbers and review stars count up and cards scale in as they enter (placeholders until confirmed)',
+  walkthrough: 'Cinematic home walkthrough: the Kling film moves from the street and the facade through the front door into each room as the visitor scrolls, the room name and its features appear beside it, and a floor-plan mini-map highlights where the visitor is',
   light_sweep: 'Premium golden finish: a slow light sweep across the hero type and accents; champagne-gold accents for premium and luxury brands, otherwise the brand colours'
 };
 var WB_EFFECTS_BY_CATEGORY = {
   automotive: ['film_scrub', 'product_reveal', 'depth_layers', 'horizontal_gallery', 'light_sweep'],
-  property: ['film_scrub', 'zoom_through', 'depth_layers', 'horizontal_gallery', 'split_reveal', 'light_sweep'],
+  property: ['walkthrough', 'film_scrub', 'zoom_through', 'depth_layers', 'horizontal_gallery', 'light_sweep'],
   healthcare: ['film_scrub', 'zoom_through', 'sticky_story', 'stat_counters', 'split_reveal'],
   food_beverage: ['film_scrub', 'product_reveal', 'text_mask', 'horizontal_gallery', 'depth_layers', 'light_sweep'],
   retail: ['film_scrub', 'product_reveal', 'horizontal_gallery', 'text_mask', 'light_sweep'],
@@ -109,10 +110,10 @@ var WB_CATEGORY_RULES = [
   ['healthcare', WB_MEDICAL_RE],
   ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
-  ['property', /\b(property|real estate|realtor|condo|hdb|landed|listing|tenant|landlord|rental)\b/i],
+  ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
+  ['property', /\b(property|properties|real estate|realtor|condo(minium)?s?|hdb|landed|listings?|tenant|landlord|rental|villas?|bungalows?|penthouses?|apartments?|show ?flats?|new launch(es)?|property developer|houses? for (sale|rent)|interior design(er|ers)?)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],
   ['logistics', /\b(logistic\w*|delivery|deliveries|courier|freight|shipping|shipment|parcel|warehouse|driver|fleet|last.mile)\b/i],
-  ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['home_services', /\b(plumb\w*|electric(ian|al)s?|aircon|air-con|renovat\w*|contractors?|cleaning|pest|handyman|movers?|moving|landscap\w*|roofing|roofers?|painters?)\b/i],
   ['education', /\b(tuition|tutor|school|academy|course|training centre|enrichment|students?|learning|kindergarten|preschool)\b/i],
   ['retail', /\b(retail|shop|store|boutique|products?|merchandise|e-?commerce|online store)\b/i],
@@ -390,6 +391,7 @@ function wbFullSiteSection(brief) {
   L.push('- Build EVERY page below completely with real, persuasive copy for this business (no empty, "coming soon" or lorem pages), working navigation between them, and a call to action closing every page: ' + brief.pages.map(function (p) { return p.name; }).join(', ') + '.');
   L.push('- Homepage, in this order: ' + WB_HOME_BLUEPRINT + '.');
   L.push('- On every page: a sticky header with the primary CTA, a sticky mobile CTA bar with WhatsApp, a short lead form (name, phone, what they need, PDPA consent) with a success state, a trust line next to every CTA. The Offer Landing Page has no navigation and the form above the fold; the Thank You page gives next steps and the WhatsApp button.');
+  if (brief.industry_category === 'property') L.push('- Property (Ryan, 2026-09-28): the homepage opens on the cinematic walkthrough (outside to inside, room by room, a floor-plan mini-map); every listing and project page has its own gallery walkthrough and a Book a Viewing form. Label every generated image and film "Artist\'s impression"; real listing photos, prices, sizes, addresses and floor plans are [CLIENT TO PROVIDE]; follow CEA advertising rules, no misleading claims.');
   L.push('- ' + WB_APPLE + ' Scroll effects: ' + wbEffectsFor(brief.industry_category).map(function (e, i) { return (i + 1) + ') ' + e.text; }).join('; ') + '.');
   return wbCap(L.join('\n'), 3200);
 }
@@ -448,6 +450,13 @@ function wbImageShots(brief, input) {
       { key: 'section', aspect_ratio: '16:9', prompt: 'Low-angle three-quarter view of a ' + car + ' driving through Singapore at blue hour, motion blur on the road, headlights on, cinematic colour grade' + base },
       { key: 'detail', aspect_ratio: '3:2', prompt: 'Close-up detail of a ' + car + ' interior, leather and stitching, ambient cabin lighting, premium showroom mood' + base }
     ];
+  } else if (cat === 'property') {
+    var pbase = ', Singapore, photorealistic architectural visualisation, cinematic natural light, wide-angle interior photography, no people, no text, no logos, no watermarks';
+    shots = [
+      { key: 'hero', aspect_ratio: '16:9', prompt: 'Cinematic wide shot of a modern tropical home facade at golden hour, warm light glowing from floor-to-ceiling windows, lush landscaping, calm pool in the foreground' + pbase },
+      { key: 'section', aspect_ratio: '16:9', prompt: 'Spacious double-height living room with floor-to-ceiling windows, natural timber, stone and linen, soft afternoon light, view to greenery' + pbase },
+      { key: 'detail', aspect_ratio: '3:2', prompt: 'Serene master bedroom opening onto a balcony with a skyline view at dusk, warm ambient lighting, premium materials' + pbase }
+    ];
   } else if (brief.mode === 'medical' && wbHasAnatomy(wbResearchPlan(input))) {
     var anat = wbResearchPlan(input).medical_visual_direction.replace(/^Specialty: [^.]*\.\s*/i, '').replace(/^Hero and section visuals:\s*/i, '');
     var mbase = ', photorealistic medical visualization, anatomically accurate, dark clean studio background, cinematic lighting, 8k detail, no text, no labels, no logos, no watermarks, not cartoon, not low-poly';
@@ -482,6 +491,20 @@ function wbFilmBrief(brief, input) {
   var hero = shots[0] ? shots[0].prompt : '';
   var section = shots[1] ? shots[1].prompt : '';
   var detail = shots[2] ? shots[2].prompt : '';
+  if (brief.industry_category === 'property') {
+    return {
+      duration_seconds: 25,
+      mode: 'walkthrough',
+      scenes: [
+        { at: '0-5s', scene: hero + '; slow drone push-in from the street towards the front door', section: 'hero: the home and the one action (book a viewing)' },
+        { at: '5-10s', scene: 'The front door opens and the camera glides into the entrance foyer, light spilling in, photorealistic architectural visualisation, no people', section: 'arrival: the promise of the home' },
+        { at: '10-15s', scene: section + '; slow dolly through the living room towards the windows', section: 'living spaces and features' },
+        { at: '15-20s', scene: 'Slow glide through an open kitchen and dining area with an island, premium finishes, warm evening light, photorealistic, no people', section: 'kitchen, dining and finishes' },
+        { at: '20-25s', scene: detail + '; the camera drifts through the bedroom and out onto the balcony view', section: 'bedrooms, the view, book a viewing' }
+      ],
+      rules: ['no text, logos or people in the film', 'one smooth continuous camera move, outside to inside', 'label every generated visual on the site "Artist\'s impression"', 'tone: ' + brief.design_direction.brand_personality]
+    };
+  }
   return {
     duration_seconds: 15,
     mode: 'single-shot',

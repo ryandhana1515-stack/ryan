@@ -32,7 +32,7 @@ function wrIsMedical(text) { return /\b(doctor|doctors|clinic|clinics|dental|den
 var WR_MOTION = [
   [/construct\w*|builder|contractor|renovat\w*|interior|architect\w*/i, 'scroll-driven 3D build-up: the structure assembles floor by floor as the visitor scrolls, ending on the finished project at golden hour'],
   [/car|auto|motor|dealer|vehicle/i, 'the car rotates in 3D as the visitor scrolls, lights sweeping across the bodywork, then a slow drive-by'],
-  [/property|real estate|realtor|condo/i, '3D architectural fly-through of the property, from the street into the living space, sunlight moving across the rooms'],
+  [/property|properties|real estate|realtor|condo|landed|villa|bungalow|penthouse|apartment|show ?flat|new launch|interior design/i, 'cinematic home walkthrough scrubbed by the scroll: from the street and the facade at golden hour, through the front door, into the living room, kitchen and bedrooms, ending on the view from the balcony; a floor-plan mini-map shows where the visitor is; generated visuals labelled "Artist\'s impression"'],
   [/restaurant|cafe|f&b|food|bakery|catering/i, 'slow-motion 3D of the signature dish being assembled ingredient by ingredient, steam and texture in macro'],
   [/logistic|delivery|courier|freight|warehouse/i, 'a 3D map of Singapore with parcels and vehicles moving along live routes as the visitor scrolls'],
   [/salon|spa|beauty|wellness|nail|hair/i, 'slow-motion macro of textures and treatment rituals, soft light moving across skin and product'],
@@ -371,6 +371,15 @@ function wrBriefText(brief, digest) {
 var WR_ASK_MARK = 'quick detail';
 var WR_HOLD_MARK = 'before our team builds your';
 var WR_MAX_INFO_ROUNDS = 2;
+// Our team designs the look (Ryan, 2026-09-28: "John won't ask the customer how they want it to look … give it the best
+// one"). The only design detail a customer must give is for property: the rooms and features for the walkthrough.
+var WR_ROOMS_Q = 'Which rooms and features should the walkthrough show? For example how many bedrooms and bathrooms, the living and kitchen areas, and any pool, balcony or view.';
+var WR_ROOMS_RE = /\b(\d+\s*(bed|bedroom|br|bhk|room|bath|bathroom)s?|bedrooms?|bathrooms?|studio|living room|kitchen|pool|balcony|garden|rooftop|penthouse|loft|sq\s?ft|sqft|square feet|sqm|floor ?plan|storey|story)\b/i;
+/** Property only: true when the customer has described the rooms/features, or left it to us. */
+function wrRoomsKnown(input) {
+  var said = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return m.content; })).join(' '));
+  return WR_ROOMS_RE.test(said) || /\b(up to you|you decide|anything is fine|not sure|no preference|just build|go ahead|placeholders?)\b/i.test(said);
+}
 /** How many times John has already asked for website details in this conversation. */
 function wrInfoRounds(input) {
   var conv = (input && Array.isArray(input.conversation)) ? input.conversation : [];
@@ -405,6 +414,14 @@ function wrFinalize(o) {
   var custSaid = String([input.message || ''].concat((input.conversation || []).filter(function (m) { return m && m.role !== 'agent'; }).slice(-2).map(function (m) { return m.content; })).join(' '));
   if (/\b(not sure|no idea|don'?t know|dont know|just build|go ahead|anything is fine|up to you|placeholder)/i.test(custSaid) && wrInfoRounds(input) > 0) brief.enough_to_build = 'yes';
   var rounds = wrInfoRounds(input);
+  // Never ask how it should look (we design it); property must describe the rooms for the walkthrough.
+  brief.questions_for_john = brief.questions_for_john.filter(function (q) { return !/\b(look and feel|style|colou?rs?|website you like|design preference|brand colou?rs?)\b/i.test(q); });
+  var isProperty = /\b(property|properties|real estate|realtor|condo|landed|villa|bungalow|penthouse|apartment|show ?flat|new launch|interior design)/i.test(String(input.industry || '') + ' ' + String(brief.industry || '') + ' ' + String(input.message || ''));
+  if (status === 'READY_FOR_WEBSITE_CREATOR' && isProperty && !wrRoomsKnown(input) && rounds < WR_MAX_INFO_ROUNDS) {
+    if (brief.questions_for_john.indexOf(WR_ROOMS_Q) === -1) brief.questions_for_john = [WR_ROOMS_Q].concat(brief.questions_for_john);
+    brief.enough_to_build = 'no';
+  }
+  if (!brief.questions_for_john.length && brief.enough_to_build === 'no') brief.enough_to_build = 'yes';
   var hold = status === 'READY_FOR_WEBSITE_CREATOR' && brief.enough_to_build === 'no' && rounds < WR_MAX_INFO_ROUNDS && brief.questions_for_john.length > 0;
   return { status: status, brief: brief, brief_text: text, questions_for_john: brief.questions_for_john, provider: provider, fallback_used: fallbackUsed, fallback_reason: reason, identity_confidence: brief.identity_confidence, needs_john: brief.questions_for_john.length > 0, enough: brief.enough_to_build === 'yes', info_rounds: rounds, hold: hold };
 }
@@ -443,4 +460,4 @@ function wrCustomerAsk(o) {
   return { send: send, channel: channel || '', to: to || '', text: text, questions: qs, message_id: 'msg_wi_' + String(input.lead_id || 'x').replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + Date.now().toString(36) };
 }
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { wrCustomerAsk: wrCustomerAsk, WR_ASK_MARK: WR_ASK_MARK, WR_HOLD_MARK: WR_HOLD_MARK, WR_MAX_INFO_ROUNDS: WR_MAX_INFO_ROUNDS, wrInfoRounds: wrInfoRounds, wrEnoughFallback: wrEnoughFallback, WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };
+if (typeof module !== 'undefined') module.exports = { wrCustomerAsk: wrCustomerAsk, WR_ASK_MARK: WR_ASK_MARK, WR_HOLD_MARK: WR_HOLD_MARK, WR_MAX_INFO_ROUNDS: WR_MAX_INFO_ROUNDS, wrInfoRounds: wrInfoRounds, WR_ROOMS_Q: WR_ROOMS_Q, wrRoomsKnown: wrRoomsKnown, wrEnoughFallback: wrEnoughFallback, WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };

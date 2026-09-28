@@ -5,6 +5,34 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **We design the look; we only ask for real facts** (Ryan: "John won't ask the customer how you want it
+  to look … the website intelligence … will generate the best 3D scrolling website … how it looks is only for property,
+  the property needs to give the room … only needs to know the important details like opening hours … the real
+  things"). Replaces the look-and-feel part of the entry below. Website Intelligence and the Creator choose the best
+  high-converting 3D scroll design themselves and never ask about style or colours. The customer is asked only for
+  real facts the research could not find (what they sell, main services, location and opening hours for walk-in
+  businesses). Property is the one exception: the rooms and features for the walkthrough (bedrooms, bathrooms, living
+  and kitchen areas, pool, balcony, view).
+
+- 2026-09-28 — **Every website starts from the customer's details; no replies to non-customers** (Ryan: "the customer
+  must give the details … how the website wants to be … for every single website … the website creator must be able
+  to build any website … not those weird inappropriate ones … just don't respond to them"). (1) Before any build John
+  (or ATLAS) makes sure we know what the business does/sells, who its customers are, what the site should achieve AND
+  how the customer wants it to look and feel (style, colours or a site they like), unless they leave it to us ("up to
+  you", "just build"); max two rounds. (2) Any website for any business is built (business site, store, booking site,
+  landing page, funnel, web app). (3) No reply at all to sexual, abusive or prank messages, people chatting for fun,
+  scams, and people selling to FusionTech (freelancers, agencies, job seekers). A business owner who says "we offer …"
+  and asks for a website or automation is a customer. Judged only by what the message says, never by who sends it
+  (never nationality, race, religion or language) — Zaphiel declined a nationality-based filter.
+
+- 2026-09-28 — **Property sites: a cinematic walkthrough of the home** (Ryan: "be able to build property houses …
+  of the house or inside, cinematic scroll, parallax, everything … don't actually build it"). Agents, developers and
+  new launches, condos, landed homes, villas, show flats and interior designers get a 5-scene Kling walkthrough scrubbed
+  by the scroll (facade at golden hour → front door → living room → kitchen and dining → bedroom and balcony view),
+  a floor-plan mini-map, room-by-room features, depth parallax and a gallery walkthrough on every listing page. Every
+  generated image and clip is labelled "Artist's impression"; real photos, prices, sizes, addresses and floor plans are
+  [CLIENT TO PROVIDE]; CEA advertising rules apply. Capability only: nothing was built.
+
 - 2026-09-28 — **Build only with enough details; John asks first** (Ryan: "the website intelligence only asks the
   website creator to create the website when he got all the enough sufficient details"). Replaces "the mock-up starts
   from the name alone and is never delayed" (2026-09-27, the placeholder-first part). Website Intelligence reads what
