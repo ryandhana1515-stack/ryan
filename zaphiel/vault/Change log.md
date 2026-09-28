@@ -236,3 +236,12 @@ tags: [zaphiel, changelog]
   approval because John flagged the late mock-up → John now always answers (see Decisions). (3) The Free & Easy
   mock-up link *was* sent to Ryan at 16:06, but the Build Record never wrote it into the conversation, so John kept
   promising it → the mock-up message is now logged and John sees it. Tests 91/91.
+- 2026-09-27 (night) — **3D parallax scroll-film websites with Kling** (Ryan). Replaces the flat-site rule. Website
+  Intelligence plans a scroll film per industry again (clinics: the anatomy film); the creator's design rules, strategy
+  section and single variation (`parallax_film_site`) ask Lovable for a Kling film scrubbed by the scroll with layered
+  depth parallax; John's websites answer mentions it; the build worker (live) makes three Kling clips per mock-up
+  (image_to_video from the Kling photos) and hands them to Lovable. Kling is attached to the routine. Tests 91/91.
+- 2026-09-27 (night) — **Apple-grade websites, ATLAS's own voice, a wider Google pass** (Ryan). The creator's build
+  prompt now carries an Apple-grade standard and 5–6 scroll effects per industry (`wbEffectsFor`), prompt cap 14000;
+  John's replies ask ATLAS's questions in ATLAS's name (`atIsAtlasQuestion`, `AT_VOICE`); Website Intelligence runs 9
+  searches (adds socials, maps listing, competitors) and reads 5 pages, and reads the customer's own description first.

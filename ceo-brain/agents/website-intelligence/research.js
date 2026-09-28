@@ -10,7 +10,7 @@ var WR_MAX_PAGE_TEXT = 3500;
 var WR_SOCIAL_HOSTS = ['facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'x.com', 'twitter.com'];
 var WR_DIRECTORY_HOSTS = ['google.com', 'maps.google', 'yelp.com', 'tripadvisor', 'wikipedia.org', 'yellowpages', 'sgpbusiness', 'recordowl', 'streetdirectory', 'carousell', 'shopee', 'lazada', 'glassdoor', 'indeed', 'bing.com', 'duckduckgo', 'reddit.com', 'hardwarezone', 'mycareersfuture', 'acra.gov.sg', 'trustpilot', 'sgcarmart'];
 var WR_PAGE_RE = /(about|service|product|treatment|contact|faq|pricing|price|package|booking|book|project|portfolio|case|testimonial|review|menu|shop|gallery|location)/i;
-var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and keep the page FLAT as the MOTION_3D_DIRECTION says (no scroll animation, parallax, 3D or video backgrounds). For medical clients follow the MEDICAL_VISUAL_DIRECTION exactly: photorealistic, medically accurate anatomy (for example the heart beating with blood flowing through the arteries and vessels), shown in the hero as a short silent video that loops on its own (not tied to scrolling) with the still photo as its poster; never cartoon.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
+var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and build the 3D parallax scroll film the MOTION_3D_DIRECTION describes (a Kling film scrubbed by the scroll, layered depth parallax, sections and CTAs over the film) without weakening the sales structure. For medical clients follow the MEDICAL_VISUAL_DIRECTION exactly: photorealistic, medically accurate anatomy (for example the heart beating with blood flowing through the arteries and vessels), as the opening scene of the scroll film (a Kling video scrubbed by the scroll, the still photo as its poster); never cartoon.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
 // ---- Sales strategy the creator must build (Ryan, 2026-09-26: funnels, the most high-converting sales sites, 3D, realistic anatomy for doctors) ----
 // Medical specialty -> photorealistic, medically accurate anatomy (educational, never cartoon or low-poly 3D).
 var WR_MED_SPECIALTY = [
@@ -40,9 +40,14 @@ var WR_MOTION = [
   [/school|tuition|academy|education|course/i, 'a 3D journey from a confused student to confident results, pages and ideas unfolding as the visitor scrolls'],
   [/retail|shop|store|brand|product|e-?commerce/i, 'the hero product rotating in 3D with exploded-view details revealing materials and features on scroll']
 ];
-var WR_FLAT = 'Flat, fast page (Ryan, 2026-09-27): no scroll animations, no parallax, no 3D, no scroll film and no video backgrounds (the one exception is a specialist clinic\'s realistic anatomy loop in the hero); only simple hover and focus states. The page sells through the offer, the headline, proof, answered objections and the repeated call to action.';
+var WR_PARALLAX = '3D parallax scroll film (Ryan, 2026-09-27): a Kling film of this business is pinned in the hero and scrubbed by the scroll (it plays forward as the visitor scrolls), with layered depth parallax (foreground, subject and background moving at different speeds) and the sections and CTAs revealed over the film; the sales structure stays (one offer, outcome headline, proof, objections answered, the CTA repeated); fast on mobile, with prefers-reduced-motion showing stills.';
 function wrMotionFor(industry, text) {
-  return WR_FLAT; // Ryan, 2026-09-27: one flat, high-converting site; no scroll or 3D motion.
+  var t = String(industry || '') + ' ' + String(text || '');
+  var concept;
+  if (wrIsMedical(t)) { var sp = wrSpecialty(t); concept = sp ? 'photorealistic 3D anatomy scroll film: ' + sp.visual + '; the film scrubs with the scroll and each section (the condition, the treatment, the doctor, book) appears inside it' : 'calm cinematic scroll film through the real clinic: reception, treatment room, the doctor at work (with consent), ending on the booking action'; }
+  for (var i = 0; !concept && i < WR_MOTION.length; i++) if (WR_MOTION[i][0].test(t)) concept = WR_MOTION[i][1];
+  if (!concept) concept = 'depth-parallax scroll film built from the business\'s own world: foreground, subject and background move at different speeds, sections revealed inside the film';
+  return concept + '. ' + WR_PARALLAX;
 }
 /** The funnel to build (landing page -> qualify -> convert -> follow-up), shaped by the primary conversion. */
 function wrFunnelFor(conv, industry, text) {
@@ -65,7 +70,7 @@ var WR_CONVERSION_STRATEGY = [
   'Speed and focus: fast images, no auto-carousels, landing pages without top navigation, every section earns its place',
   'Tracking: GA4 / Meta pixel events on cta_click, whatsapp_click, form_submit, booking_complete so the funnel can be optimised'
 ];
-var WR_VARIATIONS = 'ONE VERSION (Ryan, 2026-09-27): build ONE flat, high-converting website from this brief (photography generated by Kling, built on Lovable, published to a public link). No scroll animation, parallax, 3D or scroll film (specialist clinics still get their realistic anatomy loop in the hero). No prices anywhere; John sends the link.';
+var WR_VARIATIONS = 'ONE VERSION (Ryan, 2026-09-27): build ONE 3D parallax scroll-film website from this brief: the film and photography are generated by Kling, the site is built on Lovable and published to a public link. The high-converting sales structure stays. No prices anywhere; John sends the link.';
 
 function wrStr(v, max) { if (v === undefined || v === null) return ''; var s = String(v).replace(/\s+/g, ' ').trim(); return max && s.length > max ? s.slice(0, max) : s; }
 function wrArr(v, max) { if (!v) return []; if (!Array.isArray(v)) v = [v]; return v.map(function (x) { return typeof x === 'string' ? wrStr(x, 300) : (x && typeof x === 'object' ? wrStr(x.fact || x.text || x.name || JSON.stringify(x), 300) : wrStr(x, 300)); }).filter(Boolean).slice(0, max || 20); }
@@ -109,9 +114,12 @@ function wrQueries(input) {
   var q = [
     { key: 'name', query: name },
     { key: 'name_location', query: name + ' ' + loc },
-    { key: 'reviews', query: name + ' reviews' }
+    { key: 'reviews', query: name + ' reviews' },
+    // Wider Google pass (Ryan, 2026-09-27: "search every single thing on Google"): socials, maps listing, competitors.
+    { key: 'socials', query: name + ' ' + loc + ' instagram facebook' },
+    { key: 'maps', query: name + ' ' + loc + ' address opening hours' }
   ];
-  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); }
+  if (svc) { q.push({ key: 'name_service', query: name + ' ' + svc }); q.push({ key: 'market', query: svc + ' ' + loc }); q.push({ key: 'buyer_intent', query: 'best ' + svc + ' ' + loc }); q.push({ key: 'competitors', query: 'top ' + svc + ' ' + loc + ' reviews' }); }
   return q;
 }
 
@@ -141,7 +149,7 @@ function wrIdentify(input, results) {
   var toks = wrTokens(input.company_name);
   var scored = {};
   (results || []).forEach(function (r) {
-    if (['name', 'name_location', 'name_service'].indexOf(r.query_key) === -1 && r.query_key) return;
+    if (['name', 'name_location', 'name_service', 'socials'].indexOf(r.query_key) === -1 && r.query_key) return;
     var host = wrHost(r.url); if (!host) return;
     if (wrIsSocial(host)) { if (out.socials.indexOf(r.url) === -1 && out.socials.length < 5) out.socials.push(r.url); return; }
     if (wrIsDirectory(host)) return;
@@ -244,9 +252,9 @@ function wrDigest(o) {
   var competitors = [], reviews = [], market = [];
   results.forEach(function (r) {
     var h = wrHost(r.url); if (!h) return;
-    if (r.query_key === 'reviews' && (r.snippet || r.title)) { if (reviews.length < 6) reviews.push({ source: r.url, text: wrStr(r.title + ' — ' + r.snippet, 300) }); return; }
-    if ((r.query_key === 'market' || r.query_key === 'buyer_intent') && h !== host && !wrIsSocial(h) && !wrIsDirectory(h)) { if (!competitors.some(function (c) { return wrHost(c.url) === h; }) && competitors.length < 5) competitors.push({ name: r.title, url: r.url, snippet: r.snippet }); return; }
-    if ((r.query_key === 'market' || r.query_key === 'buyer_intent') && wrIsDirectory(h) && market.length < 4) market.push(wrStr(r.title + ' — ' + r.snippet, 200));
+    if ((r.query_key === 'reviews' || r.query_key === 'maps') && (r.snippet || r.title)) { if (reviews.length < 8) reviews.push({ source: r.url, text: wrStr(r.title + ' — ' + r.snippet, 300) }); return; }
+    if ((r.query_key === 'market' || r.query_key === 'buyer_intent' || r.query_key === 'competitors') && h !== host && !wrIsSocial(h) && !wrIsDirectory(h)) { if (!competitors.some(function (c) { return wrHost(c.url) === h; }) && competitors.length < 6) competitors.push({ name: r.title, url: r.url, snippet: r.snippet }); return; }
+    if ((r.query_key === 'market' || r.query_key === 'buyer_intent' || r.query_key === 'competitors') && wrIsDirectory(h) && market.length < 5) market.push(wrStr(r.title + ' — ' + r.snippet, 200));
   });
   reviews.forEach(function (rv) { push('Public mention: ' + rv.text, 'THIRD_PARTY_PUBLIC_INFORMATION', rv.source); });
   identity.socials.forEach(function (s) { push('Official social profile (found in search): ' + s, 'THIRD_PARTY_PUBLIC_INFORMATION', s); });
@@ -300,7 +308,7 @@ function wrFallbackBrief(input, digest) {
     funnel_plan: ['Funnel type: ' + funnel.type + ' — build it as ' + funnel.build_as, 'Offer: ' + funnel.offer].concat(funnel.steps),
     conversion_strategy: WR_CONVERSION_STRATEGY.slice(),
     motion_3d_direction: wrMotionFor(input.industry, said2),
-    medical_visual_direction: wrIsMedical(medText) ? ((spec ? 'Specialty: ' + spec.key + '. Hero and section visuals: ' + spec.visual + '. ' : 'Specialty: general practice. Use the real clinic and team (with consent), no anatomy renders. ') + 'Photorealistic and medically accurate, educational in tone, never cartoon or low-poly 3D. Specialist clinics: Kling makes it as a still photo plus a short silent video from that photo that loops on its own in the hero (Ryan, 2026-09-27: the arteries, the heartbeat and the blood vessels stay). No gore, no before/after images, no outcome claims (MOH advertising rules).') : '',
+    medical_visual_direction: wrIsMedical(medText) ? ((spec ? 'Specialty: ' + spec.key + '. Hero and section visuals: ' + spec.visual + '. ' : 'Specialty: general practice. Use the real clinic and team (with consent), no anatomy renders. ') + 'Photorealistic and medically accurate, educational in tone, never cartoon or low-poly 3D. Specialist clinics: Kling makes it as a still photo plus a video from that photo, the opening scene of the scroll film (Ryan, 2026-09-27: the arteries, the heartbeat and the blood vessels). No gore, no before/after images, no outcome claims (MOH advertising rules).') : '',
     company_name: name, company_url: digest.identity.confidence !== 'low' ? digest.identity.website : '', industry: input.industry || '[CLIENT TO PROVIDE]', location: input.location,
     business_summary: name + (input.industry ? ' is a ' + input.industry + ' business' : '') + ' in ' + input.location + '.' + (input.sales_summary ? ' John: ' + input.sales_summary : '') + (digest.site.description ? ' Site says: ' + digest.site.description : ''),
     verified_facts: verified, client_provided_facts: provided, unverified_information: third.concat(digest.unknown),
@@ -368,7 +376,8 @@ function wrFinalize(o) {
   // never present the site's facts as verified when identity is low
   // Medical visuals always follow the realism + MOH rules; the conversion plan is never empty.
   if (fallback.medical_visual_direction && !/photoreal/i.test(brief.medical_visual_direction || '')) brief.medical_visual_direction = fallback.medical_visual_direction;
-  brief.motion_3d_direction = fallback.motion_3d_direction; // always flat (Ryan, 2026-09-27)
+  // The 3D parallax scroll film is always planned (Ryan, 2026-09-27); a model plan without it gets the fallback concept.
+  if (!/scroll/i.test(brief.motion_3d_direction || '') || !/parallax/i.test(brief.motion_3d_direction || '')) brief.motion_3d_direction = fallback.motion_3d_direction;
   if (digest.identity.confidence === 'low') { brief.company_url = ''; brief.identity_confidence = 'low'; if (!brief.questions_for_john.length) brief.questions_for_john = fallback.questions_for_john; }
   var status = input.company_name ? 'READY_FOR_WEBSITE_CREATOR' : 'MORE_INFORMATION_REQUIRED';
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';

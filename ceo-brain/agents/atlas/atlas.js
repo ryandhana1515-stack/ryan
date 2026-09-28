@@ -219,6 +219,18 @@ function atQuestionsFromRows(rows) {
   });
   return out;
 }
+/** True when the question came from ATLAS (its edg_design task), not from Website Intelligence. */
+function atIsAtlasQuestion(q, rows) {
+  var found = false;
+  (Array.isArray(rows) ? rows : []).forEach(function (r) {
+    if (!r || r.task_type !== 'edg_design') return;
+    var p = atParse(r.payload_json, {}) || {};
+    if (atArr(p.questions_for_john).indexOf(q) !== -1) found = true;
+  });
+  return found;
+}
+/** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
+var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -232,4 +244,4 @@ function atNextQuestion(questions, history) {
   return null;
 }
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion: atNextQuestion };
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: atNextQuestion };

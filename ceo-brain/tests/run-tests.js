@@ -354,7 +354,7 @@ test('BMW dealership: business name from "I\'m Daniel from Prestige Motors", aut
   assert.strictEqual(r.image_shots.length, 3);
   assert.ok(/BMW/.test(r.image_shots[0].prompt) && /no text, no logos/.test(r.image_shots[0].prompt));
   // Ryan, 2026-09-27: one flat, high-converting site (no scroll film version).
-  assert.strictEqual(r.variations.length, 1); assert.strictEqual(r.variations[0].key, 'flat_site'); assert.ok(/no scroll animation/.test(r.variations[0].description));
+  assert.strictEqual(r.variations.length, 1); assert.strictEqual(r.variations[0].key, 'parallax_film_site'); assert.ok(/Kling film/.test(r.variations[0].description) && /parallax/.test(r.variations[0].description));
   assert.strictEqual(r.film_brief.scenes.length, 3); assert.ok(!/\$|price/i.test(JSON.stringify(r.variations)));
   assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
 });
@@ -574,7 +574,7 @@ test('hand-off → input, queries, identity: the customer\'s URL wins; without o
   const input = wr.wrInput(WR_HANDOFF);
   assert.strictEqual(input.website, 'https://prestigemotors.sg'); assert.strictEqual(input.website_source, 'customer_words'); assert.strictEqual(input.location, 'Singapore');
   const qs = wr.wrQueries(input).map((q) => q.key);
-  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'name_service', 'market', 'buyer_intent']);
+  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'name_service', 'market', 'buyer_intent', 'competitors'], 'wider Google pass (Ryan, 2026-09-27)');
   assert.strictEqual(wr.wrIdentify(input, []).confidence, 'high');
   const noUrl = wr.wrInput(Object.assign({}, WR_HANDOFF, { message: 'mock-up please' }));
   const results = wr.wrSearchItems([{ json: { query_key: 'name', results: [{ title: 'Prestige Motors Singapore | BMW', url: 'https://prestigemotors.sg/', description: 'official' }, { title: 'Prestige Motors | Facebook', url: 'https://www.facebook.com/pm' }, { title: 'Prestige Motors reviews', url: 'https://www.google.com/maps/x' }] } }]);
@@ -623,7 +623,7 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => input[0], all: () => input }, $execution: { id: '7' }, $workflow: { id: 'w' }, Buffer, Date, JSON, Math });
   const run = (f, input) => vm.runInNewContext('(function(){' + src(f) + '})()', mk(input));
   store['Plan Research'] = run('plan-research.js', items([WR_HANDOFF])).map((i) => i.json);
-  assert.strictEqual(store['Plan Research'].length, 6);
+  assert.strictEqual(store['Plan Research'].length, 9, 'wider Google pass (Ryan, 2026-09-27)');
   store['Identify Company'] = run('identify-company.js', items(store['Plan Research'].map(() => ({ results: [{ title: 'Prestige Motors BMW', url: 'https://prestigemotors.sg/', description: 'x' }] })))).map((i) => i.json);
   assert.strictEqual(store['Identify Company'][0].identity.confidence, 'high'); assert.strictEqual(store['Identify Company'][0].homepage_url, 'https://prestigemotors.sg');
   store['Fetch Homepage'] = [{ html: WR_HTML, status: 200 }];
@@ -764,7 +764,7 @@ test('Lead Intake: John adds ATLAS\'s next question to his own reply, once', () 
   const rows = [{ task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'] }) }];
   const run = simulate(fx('john-tan.json'), { atlasRows: rows });
   assert.strictEqual(run.fin.atlas_question, 'Which accounting or invoicing software do you use (for example Xero or QuickBooks)?');
-  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get this right for you: Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'));
+  assert.ok(run.fin.result.recommended_reply.endsWith('ATLAS, our systems architect, would like to know: Which accounting or invoicing software do you use (for example Xero or QuickBooks)?'), 'ATLAS speaks in its own name (Ryan, 2026-09-27)');
   const asked = Object.assign({}, fx('john-tan.json'), { conversation_history: [{ role: 'customer', content: 'hi' }, { role: 'agent', content: run.fin.result.recommended_reply }] });
   const again = simulate(asked, { atlasRows: rows });
   assert.strictEqual(again.fin.atlas_question, null, 'never asked twice');
@@ -835,35 +835,35 @@ test('Lead Intake: an AI reply that says "I don\'t know" is replaced by John\'s 
   assert.ok(run.fin.audit.includes('reply_replaced:dont_know'));
 });
 console.log('\n[16] Website Intelligence plans the sale; the creator builds it (Ryan, 2026-09-26: funnels, high-converting 3D, realistic anatomy)');
-test('cardiology clinic: WI plans a funnel, conversion rules, a flat page and a photoreal heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
+test('cardiology clinic: WI plans a funnel, conversion rules, a 3D parallax scroll film and a photoreal heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
   const H = { tenant_id: 'fusiontech', lead_id: 'lead_heart', contact_name: 'Dr Lim', company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: 'We are a heart specialist clinic. Can you build us a website and a funnel for ads?', conversation_json: '[]', extracted_json: '{}', test_mode: true };
   const input = wr.wrInput(H);
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [] });
   const plan = wr.wrFinalize({ error: 'x', input, digest }).brief;
   assert.ok(/photoreal/i.test(plan.medical_visual_direction) && /heart/i.test(plan.medical_visual_direction) && /blood/i.test(plan.medical_visual_direction), plan.medical_visual_direction);
   assert.ok(plan.funnel_plan.length >= 5 && /main deliverable/.test(plan.funnel_plan[0]), 'the customer asked for a funnel');
-  assert.ok(plan.conversion_strategy.length >= 6 && /no scroll animations/.test(plan.motion_3d_direction), 'flat page (Ryan, 2026-09-27)');
+  assert.ok(plan.conversion_strategy.length >= 6 && /scroll film/.test(plan.motion_3d_direction) && /parallax/.test(plan.motion_3d_direction) && /heart/i.test(plan.motion_3d_direction), '3D parallax scroll film (Ryan, 2026-09-27): ' + plan.motion_3d_direction);
   const research_json = JSON.stringify({ brief: plan });
   const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: H.message, research_json } });
   assert.strictEqual(out.brief.mode, 'medical');
   const p = out.build_prompt;
-  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /Flat page: no scroll animation/.test(p) && /Medical visual \(hero\)/.test(p) && /loops on its own/.test(p) && /\[ANATOMY VIDEO\]/.test(p) && !/ScrollTrigger/.test(p), p.slice(-1500));
+  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /3D parallax scroll film/.test(p) && /ScrollTrigger/.test(p) && /Medical visual \(hero\)/.test(p) && /opening scene of the scroll film/.test(p) && /\[ANATOMY VIDEO\]/.test(p) && !/no scroll animation/.test(p), p.slice(-1500));
   assert.ok(p.length <= wb.WB_MAX_PROMPT || p.length <= 9000);
   assert.ok(/heart/i.test(out.image_shots[0].prompt) && /anatomically accurate/.test(out.image_shots[0].prompt) && /not cartoon/.test(out.image_shots[0].prompt));
   // A model-written prompt also gets the strategy, exactly once.
   const again = wb.wbWithStrategy(p, wb.wbResearchPlan({ research_json }));
   assert.strictEqual(again.split(wb.WB_STRATEGY_MARK).length, 2);
 });
-test('flat pages still keep the clinic anatomy loop: heart beating, arteries, blood vessels (Ryan, 2026-09-27)', () => {
+test('the scroll film opens on the clinic anatomy: heart beating, arteries, blood vessels (Ryan, 2026-09-27)', () => {
   const wr = require('../agents/website-intelligence/research.js');
   const src = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-intelligence/research.js'), 'utf8');
-  assert.ok(/exception is a specialist clinic/.test(src) && /heart beating with blood flowing through the arteries and vessels/.test(src), 'WI keeps the anatomy loop');
+  assert.ok(/WR_PARALLAX/.test(src) && /heart beating with blood flowing through the arteries and vessels/.test(src), 'WI plans the anatomy film');
   assert.ok(/heart beating in slow motion, coronary arteries and veins/.test(src), 'cardiology visual intact');
   const plan = { brief: { primary_cta: 'Book a Heart Screening', medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: a photorealistic, medically accurate human heart beating in slow motion, coronary arteries and veins, blood flowing. Photorealistic and medically accurate.' } };
   const p = wb.wbWithStrategy('Build the site.', wb.wbResearchPlan({ research_json: JSON.stringify(plan) }));
-  assert.ok(/heart beating/.test(p) && /autoplay muted loop playsinline/.test(p) && /not tied to scrolling/.test(p) && /no scroll animation/.test(p), p.slice(-1200));
+  assert.ok(/heart beating/.test(p) && /scrubbed by the scroll/.test(p) && /parallax/.test(p) && !/no scroll animation/.test(p), p.slice(-1200));
   const routine = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/image_to_video/.test(routine) && /HERO VIDEO/.test(routine) && !/Higgsfield `/.test(routine), 'build worker makes the loop with Kling');
+  assert.ok(/image_to_video/.test(routine) && /3D PARALLAX SCROLL FILM/.test(routine) && /currentTime driven by scroll progress/.test(routine) && !/Higgsfield `/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker makes the scroll film with Kling');
 });
 
 test('no research → the creator works as before; general practice gets no anatomy render', () => {
@@ -892,7 +892,7 @@ test('a rich research plan never pushes the flat-page rule or the anatomy visual
   const p = out.build_prompt;
   assert.ok(p.length <= wb.WB_MAX_PROMPT, p.length);
   const sec = p.slice(p.indexOf(wb.WB_STRATEGY_MARK));
-  for (const k of ['Primary CTA everywhere', 'Flat page', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
+  for (const k of ['Primary CTA everywhere', '3D parallax scroll film', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
   assert.ok(/Never a cartoon/.test(sec) && /Build a premium/.test(p), 'strategy complete and the base prompt still leads');
 });
 test('John sends the mock-up link where the customer asked: a typed email beats the phone on file (execution 385)', () => {
@@ -1060,6 +1060,25 @@ test('a money question gets a holding reply now and John\'s draft goes to Ryan',
 test('test leads still never send', () => {
   const run = simulate(Object.assign({}, waLead, { message: 'hi', test_mode: true }), { modelText: JSON.stringify(aiObj()), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(run.fin.auto_send, false);
+});
+console.log('\n[19] Apple-grade websites, ATLAS in its own voice, a wider Google pass (Ryan, 2026-09-27)');
+test('the creator asks Lovable for an Apple-grade site with a set of scroll effects and a premium golden finish', () => {
+  const auto = wb.wbEffectsFor('automotive').map((e) => e.key);
+  assert.strictEqual(auto[0], 'film_scrub'); assert.ok(auto.length >= 5 && auto.includes('product_reveal') && auto.includes('light_sweep'));
+  assert.strictEqual(wb.wbEffectsFor('unknown_category')[0].key, 'film_scrub');
+  Object.keys(wb.WB_EFFECTS_BY_CATEGORY).forEach((c) => wb.WB_EFFECTS_BY_CATEGORY[c].forEach((k) => assert.ok(wb.WB_SCROLL_EFFECTS[k], c + ':' + k)));
+  const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Prestige Motors', industry: 'BMW car dealership', message: 'I want a website for my BMW showroom' } });
+  const p = out.build_prompt;
+  assert.ok(/Apple-grade/.test(p) && /Pinned hero film/.test(p) && /Product reveal/.test(p) && /Premium golden finish/.test(p) && /Lenis/.test(p), p.slice(0, 2500));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT);
+});
+test('website questions stay John\'s; only ATLAS\'s own questions are asked in ATLAS\'s name', () => {
+  const rows = [{ task_type: 'website_info_needed', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['What are your opening hours?'] }) }, { task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['Which accounting software do you use?'] }) }];
+  const run = simulate(fx('john-tan.json'), { atlasRows: rows });
+  assert.ok(run.fin.result.recommended_reply.endsWith('One more question so we get your website right: What are your opening hours?'), run.fin.result.recommended_reply);
+  const at = require('../agents/atlas/atlas.js');
+  assert.strictEqual(at.atIsAtlasQuestion('Which accounting software do you use?', rows), true);
+  assert.strictEqual(at.atIsAtlasQuestion('What are your opening hours?', rows), false);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

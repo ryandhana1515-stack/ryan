@@ -407,6 +407,18 @@ function atQuestionsFromRows(rows) {
   });
   return out;
 }
+/** True when the question came from ATLAS (its edg_design task), not from Website Intelligence. */
+function atIsAtlasQuestion(q, rows) {
+  var found = false;
+  (Array.isArray(rows) ? rows : []).forEach(function (r) {
+    if (!r || r.task_type !== 'edg_design') return;
+    var p = atParse(r.payload_json, {}) || {};
+    if (atArr(p.questions_for_john).indexOf(q) !== -1) found = true;
+  });
+  return found;
+}
+/** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
+var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -471,7 +483,9 @@ try {
   const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
   const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
-  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
+  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"); Website Intelligence's gaps stay John's.
+  const intro = atIsAtlasQuestion(nextQ, atRows) ? ' ' + AT_VOICE : ' One more question so we get your website right: ';
+  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + intro + nextQ; atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.

@@ -60,7 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
-const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atNextQuestion']);   // when John wakes ATLAS
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'atNextQuestion']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -160,7 +160,9 @@ try {
   const atRows = $('Load ATLAS Questions').all().map((i) => i.json);
   const nextQ = atNextQuestion(atQuestionsFromRows(atRows), histAll);
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
-  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + ' One more question so we get this right for you: ' + nextQ; atlasQuestion = nextQ; }
+  // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"); Website Intelligence's gaps stay John's.
+  const intro = atIsAtlasQuestion(nextQ, atRows) ? ' ' + AT_VOICE : ' One more question so we get your website right: ';
+  if (nextQ && johnsOwnReply && !holdForRyan && r.recommended_reply) { r.recommended_reply = r.recommended_reply.trim() + intro + nextQ; atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.

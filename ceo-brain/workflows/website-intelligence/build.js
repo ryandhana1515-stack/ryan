@@ -72,7 +72,7 @@ const codePickPages = `${pick(HELPERS.concat(['WR_PAGE_RE', 'WR_MAX_PAGE_TEXT', 
 const id = $('Identify Company').first().json;
 const page = wrFetchedPage($input.first(), id.homepage_url);
 let urls = [];
-if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 3); }
+if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 5); }
 if (!urls.length) return [{ json: { url: '', skip: true, homepage_ok: page.ok } }];
 return urls.map((u) => ({ json: { url: u, skip: false, homepage_ok: page.ok } }));
 `;
@@ -108,7 +108,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_FLAT', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_PARALLAX', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;
