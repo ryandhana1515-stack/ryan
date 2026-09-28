@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-27
-updated: 2026-09-28T08:26:57.901Z
+updated: 2026-09-28T08:27:49.150Z
 tags: [lead]
 ---
 # Ryan
@@ -139,3 +139,10 @@ _Summary:_ Ryan of Free & Easy Minimart (minimart/retail) asked us to build a we
 **John:** Hi Ryan, thanks for the reply, apologies if my last message was confusing. Just to confirm, your first mock-up for Free & Easy Minimart is still being built and the link will land here shortly. In the meantime, could you tell us what the minimart mainly sells, and how customers usually reach you (walk-in, phone, WhatsApp orders)? That helps us make sure the site and any automation fit how your shop actually runs. ATLAS, our systems architect, would like to know: What should visitors be able to do on your website — just find your info/hours, browse products, place orders, or something else?
 
 _Summary:_ Ryan of Free & Easy Minimart asked for a website mock-up over WhatsApp; the mock-up build was already confirmed underway by the agent. His latest message 'No I'm. New customer' is unclear, possibly a typo or a reply to a prior question, and does not add new business facts.
+
+### 2026-09-28 08:27 UTC · HUMAN_REVIEW / warm · next: human_review · hand-off: atlas · anthropic
+**Prospect:** No what’s that I’m a completely new customer
+
+**John:** Hi Ryan, sorry for the confusion, let me reset. You reached out about a website for Free & Easy Minimart, and our team is building your first mock-up now, the link will land here shortly. No need to resend anything on your end. To make sure it fits your shop well, could you tell us what Free & Easy Minimart mainly sells, and how customers usually reach you, walk-in, phone, or WhatsApp orders? ATLAS, our systems architect, would like to know: Roughly how many staff do you have, and how many outlets/locations does the business have?
+
+_Summary:_ Ryan of Free & Easy Minimart (a minimart/retail shop) is confused by the agent's previous replies, saying he is a completely new customer and does not understand what is being referenced. He originally asked for a website mock-up on 2026-09-27; the mock-up is reportedly being built but no link has been sent yet, and repeated agent questions about what the minimart sells and how customers reach them remain unanswered.
