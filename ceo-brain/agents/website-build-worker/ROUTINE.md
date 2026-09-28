@@ -111,7 +111,8 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       layout and use a rich brand-tinted gradient with the same mood." When there are no photos write instead: "No photography could be generated in time: use rich,
       cinematic brand-tinted gradients and large typographic compositions in the hero and section openers
       (never flat black panels), with clearly labelled image slots for the customer's photos." Finish with
-      "Build the complete site now with real copy for <business_name>. Follow the STRATEGY FROM WEBSITE INTELLIGENCE section
+      "Build the complete site now with real copy for <business_name>: every page in the FULL WEBSITE section, fully
+      built, none left empty. Follow the STRATEGY FROM WEBSITE INTELLIGENCE section
       exactly (section order, one primary CTA, the funnel pages and steps, the 3D parallax scroll film, the medical
       visual). Do not use plan mode and do not stop for approval: build everything in this turn. Do not ask
       questions; make sensible
