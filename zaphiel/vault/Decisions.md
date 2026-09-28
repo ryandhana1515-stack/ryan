@@ -200,3 +200,11 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 
 - 2026-09-28 — **John promises the mock-up "usually within about an hour", never sooner** (Ryan: "change it to
   accurate timing"). Based on the real build times; revisit when faster builds are measured.
+
+- 2026-09-29 — **The website team never asks what Google can answer; one question per message; never twice** (Ryan,
+  after the Smile Plus Dental test: "they keep asking for the opening hours and the branch, which is already on
+  Google … they only need to ask the things that are not in Google", "repeated questions", "duplicate messages").
+  Website Intelligence finds addresses, branches, hours, phone, services and the website itself (or uses a
+  placeholder); a business it cannot find is asked one thing: its website link. It asks only before the build, never
+  while building. Only the customer's first reply to its question sends it back for another look. John does not
+  relay its questions. ATLAS never asks what the customer already said. Every message asks at most one question.

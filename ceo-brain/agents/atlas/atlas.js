@@ -208,9 +208,10 @@ function atFinalize(opts) {
  *  returns the first one John has not asked yet in this conversation, skipping anything a reply guardrail would block. */
 var AT_UNSAFE_Q = /(s?\$|\b(sgd|usd|rm))\s?\d|\b(price|pricing|cost|discount|guarantee\w*|refund|contract|agreement|password|api key|token|credential)s?\b/i;
 function atQuestionsFromRows(rows) {
-  // Website Intelligence's missing details first (they improve the mock-up now), then ATLAS's systems questions.
+  // ATLAS's systems questions. Website Intelligence asks its own questions directly (before the build), so John never
+  // relays them a second time (Ryan, 2026-09-29: duplicate questions).
   var out = [];
-  ['website_info_needed', 'edg_design'].forEach(function (type) {
+  ['edg_design'].forEach(function (type) {
     (Array.isArray(rows) ? rows : []).forEach(function (r) {
       if (!r || r.task_type !== type) return;
       var p = atParse(r.payload_json, {}) || {};
@@ -231,6 +232,17 @@ function atIsAtlasQuestion(q, rows) {
 }
 /** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
 var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
+// Never ask what the customer already told us (Ryan, 2026-09-29: "they asked me for the website link, I already gave
+// them"): a question is skipped when the customer's messages already answer its topic.
+var AT_ANSWERED = [
+  [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
+  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us)\b/i],
+  [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
+];
+function atAlreadyAnswered(q, history) {
+  var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
+  return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
+}
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -239,9 +251,17 @@ function atNextQuestion(questions, history) {
     var q = qs[i].slice(0, 300);
     if (AT_UNSAFE_Q.test(q)) continue;
     if (asked.indexOf(q.toLowerCase()) !== -1) continue;
+    if (atAlreadyAnswered(q, history)) continue;
     return q;
   }
   return null;
 }
+/** One question per message (Ryan, 2026-09-29): when ATLAS asks, John's own questions in that reply are dropped. */
+function atOneQuestion(reply, question) {
+  var parts = String(reply || '').trim().split(/(?<=[.!?])\s+/);
+  var kept = parts.filter(function (p) { return !/\?\s*$/.test(p); });
+  if (!kept.length) kept = parts.slice(0, 1).map(function (p) { return p.replace(/\?\s*$/, '.'); });
+  return kept.join(' ').trim() + ' ' + AT_VOICE + question;
+}
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: atNextQuestion };
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atOneQuestion: atOneQuestion };

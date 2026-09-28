@@ -276,3 +276,12 @@ tags: [zaphiel, changelog]
   "usually within about an hour" (hand-off reply, the timing FAQ, John's prompt, company context, playbook). Why: the
   only real build (Free & Easy Minimart) took 33 minutes from hand-off with a single clip; builds now make 3 clips
   (5 for property) and a 3D model, and the worker checks every 2 minutes with a short gap between hourly sessions.
+- 2026-09-29 — **Smile Plus Dental test fixes** (Ryan). What went wrong: every customer reply re-ran Website
+  Intelligence (4 runs in 4 minutes), each run sent its own "quick details" message, John relayed the same questions
+  again, ATLAS asked for the website link already given, John asked up to three questions per message, voice notes
+  were transcribed as Malay, and each extra run emailed Ryan a "website brief (already built)" copy. Fixes:
+  `wrDropPublicQuestions` / `wrAskedTopics` / `wrUrlGiven` (research.js), asks only when holding the build;
+  `wbInfoReplyDue` (intake.js) so only the first reply re-runs it; `atQuestionsFromRows` is ATLAS-only,
+  `atAlreadyAnswered` + `atOneQuestion` (atlas.js); John's prompt: one question, never repeated, never public facts;
+  Website Intelligence prompt: a business found online is always enough; transcription language set to English.
+  Tests 109/109.
