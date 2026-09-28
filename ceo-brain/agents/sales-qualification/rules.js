@@ -234,7 +234,10 @@ function classifyWithRules(lead) {
   var isAbout = RB_ABOUT.test(msg);
   var intent = 'unclear';
   if (RB_INAPPROPRIATE.test(msg)) intent = 'spam';
-  else if (RB_SPAM.test(text) || RB_VENDOR.test(text)) intent = RB_VENDOR.test(text) && !RB_SPAM.test(text) ? 'vendor_or_job_pitch' : 'spam';
+  // A business owner who says "we offer aircon servicing, can you build us a website?" is a customer, not a vendor:
+  // any ask for what FusionTech sells (a site, automation, AI, CRM) keeps them a customer (Ryan, 2026-09-28).
+  else if (RB_SPAM.test(text)) intent = 'spam';
+  else if (RB_VENDOR.test(text) && !extracted.desired_automation.length && !/\b(websites?|web ?sites?|mock-?up|landing page|funnel|online store|app|automat\w*|ai|chatbot|bot|crm|whatsapp|system|build|make|design)\b/i.test(text)) intent = 'vendor_or_job_pitch';
   else if (RB_PARTNER.test(text)) intent = 'partnership';
   else if (RB_SUPPORT.test(text)) intent = 'support_request';
   else if (extracted.desired_automation.length || /\b(ai|automat|chatbot|bot)\b/i.test(text)) intent = 'ai_automation_enquiry';

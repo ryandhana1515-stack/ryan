@@ -1187,6 +1187,10 @@ test('no reply to sexual, abusive or prank messages, scams, job seekers or vendo
     const run = simulate(Object.assign({}, waLead, { message: m }), { modelText: JSON.stringify(aiObj({ intent: 'ai_automation_enquiry', recommended_reply: 'Hi! Happy to help.' })), config: { auto_send_low_risk: 'true' } });
     assert.strictEqual(run.fin.result.recommended_reply, '', m); assert.strictEqual(run.fin.auto_send, false, m); assert.strictEqual(run.fin.website_requested, false, m);
   });
+  const { classifyWithRules } = require('../agents/sales-qualification/rules.js');
+  ['We offer aircon servicing, can you build us a website?', 'Our services are home cleaning, we need a booking system on WhatsApp'].forEach((m) => assert.notStrictEqual(classifyWithRules({ message: m, conversation_history: [] }).intent, 'vendor_or_job_pitch', m));
+  assert.strictEqual(classifyWithRules({ message: 'Hi, we offer SEO services and guest posts for your site', conversation_history: [] }).intent, 'spam');
+  assert.strictEqual(classifyWithRules({ message: 'Freelancer available, hire me for your projects', conversation_history: [] }).intent, 'vendor_or_job_pitch');
   const rude = simulate(Object.assign({}, waLead, { message: 'why is this taking so long, my shop website still not ready' }), { modelText: JSON.stringify(aiObj({ recommended_reply: 'Sorry for the wait, Ryan. Your mock-up is being built.' })), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(rude.fin.auto_send, true);
 });
