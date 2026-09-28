@@ -5,6 +5,14 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **Every mock-up is a full website with high-converting sales** (Ryan: "I want a full website mock-up
+  with high converting sales and everything"). Not a single page: an 8–12 page sitemap for the industry (for example a
+  café: Home, Menu, Our Story, Catering & Events, Order & Delivery, Reviews, Find Us; a car dealer: Models, Model
+  Detail, Book a Test Drive, Service, Financing…), plus an Offer Landing Page and a Thank You page. Every page is built
+  with real copy and ends with the call to action; the homepage follows the selling order (outcome headline + one CTA,
+  proof, problem, offer, benefits, how it works, showcase, reviews, objections, a no-obligation risk reducer, final
+  CTA); every page has the sticky CTA, WhatsApp and a short lead form. No prices or guarantees.
+
 - 2026-09-28 — **Kling and Higgsfield together** (Ryan: "I also want to add Higgsfield there also"). Replaces "Kling
   for all website images and video; never Higgsfield" (2026-09-27). Kling makes the photos and the 3D parallax scroll
   film; Higgsfield turns the product/hero photo into a real 3D model (GLB) for the Apple-style product reveal that turns
