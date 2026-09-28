@@ -82,8 +82,11 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       gentle push-in or orbit) so the clips read as one continuous 3D film; no cuts, text, logos, plates or faces; no
       sound. Specialist clinics (the brief's research has a `medical_visual_direction` with a specialty): scene 1 is the
       photoreal, medically accurate anatomy of the hero shot (for example the heart beating with blood flowing through
-      the arteries and vessels); never cartoon, no labels, gore or outcome claims. Poll `query_tasks` (at most ~10
-      minutes). If a clip fails, retry it once on Kling; if it still fails, make that scene on Higgsfield
+      the arteries and vessels); never cartoon, no labels, gore or outcome claims. Property (houses, condos, show
+      flats, interior designers; `brief.industry_category` property, Ryan 2026-09-28): `film_brief` has 5 walkthrough
+      scenes — scene 1 from the hero photo, scene 3 from the section photo, scene 5 from the detail photo, scenes 2 and
+      4 with `text_to_video` — photoreal architectural visualisation, no people, one smooth camera move from outside to
+      inside. Poll `query_tasks` (at most ~10 minutes). If a clip fails, retry it once on Kling; if it still fails, make that scene on Higgsfield
       (`generate_video` from the same photo, same motion prompt); if that fails too, build with the photos alone
       (parallax without the film) and say so in `notes`.
    e3. The 3D model with Higgsfield (Ryan, 2026-09-28) for businesses whose hero is a product — a car, a dish or
@@ -104,7 +107,8 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       layered depth parallax on the photos (foreground and background moving at different speeds, a slight 3D
       perspective tilt), staggered reveals and smooth scrolling. Keep the sticky mobile CTA and WhatsApp button;
       keep it fast (compressed video, lazy-load below the fold); with prefers-reduced-motion show the photos as
-      stills. Film clips in order: 1) <url> 2) <url> 3) <url>." — when step e3 made a model, add: "3D MODEL — the
+      stills. Film clips in order: 1) <url> 2) <url> 3) <url> (4) <url> 5) <url> for a property walkthrough; label every generated
+      image and clip on a property site "Artist's impression")." — when step e3 made a model, add: "3D MODEL — the
       product reveal: render this GLB with <model-viewer> or react-three-fiber in a pinned section; it turns and
       zooms as the visitor scrolls (rotation driven by scroll progress), under soft studio light, with the benefit
       lines appearing beside it; poster = the hero photo: <glb url>." — then "If an image or clip fails to load, keep the

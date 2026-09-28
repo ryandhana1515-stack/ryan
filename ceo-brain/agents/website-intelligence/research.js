@@ -32,7 +32,7 @@ function wrIsMedical(text) { return /\b(doctor|doctors|clinic|clinics|dental|den
 var WR_MOTION = [
   [/construct\w*|builder|contractor|renovat\w*|interior|architect\w*/i, 'scroll-driven 3D build-up: the structure assembles floor by floor as the visitor scrolls, ending on the finished project at golden hour'],
   [/car|auto|motor|dealer|vehicle/i, 'the car rotates in 3D as the visitor scrolls, lights sweeping across the bodywork, then a slow drive-by'],
-  [/property|real estate|realtor|condo/i, '3D architectural fly-through of the property, from the street into the living space, sunlight moving across the rooms'],
+  [/property|properties|real estate|realtor|condo|landed|villa|bungalow|penthouse|apartment|show ?flat|new launch|interior design/i, 'cinematic home walkthrough scrubbed by the scroll: from the street and the facade at golden hour, through the front door, into the living room, kitchen and bedrooms, ending on the view from the balcony; a floor-plan mini-map shows where the visitor is; generated visuals labelled "Artist\'s impression"'],
   [/restaurant|cafe|f&b|food|bakery|catering/i, 'slow-motion 3D of the signature dish being assembled ingredient by ingredient, steam and texture in macro'],
   [/logistic|delivery|courier|freight|warehouse/i, 'a 3D map of Singapore with parcels and vehicles moving along live routes as the visitor scrolls'],
   [/salon|spa|beauty|wellness|nail|hair/i, 'slow-motion macro of textures and treatment rituals, soft light moving across skin and product'],

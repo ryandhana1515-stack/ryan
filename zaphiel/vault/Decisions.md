@@ -5,6 +5,14 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-09-28 — **Property sites: a cinematic walkthrough of the home** (Ryan: "be able to build property houses …
+  of the house or inside, cinematic scroll, parallax, everything … don't actually build it"). Agents, developers and
+  new launches, condos, landed homes, villas, show flats and interior designers get a 5-scene Kling walkthrough scrubbed
+  by the scroll (facade at golden hour → front door → living room → kitchen and dining → bedroom and balcony view),
+  a floor-plan mini-map, room-by-room features, depth parallax and a gallery walkthrough on every listing page. Every
+  generated image and clip is labelled "Artist's impression"; real photos, prices, sizes, addresses and floor plans are
+  [CLIENT TO PROVIDE]; CEA advertising rules apply. Capability only: nothing was built.
+
 - 2026-09-28 — **Build only with enough details; John asks first** (Ryan: "the website intelligence only asks the
   website creator to create the website when he got all the enough sufficient details"). Replaces "the mock-up starts
   from the name alone and is never delayed" (2026-09-27, the placeholder-first part). Website Intelligence reads what

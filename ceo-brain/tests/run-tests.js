@@ -1153,6 +1153,21 @@ test('John: the customer\'s answer goes back to Website Intelligence while its q
   const built = simulate(lead, { atlasRows: open.concat([{ task_type: 'website_build', lead_id: 'x', payload_json: '{}' }]), config: { auto_send_low_risk: 'true' } });
   assert.strictEqual(built.fin.website_requested, false, 'the build already started: no second research');
 });
+console.log('\n[22] Property: cinematic walkthrough from outside to inside (Ryan, 2026-09-28)');
+test('houses, condos, show flats and interior designers get the walkthrough site', () => {
+  ['ABC Realty, we sell condos and landed homes', 'I am an interior designer', 'new launch condo developer', 'we rent out villas in Bali'].forEach((t) => assert.strictEqual(wb.wbDetectCategory(t), 'property', t));
+  assert.notStrictEqual(wb.wbDetectCategory('our in-house team runs a tuition centre'), 'property');
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website for my property agency' } });
+  assert.strictEqual(r.brief.industry_category, 'property');
+  assert.strictEqual(r.film_brief.scenes.length, 5); assert.strictEqual(r.film_brief.mode, 'walkthrough');
+  assert.ok(/facade at golden hour/.test(r.image_shots[0].prompt) && /living room/.test(r.image_shots[1].prompt) && /no people/.test(r.image_shots[2].prompt));
+  const p = r.build_prompt;
+  assert.ok(/Cinematic home walkthrough/.test(p) && /floor-plan mini-map/.test(p) && /Artist's impression/.test(p) && /CEA advertising rules/.test(p) && /Book a Viewing/.test(p), p.slice(-2500));
+  assert.ok(!/guarantee|\$\s?\d/i.test(p) && p.length <= wb.WB_MAX_PROMPT);
+  assert.ok(/cinematic home walkthrough/.test(require('../agents/website-intelligence/research.js').wrMotionFor('real estate', '')));
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/5 walkthrough\s+scenes/.test(routine) && /Artist's impression/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
