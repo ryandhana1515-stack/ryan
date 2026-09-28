@@ -253,3 +253,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   MASTER ORCHESTRATOR, steps 1-10 (intelligence, creative, story, animation, engine, assets, Higgsfield, Lovable,
   conversion, QA), filled in for each business, with industry chapter labels and shot direction (clinics: anatomy,
   mechanism and doctors, consultation; property walkthrough; cars; F&B; luxury retail).
+
+- 2026-09-29 — **Kling models run on Kling directly, not through Higgsfield** (Ryan: "if you want to use the Kling
+  model in Higgsfield, can you go to the actual Kling?"). The film chapters are made on Ryan's Kling Pro account
+  (`kling-video-v3_0`, first frame = this chapter's photo, tail frame = the next chapter's, no audio, one continuous
+  shot). Higgsfield keeps the 3D product model and is the backup film maker with its non-Kling models.

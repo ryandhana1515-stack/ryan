@@ -1259,10 +1259,10 @@ test('the doctrine is in the vault verbatim and in the live design standard the 
   ['Scroll down progresses the story; scroll up reverses it.', 'Never create an exploded', 'Do not approve until reverse-scroll is deterministic.', 'FEED THIS TO EVERY WEBSITE AGENT'].forEach((t) => { assert.ok(note.includes(t), t); assert.ok(std.includes(t), 'standard: ' + t); });
   assert.ok(fs.existsSync(path.join(__dirname, '../../zaphiel/vault/_sources/FusionTech_Full_Master_Cinematic_Website_Agent_2026.pdf')));
 });
-test('the build worker: Higgsfield directs the film with matching start/end frames, Kling is the backup, and the check covers reverse scroll', () => {
+test('the build worker: the film is made on Kling directly with matching first/tail frames, Higgsfield is the backup, and the check covers reverse scroll', () => {
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/Higgsfield Director/.test(routine) && /start_image/.test(routine) && /end_image/.test(routine) && /media_import_url/.test(routine) && /sound `off`/.test(routine));
-  assert.ok(/make it with Kling `image_to_video`/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
+  assert.ok(/made on Kling directly/.test(routine) && /`first_image`/.test(routine) && /`tail_image`/.test(routine) && /`enable_audio` false/.test(routine) && /`prefer_multi_shots` false/.test(routine), 'Kling direct (Ryan, 2026-09-29)');
+  assert.ok(/make it on\s+Higgsfield/.test(routine) && /non-Kling/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
 });
 console.log('\n[26] Luxury retail at the S$10,000 standard (Ryan, 2026-09-29: "any retail luxury 10,000 website")');
 test('watches, jewellery, electronics, furniture, fashion and luxury goods are luxury retail; others are not', () => {
@@ -1281,7 +1281,7 @@ test('a luxury brief: luxury design, the maison sitemap, three art directions, t
   assert.ok(/private viewing/.test(p) && /no discount strips, countdown timers/.test(p) && /Price on request/.test(p) && /Illustrative/.test(p) && /docs\/qa-report\.md/.test(p) && /BLOCKER \/ HIGH \/ MEDIUM \/ POLISH/.test(p));
   assert.ok(p.length <= wb.WB_MAX_PROMPT && !/guarantee|\$\s?\d/i.test(p), String(p.length));
 });
-test('the Higgsfield shot package: every doctrine field on every chapter, matching end frames, luxury posters without brand marks', () => {
+test('the shot package (Higgsfield Director role, made on Kling): every doctrine field on every chapter, matching end frames, luxury posters without brand marks', () => {
   const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Maison Lumiere', industry: 'fine jewellery atelier', message: 'website for my jewellery atelier' } });
   assert.strictEqual(r.film_brief.mode, 'luxury_chapters'); assert.strictEqual(r.film_brief.scenes.length, 3); assert.strictEqual(r.image_shots.length, 3);
   const fields = ['camera', 'lens', 'framing', 'lighting', 'grade', 'movement', 'speed', 'start_frame', 'end_frame', 'continuity', 'duration_s', 'aspect_ratio', 'safe_text_zone', 'mobile_crop', 'negative'];
@@ -1290,7 +1290,7 @@ test('the Higgsfield shot package: every doctrine field on every chapter, matchi
   const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Plumbing', industry: 'plumber', message: 'need a website' } });
   plain.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.negative && sc.shot.end_frame));
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/`shot` package, every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
+  assert.ok(/`shot` package,\s+every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
 });
 console.log('\n[27] Real photos first; research everything about the company (Ryan, 2026-09-29)');
 {

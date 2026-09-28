@@ -314,3 +314,6 @@ tags: [zaphiel, changelog]
   before the intake step); `atlas.js` `atAskedBefore`; John's prompt: never ask about the look, answer first.
   `brief.js`: `wbDoctrineSection` rewritten as the master prompt steps 1-10; `wbChapterShots` (clinic, car, F&B
   chapters and shots); property scenes carry shot packages. Tests 120/120.
+- 2026-09-29 — **Film on Kling directly** (Ryan). Routine e2 rewritten (Kling `image_to_video` with first/tail frames,
+  `enable_audio` false, `prefer_multi_shots` false; Higgsfield `flux_3_video`/`minimax_h3_max` as backup); the
+  builder and research prompts name Kling as the film maker. Tests 120/120.
