@@ -6,11 +6,12 @@
 // - "inline": the files you wrote for this customer: pass them as { "file", "data": <their text>, "encoding": "utf-8" }.
 //   node ceo-brain/site-kit/scripts/deploy-plan.mjs mockups/<slug> --b64 <file>   prints one file as base64
 //   node ceo-brain/site-kit/scripts/deploy-plan.mjs --write-kit                   refreshes kit-files.json
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
-const kitRoot = resolve(import.meta.dirname, '..');
+const kitRoot = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const SKIP = new Set(['node_modules', 'dist', '.media-cache', '.vercel', 'package-lock.json', '.gitignore']);
 const SKIP_REL = new Set(['README.md', 'kit-files.json', 'scripts/deploy-plan.mjs']); // kit-only, never deployed
 
