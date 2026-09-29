@@ -11,11 +11,12 @@
 //   "stills": [{ "src": "https://.../shopfront.jpg", "out": "assets/shopfront.jpg" }]
 // }
 // Output: public/film/<id>/{d,m}/0001.<ext>, public/film/<id>/poster.<ext>, public/film/<id>/manifest.json
+import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync, readdirSync, copyFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
-const root = resolve(import.meta.dirname, '..');
+const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const cfgPath = join(root, 'media.json');
 if (!existsSync(cfgPath)) { console.log('[media] no media.json, nothing to do'); process.exit(0); }
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
