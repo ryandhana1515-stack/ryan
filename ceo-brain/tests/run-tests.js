@@ -1426,6 +1426,9 @@ test('a suit brand gets one continuous fabric-to-suit transformation film; the w
   assert.ok(t && /bolt of fine wool/.test(t.first) && /finished tailored suit/.test(t.tail) && /stitch lines draw themselves/.test(t.move), JSON.stringify(t));
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/for EVERY scene but the last/.test(routine) && /ONE `<div class="film-sequence">`/.test(routine));
+  assert.ok(/F6\. Fallback when Vercel refuses/.test(routine) && /Never report `build_failed` just because Vercel\s+refused/.test(routine), 'Vercel refusal falls back to Higgsfield hosting');
+  const host = fs.readFileSync(path.join(__dirname, '../site-kit/scripts/higgsfield-host.sh'), 'utf8');
+  assert.ok(/node@22/.test(host) && /binding-linux-x64-gnu/.test(host) && /home\.html/.test(host) && /scripts\/media\.mjs/.test(host), 'the fallback builds the film and places the site in the Higgsfield checkout');
   assert.ok(/Make 5-7 scenes/.test(routine) && /look bible/.test(routine) && /`tail_image` =\s+the next scene's keyframe/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine) && /Fewer than 4 scenes made/.test(routine));
   assert.ok(/film grain/.test(routine) && /vignette/.test(routine) && /glass-style cards/.test(routine) && /untextured or grey model is never shown/.test(routine) && /Skip it for fashion and furniture/.test(routine));
 });

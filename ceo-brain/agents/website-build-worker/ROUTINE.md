@@ -236,6 +236,12 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           wait for `READY`, `assign_alias` `<slug>-mockup.vercel.app`, and check the page and
           `/film/scene1/manifest.json` with `web_fetch_vercel_url` — all exactly as the kit README says. `preview_url` =
           the alias (or the deployment URL), `project_id` = the deployment id, `editor_url` = "". Then step h.
+      F6. Fallback when Vercel refuses (for example `402 api-deployments-free-per-day`, or any error twice): publish
+          on Higgsfield instead, exactly as the kit README's "Fallback: Higgsfield hosting" says. Ryan, 2026-09-29:
+          a link behind the Higgsfield sign-in is fine for now. `preview_url` =
+          `https://<subdomain>.higgsfield.app/home.html`, `project_id` = the website id, and `notes` starts with
+          "Higgsfield sign-in needed (Vercel refused: <reason>)". Never report `build_failed` just because Vercel
+          refused.
    f. Lovable (clinics and medical only): `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
       `initial_message` = `brief.build_prompt` + a blank line + the poster block:
       "Film posters for this customer (each is ONLY the first frame of its film chapter, never a static section, never

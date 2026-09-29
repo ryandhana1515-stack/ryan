@@ -13,7 +13,7 @@ import { join, relative, resolve } from 'node:path';
 
 const kitRoot = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const SKIP = new Set(['node_modules', 'dist', '.media-cache', '.vercel', 'package-lock.json', '.gitignore']);
-const SKIP_REL = new Set(['README.md', 'kit-files.json', 'scripts/deploy-plan.mjs']); // kit-only, never deployed
+const SKIP_REL = new Set(['README.md', 'kit-files.json', 'scripts/deploy-plan.mjs', 'scripts/higgsfield-host.sh']); // kit-only, never deployed
 
 function walk(dir, base = dir, out = []) {
   for (const name of readdirSync(dir)) {

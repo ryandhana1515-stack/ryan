@@ -365,3 +365,6 @@ tags: [zaphiel, changelog]
   with a 6% dissolve and no zoom jump. Checked at 61 scroll positions on desktop and iPhone: a scene is always
   fully visible, never black. The playbook, routine F2/F3 and README now chain every scene to the next. The
   Atelier Noir preview was not rebuilt (Ryan). Tests 124/124.
+- 2026-09-29 — **Higgsfield fallback hosting.** When Vercel refuses a deploy (today: the daily limit), the worker
+  publishes on Higgsfield with `scripts/higgsfield-host.sh` (routine F6, kit README). Tested end to end on
+  `fusiontech-kit-check`. Ryan accepts a link behind the Higgsfield sign-in for now.
