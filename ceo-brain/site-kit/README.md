@@ -28,8 +28,11 @@ Vercel's build machine can, so media is only ever named by URL in `media.json`.
 
 ## Markup you can use
 
-- **Scene film (the wow; see the playbook):** one pinned section per scene, 5–7 in a row.
+- **Scene film (the wow; see the playbook):** 5–7 scenes inside ONE `.film-sequence`. It pins one full-screen
+  stage and plays the scenes back to back, with no black between them, dissolving each scene into the next
+  over its last `data-dissolve` share (default 0.06). Each scene must end on the next scene's first frame.
   ```html
+  <div class="film-sequence" data-dissolve="0.06">
   <section class="film" data-film="scene2" data-length="240">
     <canvas role="img" aria-label="…"></canvas>
     <div class="film-chapter film-chapter--right" data-from="0.12" data-to="0.92">
@@ -38,9 +41,14 @@ Vercel's build machine can, so media is only ever named by URL in `media.json`.
       <p class="scene-copy">…</p>
     </div>
   </section>
+  …
+  </div>
   ```
-  - `data-length` is the scroll distance in vh: about 240 for a 5-second scene, 320 for a 10-second scene.
-  - `data-fade` is the fade through black between scenes (default `0.08`; `0` for a hard cut).
+  - `data-length` is each scene's share of the scroll in vh: about 240 for a 5-second scene, 320 for a
+    10-second scene.
+  - Scenes in a sequence have no push-in zoom (`data-zoom` defaults to 1), so the frames meet exactly.
+  - Never put scene films outside the sequence one after another: separate pinned films show black and a slide
+    between them.
   - Scene 1 carries the hero copy in a chapter with `data-from="0"` (visible at rest) and loads at once. Later
     scenes load as they come near.
   - Alternate `film-chapter--left` and `film-chapter--right` scene by scene. On phones both sit at the bottom.
