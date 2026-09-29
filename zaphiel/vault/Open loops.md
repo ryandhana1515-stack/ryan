@@ -100,3 +100,6 @@ tags: [zaphiel, open-loops]
     approval.
 - **Fusion EDG Core, 2026-09-30 update:** the private repo is done (code moved, tests green). Next is Ryan's Supabase
   project + connector, then "OK staging".
+- **Fusion EDG Core, 2026-09-30:** the Supabase dev database is live (Tokyo, FAKE data, 0 security findings). Next is
+  staging: the API goes on a Vercel preview. Ryan says "OK staging", and he sets 2 secrets himself (the app database
+  password, and EDG_WEBHOOK_SECRET in Vercel).

@@ -403,3 +403,9 @@ tags: [zaphiel, changelog]
   - Nothing is in staging or production, and no real customer data was used.
 
 - 2026-09-30 — **Fusion EDG Core moved to its private repo** `ryandhana1515-stack/fusion-edg-core` (Ryan: "repo made"). The history was kept (`git subtree split`, 5 commits), 51/51 tests pass there, and a `CLAUDE.md` with the working rules was added (fusion-edg-core PR #1, merged). The `fusion-edg-core/` folder was removed from the public `ryan` repo; its earlier commits remain in `ryan` history (there are no secrets in them).
+
+- 2026-09-30 — **Supabase dev database live** (Ryan created the org "FusionTech AI" and the project `fusion-edg-dev`, then connected Supabase to Claude).
+  - Region: Tokyo (ap-northeast-1). Client production projects will go in Singapore.
+  - Migrations 001–008 applied, with FAKE seed data (2 demo orgs).
+  - Isolation verified on Supabase itself: no cross-tenant reads, updates, deletes or inserts; the audit log cannot be changed; no data without an organisation; anonymous visitors see nothing.
+  - Supabase security advisor: 10 warnings (function search_path), fixed with migration 008; now 0 findings. fusion-edg-core PR #2 merged.
