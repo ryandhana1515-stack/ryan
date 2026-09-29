@@ -343,3 +343,8 @@ tags: [zaphiel, changelog]
     - the live prompt is now a short pointer that clones the public repo and follows `ROUTINE.md`, so a merge
       updates the worker.
   - Tests 124/124.
+- 2026-09-29 — Vercel set up by Ryan:
+  - `fusiontech-mockups` created, with login protection off;
+  - the Vercel connector added to the build worker;
+  - Git disconnected from all three Vercel projects, because the vault sync's automatic rebuilds used the Hobby
+    plan's 100 deployments a day.
