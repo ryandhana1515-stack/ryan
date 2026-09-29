@@ -46,3 +46,13 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
     register wins; the agent file is unchanged.
   - Existing notes changed by appending only: `70_Industry_Packs/_index.md`, `10_Agents/_index.md`, `Decisions.md`,
     this changelog, [[Change log]] and [[Open loops]]. Test [32] was added.
+- 2026-09-30 — **ATLAS v2 BUILD ENGINE + Fusion EDG Core built (development)** (Ryan: "Build all now"; "Don't do property first, do this first").
+  - `.claude/agents/atlas.md`: BUILD ENGINE (v2) sections B1–B18 added, Ryan's text verbatim, plus one line of Zaphiel's ("the stricter safety rule wins"). The diff was shown before saving: 254 lines added, 0 removed. There is no second ATLAS.
+  - New code `fusion-edg-core/` (repo root, not the vault). It moves to a private repo when Ryan creates one; the GitHub connector cannot create repos (403).
+    - B1: tool registry, capability detection, the `executeTool` safety pipeline, approvals, audit, idempotency, MOCK adapters.
+    - B2: multi-tenant schema with forced RLS; cross-tenant test passes; backup/restore tried.
+    - B3: outbox dispatcher; 8 n8n templates created INACTIVE in the n8n folder "EDG Core — TEST templates (inactive)".
+    - C: form/WhatsApp/email → CRM → owner → follow-up → CEO brief.
+    - 51/51 tests pass. Docs, test report and demo script are in `fusion-edg-core/docs/`.
+    - Summary: [[00_CEO_Brain/05_Fusion_EDG_Core]].
+  - Nothing is in staging or production, and no real customer data was used.

@@ -37,3 +37,9 @@ All eight were created in Ryan's n8n on 2026-09-30, in the folder **EDG Core —
 ## Env var names the API side needs
 `DATABASE_URL`, `APP_DATABASE_URL`, `EDG_WEBHOOK_SECRET`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, plus the provider
 keys in `.env.example`.
+
+## Production note
+An every-minute n8n schedule is about 43,200 executions a month; n8n Cloud Starter includes 2,500 (checked 2026-09-30).
+In production, run the outbox dispatcher and the follow-up runner from the API's own scheduler (for example Vercel Cron
+or Supabase `pg_cron`), and keep n8n for intake webhooks, IMAP and the daily brief. See `docs/adr/0004`.
+The dispatch job is platform-wide: one call processes every tenant's events, each inside that tenant's RLS context.

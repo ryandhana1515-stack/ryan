@@ -230,3 +230,7 @@ after migration · reconciliation variance = 0 · time to CRM live · first sell
 Connected to: [[10_Agents/00_CEO_Orchestrator]] · [[10_Agents/02_Sales_CRM]] (John) · [[10_Agents/05a_Website_Intelligence]] ·
 [[10_Agents/09_Workflow_Automation]] · [[10_Agents/14_Data_BI_KPI]] · [[10_Agents/15_Security_Governance_QA]] ·
 [[40_Registries/Integration_Registry]] · [[40_Registries/System_of_Record_Registry]] · [[40_Registries/Agent_Permission_Matrix]]
+
+## BUILD ENGINE (v2) — 2026-09-30
+ATLAS now builds working systems in stages, with proof (sections B1–B18 in `.claude/agents/atlas.md`). The shared engine
+is [[00_CEO_Brain/05_Fusion_EDG_Core]]: development only until Ryan approves staging and production.
