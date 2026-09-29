@@ -2,43 +2,43 @@
   "films": [
     {
       "id": "scene1",
-      "src": "https://v15-kling.klingai.com/bs2/upload-ylab-stunt-sgp/ac5daa12-47fe-4d7b-8e23-62531aee94c2-lHLNjChNPGbUcbe5HXwWpQ-output.mp4?x-kcdn-pid=112372",
-      "crop": "kling",
-      "frames": 96,
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/be7543e2-df5e-4d80-99da-d7ef8f369c58.mp4",
+      "crop": "none",
+      "frames": 120,
       "optional": true
     },
     {
       "id": "scene2",
-      "src": "",
-      "crop": "kling",
-      "frames": 96,
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/7d794bd4-32f8-4cd5-bf1e-334585e3a14b.mp4",
+      "crop": "none",
+      "frames": 120,
       "optional": true
     },
     {
       "id": "scene3",
-      "src": "",
-      "crop": "kling",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/19316efe-81be-46fc-8822-1c63454ba8ba.mp4",
+      "crop": "none",
       "frames": 96,
       "optional": true
     },
     {
       "id": "scene4",
-      "src": "",
-      "crop": "kling",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/be93e806-b2a6-44be-91cf-15e9077b884d.mp4",
+      "crop": "none",
       "frames": 96,
       "optional": true
     },
     {
       "id": "scene5",
-      "src": "",
-      "crop": "kling",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/0976feed-2267-46f0-a8f5-e1f060cf02ed.mp4",
+      "crop": "none",
       "frames": 96,
       "optional": true
     },
     {
       "id": "scene6",
-      "src": "",
-      "crop": "kling",
+      "src": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Ge3uz61K0ilyZgEJz8pfnKqob0/fa85cc11-0cc1-4f12-a5b3-19f1ca40052b.mp4",
+      "crop": "none",
       "frames": 96,
       "optional": true
     }

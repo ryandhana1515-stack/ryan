@@ -78,7 +78,10 @@ a textured model.
 ```
 
 - `src` can be a list of URLs (property legs): the legs are joined into one film.
-- `crop`: `"kling"` for Kling films, `"none"` for Higgsfield or customer video.
+- `src`: a permanent URL. Kling links expire after 24 hours, so copy each clip with Higgsfield `media_import_url`
+  (Kling's `urlWithoutWatermark`) and use its `cloudfront.net` URL from `show_medias`.
+- `crop`: `"none"` for watermark-free clips, Higgsfield or customer video; `"kling"` only for a watermarked Kling
+  `url`.
 - `frames`: 96 for a 5-second scene, 120 for a 10-second scene. More frames are smoother but heavier.
 - Stills land in `public/<out>`; reference them as `/<out>`.
 

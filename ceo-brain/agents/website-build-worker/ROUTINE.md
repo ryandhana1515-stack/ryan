@@ -198,9 +198,13 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
              on it → the jacket closes over it), none for a hard cut (a new angle, a macro). Prompt = the look
              bible + the scene's action as one slow, steady move. Submit all scenes together, then poll (at most
              ~12 minutes).
-          4. Do not download them. Put each video URL in `media.json` as its own film (`scene1` … `scene6`,
-             `"crop": "kling"`, `"frames": 96`, 120 for a 10-second scene). Vercel's build crops Kling's corner
-             watermark with `crop=iw*0.94:ih*0.94:iw*0.03:0` and cuts the frames.
+          4. Do not download them. Kling links expire after 24 hours, so make each clip permanent:
+             - Higgsfield `media_import_url` with the scene's `urlWithoutWatermark` (Ryan's Pro plan has no
+               watermark);
+             - then `show_medias` (type `video`) for its permanent `cloudfront.net` URL.
+             Put each permanent URL in `media.json` as its own film: `scene1` … `scene6`, `"crop": "none"`,
+             `"frames": 96` (120 for a 10-second scene). Use `"crop": "kling"` only for a watermarked `url`;
+             Vercel's build then crops the corner with `crop=iw*0.94:ih*0.94:iw*0.03:0` and cuts the frames.
           If a scene fails twice on Kling, make it with Higgsfield `generate_video` (a start/end-frame model) with
           `"crop": "none"`. If it fails there too, drop the scene. Say either in `notes`. Fewer than 4 scenes made →
           report `build_failed` with the reason rather than publishing a thin site.
