@@ -182,7 +182,15 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           has a `transformation` (luxury retail), make the 15-second Kling shot from its `first` still (generate
           it with Kling `text_to_image`, or use the customer's own photo) to its `tail` still (the finished product;
           Kling `tail_image`) with its `move` as the prompt: the product transforms as the visitor scrolls down and
-          restores as they scroll up. Otherwise write one continuous move through the chapters the same way.
+          restores as they scroll up. If the brief has no `transformation`, use the one for the kind of business
+          (first still → finished still: the move): suits and fashion = a bolt of fine wool on a dark cutting table
+          → the finished tailored suit on an invisible form: the cloth lifts, is cut into pattern pieces that float
+          and turn, stitch lines draw themselves, the pieces fly together into the suit as the camera orbits;
+          watches = case, crystal and strap apart on black stone → the finished watch: they glide together, a light
+          sweep crosses the dial; jewellery = molten gold in a crucible → the finished ring throwing fire: poured,
+          cast, the stone set, turning in light; furniture = raw timber and leather on a bench → the finished piece
+          in a sunlit room: shaped, joined, wrapped, the workshop dissolving into the room; any other business =
+          one continuous move through the chapters the same way.
       F3b. Cinematic finish over the whole page (the scroll sites Ryan admires): subtle film grain, a soft
           vignette, a few slow floating particles in the brand's metal or light tone, glass-style cards for the
           chapter copy and a light brand colour tint over the film; all quiet, all driven by scroll or CSS,
