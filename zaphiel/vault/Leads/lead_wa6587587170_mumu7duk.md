@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-29
-updated: 2026-09-29T15:38:30.174Z
+updated: 2026-09-29T16:15:21.180Z
 tags: [lead]
 ---
 # Ryan @ OrangeTee
@@ -26,7 +26,7 @@ Links: [[Companies/OrangeTee|OrangeTee]] · [[Industries/Real estate - property 
 - Wants: website_build
 - Tools: -
 - Budget: - · Timeline: -
-- Outcome wanted: Buyers and sellers enquire with the agency through a new website
+- Outcome wanted: Buyers and sellers to enquire with them
 
 ## Conversation log
 
@@ -43,3 +43,10 @@ _Summary:_ Ryan from OrangeTee, a Singapore residential property agency (sales a
 **John:** Thank you, Ryan, that is exactly the detail we needed: a signature luxury condo showing the living room with a city skyline view, the kitchen, the master bedroom and the pool deck, with placeholders elsewhere. Our team is building your first mock-up now, and we will send the link here, usually within about an hour. Thank you, I have passed that to our website team; your mock-up link will come to you here as soon as it is ready.
 
 _Summary:_ Ryan of OrangeTee, a Singapore property agency, requested a website mock-up for the agency (not a specific listing). He specified the walkthrough should show a signature luxury condo: living room with city skyline view, kitchen, master bedroom and pool deck, with placeholders elsewhere.
+
+### 2026-09-29 16:15 UTC · QUALIFYING / warm · next: send_reply · hand-off: atlas · anthropic
+**Prospect:** is it done?
+
+**John:** Hi Ryan, thank you for checking in. Your mock-up is still being put together by our website team right now, since each one is built specifically around OrangeTee rather than a template. It is usually ready within about an hour of starting, so it should not be much longer, and we will send the link here as soon as it lands. ATLAS, our systems architect, would like to know: When someone fills in a form or messages you on WhatsApp/Instagram today, who receives that and what usually happens next?
+
+_Summary:_ Ryan from OrangeTee (property agency, Singapore) requested a website mock-up showing a signature luxury condo; all build details were already collected and the team is building it. Ryan is now checking if the mock-up is ready.
