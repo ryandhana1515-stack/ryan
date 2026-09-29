@@ -150,6 +150,30 @@ After changing `package.json`, `vercel.json`, `vite.config.js` or `scripts/kit.m
 
 The tests check that the manifest matches the files.
 
+## Fallback: Higgsfield hosting (when Vercel refuses the deploy)
+
+Higgsfield sites need a Higgsfield sign-in. Ryan accepts that for now; customers get the Vercel link once Vercel is
+back.
+
+1. Create the website: `mcp__higgsfield__create_website`:
+   - `type` `website`, no template;
+   - `category`: the closest slug from `list_website_categories`;
+   - `subdomain` `<slug>-mockup`.
+2. Check it out: `website_repo_access` with `checkout`. Keep `checkout_path`.
+3. Get the kit into the sandbox: `sandbox_exec`:
+   `git clone -q --depth 1 https://github.com/ryandhana1515-stack/ryan fusiontech && cp -r fusiontech/ceo-brain/site-kit m`
+4. Move your own files across. In your container, run
+   `cd mockups/<slug> && tar czf - index.html <other pages> media.json src/main.js src/styles/brand.css docs | base64 -w0`.
+   In the sandbox, run `echo '<that text>' | base64 -d | tar xz -C m`. If the text is longer than about 15,000
+   characters, split the files over several calls.
+5. Build: `sandbox_exec` with `background: true`, running
+   `bash fusiontech/ceo-brain/site-kit/scripts/higgsfield-host.sh m <checkout_path> > hf.log 2>&1; echo EXIT $? >> hf.log`.
+   Poll `tail hf.log` until `EXIT 0` (about 3–5 minutes). If `[media]` shows a failed download, fix the URL and
+   run it again.
+6. Push, then deploy: `website_repo_access` with `push`, then `deploy_website`. The deploy call can time out; poll
+   `website_status` until `deployed`.
+7. The link is `https://<subdomain>.higgsfield.app/home.html`.
+
 ## Quality gate before reporting (all must pass)
 
 - The first screen is scene 1 with the hero headline and CTAs, on a phone.
