@@ -11,8 +11,8 @@ system is built on it. Ryan: "Build all now" (2026-09-30).
 
 - **Agent:** [[10_Agents/07_CRM_Architect|ATLAS]]. `.claude/agents/atlas.md` now has **BUILD ENGINE (v2)**, sections B1–B18
   (Ryan's text, verbatim).
-- **Code:** `fusion-edg-core/` in the `ryan` repo, outside the vault. It moves to a private repo `fusion-edg-core` once
-  Ryan creates it; the GitHub connector cannot create repos (403).
+- **Code:** private repo **`ryandhana1515-stack/fusion-edg-core`** (Ryan created it on 2026-09-30; the code moved there
+  with its history, and the copy in the `ryan` repo was removed). The vault keeps the docs and links only.
 - **Status:** DEVELOPMENT only. Local PostgreSQL, MOCK providers, FAKE data. Nothing is in staging or production, and no
   real customer data is used.
 
@@ -25,12 +25,11 @@ system is built on it. Ryan: "Build all now" (2026-09-30).
 | B3 | Transactional outbox + dispatcher (retry, backoff, dead-letter → manual queue + alert, idempotent consumers); 8 n8n templates | 6 tests; the 8 workflows created **inactive** in n8n, folder "EDG Core — TEST templates (inactive)" |
 | C | Vertical slice: website form / WhatsApp / email → dedupe (+65, lower-case) → contact + lead → round-robin owner → next action + date → acknowledgement → follow-up → events + audit → KPI views → CEO Daily Brief (numbers from SQL; the LLM only narrates; a number guard rejects invented numbers) | 15 end-to-end tests: new lead, duplicate lead, duplicate webhook, messaging outage → manual queue, wrong role denied, cross-tenant blocked, opt-out respected, "data unavailable" |
 
-The docs are in the repo (`fusion-edg-core/docs/`): plan, 6 ADRs, architecture diagrams, env var names, runbook, cost,
+The docs are in the private repo (`docs/`): plan, 6 ADRs, architecture diagrams, env var names, runbook, cost,
 test report and client demo script. `pnpm demo` runs the demo.
 
 ## What Ryan does (the system cannot do these itself)
-1. **Create the private GitHub repo `fusion-edg-core`**, empty, at github.com/new. Tell Zaphiel, and it moves the code
-   there with its history.
+1. ~~Create the private GitHub repo `fusion-edg-core`~~ **done 2026-09-30**: the code is there and 51/51 tests pass.
 2. **Create a Supabase project for development/staging** (Pro plan, about $25/month; it includes a $10 compute credit).
    Then connect Supabase to Claude, or give a database URL through the secret manager, **never in chat**.
 3. **Approve each next step:** staging deploy (L3), then production (L4, needs the QA gate), and any L5 action.

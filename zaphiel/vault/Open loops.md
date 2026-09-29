@@ -98,3 +98,5 @@ tags: [zaphiel, open-loops]
   - Production scheduling for the dispatcher and follow-ups: Vercel Cron or pg_cron, not n8n (execution limits).
   - The 8 n8n EDG templates sit inactive, pointing at a placeholder URL. Connect them to a client's API only after
     approval.
+- **Fusion EDG Core, 2026-09-30 update:** the private repo is done (code moved, tests green). Next is Ryan's Supabase
+  project + connector, then "OK staging".

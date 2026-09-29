@@ -56,3 +56,4 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
     - 51/51 tests pass. Docs, test report and demo script are in `fusion-edg-core/docs/`.
     - Summary: [[00_CEO_Brain/05_Fusion_EDG_Core]].
   - Nothing is in staging or production, and no real customer data was used.
+- 2026-09-30 — **Fusion EDG Core moved to its private repo** `ryandhana1515-stack/fusion-edg-core` (Ryan: "repo made"). The history was kept (`git subtree split`, 5 commits), 51/51 tests pass there, and a `CLAUDE.md` with the working rules was added (fusion-edg-core PR #1, merged). The `fusion-edg-core/` folder was removed from the public `ryan` repo; its earlier commits remain in `ryan` history (there are no secrets in them).
