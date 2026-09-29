@@ -266,3 +266,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   (reverse scroll, phone encodes, posters), live at `<slug>-mockup.higgsfield.app`; the film is made on Kling
   directly, the watermark cropped in the encode; the customer's real photos first. The build worker runs on
   Claude Fable 5.1.
+
+- 2026-09-29 — **Clinic sites get a narrated explainer film** (Ryan: "it goes inside the teeth, then a narrator explains
+  this and that and why, then it goes inside the human body … not as a scroll, an actual video inside the website").
+  About 60 seconds, 6 scenes (outside → inside the tooth or body → vessels and nerves → the clinic's own treatment →
+  back out → book), photoreal Kling pictures, a calm narrator voice (Higgsfield), burned subtitles and a captions
+  track, played in a "How it works" section of the Lovable clinic site with the transcript underneath. Educational
+  only, no promises or prices, labelled illustrative; the script is sent for the clinic to verify.

@@ -321,3 +321,7 @@ tags: [zaphiel, changelog]
   `website-builder-flow` + `scroll-scrub` template, design brief from the master prompt, Kling film cropped and
   encoded with `scroll-scrub-video.sh`, real photos first, GLB 360 for luxury, storyboard + QA report, Phase 5
   gate, `deploy_website`). Routine model → `claude-fable-5-1`. Tests 121/121.
+- 2026-09-29 — **Clinic explainer film.** `brief.js`: `WB_EXPLAINER` (dental, cardiology, orthopaedic,
+  ophthalmology, general) + `wbExplainerBrief` in `film_brief.explainer`; the Lovable prompt reserves the player.
+  Routine step e4: script → Higgsfield `seed_audio` narration → Kling clips → assembled in the Higgsfield sandbox
+  (watermark cropped, subtitles, VTT, poster) → uploaded to the Lovable project. Tests 122/122.

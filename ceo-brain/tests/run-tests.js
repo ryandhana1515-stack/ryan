@@ -1370,6 +1370,21 @@ test('the build worker routes medical to Lovable and every other business to Cla
   assert.ok(/made on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
   assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && /higgsfield\.app/.test(routine));
 });
+console.log('\n[30] Clinics get a narrated explainer film inside the site (Ryan, 2026-09-29)');
+test('a clinic brief plans a 6-scene narrated film going inside the tooth or body; the Lovable prompt holds its player; the worker makes it', () => {
+  const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Hero and section visuals: photoreal teeth', real_photos: [] } });
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json: med } });
+  const ex = r.film_brief.explainer;
+  assert.ok(ex && ex.specialty === 'dental' && ex.scenes.length === 6, JSON.stringify(ex && ex.specialty));
+  assert.ok(/enamel into the dentin/.test(ex.scenes[1].visual) && /nerve and fine blood vessels/.test(ex.scenes[2].visual) && /non-gory/.test(ex.scenes[2].visual));
+  assert.ok(ex.rules.some((x) => /never medical advice/.test(x)) && ex.rules.some((x) => /clinic to verify/.test(x)));
+  assert.ok(/Clinic EXPLAINER FILM/.test(r.build_prompt) && /public\/explainer/.test(r.build_prompt));
+  const heart = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heart Clinic', industry: 'cardiology clinic', message: 'heart specialist clinic website' } });
+  assert.ok(/coronary artery/.test(heart.film_brief.explainer.scenes[2].visual));
+  assert.strictEqual(wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website' } }).film_brief.explainer, undefined);
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/e4\. Clinic explainer film/.test(routine) && /`seed_audio`/.test(routine) && /burn subtitles/.test(routine) && /get_file_upload_url/.test(routine) && /verified by the clinic/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
