@@ -71,6 +71,9 @@ tags: [zaphiel, open-loops]
   - 7 keyframes and 6 Kling scenes (334 credits);
   - stored permanently on Higgsfield and wired into `ceo-brain/site-kit/media.json`.
 
+  - Preview for Ryan (behind the Higgsfield sign-in):
+    https://atelier-noir-preview.higgsfield.app/atelier.html. This is Higgsfield website `697a1947-…`, built in the
+    Higgsfield sandbox; all 6 scenes were cut into frames.
   Zaphiel deploys it to `fusiontech-mockups` when the Vercel daily limit resets (2026-09-30 about 19:30 SGT),
   aliases it `atelier-noir-mockup.vercel.app`, and sends Ryan the link.
 - **Zaphiel (after the daily limit resets, 2026-09-30 about 19:30 SGT):**
