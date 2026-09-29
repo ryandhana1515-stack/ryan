@@ -28,18 +28,24 @@ Vercel's build machine can, so media is only ever named by URL in `media.json`.
 
 ## Markup you can use
 
-- **Scroll film:**
+- **Scene film (the wow; see the playbook):** one pinned section per scene, 5–7 in a row.
   ```html
-  <section class="film" data-film="hero" data-length="520">
+  <section class="film" data-film="scene2" data-length="240">
     <canvas role="img" aria-label="…"></canvas>
-    <div class="film-chapter" data-from="0" data-to="0.22">…</div>
+    <div class="film-chapter film-chapter--right" data-from="0.12" data-to="0.92">
+      <div class="scene-kicker">II · The waistcoat</div>
+      <h2 class="scene-title">Structure, Held Close</h2>
+      <p class="scene-copy">…</p>
+    </div>
   </section>
   ```
-  - `data-length` is the scroll distance in vh: 400–600 for one 15-second film.
-  - The `data-from`/`data-to` progress windows must not overlap.
-  - The first chapter (`data-from="0"`) is visible at rest: put the hero headline and CTAs there.
+  - `data-length` is the scroll distance in vh: about 240 for a 5-second scene, 320 for a 10-second scene.
+  - `data-fade` is the fade through black between scenes (default `0.08`; `0` for a hard cut).
+  - Scene 1 carries the hero copy in a chapter with `data-from="0"` (visible at rest) and loads at once. Later
+    scenes load as they come near.
+  - Alternate `film-chapter--left` and `film-chapter--right` scene by scene. On phones both sit at the bottom.
+  - The `data-from`/`data-to` windows inside one scene must not overlap.
   - Glass copy card: `class="film-chapter glass"`.
-  - A second film (another `id` in `media.json`) is another `section.film`.
 - **Motion attributes:**
   - `data-reveal="lines"`: masked word rise, for headlines.
   - `data-reveal="fade"`, `data-reveal="clip"` (a panel wipes open), `data-reveal="scale"`.
@@ -65,14 +71,15 @@ a textured model.
 
 ```json
 {
-  "films":  [{ "id": "hero", "src": "<Kling video URL>", "crop": "kling", "frames": 150 }],
+  "films":  [{ "id": "scene1", "src": "<Kling video URL>", "crop": "kling", "frames": 96 },
+             { "id": "scene2", "src": "<Kling video URL>", "crop": "kling", "frames": 96 }],
   "stills": [{ "src": "<customer photo URL>", "out": "assets/shopfront.jpg" }]
 }
 ```
 
 - `src` can be a list of URLs (property legs): the legs are joined into one film.
 - `crop`: `"kling"` for Kling films, `"none"` for Higgsfield or customer video.
-- `frames`: 120–180. More frames are smoother but heavier; 150 is right for a 15-second film.
+- `frames`: 96 for a 5-second scene, 120 for a 10-second scene. More frames are smoother but heavier.
 - Stills land in `public/<out>`; reference them as `/<out>`.
 
 ## Build and publish (the worker does all of this; nobody approves)
@@ -117,8 +124,8 @@ The Zaphiel routine has no push rights and no media downloads, so the deploy car
    - `[kit] could not fetch` means GitHub was unreachable: deploy again once.
 8. Give it a clean name: `mcp__Vercel__assign_alias` with alias `<slug>-mockup.vercel.app`. Add `-2` if it is
    taken. If aliasing is refused, use the deployment URL.
-9. Check it: `mcp__Vercel__web_fetch_vercel_url` on the page and on `/film/hero/manifest.json`. The manifest
-   must show `count` ≥ 100.
+9. Check it: `mcp__Vercel__web_fetch_vercel_url` on the page and on `/film/scene1/manifest.json` (and the last
+   scene's). Each manifest must show `count` ≥ 80.
 10. `preview_url` is the alias (or the deployment URL), `project_id` is the deployment id, and `editor_url` is
     `""`. Then report as usual.
 
@@ -134,8 +141,9 @@ The tests check that the manifest matches the files.
 
 ## Quality gate before reporting (all must pass)
 
-- The first screen is the film with the hero headline and CTAs, on a phone.
-- Scrolling down plays the film. Scrolling up plays it backwards. It is never swapped for stills.
+- The first screen is scene 1 with the hero headline and CTAs, on a phone.
+- There are 5–7 scenes in one look, and the product builds itself across them.
+- Scrolling down plays the scenes. Scrolling up plays them backwards. They are never swapped for stills.
 - The build shows no console errors and no horizontal scroll at 390px width.
 - Every section moves.
 - All copy can be read at rest.

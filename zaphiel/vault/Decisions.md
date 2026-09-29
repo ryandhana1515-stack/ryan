@@ -294,3 +294,17 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
     cuts the frames.
   - Links take the form `<slug>-mockup.vercel.app`.
   - Clinics stay on Lovable.
+
+- 2026-09-29 (evening) — **Every non-clinic mock-up is a scene film of 5-7 cinematic scenes in one look.** Ryan: the
+  first kit demo, one film plus coloured boxes, was "too simple, there's nothing".
+  - His reference is the TikTok by EditsbyGhalib, "animated fashion tailoring website":
+    - the shirt forms, glowing in a black void;
+    - the waistcoat and jacket build on;
+    - the complete silhouette;
+    - the colour range walking at night;
+    - a macro of the stitching.
+  - His own example is a motorbike: it splits into parts, spins 360°, then "vroom".
+  - The arc is: parts → assembled → revealed → alive → macro → payoff.
+  - Every scene is its own Kling shot from keyframes that share one look bible. Recipes per industry are in
+    [[Knowledge/Wow website playbook]].
+  - This replaces the single 15-second transformation film.

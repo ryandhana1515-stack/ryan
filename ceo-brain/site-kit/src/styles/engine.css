@@ -27,6 +27,15 @@ img, video, canvas { max-width: 100%; display: block; }
 .film::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, var(--tint), transparent 30%, transparent 62%, var(--bg) 100%); pointer-events: none; }
 .film-chapter { position: absolute; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: clamp(56px, 12vh, 140px); max-width: 720px; will-change: opacity, transform; }
 html.js .film-chapter { opacity: 0; }
+/* Scene copy beside the subject, alternating sides scene by scene (the TikTok tailoring reference) */
+.film-chapter--left, .film-chapter--right { top: 50%; bottom: auto; max-width: min(460px, 42vw); margin-top: -12vh; }
+.film-chapter--right { left: auto; right: var(--gutter); text-align: right; }
+@media (max-width: 760px) { .film-chapter--left, .film-chapter--right { top: auto; bottom: 9vh; margin-top: 0; max-width: none; left: var(--gutter); right: var(--gutter); text-align: left; } }
+.scene-kicker { font: 600 11px/1.4 var(--text); letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); }
+.scene-title { font: 300 clamp(40px, 6.4vw, 96px)/0.95 var(--display); letter-spacing: -0.015em; margin: 10px 0 14px; text-wrap: balance; text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55); }
+.scene-copy { font: 400 clamp(14px, 1.2vw, 17px)/1.6 var(--text); color: var(--muted); max-width: 40ch; margin: 0; }
+.film-chapter--right .scene-copy { margin-left: auto; }
+@media (max-width: 760px) { .film-chapter--right .scene-copy { margin-left: 0; } }
 html.js .film-chapter[data-from="0"] { opacity: 1; }
 .film--still .film-chapter { position: relative; opacity: 1 !important; }
 .film--still { height: auto; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; gap: 32px; padding-block: 120px 64px; }

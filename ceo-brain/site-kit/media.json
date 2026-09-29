@@ -1,10 +1,45 @@
 {
   "films": [
     {
-      "id": "hero",
+      "id": "scene1",
       "src": "https://v15-kling.klingai.com/bs2/upload-ylab-stunt-sgp/ac5daa12-47fe-4d7b-8e23-62531aee94c2-lHLNjChNPGbUcbe5HXwWpQ-output.mp4?x-kcdn-pid=112372",
       "crop": "kling",
-      "frames": 150,
+      "frames": 96,
+      "optional": true
+    },
+    {
+      "id": "scene2",
+      "src": "",
+      "crop": "kling",
+      "frames": 96,
+      "optional": true
+    },
+    {
+      "id": "scene3",
+      "src": "",
+      "crop": "kling",
+      "frames": 96,
+      "optional": true
+    },
+    {
+      "id": "scene4",
+      "src": "",
+      "crop": "kling",
+      "frames": 96,
+      "optional": true
+    },
+    {
+      "id": "scene5",
+      "src": "",
+      "crop": "kling",
+      "frames": 96,
+      "optional": true
+    },
+    {
+      "id": "scene6",
+      "src": "",
+      "crop": "kling",
+      "frames": 96,
       "optional": true
     }
   ],

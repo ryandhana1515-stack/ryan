@@ -348,3 +348,10 @@ tags: [zaphiel, changelog]
   - the Vercel connector added to the build worker;
   - Git disconnected from all three Vercel projects, because the vault sync's automatic rebuilds used the Hobby
     plan's 100 deployments a day.
+- 2026-09-29 — **Scene film upgrade:**
+  - the kit engine loads later scenes lazily, fades through black between scenes and orders pins;
+  - side-aligned scene titles (`film-chapter--left/right`, `scene-kicker/title/copy`);
+  - the demo is rebuilt as 6 tailoring scenes, tested on desktop and iPhone;
+  - the playbook has scene recipes for 11 industries (motorbikes included);
+  - routine F3: keyframes with one look bible, then Kling scenes chained first/tail.
+  - Tests 124/124.

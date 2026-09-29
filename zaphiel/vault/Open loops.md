@@ -67,6 +67,8 @@ tags: [zaphiel, open-loops]
   - The Vercel connector is on the build worker routine.
   - Git is disconnected from `ryan`, `ryan-cgab` and `fusiontech-mockups`. Their automatic rebuilds on every vault
     sync had used all 100 of the Hobby plan's daily deployments.
+- **Ryan (go/no-go):** the proof build of the new scene film, a suit brand in 6 Kling scenes (about 6 keyframe
+  images and 6 videos of Kling credit), deployed to Vercel when the daily limit resets.
 - **Zaphiel (after the daily limit resets, 2026-09-30 about 19:30 SGT):**
   - Deploy the kit demo to `fusiontech-mockups` as files.
   - Confirm the build fetches the engine and a Kling film.
