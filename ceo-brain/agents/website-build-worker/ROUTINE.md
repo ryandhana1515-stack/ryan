@@ -126,6 +126,32 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       technology): Higgsfield `generate_3d` from the step-e `hero` or `detail` photo that shows the product most
       clearly, then `jobs_wait` (at most ~8 minutes). Keep the GLB URL. Never for clinics (their anatomy stays the
       photoreal film). If it fails, skip it and say so in `notes`.
+   e4. Clinic explainer film (medical only; Ryan, 2026-09-29: "it goes inside the teeth, then a narrator explains
+      this and that and why, then it goes inside the human body … an actual video inside the website"). Plan:
+      `film_brief.explainer` (about 60 seconds, 6 scenes: outside → inside the tooth or body → the vessels and
+      nerves → the clinic's treatment → back out → booking).
+      1. Script: write the narration, 1-2 plain sentences per scene from its `narration_point` and the brief's
+         research (only treatments the clinic actually offers; educational, never advice; no promises, prices or
+         success rates; ends with an invitation to book a consultation). Keep it to about 150 words.
+      2. Voice: `list_voices`, pick a calm, warm, clear English preset voice, then Higgsfield `generate_audio` with
+         `model` `seed_audio`, that `voice_type`/`voice_id` and the whole script as the prompt; wait with `jobs_wait`.
+      3. Pictures: one Kling clip per scene (`image_to_video` from the previous clip's final photo when available,
+         otherwise `text_to_video`), `kling-video-v3_0`, 16:9, audio off, one continuous camera move, prompt = the
+         scene's `visual`; the lengths should add up to the narration's length (5 or 10 seconds each).
+      4. Assemble in the Higgsfield sandbox (`sandbox_exec`): download the clips and the narration with curl, crop
+         the Kling watermark (`crop=iw*0.94:ih*0.94:iw*0.03:0`), join the clips in order with short crossfades,
+         lay the narration over them, burn subtitles from the script (and write `explainer.vtt`), export
+         `explainer.mp4` (1080p H.264, AAC, `faststart`, under 40 MB) and `explainer-poster.jpg` (a calm frame from
+         scene 2).
+      5. Hand it to Lovable: `get_file_upload_url` for each of the three files, PUT them from the sandbox with curl,
+         and pass the `file_id`s in `create_project` `files` (step f) with the line "EXPLAINER FILM — put the
+         attached explainer.mp4, explainer-poster.jpg and explainer.vtt in public/explainer/ and play them in the
+         'How it works' section: a proper video player (poster, large play button, controls, sound after the
+         visitor presses play, captions track), full width, the transcript underneath; label it 'Illustrative,
+         educational only'." plus the transcript text. If the upload fails, use `media_upload` for the MP4 and give
+         Lovable its URL instead. Say in `notes` that the narration script must be verified by the clinic.
+      If any part fails twice, build the site without the explainer (the labelled slot stays) and say so in
+      `notes`.
    f0. Choose the builder: `brief.mode` `medical` (clinics, doctors, dental, aesthetics) → Lovable, steps f to g2.
       Every other business → Claude on Higgsfield, step F, then step h. (After e2/e3 the film and model exist.)
    F. Claude on Higgsfield (Ryan, 2026-09-29) — you, Claude Fable 5.1, write the website yourself:
