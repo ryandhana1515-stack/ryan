@@ -79,6 +79,10 @@ run the steps below; if there was nothing to build, wait 2 minutes (a background
 Monitor tool, or `ScheduleWakeup` with `delaySeconds` 120 if that tool is available; never a foreground
 sleep), then check again. Stop after 55 minutes from the start so the next hourly session takes over
 cleanly. A build in progress is never abandoned at the 55-minute mark: finish it and its report first.
+**Never end your turn while a build is in progress** (Ryan, 2026-09-29: the OrangeTee build stopped after the Kling
+scenes and was never reported). While Kling or a deploy is working, keep polling in the same turn (`query_tasks`
+every ~60 seconds; wait with a short `sleep` in Bash or the Monitor tool) until the step is done, then carry on to
+step h.
 
 ## Steps
 
@@ -92,7 +96,16 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       task needs the Lovable connector. If it is missing, skip this task untouched (it stays `building`, no audit row,
       no credits spent) and say in one line what is missing; it is built on the first round after it is fixed.
    b. `get_data_table_rows` on `ceo_audit_logs`: filter `entity_id` eq the `task_id` AND `action` eq
-      `website_build_started`. If a row exists, another worker run already started this build → skip.
+      `website_build_started`. If a row exists and is less than 75 minutes old, another worker run is building →
+      skip. If it is older and the task is still `building`, that run died: RESUME it rather than skipping.
+      - Read this task's `website_build_progress` rows. They hold the Kling generation ids already made.
+      - Re-query those ids with `query_tasks` and reuse every finished keyframe and scene. Never pay for them
+        twice.
+      - Add a new `website_build_started` row (reason "resume"), then continue from the first missing step.
+      Progress log: after each Kling batch you submit (keyframes, then scenes), add one `ceo_audit_logs` row
+      `{entity_type: "task", entity_id: task_id, action: "website_build_progress", actor:
+      "agent:zaphiel-build-worker", reason: <JSON of {step, generation_ids}>, ts}`, so a crashed run can be
+      resumed without spending the credits again.
    c. `get_data_table_rows` on `ceo_leads`: filter `lead_id` eq the task's `lead_id`. If the lead has
       `test_mode` true → report `skipped_test_mode` (step 2h) and move on. **Never spend credits on a test
       lead.**
