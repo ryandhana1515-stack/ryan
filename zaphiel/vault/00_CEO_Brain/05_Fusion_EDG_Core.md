@@ -13,8 +13,9 @@ system is built on it. Ryan: "Build all now" (2026-09-30).
   (Ryan's text, verbatim).
 - **Code:** private repo **`ryandhana1515-stack/fusion-edg-core`** (Ryan created it on 2026-09-30; the code moved there
   with its history, and the copy in the `ryan` repo was removed). The vault keeps the docs and links only.
-- **Status:** DEVELOPMENT only. Local PostgreSQL, MOCK providers, FAKE data. Nothing is in staging or production, and no
-  real customer data is used.
+- **Status:** STAGING live with FAKE data only (2026-09-30): Vercel project `fusion-edg-core-api`,
+  https://fusion-edg-core-api.vercel.app (Vercel login needed), on the Supabase dev database `fusion-edg-dev`.
+  Nothing is in production, and no real customer data is used.
 
 ## What was built (all tested: 51/51 pass, typecheck clean)
 | Milestone | What | Proof |
@@ -34,7 +35,7 @@ test report and client demo script. `pnpm demo` runs the demo.
    applied, RLS is verified there, and the security advisor reports 0 findings. The original wording of this step was:
    **Create a Supabase project for development/staging** (Pro plan, about $25/month; it includes a $10 compute credit).
    Then connect Supabase to Claude, or give a database URL through the secret manager, **never in chat**.
-3. **Approve each next step:** staging deploy (L3), then production (L4, needs the QA gate), and any L5 action.
+3. **Approve each next step:** ~~staging deploy (L3)~~ **done 2026-09-30**, then production (L4, needs the QA gate), and any L5 action.
 4. **Per real client:** WhatsApp Business Platform setup, CRM/accounting connections, and a signed data-ownership and
    handover agreement.
 

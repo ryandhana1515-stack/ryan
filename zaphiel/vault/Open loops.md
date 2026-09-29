@@ -103,3 +103,9 @@ tags: [zaphiel, open-loops]
 - **Fusion EDG Core, 2026-09-30:** the Supabase dev database is live (Tokyo, FAKE data, 0 security findings). Next is
   staging: the API goes on a Vercel preview. Ryan says "OK staging", and he sets 2 secrets himself (the app database
   password, and EDG_WEBHOOK_SECRET in Vercel).
+- **Fusion EDG Core, 2026-09-30 (staging live):** `fusion-edg-core-api` on Vercel works with FAKE data. Open:
+  - Ryan: yes/no on sending John's real WhatsApp enquiries into the EDG CRM as FusionTech's own CRM (this stores real
+    contacts). If yes: Zaphiel changes the Lead Intake workflow from the repo; Ryan adds EDG_WEBHOOK_SECRET as an n8n
+    credential and allows n8n past the Vercel login (protection bypass).
+  - Optional: a CRM screen for FusionTech staff.
+  - Minor: the test-form banner still says "local EDG API"; fix the wording for staging.
