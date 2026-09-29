@@ -93,7 +93,8 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       `aspect_ratio`, highest photorealistic quality, 1 image each). Poll `query_tasks` until all are done (at most
       ~6 minutes). Collect the image URL per shot. If Kling fails a shot, retry it once on Kling. If no image at
       all, continue without photos.
-   e2. The scroll film — the Higgsfield Director role, made on Kling directly (Ryan's doctrine, 2026-09-29: "coherent
+   e2. (Lovable builds only: clinics and medical; the Claude path makes its single film in step F3.)
+      The scroll film — the Higgsfield Director role, made on Kling directly (Ryan's doctrine, 2026-09-29: "coherent
       shots with continuity and transition-compatible frames"; "if you want to use the Kling model in Higgsfield, go to
       the actual Kling"). One shot per `film_brief` scene (3 chapters: hero → offer → book/enquire; 5 for property),
       16:9, about 5 seconds, photoreal, NO sound, no text, logos, plates or faces baked in (website copy stays in the
@@ -125,7 +126,8 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       drink, a product in a shop, a device (`brief.industry_category` automotive, food_beverage, retail or
       technology): Higgsfield `generate_3d` from the step-e `hero` or `detail` photo that shows the product most
       clearly, then `jobs_wait` (at most ~8 minutes). Keep the GLB URL. Never for clinics (their anatomy stays the
-      photoreal film). If it fails, skip it and say so in `notes`.
+      photoreal film). Skip it for fashion and furniture (the transformation film does the turn). If it fails,
+      skip it and say so in `notes`.
    e4. Clinic explainer film (medical only; Ryan, 2026-09-29: "it goes inside the teeth, then a narrator explains
       this and that and why, then it goes inside the human body … an actual video inside the website"). Plan:
       `film_brief.explainer` (about 60 seconds, 6 scenes: outside → inside the tooth or body → the vessels and
@@ -175,10 +177,31 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           sandbox with curl, crop Kling's corner watermark (`ffmpeg -vf "crop=iw*0.94:ih*0.94:iw*0.03:0"`), then
           encode desktop, mobile and posters with the flow's `scroll-scrub-video.sh`. If Kling fails twice, make the
           film on Higgsfield as the flow describes and say so in `notes`.
+          ONE continuous transformation, never three short clips (Ryan, 2026-09-29: the Edit Suits Co film of three
+          5-second clips felt "too simple"). The Claude path skips the step-e2 chapter clips. When `film_brief`
+          has a `transformation` (luxury retail), make the 15-second Kling shot from its `first` still (generate
+          it with Kling `text_to_image`, or use the customer's own photo) to its `tail` still (the finished product;
+          Kling `tail_image`) with its `move` as the prompt: the product transforms as the visitor scrolls down and
+          restores as they scroll up. If the brief has no `transformation`, use the one for the kind of business
+          (first still → finished still: the move): suits and fashion = a bolt of fine wool on a dark cutting table
+          → the finished tailored suit on an invisible form: the cloth lifts, is cut into pattern pieces that float
+          and turn, stitch lines draw themselves, the pieces fly together into the suit as the camera orbits;
+          watches = case, crystal and strap apart on black stone → the finished watch: they glide together, a light
+          sweep crosses the dial; jewellery = molten gold in a crucible → the finished ring throwing fire: poured,
+          cast, the stone set, turning in light; furniture = raw timber and leather on a bench → the finished piece
+          in a sunlit room: shaped, joined, wrapped, the workshop dissolving into the room; any other business =
+          one continuous move through the chapters the same way.
+      F3b. Cinematic finish over the whole page (the scroll sites Ryan admires): subtle film grain, a soft
+          vignette, a few slow floating particles in the brand's metal or light tone, glass-style cards for the
+          chapter copy and a light brand colour tint over the film; all quiet, all driven by scroll or CSS,
+          `prefers-reduced-motion` switches the particles off. Match the look of one real award-level reference site
+          for the industry (reference boards, as the flow says); the page must never read as a template.
       F4. Images: download the customer's own photos (`real_url`s and the brief's REAL PHOTOS) into
           `app/public/assets/` and use them first; generate only what they do not cover, as the flow's asset
           system says. Luxury retail with a step-e3 GLB: a pinned REAL_TIME_3D 360 section (model-viewer or three.js,
-          rotation driven by scroll, reversible) after the film; quiet selling; label only generated products
+          rotation driven by scroll, reversible) after the film, ONLY when the model is textured and looks like
+          the real product (watches, jewellery, devices); an untextured or grey model is never shown (the film
+          does the turn instead; the Edit Suits Co grey suit looked cheap), and fashion and furniture skip it; quiet selling; label only generated products
           "Illustrative".
       F5. Build every page in the FULL WEBSITE section (TanStack routes), the forms, WhatsApp and booking as the
           brief says; write `docs/storyboard.md` and `docs/qa-report.md` (BLOCKER / HIGH / MEDIUM / POLISH, fix,

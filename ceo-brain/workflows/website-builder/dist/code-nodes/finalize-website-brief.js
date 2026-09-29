@@ -162,6 +162,14 @@ var WB_LUXURY_SHOTS = {
     { key: 'detail', prompt: 'The product in its world: an elegant Singapore interior at dusk, calm and aspirational, no people', shot: { lens: '50mm', lighting: 'warm evening interior', movement: 'slow orbit' } }
   ]
 };
+var WB_TRANSFORM = {
+  fashion: { first: 'A bolt of fine wool suiting unrolling across a dark tailor\'s cutting table, chalk marks and shears, one warm key light', tail: 'The finished tailored suit on an invisible form, lapels crisp, buttons fastened, lit like a luxury campaign on a dark seamless background', move: 'the cloth lifts into the air, is cut into pattern pieces that float and turn, stitch lines draw themselves, the pieces fly together onto an invisible form and the jacket, lapels, sleeves and buttons settle into the finished suit; the camera slowly orbits as it forms' },
+  watch: { first: 'The watch case, crystal and strap resting apart on black stone in darkness, one strip light', tail: 'The finished watch at a three-quarter angle on black stone, a light sweep across the dial', move: 'the case rises, the crystal and strap glide into place, light sweeps across the dial as the camera circles slowly around the finished watch' },
+  jewellery: { first: 'Molten gold glowing in a crucible in a dark atelier, sparks of light', tail: 'The finished ring on black velvet, the stone throwing brilliant fire', move: 'the gold pours into a mould, cools into the band, the stone is set into the prongs and the finished ring turns slowly as light plays through the stone' },
+  electronics: { first: 'The device\'s outer shell and glass panels floating apart in darkness, edge lighting', tail: 'The finished device at a hero angle, a light sweep along its edges', move: 'the panels glide together into the finished device (exterior only, no invented internals) and the camera orbits slowly as a light sweep travels along the edges' },
+  furniture: { first: 'Raw timber planks and a roll of leather on a workshop bench in soft light', tail: 'The finished signature piece in a sunlit minimal room', move: 'the planks are shaped and joined, the joints close, the leather wraps the seat, and the camera pulls back as the workshop dissolves into the finished room' },
+  luxury: { first: 'The raw materials of the product arranged on dark stone, one strip light', tail: 'The finished product on dark stone, studio light sweeping across it', move: 'the materials rise and assemble into the finished product while the camera orbits slowly, light sweeping across its surfaces' }
+};
 var WB_LUXURY_SECTIONS = ['reveal: the signature piece and the one action', 'craft: materials and making', 'lifestyle and the boutique: book a private viewing'];
 var WB_DESIGN = {
   professional_services: { personality: 'credible, precise, calm', typography: 'a refined serif for headings with a neutral grotesque for body (e.g. Fraunces + Inter)', layout: 'editorial: generous whitespace, asymmetric two-column sections, a quiet hero with one sentence and one action', imagery: 'real office, people at work, documents and process; no handshake stock photos', motion: 'subtle reveal on scroll, nothing decorative', palette: 'ink and paper neutrals with one deep accent (forest, oxblood or navy used as text, not as a gradient)' },
@@ -744,6 +752,7 @@ function wbFilmBrief(brief, input) {
     return {
       duration_seconds: 15,
       mode: 'luxury_chapters',
+      transformation: WB_TRANSFORM[kind] || WB_TRANSFORM.luxury,
       scenes: ls.map(function (x, i) { return { at: (i * 5) + '-' + (i * 5 + 5) + 's', scene: shots[i] ? shots[i].prompt : x.prompt, section: WB_LUXURY_SECTIONS[i], shot: wbShot(Object.assign({}, x.shot, { end_frame: i < ls.length - 1 ? 'chapter ' + (i + 2) + ' poster composition' : 'hold on the piece for the CTA' })) }; }),
       rules: ['doctrine: the story reverses exactly on scroll-up', 'no text, logos, brand marks, faces or invented parts in the film', 'every generated product is illustrative until the customer supplies photography, references or CAD', 'the 360 chapter uses the Higgsfield 3D model (REAL_TIME_3D) between chapters 1 and 2; no exploded view without the customer\'s CAD', 'tone: ' + brief.design_direction.brand_personality, 'palette: ' + brief.design_direction.palette]
     };
