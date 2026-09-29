@@ -30,3 +30,19 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   `80_Clients/_TEMPLATE_Client/edg/discovery/` (00–05 + `DISCOVERY_BRIEF.json`). ADR-4 amended (narrows ADR-3 for ATLAS's
   discovery conversations). The live n8n ATLAS reads the agent file too; it keeps running DESIGN mode only.
   Start: `Use the atlas agent in DISCOVERY mode. New customer: <name/website or "no info">. I'll paste their replies.`
+- 2026-09-30 — **Fusion Property AI — Singapore Property Master Agent installed** (Ryan's agent file, verbatim).
+  - Claude Code subagent `.claude/agents/fusion-property-sg.md` (new; no conflict with `atlas` or `website-intelligence`).
+  - Graph node [[10_Agents/16_Fusion_Property_SG]] with the five modes and how to start each. It links to
+    [[cinematic-website]], [[10_Agents/05a_Website_Intelligence]], [[10_Agents/07_CRM_Architect|07_ATLAS_EDG_CRM_Architect]],
+    [[10_Agents/03_Marketing_Growth]], [[10_Agents/04_Creative_Studio]] and [[10_Agents/15_Security_Governance_QA]].
+    Ryan's name `07_ATLAS_EDG_CRM_Architect` does not exist, so the link goes to the real ATLAS note (07) under that
+    label. `cinematic-website` did not exist, so a new pointer note [[Knowledge/cinematic-website]] maps it to the
+    Cinematic doctrine, the Wow playbook and the site kit.
+  - Pack [[70_Industry_Packs/Singapore_Property/00_Index]] (00–07).
+  - Product folder `90_Products/Fusion_Property_AI/` (Architecture, Roadmap, Data_Model, Test_Dataset_Plan).
+  - KNOWLEDGE REFRESH 1 of [[70_Industry_Packs/Singapore_Property/03_Regulation_Register]]: 40 rules, 33 VERIFIED on the
+    official pages with URL and date, 7 NEEDS VERIFICATION. Where the official pages differ from the agent file's
+    baseline (toilet-only 3-year rule, HS drilling ≤ 50 mm permitted, DRC for all HDB works, NEA landed only), the
+    register wins; the agent file is unchanged.
+  - Existing notes changed by appending only: `70_Industry_Packs/_index.md`, `10_Agents/_index.md`, `Decisions.md`,
+    this changelog, [[Change log]] and [[Open loops]]. Test [32] was added.

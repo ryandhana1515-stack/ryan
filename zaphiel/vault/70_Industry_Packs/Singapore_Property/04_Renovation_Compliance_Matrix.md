@@ -39,6 +39,20 @@ Verify the details. The label is guidance, not approval.
 | Extensions, extra storey, attic, basement, pool | n/a (RED) | RED | AMBER (URA PP + BCA via QP) |
 | Using common property / corridor | RED | RED | n/a |
 
+### Refresh 1 findings (2026-09-30)
+The matrix above is Ryan's baseline and has not been changed. When you apply it, these details from
+[[70_Industry_Packs/Singapore_Property/03_Regulation_Register]] take precedence:
+- **HS**: RED stays RED for hacking the shelter and for altering its door. Drilling the internal faces to a depth of
+  ≤ 50 mm for removable fixtures, and painting, are permitted (R17).
+- **HDB new flats**: toilet floor and wall finishes cannot be replaced for 3 years from the block's completion date
+  (R16). A new toilet floor may be laid over the old one with adhesive.
+- **HDB**: every renovation, including permit-free work, uses a DRC contractor (R18). Wall demolition needs HDB's
+  prior written approval (R15).
+- **Windows**: a BCA Approved Window Contractor or a GB1/GB2 builder, either way using a certified installer (R28).
+- **Plumbing**: the listed simple works may be done by a handyman. Everything else needs a PUB Licensed Plumber (R35).
+- **Condo balcony enclosure**: no walls or glass. Only an approved, fully retractable, ventilated screen, or blinds;
+  the MCST's guidelines also apply (R27).
+
 ## Wording on every concept
 - Never tell a customer "This renovation is approved."
 - Always state: **"Concept visualisation. Final feasibility and required approvals must be verified with the relevant
