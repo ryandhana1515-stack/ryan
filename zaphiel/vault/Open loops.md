@@ -62,3 +62,7 @@ tags: [zaphiel, open-loops]
   Lovable + Higgsfield, and the Build Worker (hourly, stays on duty the whole hour) sends both links back through John.
   Test leads never spend Lovable/Higgsfield credits, so this first real build is the proof.
 
+- **Ryan (decision, blocking the Claude-built sites):** Higgsfield-hosted mock-ups (e.g.
+  edit-suits-co-mockup.higgsfield.app) show a Higgsfield sign-in page to visitors. Choose: host them on Vercel
+  (Zaphiel recommends; the build worker must be recreated with the Vercel connector) or publish them on the
+  Higgsfield community feed.

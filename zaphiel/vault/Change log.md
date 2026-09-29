@@ -325,3 +325,6 @@ tags: [zaphiel, changelog]
   ophthalmology, general) + `wbExplainerBrief` in `film_brief.explainer`; the Lovable prompt reserves the player.
   Routine step e4: script → Higgsfield `seed_audio` narration → Kling clips → assembled in the Higgsfield sandbox
   (watermark cropped, subtitles, VTT, poster) → uploaded to the Lovable project. Tests 122/122.
+- 2026-09-29 — **Transformation film + cinematic finish** (`brief.js` `WB_TRANSFORM` → `film_brief.transformation`;
+  routine F3 one 15-second Kling first→tail transformation, F3b film grain / vignette / particles / glass cards /
+  tint, no untextured 3D, e2 chapter clips for Lovable builds only). Tests 123/123.

@@ -273,3 +273,11 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   back out → book), photoreal Kling pictures, a calm narrator voice (Higgsfield), burned subtitles and a captions
   track, played in a "How it works" section of the Lovable clinic site with the transcript underneath. Educational
   only, no promises or prices, labelled illustrative; the script is sent for the clinic to verify.
+
+- 2026-09-29 — **One transformation film, a cinematic finish, never a grey 3D model** (Ryan, on the Edit Suits Co
+  mock-up: "quite too simple"; he pointed to TikTok scroll-video suit sites). Claude-built sites play ONE continuous
+  15-second Kling film where the product transforms as you scroll (suits: cloth → pattern pieces → stitched → the
+  finished suit, orbiting) and restores on scroll-up; a quiet cinematic layer (film grain, vignette, a few floating
+  particles, glass cards, brand tint); a 3D model only when textured and true to the product (never for fashion or
+  furniture). Found the same day: Higgsfield-hosted mock-ups open a Higgsfield sign-in page for visitors, so
+  customers cannot see them yet (hosting decision asked).

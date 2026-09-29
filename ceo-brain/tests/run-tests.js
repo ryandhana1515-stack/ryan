@@ -1385,6 +1385,16 @@ test('a clinic brief plans a 6-scene narrated film going inside the tooth or bod
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/e4\. Clinic explainer film/.test(routine) && /`seed_audio`/.test(routine) && /burn subtitles/.test(routine) && /get_file_upload_url/.test(routine) && /verified by the clinic/.test(routine));
 });
+console.log('\n[31] One transformation film, a cinematic finish, never a grey 3D model (Ryan, 2026-09-29: the suit site felt too simple)');
+test('a suit brand gets one continuous fabric-to-suit transformation film; the worker adds the cinematic finish and skips untextured 3D', () => {
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Edit Suits Co', industry: 'bespoke suits tailor', message: 'website for my suit brand' } });
+  assert.strictEqual(r.brief.industry_category, 'retail');
+  const t = r.film_brief.transformation;
+  assert.ok(t && /bolt of fine wool/.test(t.first) && /finished tailored suit/.test(t.tail) && /stitch lines draw themselves/.test(t.move), JSON.stringify(t));
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/ONE continuous transformation, never three short clips/.test(routine) && /Kling `tail_image`/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine));
+  assert.ok(/film grain/.test(routine) && /vignette/.test(routine) && /glass-style cards/.test(routine) && /untextured or grey model is never shown/.test(routine) && /Skip it for fashion and furniture/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
