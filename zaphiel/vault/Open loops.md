@@ -62,20 +62,16 @@ tags: [zaphiel, open-loops]
   Lovable + Higgsfield, and the Build Worker (hourly, stays on duty the whole hour) sends both links back through John.
   Test leads never spend Lovable/Higgsfield credits, so this first real build is the proof.
 
-- **Decided 2026-09-29 (Ryan): Vercel.** Two things only Ryan can do. Until they are done, non-medical builds
-  wait untouched; clinics are not affected.
-  1. **Vercel:** create the project `fusiontech-mockups`, because the Vercel connector is not allowed to create
-     projects.
-     - Go to vercel.com → Add New → Project → Import `ryandhana1515-stack/ryan`.
-     - Project name `fusiontech-mockups`, Root Directory `ceo-brain/site-kit`, then Deploy.
-     - Then Settings → Deployment Protection → Vercel Authentication → Off → Save.
-  2. **claude.ai → Routines → "Zaphiel — Website Build Worker" → Edit:** add the **Vercel** connector. The API
-     cannot add connectors to a routine.
-- **Zaphiel (after Ryan's two steps):**
-  - Deploy the kit demo into `fusiontech-mockups` as files.
+- **Done 2026-09-29 19:40 SGT (Ryan): Vercel is set up.**
+  - Project `fusiontech-mockups` (`prj_6ITMtjlNrihYOwfvZqDB2Dsvn4xc`, Vite) exists, with Vercel Authentication off.
+  - The Vercel connector is on the build worker routine.
+  - Git is disconnected from `ryan`, `ryan-cgab` and `fusiontech-mockups`. Their automatic rebuilds on every vault
+    sync had used all 100 of the Hobby plan's daily deployments.
+- **Zaphiel (after the daily limit resets, 2026-09-30 about 19:30 SGT):**
+  - Deploy the kit demo to `fusiontech-mockups` as files.
   - Confirm the build fetches the engine and a Kling film.
   - Confirm the link opens with no login.
-  - Then offer Ryan a proof rebuild of the suit brand (one 15-second Kling film).
+  - Then offer Ryan a proof rebuild of the suit brand.
 - **Zaphiel:** the n8n Website Builder "Finalize Website Brief" node is behind the repo by the `WB_TRANSFORM` table
   (commit 4ac1556); two deploy attempts were blocked because the 114 KB code could not be passed as one tool
   argument. The build worker carries the same transformation table in its own instructions, so builds are not
