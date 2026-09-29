@@ -27,6 +27,11 @@ img, video, canvas { max-width: 100%; display: block; }
 .film::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, var(--tint), transparent 30%, transparent 62%, var(--bg) 100%); pointer-events: none; }
 .film-chapter { position: absolute; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: clamp(56px, 12vh, 140px); max-width: 720px; will-change: opacity, transform; }
 html.js .film-chapter { opacity: 0; }
+/* Scene sequence: one pinned stage, the scenes stacked in it and played back to back (no black between scenes) */
+.film-sequence { position: relative; background: var(--bg); }
+.film-sequence--live { height: 100vh; height: 100svh; overflow: hidden; }
+.film-sequence--live > .film { position: absolute; inset: 0; height: 100%; }
+.film-sequence > .film::after { background: linear-gradient(180deg, var(--tint), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.35) 100%); }
 /* Scene copy beside the subject, alternating sides scene by scene (the TikTok tailoring reference) */
 .film-chapter--left, .film-chapter--right { top: 50%; bottom: auto; max-width: min(460px, 42vw); margin-top: -12vh; }
 .film-chapter--right { left: auto; right: var(--gutter); text-align: right; }

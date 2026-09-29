@@ -308,3 +308,11 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Every scene is its own Kling shot from keyframes that share one look bible. Recipes per industry are in
     [[Knowledge/Wow website playbook]].
   - This replaces the single 15-second transformation film.
+
+- 2026-09-29 (night) — **No black between scenes, ever.** Ryan, after the Atelier Noir preview: "there's suddenly
+  black thing when you scroll … I want the suit to turn into a person, no black thing in the middle"; "don't build
+  it again, just tell the website agent".
+  - All scenes play on one pinned stage (`.film-sequence`) and dissolve into each other.
+  - Every scene ends on the next scene's first frame (Kling `tail_image`), written as a transformation (the empty
+    suit fills out into the man wearing it).
+  - No hard cuts, no fades to black, no separate pinned films.

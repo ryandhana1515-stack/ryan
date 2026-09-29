@@ -4,6 +4,7 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollFilm } from './film.js';
+import { SceneSequence } from './sequence.js';
 import { motion } from './motion.js';
 import { cinematic, curtain } from './fx.js';
 
@@ -26,11 +27,18 @@ export async function boot(opts = {}) {
   }
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-  const films = [...document.querySelectorAll('[data-film]')].map((s, index) => new ScrollFilm(s, { ...opts.film, index }));
+  const films = [...document.querySelectorAll('[data-film]')].map((s, index) =>
+    new ScrollFilm(s, { ...opts.film, index, managed: !reduced && !!s.closest('.film-sequence') }));
   const first = films[0] ? films[0].init().catch(e => console.warn(e)) : Promise.resolve();
   const rest = Promise.all(films.slice(1).map(f => f.init().catch(e => console.warn(e))));
   curtain(first);
   await first; await rest;
+
+  // Scene sequences: one pinned stage each, scenes back to back with no black between them
+  if (!reduced) document.querySelectorAll('.film-sequence').forEach(el => {
+    const own = films.filter(f => f.managed && f.m && f.section.closest('.film-sequence') === el);
+    if (own.length) new SceneSequence(el, own).init();
+  });
 
   motion();
   cinematic(opts.fx);

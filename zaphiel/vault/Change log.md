@@ -361,3 +361,7 @@ tags: [zaphiel, changelog]
   - The kit demo `media.json` now points at the 6 permanent clips.
   - The worker now uses Kling's watermark-free links and copies each clip to Higgsfield, because Kling links
     expire after 24 hours.
+- 2026-09-29 — **Scene sequence engine.** New `src/engine/sequence.js`: one pinned stage, scenes back to back
+  with a 6% dissolve and no zoom jump. Checked at 61 scroll positions on desktop and iPhone: a scene is always
+  fully visible, never black. The playbook, routine F2/F3 and README now chain every scene to the next. The
+  Atelier Noir preview was not rebuilt (Ryan). Tests 124/124.

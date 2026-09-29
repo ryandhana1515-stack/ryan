@@ -176,8 +176,9 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           match its finish; the page must never read as a template.
       F2. The task's `brief.build_prompt` is the contract: the MASTER ORCHESTRATOR steps 1-10, the FULL WEBSITE and
           STRATEGY sections (Ryan's Full Master Cinematic Website Agent 2026). The journey is the scene film (F3):
-          one pinned `section.film` per scene, the hero copy on scene 1, then a scene title per scene alternating
-          `film-chapter--left` / `film-chapter--right`. Never invent facts; placeholders stay labelled.
+          all scenes inside ONE `<div class="film-sequence">` (one `section.film` per scene; never separate pinned
+          films, which show black between them), the hero copy on scene 1, then a scene title per scene
+          alternating `film-chapter--left` / `film-chapter--right`. Never invent facts; placeholders stay labelled.
       F3. The scene film (Ryan, 2026-09-29: the first kit demo was still "too simple"; his reference is a tailoring
           site where a shirt forms, the waistcoat and jacket build on, the suit is revealed, the colour range walks,
           then a macro of the stitching; his own example is a motorbike that splits into parts, spins 360°, then
@@ -194,10 +195,11 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
              customer's own photo (`real_url`) instead where it fits. Submit them all, then poll `query_tasks`.
           3. Scenes: Kling `image_to_video`, `kling-video-v3_0`, `duration` 5 (10 for the assembly or the 360),
              `enable_audio` false, `prefer_multi_shots` false. `first_image` = the scene's keyframe; `tail_image` =
-             the next scene's keyframe when the subject continues across the cut (the shirt → the waistcoat builds
-             on it → the jacket closes over it), none for a hard cut (a new angle, a macro). Prompt = the look
-             bible + the scene's action as one slow, steady move. Submit all scenes together, then poll (at most
-             ~12 minutes).
+             the next scene's keyframe for EVERY scene but the last (Ryan, 2026-09-29: no black between scenes;
+             the suit must turn into the person). Write the move as that transformation: "the empty suit fills out
+             into a man wearing it", "the camera pushes into the sleeve until the buttons fill the frame". Prompt =
+             the look bible + that one slow, steady transformation. Submit all scenes together, then poll (at
+             most ~12 minutes).
           4. Do not download them. Kling links expire after 24 hours, so make each clip permanent:
              - Higgsfield `media_import_url` with the scene's `urlWithoutWatermark` (Ryan's Pro plan has no
                watermark);

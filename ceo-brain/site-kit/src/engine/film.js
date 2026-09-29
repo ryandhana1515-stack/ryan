@@ -6,6 +6,8 @@
 //     <div class="film-chapter" data-from="0" data-to="0.25"> ...copy... </div>
 //   </section>
 // Chapters fade and rise in over their window of progress (0..1) and leave the same way.
+// Inside a <div class="film-sequence"> the scenes are not pinned one by one: the sequence pins one full-screen
+// stage and plays the scenes back to back in it, with no gap and no black between them (see sequence.js).
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -21,7 +23,8 @@ export async function loadManifest(id) {
 }
 
 export class ScrollFilm {
-  constructor(section, { onProgress, index = 0 } = {}) {
+  constructor(section, { onProgress, index = 0, managed = false } = {}) {
+    this.managed = managed; // true inside a .film-sequence: the sequence pins and drives it
     this.index = index; // scene order on the page: scene 1 loads at once, later scenes as they come near
     this.section = section;
     this.id = section.dataset.film;
@@ -33,10 +36,9 @@ export class ScrollFilm {
     this.drawn = -1;
     this.onProgress = onProgress;
     this.chapters = [...section.querySelectorAll('.film-chapter')];
-    this.zoom = parseFloat(section.dataset.zoom || '1.08');
-    // Scene transitions: the canvas fades through the background colour over this share of the scene's scroll
-    // at its start and end (the first scene is fully visible at rest). data-fade="0" for a hard cut.
-    this.fade = parseFloat(section.dataset.fade ?? '0.08');
+    // Push-in over the film. Scenes in a sequence default to none, so a scene's last frame meets the next scene's
+    // first frame at exactly the same framing (Ryan, 2026-09-29: no jumps, no black between scenes).
+    this.zoom = parseFloat(section.dataset.zoom || (managed ? '1' : '1.08'));
   }
 
   async init() {
@@ -53,9 +55,11 @@ export class ScrollFilm {
     await this.load(0); // first frame before anything else
     this.draw(0);
     if (reduced()) { this.section.classList.add('film--still'); this.chapters.forEach(c => c.classList.add('is-on')); return this; }
-    this.pin();
-    if (this.index === 0) this.preload();
-    else ScrollTrigger.create({ trigger: this.section, start: 'top 300%', once: true, onEnter: () => this.preload() });
+    if (!this.managed) {
+      this.pin();
+      if (this.index === 0) this.preload();
+      else ScrollTrigger.create({ trigger: this.section, start: 'top 300%', once: true, onEnter: () => this.preload() });
+    }
     gsap.ticker.add(() => this.tick());
     return this;
   }
@@ -75,6 +79,8 @@ export class ScrollFilm {
 
   // Coarse to fine: every 16th frame, then 8th, 4th, 2nd, all. The film is scrubbable within a second.
   async preload() {
+    if (this.preloading || !this.m) return;
+    this.preloading = true;
     const n = this.m.count;
     for (const step of [16, 8, 4, 2, 1]) {
       const batch = [];
@@ -126,28 +132,28 @@ export class ScrollFilm {
       pin: true,
       scrub: true,
       anticipatePin: 1,
-      onUpdate: self => {
-        this.progress = self.progress;
-        this.target = self.progress * (this.m.count - 1);
-        if (this.fade > 0) {
-          const p = self.progress, f = this.fade;
-          const inO = this.index === 0 ? 1 : Math.min(1, p / f);
-          this.canvas.style.opacity = Math.max(0, Math.min(inO, (1 - p) / f, 1)).toFixed(3);
-        }
-        this.chapters.forEach(c => {
-          const from = parseFloat(c.dataset.from), to = parseFloat(c.dataset.to);
-          const span = Math.max(0.0001, to - from), edge = Math.min(0.08, span / 3);
-          let o = 0;
-          if (self.progress >= from && self.progress <= to) {
-            o = Math.min(1, (self.progress - from) / edge, (to - self.progress) / edge);
-            if (from === 0 && self.progress < edge) o = 1; // the hero copy is visible at rest
-          }
-          c.style.opacity = o.toFixed(3);
-          c.style.transform = `translate3d(0, ${((1 - o) * 40).toFixed(1)}px, 0)`;
-          c.classList.toggle('is-on', o > 0.5);
-        });
-        this.onProgress && this.onProgress(self.progress);
-      },
+      onUpdate: self => this.setProgress(self.progress),
     });
+  }
+
+  // Scroll progress (0..1) through this film: picks the frame and moves the chapters. Called by its own pin,
+  // or by the sequence that owns it.
+  setProgress(p) {
+    if (!this.m) return;
+    this.progress = p;
+    this.target = p * (this.m.count - 1);
+    this.chapters.forEach(c => {
+      const from = parseFloat(c.dataset.from), to = parseFloat(c.dataset.to);
+      const span = Math.max(0.0001, to - from), edge = Math.min(0.08, span / 3);
+      let o = 0;
+      if (p >= from && p <= to) {
+        o = Math.min(1, (p - from) / edge, (to - p) / edge);
+        if (from === 0 && p < edge) o = 1; // the hero copy is visible at rest
+      }
+      c.style.opacity = o.toFixed(3);
+      c.style.transform = `translate3d(0, ${((1 - o) * 40).toFixed(1)}px, 0)`;
+      c.classList.toggle('is-on', o > 0.5);
+    });
+    this.onProgress && this.onProgress(p);
   }
 }

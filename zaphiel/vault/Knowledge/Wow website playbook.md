@@ -26,9 +26,15 @@ to any template, the site is not finished.
 ## What makes the wow (in order of impact)
 
 1. **A scene film: 5–7 cinematic scenes, each scrubbed by the scroll, where the product builds itself.** Each
-   scene is one Kling shot of 5–10 seconds, pinned full screen and played forward by the scroll (and backward on
-   scroll-up). It fades through black into the next scene. Something new happens every one or two scrolls. The
-   arc is always the same:
+   scene is one Kling shot of 5–10 seconds. All the scenes play back to back on **one pinned full-screen stage**
+   (`.film-sequence`), forward on scroll-down and backward on scroll-up.
+
+   **Never black between scenes** (Ryan, 2026-09-29: "there's suddenly black thing when you scroll … I want the
+   suit to turn into a person, no black thing in the middle"). Every scene ends on the next scene's first frame,
+   so each change looks like the product transforming: the floating suit fills out into the man wearing it, and
+   the man turns and becomes the four men walking. Something new happens every one or two scrolls.
+
+   The arc is always the same:
    - the product appears in parts or raw;
    - it assembles itself, layer by layer or part by part;
    - it is revealed whole (a hero shot or a 360 turn);
@@ -43,9 +49,10 @@ to any template, the site is not finished.
    **Keyframes first:**
    - Make every scene's start still with Kling `text_to_image` (or use the customer's photo), all using the
      look bible.
-   - Then animate each scene from its start still (`first_image`) towards the next scene's start still
-     (`tail_image`) when the subject continues across the cut, so the scenes join seamlessly. A hard cut (a new
-     angle, a macro) uses `first_image` only.
+   - Then animate **every** scene from its start still (`first_image`) to the next scene's start still
+     (`tail_image`), with the move written as a transformation: "the empty suit fills out into a man wearing it",
+     "the camera pushes into the sleeve until the buttons fill the frame". There are no hard cuts; the last scene
+     alone has no `tail_image`.
 2. **The film is the hero and fills the whole screen on phones.** The copy rides on the film in chapters that
    rise and fade over each scene: the hero line on scene 1, then a scene title per scene that alternates left and
    right (a small kicker such as "II · The waistcoat", a big serif title and one line of copy). It is never turned off on
@@ -80,6 +87,8 @@ to any template, the site is not finished.
 - A static photo section, stock-looking imagery, or a grey or untextured 3D model.
 - The film turned off on phones.
 - One lonely film followed by plain coloured boxes (our first demo), or scenes shot in different looks.
+- Black, a fade to black or a sliding gap between scenes (the Atelier Noir preview). Scenes live in one
+  `.film-sequence` and chain frame to frame.
 - Generic clips that could belong to any brand. Every scene must show this customer's product doing something.
 - Default fonts, centred everything, evenly spaced cards, generic gradients or emoji icons.
 - Text over the film without a tint.

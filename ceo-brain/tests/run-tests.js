@@ -1379,7 +1379,7 @@ test('the kit builds the film from media.json on Vercel, plays it backwards on s
   const media = kit('scripts/media.mjs');
   assert.ok(/crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(media) && /manifest\.json/.test(media) && /process\.exit\(1\)/.test(media), 'media step crops Kling, writes a manifest and fails loudly');
   const film = kit('src/engine/film.js');
-  assert.ok(/scrub: true/.test(film) && /pin: true/.test(film) && /self\.progress \* \(this\.m\.count - 1\)/.test(film), 'frame follows scroll progress both ways');
+  assert.ok(/scrub: true/.test(film) && /pin: true/.test(film) && /this\.target = p \* \(this\.m\.count - 1\)/.test(film), 'frame follows scroll progress both ways');
   assert.ok(!/max-width: 7\d\dpx\)'\)\.matches\) return/.test(film) && /isPhone\(\) \? 'm' : 'd'/.test(film), 'phones get smaller frames, never no film');
   const css = kit('src/styles/engine.css');
   assert.ok(/html\.js \.film-chapter\[data-from="0"\] \{ opacity: 1; \}/.test(css) && /prefers-reduced-motion/.test(css));
@@ -1397,7 +1397,10 @@ test('the kit builds the film from media.json on Vercel, plays it backwards on s
   assert.ok(/if \(!film\.optional\) throw e/.test(media), 'a customer film failure fails the build');
   const vault = fs.readFileSync(path.join(__dirname, '../../zaphiel/vault/Knowledge/Wow website playbook.md'), 'utf8');
   assert.ok(/A scene film: 5–7 cinematic scenes/.test(vault) && /What kills the wow/.test(vault) && /Scene recipes per industry/.test(vault) && /Motorbikes \(Ryan's example\)/.test(vault) && /look bible/i.test(vault));
-  assert.ok(/this\.index === 0\) this\.preload\(\)/.test(film) && /data-fade|this\.fade/.test(film), 'later scenes load lazily and fade through black');
+  assert.ok(/this\.index === 0\) this\.preload\(\)/.test(film) && /setProgress\(p\)/.test(film) && !/fade through the background/.test(film), 'scenes load lazily; no fade through black');
+  const seq = kit('src/engine/sequence.js');
+  assert.ok(/pin: true/.test(seq) && /dissolve/.test(seq) && /f\.section\.style\.opacity = '1'/.test(seq), 'one pinned stage plays the scenes back to back with a dissolve, never black');
+  assert.ok(/class="film-sequence"/.test(kit('index.html')) && /SceneSequence/.test(kit('src/engine/index.js')) && /\.film-sequence--live > \.film/.test(kit('src/styles/engine.css')));
   assert.ok(/film-chapter--right/.test(kit('src/styles/engine.css')) && (kit('index.html').match(/data-film=/g) || []).length >= 5, 'the demo is a scene film');
 });
 console.log('\n[30] Clinics get a narrated explainer film inside the site (Ryan, 2026-09-29)');
@@ -1422,6 +1425,7 @@ test('a suit brand gets one continuous fabric-to-suit transformation film; the w
   const t = r.film_brief.transformation;
   assert.ok(t && /bolt of fine wool/.test(t.first) && /finished tailored suit/.test(t.tail) && /stitch lines draw themselves/.test(t.move), JSON.stringify(t));
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/for EVERY scene but the last/.test(routine) && /ONE `<div class="film-sequence">`/.test(routine));
   assert.ok(/Make 5-7 scenes/.test(routine) && /look bible/.test(routine) && /`tail_image` =\s+the next scene's keyframe/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine) && /Fewer than 4 scenes made/.test(routine));
   assert.ok(/film grain/.test(routine) && /vignette/.test(routine) && /glass-style cards/.test(routine) && /untextured or grey model is never shown/.test(routine) && /Skip it for fashion and furniture/.test(routine));
 });
