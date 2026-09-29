@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-29
-updated: 2026-09-29T09:05:29.065Z
+updated: 2026-09-29T09:08:49.124Z
 tags: [lead]
 ---
 # Ryan
@@ -41,3 +41,10 @@ _Summary:_ Prospect Ryan sent a plain greeting via WhatsApp with no business det
 **John:** Hi Ryan, happy to get a first mock-up built for you. One thing I need: What is the name of your business?
 
 _Summary:_ Ryan asked us to rebuild his website. No business name given yet, so we cannot start the mock-up.
+
+### 2026-09-29 09:08 UTC · QUALIFYING / warm · next: send_reply · hand-off: website-builder, atlas · anthropic
+**Prospect:** Edit Suits Co. Singapore
+
+**John:** Hi Ryan, perfect, I have what I need to start on Edit Suits Co. Singapore. Our website team is researching your business now before building your first mock-up; if they need any detail, I will ask you here first, then I will send the link to +6587587170, usually within about an hour. If you have a logo, brand colours or photos you want used, send them here and we will work them in.
+
+_Summary:_ Ryan asked for a website rebuild and has now given the business name, Edit Suits Co. Singapore. No industry, contact details or other facts stated yet; ready to start the mock-up.
