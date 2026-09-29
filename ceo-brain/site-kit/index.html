@@ -20,25 +20,59 @@
   </nav>
 
   <main id="top">
-    <!-- 1. THE FILM: one continuous Kling transformation, scrubbed by the scroll, reversible -->
-    <section class="film" data-film="hero" data-length="520" aria-label="From cloth to suit">
-      <canvas role="img" aria-label="A bolt of wool becomes a finished suit"></canvas>
-      <div class="film-chapter" data-from="0" data-to="0.22">
+    <!-- 1-6. THE SCENE FILM: six Kling scenes in one look (black void, warm gold rim light, low fog, glossy floor),
+         each pinned and scrubbed by the scroll, fading through black into the next; copy alternates sides. -->
+    <section class="film" data-film="scene1" data-length="260" aria-label="The shirt">
+      <canvas role="img" aria-label="A white shirt forms in the dark, cuffs floating"></canvas>
+      <div class="film-chapter" data-from="0" data-to="0.3">
         <div class="eyebrow">Bespoke tailoring · Singapore</div>
         <h1 class="display">Cut for one.<br />Made for life.</h1>
         <div class="ctas"><a class="btn" href="#book" data-magnetic>Book a fitting</a><a class="btn btn--ghost" href="#craft">See the craft</a></div>
       </div>
-      <div class="film-chapter glass" data-from="0.28" data-to="0.5" style="padding:28px">
-        <div class="eyebrow">01 · The cloth</div>
-        <p class="lede" style="color:var(--ink)">Every suit begins as a single bolt, chosen with you from the mills of Biella and Huddersfield.</p>
+      <div class="film-chapter film-chapter--left" data-from="0.4" data-to="0.95">
+        <div class="scene-kicker">I · The foundation</div>
+        <h2 class="scene-title">The Art of the Shirt</h2>
+        <p class="scene-copy">Sea Island cotton, a collar cut to your neck, cuffs finished by hand.</p>
       </div>
-      <div class="film-chapter glass" data-from="0.54" data-to="0.76" style="padding:28px">
-        <div class="eyebrow">02 · The cut</div>
-        <p class="lede" style="color:var(--ink)">Your pattern is drafted by hand, then cut, basted and fitted on you, again and again.</p>
+    </section>
+    <section class="film" data-film="scene2" data-length="240" aria-label="The waistcoat">
+      <canvas role="img" aria-label="A waistcoat builds itself around the shirt"></canvas>
+      <div class="film-chapter film-chapter--right" data-from="0.12" data-to="0.92">
+        <div class="scene-kicker">II · The waistcoat</div>
+        <h2 class="scene-title">Structure, Held Close</h2>
+        <p class="scene-copy">The waistcoat draws the line of the body: six buttons, a silk back, cut to sit without a crease.</p>
       </div>
-      <div class="film-chapter" data-from="0.8" data-to="1">
-        <div class="eyebrow">03 · The suit</div>
-        <h2 class="h2">Yours, and nobody else's.</h2>
+    </section>
+    <section class="film" data-film="scene3" data-length="240" aria-label="The jacket">
+      <canvas role="img" aria-label="Jacket panels fly in and close around the waistcoat"></canvas>
+      <div class="film-chapter film-chapter--left" data-from="0.12" data-to="0.92">
+        <div class="scene-kicker">III · The jacket</div>
+        <h2 class="scene-title">The Complete Silhouette</h2>
+        <p class="scene-copy">Canvas, not glue. A shoulder that moves with you and a chest that holds its shape for decades.</p>
+      </div>
+    </section>
+    <section class="film" data-film="scene4" data-length="240" aria-label="The colours">
+      <canvas role="img" aria-label="Four men in different coloured suits walk towards the camera at night"></canvas>
+      <div class="film-chapter film-chapter--right" data-from="0.12" data-to="0.92">
+        <div class="scene-kicker">IV · The palette</div>
+        <h2 class="scene-title">A Language of Colour</h2>
+        <p class="scene-copy">Midnight, charcoal, sand and claret, chosen with you from the mills of Biella and Huddersfield.</p>
+      </div>
+    </section>
+    <section class="film" data-film="scene5" data-length="240" aria-label="The details">
+      <canvas role="img" aria-label="Macro of horn buttons and pick-stitching on a sleeve"></canvas>
+      <div class="film-chapter film-chapter--left" data-from="0.12" data-to="0.92">
+        <div class="scene-kicker">V · The details</div>
+        <h2 class="scene-title">The Last Word, in Thread</h2>
+        <p class="scene-copy">Working surgeon's cuffs. Horn buttons. Pick-stitching you will find only by touch.</p>
+      </div>
+    </section>
+    <section class="film" data-film="scene6" data-length="220" aria-label="Yours">
+      <canvas role="img" aria-label="The finished suit under a single spotlight"></canvas>
+      <div class="film-chapter film-chapter--right" data-from="0.15" data-to="1">
+        <div class="scene-kicker">VI · Yours</div>
+        <h2 class="scene-title">Yours, and Nobody Else's</h2>
+        <div class="ctas" style="justify-content:flex-end"><a class="btn" href="#book" data-magnetic>Book a fitting</a></div>
       </div>
     </section>
 

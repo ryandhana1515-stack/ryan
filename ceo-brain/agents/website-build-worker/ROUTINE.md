@@ -15,6 +15,11 @@ site kit (`ceo-brain/site-kit`) and published on **Vercel** (Ryan, 2026-09-29: "
 build these crazy wow factor websites"; replaces Higgsfield hosting, whose `higgsfield.app` links sent visitors to a
 Higgsfield sign-in). Kling makes the film for both.
 
+Decision (Ryan, 2026-09-29, later the same day): **a scene film of 5-7 cinematic scenes in one look**. The product
+builds itself: parts or raw → assembled → revealed → alive → craft macro → payoff. It replaces the single 15-second
+transformation, because one film plus coloured boxes was "too simple". Ryan's reference is a TikTok tailoring site:
+the shirt forms, the waistcoat and jacket build on, the colour range walks, then the stitching in macro.
+
 Decision (Ryan, 2026-09-29): **the Full Master Cinematic Website Agent 2026 governs every build** (vault:
 `Knowledge/Full Master Cinematic Website Agent 2026`, PDF in `_sources/`). The Higgsfield Director role (continuous
 chapters with matching start/end frames) is carried out on **Kling directly** (Ryan, 2026-09-29: "if you want to use
@@ -170,31 +175,37 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           from art direction A. Name one award-level reference site for the industry in `docs/storyboard.md` and
           match its finish; the page must never read as a template.
       F2. The task's `brief.build_prompt` is the contract: the MASTER ORCHESTRATOR steps 1-10, the FULL WEBSITE and
-          STRATEGY sections (Ryan's Full Master Cinematic Website Agent 2026). Journey = the `film_brief` chapters,
-          written as `film-chapter` progress windows over the one film. Never invent facts; placeholders stay labelled.
-      F3. The film is made on **Kling directly**, not Higgsfield (Ryan: "go to the actual Kling"): one continuous
-          move, subject centred on a dark seamless background, slow steady motion, locked exposure, no text, logos or
-          watermark. ONE Kling `image_to_video`, `kling-video-v3_0`, `duration` 15, `first_image` = the start still,
-          `enable_audio` false, `prefer_multi_shots` false. Do not download it: put its video URL in `media.json`
-          with `"crop": "kling"` (Vercel's build crops Kling's corner watermark with
-          `crop=iw*0.94:ih*0.94:iw*0.03:0` and cuts the frames). Property: one Kling leg per chapter, each leg's
-          `first_image` = the previous leg's `tail_image`, all legs listed in order as the film's `src`. If Kling
-          fails twice, make the film with Higgsfield `generate_video` (a start/end-frame model) and use
-          `"crop": "none"`; say so in `notes`.
-          ONE continuous transformation, never three short clips (Ryan, 2026-09-29: the Edit Suits Co film of three
-          5-second clips felt "too simple"). The Claude path skips the step-e2 chapter clips. When `film_brief`
-          has a `transformation` (luxury retail), make the 15-second Kling shot from its `first` still (generate
-          it with Kling `text_to_image`, or use the customer's own photo) to its `tail` still (the finished product;
-          Kling `tail_image`) with its `move` as the prompt: the product transforms as the visitor scrolls down and
-          restores as they scroll up. If the brief has no `transformation`, use the one for the kind of business
-          (first still → finished still: the move): suits and fashion = a bolt of fine wool on a dark cutting table
-          → the finished tailored suit on an invisible form: the cloth lifts, is cut into pattern pieces that float
-          and turn, stitch lines draw themselves, the pieces fly together into the suit as the camera orbits;
-          watches = case, crystal and strap apart on black stone → the finished watch: they glide together, a light
-          sweep crosses the dial; jewellery = molten gold in a crucible → the finished ring throwing fire: poured,
-          cast, the stone set, turning in light; furniture = raw timber and leather on a bench → the finished piece
-          in a sunlit room: shaped, joined, wrapped, the workshop dissolving into the room; any other business =
-          the playbook's recipe table (the raw material → the finished result, one continuous move).
+          STRATEGY sections (Ryan's Full Master Cinematic Website Agent 2026). The journey is the scene film (F3):
+          one pinned `section.film` per scene, the hero copy on scene 1, then a scene title per scene alternating
+          `film-chapter--left` / `film-chapter--right`. Never invent facts; placeholders stay labelled.
+      F3. The scene film (Ryan, 2026-09-29: the first kit demo was still "too simple"; his reference is a tailoring
+          site where a shirt forms, the waistcoat and jacket build on, the suit is revealed, the colour range walks,
+          then a macro of the stitching; his own example is a motorbike that splits into parts, spins 360°, then
+          "vroom"). Make 5-7 scenes (property: the 5-6 walkthrough legs) on **Kling directly**, not Higgsfield
+          (Ryan: "go to the actual Kling"), following the playbook's scene recipe for the business. The arc: the
+          product in parts or raw → it assembles itself → revealed whole (hero or 360) → alive (worn, driven,
+          lived in) → craft macro → payoff. Every scene shows THIS customer's product doing something; no generic
+          clips. The Claude path skips the step-e2 chapter clips.
+          1. Write the look bible once in `docs/storyboard.md` (set, light direction, colour grade, lens, fog,
+             floor): for example, for tailoring, "pitch-black void, warm gold rim light from above, thin low fog,
+             glossy black floor, 50mm, shallow depth of field, rich film grade". Start every image and scene
+             prompt with it. Add no text, logos or watermark; never generate a real brand's logo.
+          2. Keyframes: one start still per scene with Kling `text_to_image` (16:9, highest quality). Use the
+             customer's own photo (`real_url`) instead where it fits. Submit them all, then poll `query_tasks`.
+          3. Scenes: Kling `image_to_video`, `kling-video-v3_0`, `duration` 5 (10 for the assembly or the 360),
+             `enable_audio` false, `prefer_multi_shots` false. `first_image` = the scene's keyframe; `tail_image` =
+             the next scene's keyframe when the subject continues across the cut (the shirt → the waistcoat builds
+             on it → the jacket closes over it), none for a hard cut (a new angle, a macro). Prompt = the look
+             bible + the scene's action as one slow, steady move. Submit all scenes together, then poll (at most
+             ~12 minutes).
+          4. Do not download them. Put each video URL in `media.json` as its own film (`scene1` … `scene6`,
+             `"crop": "kling"`, `"frames": 96`, 120 for a 10-second scene). Vercel's build crops Kling's corner
+             watermark with `crop=iw*0.94:ih*0.94:iw*0.03:0` and cuts the frames.
+          If a scene fails twice on Kling, make it with Higgsfield `generate_video` (a start/end-frame model) with
+          `"crop": "none"`. If it fails there too, drop the scene. Say either in `notes`. Fewer than 4 scenes made →
+          report `build_failed` with the reason rather than publishing a thin site.
+          When `film_brief` has a `transformation` (luxury retail), its `first` → `tail` → `move` becomes scenes 1-2 (parts
+          → assembled). If the business has no recipe row, use the playbook's "any other business" row.
       F3b. Cinematic finish over the whole page (the kit's engine gives it; tune it in `brand.css`):
           subtle film grain, a soft vignette, a few slow floating particles in the brand's metal or light tone (`--particle`),
           glass-style cards for the chapter copy (`film-chapter glass`), a light brand colour tint over the film
@@ -217,7 +228,7 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
           with `mcp__Vercel__create_deployment` to project `fusiontech-mockups` (target `production`, `files` = the
           plan's `byRef` entries by sha plus its `inline` files as utf-8 text; no git, no push, no `projectSettings`),
           wait for `READY`, `assign_alias` `<slug>-mockup.vercel.app`, and check the page and
-          `/film/hero/manifest.json` with `web_fetch_vercel_url` — all exactly as the kit README says. `preview_url` =
+          `/film/scene1/manifest.json` with `web_fetch_vercel_url` — all exactly as the kit README says. `preview_url` =
           the alias (or the deployment URL), `project_id` = the deployment id, `editor_url` = "". Then step h.
    f. Lovable (clinics and medical only): `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
       `initial_message` = `brief.build_prompt` + a blank line + the poster block:

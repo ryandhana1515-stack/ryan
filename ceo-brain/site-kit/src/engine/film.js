@@ -21,7 +21,8 @@ export async function loadManifest(id) {
 }
 
 export class ScrollFilm {
-  constructor(section, { onProgress } = {}) {
+  constructor(section, { onProgress, index = 0 } = {}) {
+    this.index = index; // scene order on the page: scene 1 loads at once, later scenes as they come near
     this.section = section;
     this.id = section.dataset.film;
     this.canvas = section.querySelector('canvas');
@@ -33,6 +34,9 @@ export class ScrollFilm {
     this.onProgress = onProgress;
     this.chapters = [...section.querySelectorAll('.film-chapter')];
     this.zoom = parseFloat(section.dataset.zoom || '1.08');
+    // Scene transitions: the canvas fades through the background colour over this share of the scene's scroll
+    // at its start and end (the first scene is fully visible at rest). data-fade="0" for a hard cut.
+    this.fade = parseFloat(section.dataset.fade ?? '0.08');
   }
 
   async init() {
@@ -50,7 +54,8 @@ export class ScrollFilm {
     this.draw(0);
     if (reduced()) { this.section.classList.add('film--still'); this.chapters.forEach(c => c.classList.add('is-on')); return this; }
     this.pin();
-    this.preload();
+    if (this.index === 0) this.preload();
+    else ScrollTrigger.create({ trigger: this.section, start: 'top 300%', once: true, onEnter: () => this.preload() });
     gsap.ticker.add(() => this.tick());
     return this;
   }
@@ -124,6 +129,11 @@ export class ScrollFilm {
       onUpdate: self => {
         this.progress = self.progress;
         this.target = self.progress * (this.m.count - 1);
+        if (this.fade > 0) {
+          const p = self.progress, f = this.fade;
+          const inO = this.index === 0 ? 1 : Math.min(1, p / f);
+          this.canvas.style.opacity = Math.max(0, Math.min(inO, (1 - p) / f, 1)).toFixed(3);
+        }
         this.chapters.forEach(c => {
           const from = parseFloat(c.dataset.from), to = parseFloat(c.dataset.to);
           const span = Math.max(0.0001, to - from), edge = Math.min(0.08, span / 3);

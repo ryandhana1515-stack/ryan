@@ -1367,7 +1367,7 @@ test('the build worker routes medical to Lovable and every other business to Cla
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/f0\. Choose the builder: `brief\.mode` `medical`/.test(routine) && /Every other business → Claude with the site kit on Vercel, step F/.test(routine));
   assert.ok(/ceo-brain\/site-kit\/README\.md/.test(routine) && /Wow website playbook\.md/.test(routine) && /fusiontech-mockups/.test(routine) && /mcp__Vercel__create_deployment/.test(routine) && /mcp__Vercel__\*/.test(routine));
-  assert.ok(/made on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
+  assert.ok(/on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
   assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && !/deploy_website/.test(routine) && /only after g2 or F5 gave a public/.test(routine));
   assert.ok(/no git, no push, no `projectSettings`/.test(routine) && /deploy-plan\.mjs mockups\/<slug>/.test(routine) && /2b0/.test(routine), 'file deploys; a missing builder connector makes the task wait');
 });
@@ -1396,7 +1396,9 @@ test('the kit builds the film from media.json on Vercel, plays it backwards on s
   });
   assert.ok(/if \(!film\.optional\) throw e/.test(media), 'a customer film failure fails the build');
   const vault = fs.readFileSync(path.join(__dirname, '../../zaphiel/vault/Knowledge/Wow website playbook.md'), 'utf8');
-  assert.ok(/One continuous transformation film/.test(vault) && /What kills the wow/.test(vault) && /Recipe per industry/.test(vault));
+  assert.ok(/A scene film: 5–7 cinematic scenes/.test(vault) && /What kills the wow/.test(vault) && /Scene recipes per industry/.test(vault) && /Motorbikes \(Ryan's example\)/.test(vault) && /look bible/i.test(vault));
+  assert.ok(/this\.index === 0\) this\.preload\(\)/.test(film) && /data-fade|this\.fade/.test(film), 'later scenes load lazily and fade through black');
+  assert.ok(/film-chapter--right/.test(kit('src/styles/engine.css')) && (kit('index.html').match(/data-film=/g) || []).length >= 5, 'the demo is a scene film');
 });
 console.log('\n[30] Clinics get a narrated explainer film inside the site (Ryan, 2026-09-29)');
 test('a clinic brief plans a 6-scene narrated film going inside the tooth or body; the Lovable prompt holds its player; the worker makes it', () => {
@@ -1420,7 +1422,7 @@ test('a suit brand gets one continuous fabric-to-suit transformation film; the w
   const t = r.film_brief.transformation;
   assert.ok(t && /bolt of fine wool/.test(t.first) && /finished tailored suit/.test(t.tail) && /stitch lines draw themselves/.test(t.move), JSON.stringify(t));
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/ONE continuous transformation, never three short clips/.test(routine) && /Kling `tail_image`/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine));
+  assert.ok(/Make 5-7 scenes/.test(routine) && /look bible/.test(routine) && /`tail_image` =\s+the next scene's keyframe/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine) && /Fewer than 4 scenes made/.test(routine));
   assert.ok(/film grain/.test(routine) && /vignette/.test(routine) && /glass-style cards/.test(routine) && /untextured or grey model is never shown/.test(routine) && /Skip it for fashion and furniture/.test(routine));
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

@@ -26,7 +26,7 @@ export async function boot(opts = {}) {
   }
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-  const films = [...document.querySelectorAll('[data-film]')].map(s => new ScrollFilm(s, opts.film));
+  const films = [...document.querySelectorAll('[data-film]')].map((s, index) => new ScrollFilm(s, { ...opts.film, index }));
   const first = films[0] ? films[0].init().catch(e => console.warn(e)) : Promise.resolve();
   const rest = Promise.all(films.slice(1).map(f => f.init().catch(e => console.warn(e))));
   curtain(first);
@@ -34,6 +34,7 @@ export async function boot(opts = {}) {
 
   motion();
   cinematic(opts.fx);
+  ScrollTrigger.sort(); // scenes finish loading in any order; pins must run in page order
   ScrollTrigger.refresh();
   return { lenis, films };
 }
