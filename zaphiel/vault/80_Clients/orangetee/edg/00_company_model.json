@@ -1,0 +1,123 @@
+{
+  "company_name": {
+    "value": "OrangeTee",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_name": {
+    "value": "Ryan",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_channel": {
+    "value": "WhatsApp, +6587587170",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Real estate / property agency (residential sales and rentals, new launches)",
+    "label": "CLIENT-PROVIDED"
+  },
+  "company_size": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "website": {
+    "value": "https://www.orangetee.com",
+    "label": "CLIENT-PROVIDED"
+  },
+  "instagram": {
+    "value": "@orangeteesingapore",
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_tools": {
+    "value": [
+      "Existing website (orangetee.com)",
+      "Instagram"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "lead_sources": {
+    "value": [
+      "Instagram"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "other_possible_lead_sources": {
+    "value": [
+      "Website enquiries (unconfirmed)",
+      "Referrals (unconfirmed)",
+      "Portals e.g. PropertyGuru/99.co (unconfirmed)",
+      "Walk-in / agent network (unconfirmed)"
+    ],
+    "label": "INFERENCE"
+  },
+  "current_follow_up_process": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "uses_whatsapp": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "current_crm_or_lead_system": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "accounting_or_erp": {
+    "value": [],
+    "label": "CLIENT-PROVIDED"
+  },
+  "products_services": {
+    "value": [
+      "Residential home sales",
+      "Residential rentals",
+      "New launch (new project) sales"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "customer_types": {
+    "value": [
+      "Buyers",
+      "Sellers",
+      "Tenants (implied by rentals)",
+      "Landlords (implied by rentals)"
+    ],
+    "label": "INFERENCE"
+  },
+  "team_structure": {
+    "value": "Likely multiple property agents (typical for an agency named OrangeTee, a known large SG agency); not confirmed for this specific office/branch/team",
+    "label": "INFERENCE"
+  },
+  "desired_outcome": {
+    "value": "Get buyers and sellers to enquire through a new website",
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_automation": {
+    "value": [
+      "website_build"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "immediate_request": {
+    "value": "A mock-up / concept of what a new website for OrangeTee could look like",
+    "label": "CLIENT-PROVIDED"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "decision_maker": {
+    "value": "Ryan (assumed, not confirmed as final decision-maker)",
+    "label": "INFERENCE"
+  },
+  "problem_stated": {
+    "value": null,
+    "label": "UNKNOWN"
+  }
+}
