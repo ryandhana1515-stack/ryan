@@ -101,6 +101,9 @@ step h.
       - Read this task's `website_build_progress` rows. They hold the Kling generation ids already made.
       - Re-query those ids with `query_tasks` and reuse every finished keyframe and scene. Never pay for them
         twice.
+      - No progress rows? Check Higgsfield `show_medias` (type `video`) for clips imported after the dead run's
+        start time. They are that run's scenes, in scene order: reuse them. Ryan, 2026-09-30: "I don't want new
+        ones"; the OrangeTee scenes were recovered this way.
       - Add a new `website_build_started` row (reason "resume"), then continue from the first missing step.
       Progress log: after each Kling batch you submit (keyframes, then scenes), add one `ceo_audit_logs` row
       `{entity_type: "task", entity_id: task_id, action: "website_build_progress", actor:
