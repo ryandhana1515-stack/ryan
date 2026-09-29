@@ -85,3 +85,8 @@ tags: [zaphiel, open-loops]
   (commit 4ac1556); two deploy attempts were blocked because the 114 KB code could not be passed as one tool
   argument. The build worker carries the same transformation table in its own instructions, so builds are not
   affected; deploy the node with the next Website Builder change.
+- **Fusion Property AI (2026-09-30):**
+  - Re-verify the 7 register rows marked NEEDS VERIFICATION, starting with CEA's guidance on AI/virtual staging and
+    the developer artist's-impression rule. Singapore Statutes Online was down; top up Firecrawl credits first.
+  - Ryan: source the first 30–50 floor plans, with permission, for the Phase 0 test set.
+  - Decide whether John should hand floor plans to the agent (today it runs in Claude Code only).

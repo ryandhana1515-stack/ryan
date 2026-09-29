@@ -23,3 +23,6 @@ tags: [zaphiel, moc, agents]
 | 15 | [[10_Agents/15_Security_Governance_QA]] | 7 | designed | Designed; owns the permission matrix, the registries' status rules, the release gate and t |
 
 Operational ids and the website chain: [[Agents]]. Roster by Ryan's twelve-agent naming: [[Knowledge/AI Workforce — roster]]. Workers: [[20_Specialist_Workers/_index]].
+
+**Specialist agents** (outside the sixteen): [[10_Agents/16_Fusion_Property_SG]] — Fusion Property AI, Singapore
+property only (Claude Code subagent `fusion-property-sg`, 2026-09-30).
