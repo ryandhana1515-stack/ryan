@@ -316,3 +316,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Every scene ends on the next scene's first frame (Kling `tail_image`), written as a transformation (the empty
     suit fills out into the man wearing it).
   - No hard cuts, no fades to black, no separate pinned films.
+
+- 2026-09-29 (night) — **Property sites: one uninterrupted camera journey from outside to inside** (Ryan's TikTok
+  references: Marina Budarina's glass house above the clouds and JerryTheWebDev's marble-door estate).
+  - The journey: aerial → facade → the doors part and the camera passes through → living room with the view →
+    signature space → dusk.
+  - Golden-hour haze, quiet copy, floating pill menu.
+  - A property agent's site pairs that film with listings, neighbourhoods, valuation and the agent profile.
+  - Recipe: [[Knowledge/Wow website playbook]] "Property".
+  - Ryan wants to test it through John himself, not have Zaphiel build it.
