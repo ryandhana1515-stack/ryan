@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-09-29
-updated: 2026-09-29T16:16:19.359Z
+updated: 2026-09-29T16:17:08.219Z
 tags: [lead]
 ---
 # Ryan @ OrangeTee
@@ -21,12 +21,12 @@ Links: [[Companies/OrangeTee|OrangeTee]] · [[Industries/Real estate - property 
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: -
+- Company size: - · Users: - · Decision maker: true
 - Problem: -
 - Wants: website_build
-- Tools: website, Instagram
+- Tools: -
 - Budget: - · Timeline: -
-- Outcome wanted: Buyers and sellers to enquire via a new agency website showcasing a signature luxury condo
+- Outcome wanted: A new agency website showing a signature luxury condo (living room with skyline view, kitchen, master bedroom, pool deck) to generate buyer and seller enquiries
 
 ## Conversation log
 
@@ -57,3 +57,10 @@ _Summary:_ Ryan from OrangeTee (property agency, Singapore) requested a website 
 **John:** Thanks Ryan, understood, the mock-up is what matters most right now, and it is on its way. ATLAS, our systems architect, would like to know: Do you want buyers and sellers to have separate ways to enquire on the new site (e.g. 'I want to buy' vs 'I want to sell my property')?
 
 _Summary:_ Ryan from OrangeTee (property agency, Singapore) requested a website mock-up; all build details already collected (signature luxury condo showing living room, kitchen, master bedroom, pool deck, placeholders elsewhere). He is now checking in on progress and says he doesn't know details, just wants the website first.
+
+### 2026-09-29 16:17 UTC · QUALIFYING / warm · next: send_reply · hand-off: atlas · anthropic
+**Prospect:** ok anyways just see the mockup first then i will answer you
+
+**John:** Understood, Ryan, the mock-up comes first, no problem. Our team is still building it around OrangeTee, and we will send the link here as soon as it's ready.
+
+_Summary:_ Ryan from OrangeTee (real estate, Singapore) is waiting on the first website mock-up and has explicitly said he wants to just see it before answering further questions.
