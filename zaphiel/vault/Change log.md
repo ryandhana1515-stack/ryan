@@ -409,3 +409,9 @@ tags: [zaphiel, changelog]
   - Migrations 001–008 applied, with FAKE seed data (2 demo orgs).
   - Isolation verified on Supabase itself: no cross-tenant reads, updates, deletes or inserts; the audit log cannot be changed; no data without an organisation; anonymous visitors see nothing.
   - Supabase security advisor: 10 warnings (function search_path), fixed with migration 008; now 0 findings. fusion-edg-core PR #2 merged.
+
+- 2026-09-30 — **Fusion EDG Core staging is live on Vercel** (Ryan: "ok staging"; he imported the repo and set the 3 env vars himself).
+  - Project `fusion-edg-core-api`, URL https://fusion-edg-core-api.vercel.app (behind a Vercel login). `/health` returns ok (env staging); `/test-form` works.
+  - Database: Supabase `fusion-edg-dev` through the pooler, as the `edg_app` role (RLS applies). The first 500 error was a typo in the database link; Ryan fixed it and redeployed.
+  - Ryan's test enquiry created one lead in the FAKE org `acme-demo`: owner assigned, next action set, follow-up task, auto-reply draft. Repeat enquiries were deduplicated.
+  - ATLAS on WhatsApp was already live separately: John → Lead Intake → ATLAS n8n workflow `9XQWSgTBszRc0Jxj`.
