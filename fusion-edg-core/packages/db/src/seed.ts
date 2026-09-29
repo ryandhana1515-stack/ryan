@@ -54,6 +54,19 @@ export async function seed(pool: Pool) {
   await q('INSERT INTO users (id, organization_id, name, email, role_key, accepts_leads) VALUES ($1,$2,$3,$4,$5,$6),($7,$2,$8,$9,$10,$11) ON CONFLICT DO NOTHING',
     [DEMO.usersB.owner, DEMO.orgB, 'Bea Owner (FAKE)', 'owner@beta.example.org', 'owner', false, DEMO.usersB.sales1, 'Ben Sales (FAKE)', 'sales@beta.example.org', 'sales', true]);
 
+  // Capability data for development/test: MOCK providers connected (labelled mock:*), accounting deliberately NOT
+  // connected, so the brief proves it says "data unavailable" instead of inventing numbers.
+  for (const org of [DEMO.orgA, DEMO.orgB]) {
+    for (const env of ['development', 'test']) {
+      for (const [adapter, scopes] of [['messaging', ['messages:send']], ['email', ['mail:send']], ['llm', []], ['crm', ['contacts:write', 'deals:write']]] as [string, string[]][]) {
+        await q(`INSERT INTO integration_connections (organization_id, environment, adapter, provider, connected, authorized, scopes, status, secret_ref)
+                 VALUES ($1,$2,$3,$4,true,true,$5,'tested',NULL) ON CONFLICT DO NOTHING`, [org, env, adapter, `mock:${adapter}`, scopes]);
+      }
+      await q(`INSERT INTO integration_connections (organization_id, environment, adapter, provider, connected, authorized, status)
+               VALUES ($1,$2,'accounting','xero',false,false,'planned') ON CONFLICT DO NOTHING`, [org, env]);
+    }
+  }
+
   // One existing customer per org (Beta's is the cross-tenant target in tests).
   await q(`INSERT INTO contacts (id, organization_id, name, phone_e164, email_normalized, source) VALUES
       ('0000000a-0000-4000-8000-0000000000c1', $1, 'Existing Customer A (FAKE)', '+6590000001', 'existing.a@example.com', 'seed'),
