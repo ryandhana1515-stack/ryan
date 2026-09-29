@@ -906,6 +906,25 @@ from it. It never restarts discovery or re-asks answered questions.
 
 ---
 
+### B19. EDG MODULE CATALOG (what Fusion EDG Core can build today)
+Design with these parts first; build only what is missing. Source of truth: private repo `fusion-edg-core`,
+`docs/modules.md`. Status words are exact: TESTED = automated tests pass on FAKE data; NEEDS VERIFICATION = code
+exists, not yet proven on a real account.
+| Module | What the client gets | Human decisions kept | Status |
+|---|---|---|---|
+| Lead intake + CRM | WhatsApp/web/email → one contact (dedupe) → owner by round-robin → next action → follow-up | WON/LOST | TESTED, staging |
+| Quotations | AI agent drafts quotes ONLY from the client's approved price list; anything else → "needs pricing" task | approve & send (one-click email link) | TESTED |
+| Invoices + payments | accepted quote → draft invoice; gap-free INV numbers; payments; overdue reminder drafts | issue / void; sending reminders | TESTED |
+| Appointments | free slots, booking by the AI agent, no double booking, reschedule, confirmations, 24 h reminders, calendar sync | completed / no-show | TESTED |
+| Client WhatsApp number | onboarding checklist (client + FusionTech steps), one platform webhook for all clients | client's Meta verification and templates | TESTED (MOCK); live NEEDS VERIFICATION |
+| Accounting (Xero) | client connects Xero by one link; issued invoices pushed; payments come back | client's finance team | TESTED (MOCK); live NEEDS VERIFICATION |
+| Calendar (Google) | client connects by one link; bookings appear in staff calendars | — | TESTED (MOCK); live NEEDS VERIFICATION |
+| CEO Daily Brief + KPIs | numbers from SQL only; "data unavailable" when a source is missing | — | TESTED, staging |
+Rules that come with the catalog: prices, tax rate, quote validity and payment terms come from the client (never
+assumed); an agent never records payments or marks outcomes; staff web sign-in is NOT built yet (people act through
+one-click links). Not in the catalog yet (design it, mark it NEW BUILD): inventory, payroll, e-commerce, payment links,
+QuickBooks.
+
 ## STAGE 16 — OUTPUT FILES (write to the vault)
 Folder: `80_Clients/<client-slug>/edg/` (one folder per client, never mixed)
 

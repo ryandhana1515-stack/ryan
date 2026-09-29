@@ -415,3 +415,11 @@ tags: [zaphiel, changelog]
   - Database: Supabase `fusion-edg-dev` through the pooler, as the `edg_app` role (RLS applies). The first 500 error was a typo in the database link; Ryan fixed it and redeployed.
   - Ryan's test enquiry created one lead in the FAKE org `acme-demo`: owner assigned, next action set, follow-up task, auto-reply draft. Repeat enquiries were deduplicated.
   - ATLAS on WhatsApp was already live separately: John → Lead Intake → ATLAS n8n workflow `9XQWSgTBszRc0Jxj`.
+
+- 2026-09-30 — **ATLAS can now build the parts that were "not ready yet"** (Ryan: "I want Atlas to be able to do all those"). Fusion EDG Core PR #4, merged; staging redeployed and healthy.
+  - Quotations → invoices → payments. The AI quotes only from the client's approved price list; a person approves and sends with one click from an email; invoices are numbered with no gaps; payments come in from a person or from Xero.
+  - Appointment booking. Free slots, booking by the AI agent, double booking is impossible (database rule), reschedule, confirmation and reminder messages, Google Calendar sync.
+  - Client WhatsApp numbers. A setup checklist that says who does what; one shared WhatsApp inbox address for every client.
+  - Accounting. The client connects Xero with one link; invoices go to Xero and payments come back.
+  - ATLAS's agent file gained section **B19 EDG MODULE CATALOG** (added only; nothing removed), so every design now uses these parts.
+  - 82/82 tests pass. The staging database (Supabase `fusion-edg-dev`) got the 3 new table sets; its fingerprint matches the tested copy, and the security advisor reports 0 findings. All data is FAKE.

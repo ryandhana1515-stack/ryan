@@ -338,3 +338,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   on the shared Fusion EDG Core ([[00_CEO_Brain/05_Fusion_EDG_Core]]): development only until Ryan approves staging
   (L3) and production (L4); L5 always needs a named human approver. Code lives outside the vault; the vault keeps the
   docs and links. n8n is the trigger layer only; business rules stay in tested code (ADR-0004).
+
+- 2026-09-30 — **ATLAS builds the full EDG catalog** (Ryan: "I want Atlas to be able to do all those"): quotations, invoices, payments, appointments, client WhatsApp numbers and accounting (Xero) are now standard modules. The rules stay:
+  - An AI never invents a price (it uses the approved price list only).
+  - Approving or sending a quote, issuing an invoice, WON/LOST and "completed / no-show" are human decisions, made with one click from an email link.
+  - An AI never records payments.

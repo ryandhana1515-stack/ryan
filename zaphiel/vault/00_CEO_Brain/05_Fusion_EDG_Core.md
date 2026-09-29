@@ -44,3 +44,9 @@ test report and client demo script. `pnpm demo` runs the demo.
 - So in production the event dispatcher and the follow-up runner run on the API's own scheduler (Vercel Cron / Supabase
   pg_cron), not on n8n.
 - n8n stays for intake webhooks, email polling and the daily brief (ADR-0004).
+
+## Business modules (added 2026-09-30, Fusion EDG Core PR #4)
+Quotations → invoices → payments · appointment booking · client WhatsApp numbers · Xero sync · Google Calendar ·
+one-click approval links. They are listed for ATLAS in `.claude/agents/atlas.md` → **B19 EDG MODULE CATALOG**; the
+details are in `fusion-edg-core/docs/modules.md`. 82/82 tests pass on FAKE data. The live WhatsApp, Xero and Google
+connections are written from each provider's documentation but NEED VERIFICATION on real test accounts.
