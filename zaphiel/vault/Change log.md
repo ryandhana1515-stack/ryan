@@ -355,3 +355,9 @@ tags: [zaphiel, changelog]
   - the playbook has scene recipes for 11 industries (motorbikes included);
   - routine F3: keyframes with one look bible, then Kling scenes chained first/tail.
   - Tests 124/124.
+- 2026-09-29 — **Atelier Noir proof scenes made on Kling.**
+  - The scenes: shirt → waistcoat builds on → jacket closes → man adjusting cuff → four suits walk at night →
+    button macro → suit under the spotlight.
+  - The kit demo `media.json` now points at the 6 permanent clips.
+  - The worker now uses Kling's watermark-free links and copies each clip to Higgsfield, because Kling links
+    expire after 24 hours.
