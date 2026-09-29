@@ -106,9 +106,45 @@ to any template, the site is not finished.
 | Jewellery | black velvet, sparkle light | 1 molten gold pours → 2 it is cast into the band → 3 the stone is set, throwing fire → 4 a slow turn in light → 5 macro of the claws → 6 on a hand in candlelight |
 | Furniture | a sunlit loft | 1 raw timber and leather on a bench → 2 they shape and join themselves → 3 the finished piece rotates → 4 the room assembles around it → 5 macro of the grain and joints → 6 evening light, someone sits |
 | Electronics | a clean white or black void | 1 the internals float apart → 2 they stack into the device → 3 a 360 turn → 4 the screen lights up in use → 5 macro of the materials → 6 the device on the desk |
-| Property | golden hour, then interior warm light | 1 aerial of the district → 2 glide down to the building → 3 through the entrance → 4 the living room → 5 the view from the window → 6 dusk, the lights come on |
+| Property (Ryan's references, see below) | golden hour, soft atmospheric haze, warm oak, stone and glass | 1 aerial of the home in its setting (above the clouds, the sea, the skyline) → 2 the drone glides down to the glass facade → 3 the doors part (glass slides, or marble doors open along a gold seam) and the camera passes through → 4 the living room, floor-to-ceiling windows and the view → 5 a second signature space (pool terrace, kitchen, master suite) → 6 dusk, the lights come on as the camera pulls back out |
 | Restaurant / F&B | a dark kitchen, steam, warm light | 1 raw ingredients float → 2 knife work and fire → 3 the dish assembles on the plate → 4 served at a candlelit table → 5 macro of texture and steam → 6 the dining room at night |
 | Any other business | the brand's world in one consistent light | 1 the raw material → 2 it transforms → 3 the finished product revealed → 4 in use → 5 craft macro → 6 the call to action |
+
+### Property: Ryan's references (2026-09-29)
+
+Two TikTok property sites Ryan sent. The website agent builds every property site to this standard.
+
+- **Marina Budarina, "Interactive website with scroll transform":** a glass house on a misty cliff above the
+  clouds. The scroll flies the camera into it, through the glass wall, into a living room looking out at the
+  mountains. The copy is "… above the clouds" top left, then "Wanna look inside? Just scroll through it" at the
+  bottom centre.
+- **JerryTheWebDev, "3D scroll-driven immersive website":** a pool courtyard with palms. Marble doors part along
+  a gold line, then the sea-view living room at golden hour. The copy is "Private estates. Quiet …" and "Curated
+  for buyers who …".
+
+What makes them work:
+1. **One uninterrupted camera journey from outside to inside.** Every scene hands over to the next frame to
+   frame (`tail_image`); the house never cuts away.
+2. **The threshold moment.** The camera passes through the glass, or the doors part, in the middle of the
+   scroll. That is the wow; give it its own 10-second scene.
+3. **Architecture light.** Golden hour, soft haze, clean contemporary lines, warm oak, stone and glass, minimal
+   neutral furniture, no people, a 24mm gimbal or drone move. The same light in every scene.
+4. **Quiet copy.** A small uppercase kicker and one short headline per scene over the film. A floating pill
+   menu sits at the top centre (Home · Listings · About · Enquire). One line invites the scroll ("Wanna look
+   inside? Just scroll through it").
+5. **For a property agent** (not one home), the film is a signature home that stands for the agent's market.
+   After the film come:
+   - featured listings (horizontal gallery);
+   - neighbourhoods;
+   - "What's my home worth?" valuation form;
+   - agent profile;
+   - WhatsApp and book-a-viewing CTAs.
+
+Property rules:
+- The customer's real listing photos come first, as keyframes where they fit.
+- Everything generated is labelled "Artist's impression".
+- Never invent the view, rooms, facilities, prices or availability.
+- Agent registration numbers (Singapore CEA) are shown as `[CLIENT TO PROVIDE]` placeholders.
 
 After the scenes, still use the kit's other sections: word-lit manifesto, horizontal gallery, counters, stacking
 steps and booking.

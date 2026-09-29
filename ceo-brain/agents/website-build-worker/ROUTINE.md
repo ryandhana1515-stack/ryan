@@ -207,6 +207,17 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
              Put each permanent URL in `media.json` as its own film: `scene1` … `scene6`, `"crop": "none"`,
              `"frames": 96` (120 for a 10-second scene). Use `"crop": "kling"` only for a watermarked `url`;
              Vercel's build then crops the corner with `crop=iw*0.94:ih*0.94:iw*0.03:0` and cuts the frames.
+          Property (Ryan's references, 2026-09-29; the playbook's "Property" section): one uninterrupted camera
+          journey from outside to inside:
+          - aerial of the home in its setting;
+          - glide to the glass facade;
+          - the doors part and the camera passes through (10 seconds);
+          - the living room and the view;
+          - a second signature space;
+          - dusk, lights on.
+          Golden-hour haze, no people, the customer's listing photos first. Generated scenes are labelled "Artist's
+          impression"; never invent rooms, views or facilities. A property agent's film is a signature home for
+          their market, followed by listings, neighbourhoods, a valuation form and the agent profile.
           If a scene fails twice on Kling, make it with Higgsfield `generate_video` (a start/end-frame model) with
           `"crop": "none"`. If it fails there too, drop the scene. Say either in `notes`. Fewer than 4 scenes made →
           report `build_failed` with the reason rather than publishing a thin site.
