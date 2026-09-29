@@ -368,3 +368,8 @@ tags: [zaphiel, changelog]
 - 2026-09-29 — **Higgsfield fallback hosting.** When Vercel refuses a deploy (today: the daily limit), the worker
   publishes on Higgsfield with `scripts/higgsfield-host.sh` (routine F6, kit README). Tested end to end on
   `fusiontech-kit-check`. Ryan accepts a link behind the Higgsfield sign-in for now.
+- 2026-09-30 00:35 SGT — **Stuck build fix.** The OrangeTee build stopped after its Kling scenes (about 290 credits)
+  and the next run skipped it as "already started".
+  - The routine now treats a start mark older than 75 minutes as a dead run and resumes it.
+  - It logs Kling generation ids (`website_build_progress`) so a resume reuses them.
+  - It never ends its turn while a build is in progress.
