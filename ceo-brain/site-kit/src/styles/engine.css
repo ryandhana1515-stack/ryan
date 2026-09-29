@@ -1,0 +1,68 @@
+/* Engine styles: the scroll film, motion states and the cinematic layer. A site's own brand.css sets
+   the tokens below and everything else about the look. */
+:root {
+  --bg: #0b0b0c;
+  --ink: #f3efe7;
+  --muted: rgba(243, 239, 231, 0.62);
+  --accent: #c8a46a;
+  --particle: 232, 205, 150;          /* r,g,b of the floating particles */
+  --tint: rgba(12, 10, 8, 0.28);       /* colour laid over the film so copy reads */
+  --glass: rgba(20, 18, 16, 0.42);
+  --line: rgba(243, 239, 231, 0.14);
+  --display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --text: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --gutter: clamp(16px, 4vw, 56px);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, video, canvas { max-width: 100%; display: block; }
+
+/* Scroll film */
+.film { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: var(--bg); }
+.film canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.film::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, var(--tint), transparent 30%, transparent 62%, var(--bg) 100%); pointer-events: none; }
+.film-chapter { position: absolute; z-index: 2; left: var(--gutter); right: var(--gutter); bottom: clamp(56px, 12vh, 140px); max-width: 720px; will-change: opacity, transform; }
+html.js .film-chapter { opacity: 0; }
+html.js .film-chapter[data-from="0"] { opacity: 1; }
+.film--still .film-chapter { position: relative; opacity: 1 !important; }
+.film--still { height: auto; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; gap: 32px; padding-block: 120px 64px; }
+
+/* Motion states: only hidden once JS runs, never when motion is reduced */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.w > span { display: inline-block; will-change: transform; }
+html.js:not(.still) [data-reveal="fade"] { visibility: hidden; }
+.scrub-text .w { overflow: visible; }
+
+/* Horizontal pinned gallery, stack, marquee */
+.hscroll { overflow: hidden; }
+.hscroll-track { display: flex; gap: clamp(16px, 3vw, 40px); width: max-content; padding-inline: var(--gutter); will-change: transform; }
+.stack-card { position: sticky; top: 12vh; transform-origin: 50% 0; }
+.marquee { overflow: hidden; white-space: nowrap; }
+.marquee-inner { display: inline-flex; gap: 3rem; will-change: transform; }
+html.still .hscroll { overflow-x: auto; }
+
+/* Progress bar */
+.progress { position: fixed; z-index: 60; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
+
+/* Cinematic layer */
+.fx-grain { position: fixed; inset: -50%; z-index: 50; pointer-events: none; opacity: 0.07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation: grain 1.2s steps(6) infinite; }
+@keyframes grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-6%, 4%); } 40% { transform: translate(5%, -7%); } 60% { transform: translate(-3%, 8%); } 80% { transform: translate(7%, 2%); } 100% { transform: translate(0, 0); } }
+.fx-vignette { position: fixed; inset: 0; z-index: 49; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45) 100%); }
+.fx-particles { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 48; pointer-events: none; }
+.fx-cursor { position: fixed; z-index: 70; top: -6px; left: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink); mix-blend-mode: difference; pointer-events: none; transition: width .3s, height .3s, top .3s, left .3s; }
+.fx-cursor.is-link { width: 56px; height: 56px; top: -28px; left: -28px; }
+.glass { background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); border-radius: 18px; }
+
+/* Opening curtain */
+.curtain { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--bg); color: var(--ink); }
+.curtain-count { font-variant-numeric: tabular-nums; }
+html:not(.js) .curtain { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-grain { animation: none; }
+  .fx-cursor, .fx-particles { display: none; }
+}

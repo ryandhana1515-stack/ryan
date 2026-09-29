@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Atelier Noir — bespoke tailoring (FusionTech kit demo)</title>
+  <meta name="description" content="Demo of the FusionTech AI scroll-film website kit: a tailoring house told as one continuous film." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Manrope:wght@400;500;600&display=swap" />
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <div class="curtain" aria-hidden="true"><div class="curtain-brand">ATELIER NOIR</div><div class="curtain-count">0</div></div>
+  <div class="progress" aria-hidden="true"></div>
+
+  <nav class="nav" aria-label="Main">
+    <a class="brandmark" href="#top">ATELIER NOIR</a>
+    <a href="#book" data-magnetic>Book a fitting</a>
+  </nav>
+
+  <main id="top">
+    <!-- 1. THE FILM: one continuous Kling transformation, scrubbed by the scroll, reversible -->
+    <section class="film" data-film="hero" data-length="520" aria-label="From cloth to suit">
+      <canvas role="img" aria-label="A bolt of wool becomes a finished suit"></canvas>
+      <div class="film-chapter" data-from="0" data-to="0.22">
+        <div class="eyebrow">Bespoke tailoring · Singapore</div>
+        <h1 class="display">Cut for one.<br />Made for life.</h1>
+        <div class="ctas"><a class="btn" href="#book" data-magnetic>Book a fitting</a><a class="btn btn--ghost" href="#craft">See the craft</a></div>
+      </div>
+      <div class="film-chapter glass" data-from="0.28" data-to="0.5" style="padding:28px">
+        <div class="eyebrow">01 · The cloth</div>
+        <p class="lede" style="color:var(--ink)">Every suit begins as a single bolt, chosen with you from the mills of Biella and Huddersfield.</p>
+      </div>
+      <div class="film-chapter glass" data-from="0.54" data-to="0.76" style="padding:28px">
+        <div class="eyebrow">02 · The cut</div>
+        <p class="lede" style="color:var(--ink)">Your pattern is drafted by hand, then cut, basted and fitted on you, again and again.</p>
+      </div>
+      <div class="film-chapter" data-from="0.8" data-to="1">
+        <div class="eyebrow">03 · The suit</div>
+        <h2 class="h2">Yours, and nobody else's.</h2>
+      </div>
+    </section>
+
+    <!-- 2. MANIFESTO: lights up word by word -->
+    <section class="section manifesto" data-bg="#0c0b0a">
+      <div class="eyebrow" data-reveal="fade">The house</div>
+      <p data-scrub-text style="margin-top:28px">We do not sell suits off a rail. We build one garment at a time, for one person, over as many fittings as it takes.</p>
+    </section>
+
+    <!-- 3. CLOTHS: pinned horizontal gallery, colour only, no photos -->
+    <section class="hscroll cloths" aria-label="Cloths">
+      <div class="hscroll-track">
+        <article class="cloth" style="background:#1d2a3a"><div class="eyebrow">Worsted · 280g</div><div><h3>Midnight</h3><p>The navy that reads black by night.</p></div></article>
+        <article class="cloth" style="background:#3b3f44"><div class="eyebrow">Flannel · 370g</div><div><h3>Charcoal</h3><p>Soft, warm, the city suit.</p></div></article>
+        <article class="cloth" style="background:#5a4632"><div class="eyebrow">Tweed · 450g</div><div><h3>Harris</h3><p>Weekends and the long drive north.</p></div></article>
+        <article class="cloth" style="background:#6d6a5e"><div class="eyebrow">Linen · 240g</div><div><h3>Stone</h3><p>For the heat, cut loose and light.</p></div></article>
+        <article class="cloth" style="background:#261a1f"><div class="eyebrow">Barathea · 300g</div><div><h3>Evening</h3><p>Black tie, peak lapel, grosgrain.</p></div></article>
+      </div>
+    </section>
+
+    <div class="marquee" data-speed="30" aria-hidden="true"><div class="marquee-inner"><span>Measured</span><span>Drafted</span><span>Cut</span><span>Basted</span><span>Fitted</span><span>Finished</span></div></div>
+
+    <!-- 4. CRAFT: masked headline, counters -->
+    <section class="section" id="craft" data-bg="#12100e">
+      <div class="eyebrow" data-reveal="fade">The craft</div>
+      <h2 class="h2" data-reveal="lines" style="margin-top:20px">Hours you will never see, in a suit you will always feel.</h2>
+      <div class="stats">
+        <div class="stat"><b data-count="60" data-suffix="+">60+</b><span>hours of handwork</span></div>
+        <div class="stat"><b data-count="3">3</b><span>fittings, at least</span></div>
+        <div class="stat"><b data-count="1">1</b><span>pattern, yours</span></div>
+      </div>
+      <p class="lede" style="margin-top:28px;font-size:13px">Figures are illustrative for this demo.</p>
+    </section>
+
+    <!-- 5. PROCESS: pinned cards stacking -->
+    <section class="section stack" data-bg="#0c0b0a">
+      <h2 class="h2" data-reveal="lines">How it works</h2>
+      <div class="process">
+        <article class="stack-card glass"><span class="n">01</span><h3>Consultation</h3><p class="lede">Cloth, cut and occasion, over coffee at the atelier.</p></article>
+        <article class="stack-card glass"><span class="n">02</span><h3>First fitting</h3><p class="lede">A basted shell, pinned and chalked on you.</p></article>
+        <article class="stack-card glass"><span class="n">03</span><h3>Forward fitting</h3><p class="lede">Refined until the line is right.</p></article>
+        <article class="stack-card glass"><span class="n">04</span><h3>Collection</h3><p class="lede">Pressed, finished, and yours.</p></article>
+      </div>
+    </section>
+
+    <!-- 6. BOOK -->
+    <section class="section book" id="book" data-bg="#0c0b0a">
+      <div class="eyebrow" data-reveal="fade">Appointments</div>
+      <h2 class="h2" data-reveal="lines">Book your first fitting.</h2>
+      <p class="lede" data-reveal="fade">Tell us the occasion and we will prepare cloths for you.</p>
+      <div class="ctas"><a class="btn" href="#book" data-magnetic>WhatsApp the atelier</a><a class="btn btn--ghost" href="#book">Request a call-back</a></div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>Atelier Noir is a demo brand of the FusionTech AI site kit.</span><span>Built by FusionTech AI</span></footer>
+</body>
+</html>
