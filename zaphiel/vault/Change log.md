@@ -298,3 +298,26 @@ tags: [zaphiel, changelog]
   modules), `wbDoctrineSection` in every Lovable prompt; prompt limit 18,000. Routine: Higgsfield Director (e2, start/end
   frames, sound off; Kling backup), check g1 also requires `docs/storyboard.md` and reversible scrubbed chapters.
   Tests 112/112.
+- 2026-09-29 — **Luxury retail layer** (`brief.js`): `WB_LUXURY_KINDS` / `wbLuxuryKind` / `wbKindOf`,
+  `WB_LUXURY_STORY` (doctrine 8, 13, 14, 15 + fashion), `WB_DESIGN_LUXURY`, `wbLuxuryPages`, `WB_LUXURY_HOME`,
+  `WB_LUXURY_DIRECTIONS` + `wbArtDirections` (three directions for every site), `wbShot` + `WB_LUXURY_SHOTS` (the
+  doctrine-22 shot package on every film chapter), QA report `docs/qa-report.md` in the doctrine block. Detection
+  fixes: "showroom" alone is no longer a car dealer; watch and jewellery house names recognised. Routine: e2 writes
+  the full shot package into the Higgsfield prompt, luxury chapters rule, g1 requires a clean QA report. Tests 115/115.
+- 2026-09-29 — **Real photos + deeper research** (`research.js`): `wrImagesFromHtml` (og/twitter images, img src,
+  data-src, largest srcset, CSS backgrounds, JSON-LD images/logo; icons, svgs, gifs and tiny images skipped),
+  `wrJsonLd` / `wrStructured` (address, hours, phones incl. tel/wa.me links, emails, socials, rating), digest REAL
+  PHOTOS section and verified facts, `wrRealPhotos` + brief key `real_photos` (only URLs research found), 13 queries,
+  7 pages + 2 social profiles read. `brief.js`: `wbRealPhotosFrom`, `real_url` on image shots, REAL PHOTOS line in
+  every Lovable prompt. Routine: shots with `real_url` are not generated. Tests 118/118.
+- 2026-09-29 — **Final test prep** (Ryan). `intake.js` `wbCleanQuestions` / `WB_LOOK_Q` (run on John's own reply
+  before the intake step); `atlas.js` `atAskedBefore`; John's prompt: never ask about the look, answer first.
+  `brief.js`: `wbDoctrineSection` rewritten as the master prompt steps 1-10; `wbChapterShots` (clinic, car, F&B
+  chapters and shots); property scenes carry shot packages. Tests 120/120.
+- 2026-09-29 — **Film on Kling directly** (Ryan). Routine e2 rewritten (Kling `image_to_video` with first/tail frames,
+  `enable_audio` false, `prefer_multi_shots` false; Higgsfield `flux_3_video`/`minimax_h3_max` as backup); the
+  builder and research prompts name Kling as the film maker. Tests 120/120.
+- 2026-09-29 — **Claude builder path** (routine): f0 routes medical → Lovable (f-g2), others → step F (Higgsfield
+  `website-builder-flow` + `scroll-scrub` template, design brief from the master prompt, Kling film cropped and
+  encoded with `scroll-scrub-video.sh`, real photos first, GLB 360 for luxury, storyboard + QA report, Phase 5
+  gate, `deploy_website`). Routine model → `claude-fable-5-1`. Tests 121/121.

@@ -226,3 +226,43 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   torture-tests reverse scroll before the link goes out. Higgsfield now makes the film (matching start/end frames
   so chapters join), Kling makes the posters and is the backup. It sits inside the design standard the Website
   Builder reads live, so Ryan can edit it in Obsidian.
+
+- 2026-09-29 — **Any luxury retail website at the top standard** (Ryan: "make the website agent able to do all this
+  for any retail luxury 10,000 website"). Watches, jewellery, electronics, furniture, fashion and luxury goods are
+  recognised automatically and get: the matching doctrine module (reveal → craft → 360 → lifestyle; no exploded or
+  internal view without the customer's CAD), a quiet-luxury design system, three art directions (the first is
+  built), the maison sitemap (Collections, Product Detail, Craftsmanship, Book a Private Viewing, Boutique…), quiet
+  selling (private viewing CTA, no discount strips or countdowns, "Price on request" until the customer confirms),
+  generated products labelled "Illustrative" until real photography arrives, a full Higgsfield shot package per
+  chapter, and a QA report (blocker/high/medium/polish) that must be clean before the link goes out.
+
+- 2026-09-29 — **Real photos first; research everything about the company** (Ryan: "only give out the photo if the
+  website intelligence cannot find … if they already show the photos, download from there … search every single
+  thing about their company"). Website Intelligence now collects every photo on the company's own website and its
+  Facebook/Instagram profile pages, plus the structured facts there (address, opening hours, phones, emails,
+  socials, rating), and runs 13 searches (adds more socials, press/news, the people behind it, photos). The
+  builder uses the company's own photos first (film posters, galleries); Kling generates only what they do not
+  cover. Never another business's photos, never invented URLs, never for a business it could not confirm. Clinics
+  keep the anatomy film as the opening. Limit: Google Maps/Business photos are not reachable by our search tools;
+  the website and social pages are.
+
+- 2026-09-29 — **John never repeats a question or asks about the look; every build uses the master prompt** (Ryan:
+  "make sure John doesn't repeat questions and answers accurately … every time the website agent creates the
+  website, it will use this prompt"). Code now removes any question in John's reply that he (or ATLAS) already asked,
+  and any look/style/colour question; ATLAS skips near-duplicates. The Lovable build prompt is laid out as the PDF's
+  MASTER ORCHESTRATOR, steps 1-10 (intelligence, creative, story, animation, engine, assets, Higgsfield, Lovable,
+  conversion, QA), filled in for each business, with industry chapter labels and shot direction (clinics: anatomy,
+  mechanism and doctors, consultation; property walkthrough; cars; F&B; luxury retail).
+
+- 2026-09-29 — **Kling models run on Kling directly, not through Higgsfield** (Ryan: "if you want to use the Kling
+  model in Higgsfield, can you go to the actual Kling?"). The film chapters are made on Ryan's Kling Pro account
+  (`kling-video-v3_0`, first frame = this chapter's photo, tail frame = the next chapter's, no audio, one continuous
+  shot). Higgsfield keeps the 3D product model and is the backup film maker with its non-Kling models.
+
+- 2026-09-29 — **Two website builders** (Ryan: "don't use Lovable as the website builder, use Claude Fable 5.1 … I tried
+  Lovable's artery design and it's better … Claude is better for cinematic scrolling websites, 360 watches, fashion
+  houses, properties"). Clinics and medical sites: Lovable (with the Kling anatomy film). Every other business:
+  Claude Fable 5.1 writes the site itself on Higgsfield's website platform with its tested `scroll-scrub` engine
+  (reverse scroll, phone encodes, posters), live at `<slug>-mockup.higgsfield.app`; the film is made on Kling
+  directly, the watermark cropped in the encode; the customer's real photos first. The build worker runs on
+  Claude Fable 5.1.

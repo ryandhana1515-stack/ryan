@@ -67,17 +67,19 @@ const identity = wrIdentify(input, results);
 return [{ json: { input, identity, results, search_errors: searchErrors, search_items: raw.length, homepage_url: identity.website || '', started_at: plan[0].started_at } }];
 `;
 
-const codePickPages = `${pick(HELPERS.concat(['WR_PAGE_RE', 'WR_MAX_PAGE_TEXT', 'wrHtmlToText', 'wrPickPages', 'wrFetchedPage']))}
-// ---- n8n glue: read the homepage, pick up to 3 internal pages worth fetching (Rule 5) ----
+const codePickPages = `${pick(HELPERS.concat(['WR_PAGE_RE', 'WR_MAX_PAGE_TEXT', 'WR_IMG_SKIP', 'WR_MAX_IMAGES', 'wrAbsUrl', 'wrImagesFromHtml', 'wrArrAny', 'wrJsonLd', 'wrStructured', 'wrHtmlToText', 'wrPickPages', 'wrFetchedPage']))}
+// ---- n8n glue: read the homepage, pick up to 7 internal pages worth fetching, plus up to 2 of the company's own
+// Facebook/Instagram profiles for their photos (Ryan, 2026-09-29: "search every single thing about their company") ----
 const id = $('Identify Company').first().json;
 const page = wrFetchedPage($input.first(), id.homepage_url);
 let urls = [];
-if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 5); }
+if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 7); (parsed.structured && parsed.structured.socials || []).forEach((u) => { if (id.identity.socials.indexOf(u) === -1) id.identity.socials.push(u); }); }
+if (id.identity && id.identity.confidence !== 'low') (id.identity.socials || []).filter((u) => /(facebook|instagram)[.]com[/][^/?#]+[/]?$/i.test(u)).slice(0, 2).forEach((u) => { if (urls.indexOf(u) === -1) urls.push(u); });
 if (!urls.length) return [{ json: { url: '', skip: true, homepage_ok: page.ok } }];
 return urls.map((u) => ({ json: { url: u, skip: false, homepage_ok: page.ok } }));
 `;
 
-const codeDigest = `${pick(HELPERS.concat(['WR_MAX_DIGEST', 'WR_MAX_PAGE_TEXT', 'WR_PAGE_RE', 'wrHtmlToText', 'wrFetchedPage', 'wrDigest']))}
+const codeDigest = `${pick(HELPERS.concat(['WR_MAX_DIGEST', 'WR_MAX_PAGE_TEXT', 'WR_PAGE_RE', 'WR_IMG_SKIP', 'WR_MAX_IMAGES', 'wrAbsUrl', 'wrImagesFromHtml', 'wrArrAny', 'wrJsonLd', 'wrStructured', 'wrHtmlToText', 'wrFetchedPage', 'wrDigest']))}
 // ---- n8n glue: assemble every page + result into the labelled digest ----
 const id = $('Identify Company').first().json;
 const input = id.input;
@@ -108,7 +110,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_PARALLAX', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'WR_ASK_MARK', 'WR_HOLD_MARK', 'WR_MAX_INFO_ROUNDS', 'WR_ROOMS_Q', 'WR_ROOMS_RE', 'wrRoomsKnown', 'WR_PUBLIC_Q', 'WR_WEBSITE_Q', 'WR_URL_RE', 'wrUrlGiven', 'wrDropPublicQuestions', 'WR_TOPICS', 'wrTopicsOf', 'wrAskedTopics', 'wrInfoRounds', 'wrEnoughFallback', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_PARALLAX', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'WR_ASK_MARK', 'WR_HOLD_MARK', 'WR_MAX_INFO_ROUNDS', 'WR_ROOMS_Q', 'WR_ROOMS_RE', 'wrRoomsKnown', 'WR_MAX_IMAGES', 'wrRealPhotos', 'WR_PUBLIC_Q', 'WR_WEBSITE_Q', 'WR_URL_RE', 'wrUrlGiven', 'wrDropPublicQuestions', 'WR_TOPICS', 'wrTopicsOf', 'wrAskedTopics', 'wrInfoRounds', 'wrEnoughFallback', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;
@@ -126,7 +128,7 @@ else {
 const fin = wrFinalize({ raw_text: rawText, error, input, digest: d.digest });
 const now = new Date().toISOString();
 const started = d.started_at || now;
-const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
+const researchSlim = { version: d.digest.version, identity: d.identity, facts: d.digest.facts, site: { website: d.digest.site.website, pages_read: d.digest.site.pages_read, pages_failed: d.digest.site.pages_failed, title: d.digest.site.title, description: d.digest.site.description, signals: d.digest.site.signals, images: d.digest.site.images || [], logo: d.digest.site.logo || '', addresses: d.digest.site.addresses || [], hours: d.digest.site.hours || [], socials: d.digest.site.socials || [] }, competitors: d.digest.competitors, reviews: d.digest.reviews, unknown: d.digest.unknown, search_items: d.digest.search_items, search_errors: d.digest.search_errors , brief: fin.brief };
 const eventType = fin.status !== 'READY_FOR_WEBSITE_CREATOR' || fin.needs_john ? 'website.info_needed' : 'website.research';
 // Hold the build until the details are enough (Ryan, 2026-09-28); nothing left to ask → build now with placeholders.
 const ask = wrCustomerAsk({ input, questions: fin.questions_for_john, needs_john: fin.needs_john, hold: fin.hold });

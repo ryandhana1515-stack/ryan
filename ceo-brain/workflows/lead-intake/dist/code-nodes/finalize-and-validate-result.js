@@ -197,10 +197,21 @@ function wbDetectMode(text, industry) {
   var t = String(text || '') + ' ' + String(industry || '');
   return WB_MEDICAL_RE.test(t) ? 'medical' : 'sme';
 }
+var WB_LUXURY_KINDS = [
+  ['watch', /\b(watch(es|maker|makers)?|timepieces?|horolog\w*|chronograph|tourbillon|wristwatch|rolex|omega|patek|audemars|tudor|breitling|iwc|hublot|richard mille|longines|grand seiko|tag heuer|panerai|vacheron)\b/i],
+  ['jewellery', /\b(jewel(le)?ry|jewell?ers?|diamonds?|engagement rings?|wedding bands?|necklaces?|bracelets?|earrings?|pendants?|goldsmith|gemstones?|pearls?|fine jewel\w*|tiffany|bulgari|van cleef|chopard)\b/i],
+  ['electronics', /\b(consumer electronics|electronics (store|shop|brand)|gadgets?|headphones?|earbuds?|hi-?fi|audio equipment|loudspeakers?|smartphones?|laptops?|cameras? (store|shop)|wearables?|smart home devices?)\b/i],
+  ['furniture', /\b(furniture|sofas?|armchairs?|dining tables?|cabinetry|bespoke joinery|mattress(es)?|homeware|home d[eé]cor|lighting (design|store|showroom)|rugs?|carpets?)\b/i],
+  ['fashion', /\b(fashion|couture|atelier|handbags?|leather goods|apparel|tailor(ing|s)?|bespoke suits?|sneakers?|eyewear|sunglasses|menswear|womenswear|boutique label)\b/i],
+  ['luxury', /\b(luxury|luxe|high-end|haute|prestige|premium brand|fragrance|perfume|parfum|crystal|porcelain|fine wine|cigars?|yachts?)\b/i]
+];
+var WB_LUXURY_RE = new RegExp(WB_LUXURY_KINDS.map(function (k) { return k[1].source; }).join('|'), 'i');
+/** The luxury retail kind from any text about the business, or null. */
 var WB_CATEGORY_RULES = [
   ['healthcare', WB_MEDICAL_RE],
-  ['automotive', /\b(dealership|car dealer|showroom|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
+  ['automotive', /\b(dealership|car dealer|car showrooms?|automotive|vehicles?|test drive|bmw|mercedes|toyota|honda|audi|tesla|motors?|car workshop|auto)\b/i],
   ['beauty', /\b(salon|spa|beauty|nail|lash|brow|facial|hair(dress|cut|style)|barber|massage|wellness|aesthetic)\b/i],
+  ['retail', WB_LUXURY_RE],
   ['construction', /\b(construction|builders?|building contractor|main contractor|general contractor|civil (engineering|works)|design (and|&) build|site works|scaffold\w*|excavat\w*|piling|steel structure|structural works|a&a works|fit-?out)\b/i],
   ['property', /\b(property|properties|real estate|realtor|condo(minium)?s?|hdb|landed|listings?|tenant|landlord|rental|villas?|bungalows?|penthouses?|apartments?|show ?flats?|new launch(es)?|property developer|houses? for (sale|rent)|interior design(er|ers)?)\b/i],
   ['food_beverage', /\b(restaurant|cafe|café|coffee|kopi|kopitiam|tea|bubble tea|bakery|catering|hawker|bar\b|bistro|kitchen|food|menu|f&b|dessert|juice)\b/i],
@@ -382,6 +393,37 @@ function wbInfoReplyDue(history) {
   }
   return false;
 }
+var WB_LOOK_Q = /\b(look and feel|how (should|would|do) (it|the (web)?site|your (web)?site) look|what (style|look|colou?rs?|theme|design)|which (style|colou?rs?|theme|design)|design (style|preference)|colou?r (scheme|palette|preference)|brand colou?rs?|websites? (you|that you) (like|admire)|any (reference|example) (sites?|websites?)|preferred (style|look|design))\b/i;
+var WB_STOP = ['the', 'a', 'an', 'and', 'or', 'to', 'of', 'for', 'in', 'on', 'at', 'is', 'are', 'do', 'does', 'did', 'you', 'your', 'we', 'our', 'us', 'it', 'its', 'this', 'that', 'with', 'what', 'which', 'how', 'who', 'when', 'where', 'can', 'could', 'would', 'will', 'any', 'have', 'has', 'be', 'me', 'my', 'i', 'so', 'if', 'as', 'by', 'from', 'about', 'there', 'currently', 'usually', 'roughly', 'tell', 'let', 'know', 'while', 'wait', 'also', 'just', 'like', 'mind', 'may', 'ask'];
+function wbQWords(t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 2 && WB_STOP.indexOf(w) === -1; }); }
+function wbSimilar(a, b) {
+  var A = wbQWords(a), B = wbQWords(b); if (!A.length || !B.length) return 0;
+  var inter = A.filter(function (w, i) { return B.indexOf(w) !== -1 && A.indexOf(w) === i; }).length;
+  var uni = A.concat(B).filter(function (w, i, arr) { return arr.indexOf(w) === i; }).length;
+  return inter / uni;
+}
+/** The question sentences of earlier agent messages. */
+function wbAskedQuestions(history) {
+  var out = [];
+  (Array.isArray(history) ? history : []).forEach(function (m) {
+    if (!m || m.role !== 'agent') return;
+    String(m.content || '').split(/(?<=[.!?])\s+/).forEach(function (sent) { if (/\?\s*$/.test(sent)) out.push(sent); });
+  });
+  return out;
+}
+/** Drops look/style questions and repeated questions from John's reply; keeps every statement. */
+function wbCleanQuestions(reply, history) {
+  var text = String(reply || '').trim(); if (!text) return text;
+  var asked = wbAskedQuestions(history);
+  var parts = text.split(/(?<=[.!?])\s+/);
+  var kept = parts.filter(function (p) {
+    if (!/\?\s*$/.test(p)) return true;
+    if (WB_LOOK_Q.test(p)) return false;
+    return !asked.some(function (q) { return wbSimilar(p, q) >= 0.5; });
+  });
+  if (!kept.length) kept = [parts[0].replace(/\?\s*$/, '.')];
+  return kept.join(' ').trim();
+}
 function atStr(v, max) {
   if (v === undefined || v === null) return '';
   var s = String(v).replace(/\s+/g, ' ').trim();
@@ -440,6 +482,21 @@ function atAlreadyAnswered(q, history) {
   var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
   return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
 }
+/** True when an earlier agent message already asked nearly the same question (Ryan, 2026-09-29: no repeated questions). */
+function atAskedBefore(q, history) {
+  var words = function (t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 3; }); };
+  var Q = words(q); if (!Q.length) return false;
+  return (Array.isArray(history) ? history : []).some(function (m) {
+    if (!m || m.role !== 'agent') return false;
+    return String(m.content || '').split(/(?<=[.!?])\s+/).some(function (sent) {
+      if (!/\?\s*$/.test(sent)) return false;
+      var S = words(sent); if (!S.length) return false;
+      var inter = Q.filter(function (w, i) { return S.indexOf(w) !== -1 && Q.indexOf(w) === i; }).length;
+      var uni = Q.concat(S).filter(function (w, i, a) { return a.indexOf(w) === i; }).length;
+      return inter / uni >= 0.5;
+    });
+  });
+}
 function atNextQuestion(questions, history) {
   var asked = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role === 'agent'; })
     .map(function (m) { return String(m.content || '').toLowerCase(); }).join('\n');
@@ -449,6 +506,7 @@ function atNextQuestion(questions, history) {
     if (AT_UNSAFE_Q.test(q)) continue;
     if (asked.indexOf(q.toLowerCase()) !== -1) continue;
     if (atAlreadyAnswered(q, history)) continue;
+    if (atAskedBefore(q, history)) continue;
     return q;
   }
   return null;
@@ -511,6 +569,8 @@ const websiteRequested = (websiteTopic && intake.ready && !buildStarted) || info
 // ATLAS (EDG & CRM architect) wakes once John knows a named company needs systems work, not only a website.
 const custHist = histAll.filter((m) => m && m.role !== 'agent').map((m) => String(m.content || '')).join('\n');
 const edgRequested = notPitch && atNeeded({ company_name: ctx.lead.company_name || r.extracted.company_name, extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
+// John never repeats a question and never asks how the site should look (Ryan, 2026-09-29).
+if (r.recommended_reply && !notACustomer) { const cleaned = wbCleanQuestions(r.recommended_reply, histAll); if (cleaned !== r.recommended_reply) { r.recommended_reply = cleaned; fin.audit.push('reply_cleaned:repeat_or_look_question'); } }
 const johnAiReply = r.recommended_reply;
 // John's own answer stands unless the customer asked for a build; then the intake takes over the reply.
 if (websiteTopic && intake.intent && !buildStarted && !holdForRyan && r.recommended_reply) r.recommended_reply = intake.reply;

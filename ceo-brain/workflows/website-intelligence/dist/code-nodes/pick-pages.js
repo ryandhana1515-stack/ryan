@@ -2,7 +2,7 @@ var WR_VERSION = 'website-intelligence-1.1.0';
 var WR_MAX_PAGE_TEXT = 3500;
 var WR_SOCIAL_HOSTS = ['facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'x.com', 'twitter.com'];
 var WR_DIRECTORY_HOSTS = ['google.com', 'maps.google', 'yelp.com', 'tripadvisor', 'wikipedia.org', 'yellowpages', 'sgpbusiness', 'recordowl', 'streetdirectory', 'carousell', 'shopee', 'lazada', 'glassdoor', 'indeed', 'bing.com', 'duckduckgo', 'reddit.com', 'hardwarezone', 'mycareersfuture', 'acra.gov.sg', 'trustpilot', 'sgcarmart'];
-var WR_PAGE_RE = /(about|service|product|treatment|contact|faq|pricing|price|package|booking|book|project|portfolio|case|testimonial|review|menu|shop|gallery|location)/i;
+var WR_PAGE_RE = /(about|service|product|treatment|contact|faq|pricing|price|package|booking|book|project|portfolio|case|testimonial|review|menu|shop|gallery|location|collection|team|doctor|dentist|outlet|branch|clinic|our-work|showroom|store)/i;
 function wrStr(v, max) { if (v === undefined || v === null) return ''; var s = String(v).replace(/\s+/g, ' ').trim(); return max && s.length > max ? s.slice(0, max) : s; }
 function wrArr(v, max) { if (!v) return []; if (!Array.isArray(v)) v = [v]; return v.map(function (x) { return typeof x === 'string' ? wrStr(x, 300) : (x && typeof x === 'object' ? wrStr(x.fact || x.text || x.name || JSON.stringify(x), 300) : wrStr(x, 300)); }).filter(Boolean).slice(0, max || 20); }
 function wrHost(url) { var m = /^(?:https?:\/\/)?(?:www\.)?([^\/?#:]+)/i.exec(String(url || '').trim()); return m ? m[1].toLowerCase() : ''; }
@@ -17,6 +17,73 @@ function wrIsSocial(host) { return WR_SOCIAL_HOSTS.some(function (h) { return ho
 function wrIsDirectory(host) { return WR_DIRECTORY_HOSTS.some(function (h) { return host.indexOf(h) !== -1; }); }
 function wrTokens(s) { return wrStr(s).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(' ').filter(function (t) { return t.length > 2 && ['pte', 'ltd', 'llp', 'the', 'and', 'singapore', 'company', 'co', 'inc', 'llc', 'sdn', 'bhd'].indexOf(t) === -1; }); }
 /** John's hand-off → normalized input (same fields as the Website Builder + the website John or the customer mentioned). */
+var WR_IMG_SKIP = /(favicon|sprite|icons?[\/_\-.]|[\/_\-]icon|pixel|tracking|spacer|blank\.|placeholder|loader|spinner|arrow|badge|flag|emoji|1x1|captcha|gravatar|\.svg(\?|$)|\.gif(\?|$)|data:image)/i;
+var WR_MAX_IMAGES = 16;
+function wrAbsUrl(u, baseUrl) {
+  u = String(u || '').trim().replace(/&amp;/g, '&'); if (!u) return '';
+  if (/^\/\//.test(u)) return 'https:' + u;
+  if (/^https?:\/\//i.test(u)) return u;
+  var base = wrUrl(baseUrl); if (!base) return '';
+  var origin = (/^(https?:\/\/[^\/]+)/i.exec(base) || [])[1] || base;
+  return /^\//.test(u) ? origin + u : origin + '/' + u.replace(/^\.?\//, '');
+}
+/** Every photo a page shows: og/twitter images, <img> (src, data-src, srcset largest), CSS backgrounds, JSON-LD images/logo. */
+function wrImagesFromHtml(html, baseUrl) {
+  html = String(html || ''); var out = [], seen = {};
+  var add = function (u, alt, kind) {
+    u = wrAbsUrl(u, baseUrl); if (!u || WR_IMG_SKIP.test(u) || !/^https?:\/\//i.test(u)) return;
+    var key = u.split('?')[0].toLowerCase(); if (seen[key]) return; seen[key] = true;
+    if (/logo/i.test(u + ' ' + (alt || '')) && kind !== 'og') kind = 'logo';
+    out.push({ url: u.slice(0, 400), alt: wrStr(alt, 120), kind: kind, page: wrStr(baseUrl, 300) });
+  };
+  var m, re;
+  re = /<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image)["'][^>]*content=["']([^"']+)["']/gi; while ((m = re.exec(html)) !== null) add(m[1], '', 'og');
+  re = /<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi; while ((m = re.exec(html)) !== null) add(m[1], '', 'og');
+  re = /<img\b[^>]*>/gi;
+  while ((m = re.exec(html)) !== null && out.length < 60) {
+    var tag = m[0];
+    var alt = (/\balt=["']([^"']*)["']/i.exec(tag) || [])[1] || '';
+    var srcset = (/\b(?:data-)?srcset=["']([^"']+)["']/i.exec(tag) || [])[1];
+    var src = (/\bdata-(?:src|lazy-src|original)=["']([^"']+)["']/i.exec(tag) || [])[1] || (/\bsrc=["']([^"']+)["']/i.exec(tag) || [])[1];
+    if (srcset) { var best = srcset.split(',').map(function (x) { var p = x.trim().split(/\s+/); return { u: p[0], w: parseInt(p[1], 10) || 0 }; }).sort(function (a, b) { return b.w - a.w; })[0]; if (best && best.u) src = best.u; }
+    var w = parseInt((/\bwidth=["']?(\d+)/i.exec(tag) || [])[1], 10);
+    if (src && !(w && w < 160)) add(src, alt, 'img');
+  }
+  re = /background(?:-image)?\s*:\s*url\(\s*['"]?([^'")]+)['"]?\s*\)/gi; while ((m = re.exec(html)) !== null && out.length < 60) add(m[1], '', 'bg');
+  wrJsonLd(html).forEach(function (o) { wrArrAny(o.image).forEach(function (x) { add(typeof x === 'object' ? x.url : x, o.name || '', 'jsonld'); }); if (o.logo) add(typeof o.logo === 'object' ? o.logo.url : o.logo, 'logo', 'logo'); });
+  return out;
+}
+function wrArrAny(v) { return v === undefined || v === null ? [] : (Array.isArray(v) ? v : [v]); }
+/** JSON-LD blocks (flattened, @graph included). */
+function wrJsonLd(html) {
+  var out = [], re = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi, m;
+  while ((m = re.exec(String(html || ''))) !== null) {
+    try { var j = JSON.parse(m[1].trim()); wrArrAny(j).forEach(function (x) { if (x && x['@graph']) wrArrAny(x['@graph']).forEach(function (g) { out.push(g); }); else if (x) out.push(x); }); } catch (e) {}
+  }
+  return out.filter(function (o) { return o && typeof o === 'object'; });
+}
+/** The business's own structured data: address, hours, phone, email, socials, rating (schema.org LocalBusiness/Organization). */
+function wrStructured(html) {
+  var s = { names: [], addresses: [], hours: [], phones: [], emails: [], socials: [], rating: '' };
+  var push = function (arr, v, n) { v = wrStr(v, n || 200); if (v && arr.indexOf(v) === -1 && arr.length < 6) arr.push(v); };
+  wrJsonLd(html).forEach(function (o) {
+    var t = wrArrAny(o['@type']).join(' ');
+    if (!/(Organization|LocalBusiness|Store|Dentist|Physician|MedicalClinic|MedicalBusiness|Restaurant|CafeOrCoffeeShop|AutoDealer|RealEstateAgent|JewelryStore|ClothingStore|FurnitureStore|ElectronicsStore|HealthAndBeautyBusiness|ProfessionalService|HomeAndConstructionBusiness|EducationalOrganization|Hotel|Corporation)/.test(t)) return;
+    push(s.names, o.name, 120);
+    wrArrAny(o.address).concat(wrArrAny(o.location).map(function (l) { return l && l.address; })).forEach(function (a) { if (!a) return; if (typeof a === 'string') push(s.addresses, a); else push(s.addresses, [a.streetAddress, a.addressLocality, a.postalCode].filter(Boolean).join(', ')); });
+    wrArrAny(o.openingHours).forEach(function (h) { push(s.hours, h, 120); });
+    wrArrAny(o.openingHoursSpecification).forEach(function (h) { if (h && typeof h === 'object') push(s.hours, wrArrAny(h.dayOfWeek).map(function (d) { return String(d).replace(/^https?:\/\/schema\.org\//, ''); }).join(', ') + ' ' + (h.opens || '') + '–' + (h.closes || ''), 120); });
+    push(s.phones, o.telephone, 40); push(s.emails, o.email, 120);
+    wrArrAny(o.sameAs).forEach(function (x) { push(s.socials, x, 200); });
+    if (o.aggregateRating && o.aggregateRating.ratingValue) s.rating = wrStr(o.aggregateRating.ratingValue + ' from ' + (o.aggregateRating.reviewCount || o.aggregateRating.ratingCount || '?') + ' reviews', 80);
+  });
+  var html2 = String(html || '');
+  var m, re = /href=["'](?:tel:|https?:\/\/wa\.me\/)\+?([0-9 \-]{7,20})/gi; while ((m = re.exec(html2)) !== null) push(s.phones, m[1].replace(/[ \-]/g, ''), 40);
+  re = /href=["']mailto:([^"'?]+)/gi; while ((m = re.exec(html2)) !== null) push(s.emails, m[1], 120);
+  re = /href=["'](https?:\/\/(?:www\.)?(?:facebook|instagram|linkedin|tiktok|youtube|x|twitter)\.com\/[^"'?#\s]+)/gi; while ((m = re.exec(html2)) !== null) { if (!/sharer|share\?|intent\//i.test(m[1])) push(s.socials, m[1], 200); }
+  return s;
+}
+/** HTML → plain text + structure (title, description, h1s, links, contact signals). */
 function wrHtmlToText(html, baseUrl) {
   html = String(html || '');
   var get = function (re) { var m = re.exec(html); return m ? wrStr(m[1].replace(/<[^>]+>/g, ' '), 300) : ''; };
@@ -36,7 +103,9 @@ function wrHtmlToText(html, baseUrl) {
   return {
     title: title, description: description, h1s: h1s, links: links, text: body.slice(0, WR_MAX_PAGE_TEXT), length: body.length,
     signals: { whatsapp: /wa\.me|whatsapp/i.test(lower), booking: /book(ing)?|appointment|calendly|reserve/i.test(lower), form: /<form/i.test(lower), phone: /tel:/i.test(lower) || /\+65\s?\d{4}\s?\d{4}|\b[689]\d{3}\s?\d{4}\b/.test(body), email: /mailto:/i.test(lower), shop: /add to cart|checkout|shopify|woocommerce/i.test(lower), analytics: /gtag\(|googletagmanager|fbq\(|facebook\.net\/en_us\/fbevents/i.test(lower) },
-    phones: (body.match(/(?:\+65[\s-]?)?[689]\d{3}[\s-]?\d{4}\b/g) || []).slice(0, 3), emails: (body.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || []).slice(0, 3)
+    phones: (body.match(/(?:\+65[\s-]?)?[689]\d{3}[\s-]?\d{4}\b/g) || []).slice(0, 3), emails: (body.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || []).slice(0, 3),
+    images: wrImagesFromHtml(html, baseUrl), structured: wrStructured(html),
+    hours_text: (body.match(/(?:mon|tue|wed|thu|fri|sat|sun|weekdays?|weekends?|daily|public holidays?)[a-z]*[^\n]{0,40}?\d{1,2}(?:[.:]\d{2})?\s*(?:am|pm)?\s*(?:-|–|to)\s*\d{1,2}(?:[.:]\d{2})?\s*(?:am|pm)?/gi) || []).slice(0, 6)
   };
 }
 /** Up to 3 more pages worth reading (Rule 5). */
@@ -56,10 +125,12 @@ function wrFetchedPage(item, url) {
   return { url: url || wrStr(j.url, 300), ok: html.length > 0, html: html, status: j.status || j.statusCode || null };
 }
 /** Everything research found, labelled (Rule 7) and boiled down to a digest the model and the fallback can use. */
-// ---- n8n glue: read the homepage, pick up to 3 internal pages worth fetching (Rule 5) ----
+// ---- n8n glue: read the homepage, pick up to 7 internal pages worth fetching, plus up to 2 of the company's own
+// Facebook/Instagram profiles for their photos (Ryan, 2026-09-29: "search every single thing about their company") ----
 const id = $('Identify Company').first().json;
 const page = wrFetchedPage($input.first(), id.homepage_url);
 let urls = [];
-if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 5); }
+if (page.ok) { const parsed = wrHtmlToText(page.html, id.homepage_url); urls = wrPickPages(parsed.links, 7); (parsed.structured && parsed.structured.socials || []).forEach((u) => { if (id.identity.socials.indexOf(u) === -1) id.identity.socials.push(u); }); }
+if (id.identity && id.identity.confidence !== 'low') (id.identity.socials || []).filter((u) => /(facebook|instagram)[.]com[/][^/?#]+[/]?$/i.test(u)).slice(0, 2).forEach((u) => { if (urls.indexOf(u) === -1) urls.push(u); });
 if (!urls.length) return [{ json: { url: '', skip: true, homepage_ok: page.ok } }];
 return urls.map((u) => ({ json: { url: u, skip: false, homepage_ok: page.ok } }));

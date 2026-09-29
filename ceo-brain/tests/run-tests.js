@@ -574,7 +574,7 @@ test('hand-off → input, queries, identity: the customer\'s URL wins; without o
   const input = wr.wrInput(WR_HANDOFF);
   assert.strictEqual(input.website, 'https://prestigemotors.sg'); assert.strictEqual(input.website_source, 'customer_words'); assert.strictEqual(input.location, 'Singapore');
   const qs = wr.wrQueries(input).map((q) => q.key);
-  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'name_service', 'market', 'buyer_intent', 'competitors'], 'wider Google pass (Ryan, 2026-09-27)');
+  assert.deepStrictEqual(qs, ['name', 'name_location', 'reviews', 'socials', 'maps', 'socials2', 'press', 'team', 'photos', 'name_service', 'market', 'buyer_intent', 'competitors'], 'everything about the company (Ryan, 2026-09-27/29)');
   assert.strictEqual(wr.wrIdentify(input, []).confidence, 'high');
   const noUrl = wr.wrInput(Object.assign({}, WR_HANDOFF, { message: 'mock-up please' }));
   const results = wr.wrSearchItems([{ json: { query_key: 'name', results: [{ title: 'Prestige Motors Singapore | BMW', url: 'https://prestigemotors.sg/', description: 'official' }, { title: 'Prestige Motors | Facebook', url: 'https://www.facebook.com/pm' }, { title: 'Prestige Motors reviews', url: 'https://www.google.com/maps/x' }] } }]);
@@ -624,7 +624,7 @@ test('Website Intelligence code nodes run as deployed (vm simulation, model down
   const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => items(store[n]) }), $input: { first: () => input[0], all: () => input }, $execution: { id: '7' }, $workflow: { id: 'w' }, Buffer, Date, JSON, Math });
   const run = (f, input) => vm.runInNewContext('(function(){' + src(f) + '})()', mk(input));
   store['Plan Research'] = run('plan-research.js', items([WR_HANDOFF])).map((i) => i.json);
-  assert.strictEqual(store['Plan Research'].length, 9, 'wider Google pass (Ryan, 2026-09-27)');
+  assert.strictEqual(store['Plan Research'].length, 13, 'everything about the company (Ryan, 2026-09-27/29)');
   store['Identify Company'] = run('identify-company.js', items(store['Plan Research'].map(() => ({ results: [{ title: 'Prestige Motors BMW', url: 'https://prestigemotors.sg/', description: 'x' }] })))).map((i) => i.json);
   assert.strictEqual(store['Identify Company'][0].identity.confidence, 'high'); assert.strictEqual(store['Identify Company'][0].homepage_url, 'https://prestigemotors.sg');
   store['Fetch Homepage'] = [{ html: WR_HTML, status: 200 }];
@@ -1259,10 +1259,116 @@ test('the doctrine is in the vault verbatim and in the live design standard the 
   ['Scroll down progresses the story; scroll up reverses it.', 'Never create an exploded', 'Do not approve until reverse-scroll is deterministic.', 'FEED THIS TO EVERY WEBSITE AGENT'].forEach((t) => { assert.ok(note.includes(t), t); assert.ok(std.includes(t), 'standard: ' + t); });
   assert.ok(fs.existsSync(path.join(__dirname, '../../zaphiel/vault/_sources/FusionTech_Full_Master_Cinematic_Website_Agent_2026.pdf')));
 });
-test('the build worker: Higgsfield directs the film with matching start/end frames, Kling is the backup, and the check covers reverse scroll', () => {
+test('the build worker: the film is made on Kling directly with matching first/tail frames, Higgsfield is the backup, and the check covers reverse scroll', () => {
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/Higgsfield Director/.test(routine) && /start_image/.test(routine) && /end_image/.test(routine) && /media_import_url/.test(routine) && /sound `off`/.test(routine));
-  assert.ok(/make it with Kling `image_to_video`/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
+  assert.ok(/made on Kling directly/.test(routine) && /`first_image`/.test(routine) && /`tail_image`/.test(routine) && /`enable_audio` false/.test(routine) && /`prefer_multi_shots` false/.test(routine), 'Kling direct (Ryan, 2026-09-29)');
+  assert.ok(/make it on\s+Higgsfield/.test(routine) && /non-Kling/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
+});
+console.log('\n[26] Luxury retail at the S$10,000 standard (Ryan, 2026-09-29: "any retail luxury 10,000 website")');
+test('watches, jewellery, electronics, furniture, fashion and luxury goods are luxury retail; others are not', () => {
+  [['We are a luxury watch boutique in Orchard', 'watch'], ['rolex dealer', 'watch'], ['fine jewellery atelier, engagement rings', 'jewellery'], ['premium headphones and hi-fi store', 'electronics'], ['designer furniture showroom, sofas and dining tables', 'furniture'], ['handbags and leather goods label', 'fashion'], ['luxury fragrance house', 'luxury']].forEach(([t, k]) => {
+    assert.strictEqual(wb.wbDetectCategory(t), 'retail', t); assert.strictEqual(wb.wbLuxuryKind(t), k, t);
+  });
+  [['BMW car dealership', 'automotive'], ['dental clinic', 'healthcare'], ['I am an interior designer', 'property'], ['coffee shop cafe', 'food_beverage'], ['tuition centre', 'education']].forEach(([t, c]) => assert.strictEqual(wb.wbDetectCategory(t), c, t));
+});
+test('a luxury brief: luxury design, the maison sitemap, three art directions, the kind\'s doctrine module, quiet selling, illustrative labels', () => {
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'build me a website for my luxury watch boutique' } });
+  const names = r.brief.pages.map((p) => p.name);
+  ['Collections', 'Product Detail', 'Craftsmanship', 'Book a Private Viewing', 'Boutique & Contact', 'Servicing & Warranty'].forEach((n) => assert.ok(names.includes(n), n + ': ' + names.join(', ')));
+  assert.ok(/quiet luxury/.test(r.brief.design_direction.brand_personality));
+  const p = r.build_prompt;
+  assert.ok(/Watch \(doctrine 8\)/.test(p) && /NO exploded view/.test(p) && /A\) Noir Atelier/.test(p) && /B\) Salon Ivory/.test(p) && /C\) Graphite Precision/.test(p), p.slice(-3000));
+  assert.ok(/private viewing/.test(p) && /no discount strips, countdown timers/.test(p) && /Price on request/.test(p) && /Illustrative/.test(p) && /docs\/qa-report\.md/.test(p) && /BLOCKER \/ HIGH \/ MEDIUM \/ POLISH/.test(p));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT && !/guarantee|\$\s?\d/i.test(p), String(p.length));
+});
+test('the shot package (Higgsfield Director role, made on Kling): every doctrine field on every chapter, matching end frames, luxury posters without brand marks', () => {
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Maison Lumiere', industry: 'fine jewellery atelier', message: 'website for my jewellery atelier' } });
+  assert.strictEqual(r.film_brief.mode, 'luxury_chapters'); assert.strictEqual(r.film_brief.scenes.length, 3); assert.strictEqual(r.image_shots.length, 3);
+  const fields = ['camera', 'lens', 'framing', 'lighting', 'grade', 'movement', 'speed', 'start_frame', 'end_frame', 'continuity', 'duration_s', 'aspect_ratio', 'safe_text_zone', 'mobile_crop', 'negative'];
+  r.film_brief.scenes.forEach((sc, i) => fields.forEach((f) => assert.ok(sc.shot && sc.shot[f], 'scene ' + i + ' ' + f)));
+  assert.ok(/chapter 2 poster/.test(r.film_brief.scenes[0].shot.end_frame) && /no brand marks/.test(r.image_shots[0].prompt) && /caustic/.test(r.image_shots[0].prompt));
+  const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Plumbing', industry: 'plumber', message: 'need a website' } });
+  plain.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.negative && sc.shot.end_frame));
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/`shot` package,\s+every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
+});
+console.log('\n[27] Real photos first; research everything about the company (Ryan, 2026-09-29)');
+{
+  const HTML = '<html><head><title>Heure Atelier | Luxury Watches</title><meta property="og:image" content="https://heure.sg/media/boutique-hero.jpg">' +
+    '<script type="application/ld+json">{"@context":"https://schema.org","@type":"JewelryStore","name":"Heure Atelier","telephone":"+65 6123 4567","email":"hello@heure.sg","address":{"streetAddress":"391 Orchard Road #02-10","addressLocality":"Singapore","postalCode":"238872"},"openingHours":"Mo-Sa 11:00-20:00","sameAs":["https://www.instagram.com/heureatelier","https://www.facebook.com/heureatelier"],"logo":"https://heure.sg/media/logo.png","aggregateRating":{"ratingValue":"4.9","reviewCount":"212"}}</script></head>' +
+    '<body><h1>Timepieces, kept for generations</h1><img src="/media/watch-macro.jpg" alt="Tourbillon macro"><img src="/media/icon-arrow.svg"><img srcset="/media/salon-800.jpg 800w, /media/salon-1600.jpg 1600w" alt="Private salon">' +
+    '<img src="/media/tiny.jpg" width="40"><div style="background-image:url(\'/media/wrist.jpg\')"></div><a href="tel:+6561234567">Call</a><a href="https://wa.me/6591234567">WhatsApp</a><p>Monday to Saturday 11am - 8pm</p></body></html>';
+  test('every photo and structured fact on the company\'s own page is collected; icons, tiny images and svgs are not', () => {
+    const ims = wrE.wrImagesFromHtml(HTML, 'https://heure.sg/');
+    const urls = ims.map((i) => i.url);
+    ['https://heure.sg/media/boutique-hero.jpg', 'https://heure.sg/media/watch-macro.jpg', 'https://heure.sg/media/salon-1600.jpg', 'https://heure.sg/media/wrist.jpg'].forEach((u) => assert.ok(urls.includes(u), u + ' in ' + urls.join(', ')));
+    assert.ok(!urls.some((u) => /icon-arrow|tiny\.jpg|salon-800/.test(u)), urls.join(', '));
+    assert.ok(ims.some((i) => i.kind === 'logo' && /logo\.png/.test(i.url)));
+    const st = wrE.wrStructured(HTML);
+    assert.ok(st.addresses[0].includes('391 Orchard Road') && st.hours.includes('Mo-Sa 11:00-20:00') && st.phones.includes('+65 6123 4567') && st.phones.includes('6591234567') && st.emails.includes('hello@heure.sg') && st.socials.length === 2 && /4\.9 from 212/.test(st.rating), JSON.stringify(st));
+  });
+  test('the digest lists the real photos and facts as verified; the brief picks them (never invented URLs, never for an unconfirmed business)', () => {
+    const input = wrE.wrInput({ tenant_id: 'fusiontech', lead_id: 'l_h', contact_name: 'Ryan', company_name: 'Heure Atelier', industry: 'luxury watch boutique', phone: '+6587587170', channel: 'whatsapp', message: 'my site is heure.sg, make a better one', conversation_json: '[]', extracted_json: '{}', test_mode: false });
+    const identity = wrE.wrIdentify(input, []);
+    const d = wrE.wrDigest({ input, identity, results: [], pages: [{ url: 'https://heure.sg/', ok: true, html: HTML }] });
+    assert.ok(d.site.images.length >= 4 && /heure\.sg\/media\/logo\.png/.test(d.site.logo));
+    assert.ok(/REAL PHOTOS FOUND/.test(d.digest_text) && /boutique-hero\.jpg/.test(d.digest_text) && d.facts.some((f) => /Address: 391 Orchard Road/.test(f.fact) && /VERIFIED/.test(f.label)) && d.facts.some((f) => /Opening hours/.test(f.fact)));
+    const fin = wrE.wrFinalize({ raw_text: JSON.stringify({ company_name: 'Heure Atelier', enough_to_build: 'yes', real_photos: ['https://heure.sg/media/watch-macro.jpg | hero | macro', 'https://stock.example.com/fake.jpg | section'], questions_for_john: ['Can you send photos of the boutique?'] }), input, digest: d });
+    assert.deepStrictEqual(fin.brief.real_photos, ['https://heure.sg/media/watch-macro.jpg | hero | macro'], 'only URLs research found');
+    assert.deepStrictEqual(fin.questions_for_john, [], 'never asks for photos it found');
+    const fb = wrE.wrFinalize({ error: 'x', input, digest: d });
+    assert.ok(fb.brief.real_photos[0].startsWith('https://heure.sg/media/boutique-hero.jpg | hero'), fb.brief.real_photos[0]);
+    const low = Object.assign({}, d, { identity: Object.assign({}, d.identity, { confidence: 'low' }) });
+    assert.deepStrictEqual(wrE.wrFinalize({ error: 'x', input, digest: low }).brief.real_photos, [], 'no photos from an unconfirmed business');
+  });
+  test('the builder uses the real photos first: posters come from them, only the rest is generated, and the Lovable prompt lists them', () => {
+    const research = JSON.stringify({ identity: { confidence: 'high' }, brief: { primary_cta: 'Book a private viewing', real_photos: ['https://heure.sg/media/boutique-hero.jpg | hero', 'https://heure.sg/media/watch-macro.jpg | section | Tourbillon macro', 'https://heure.sg/media/logo.png | logo'] } });
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website for my watch boutique', research_json: research } });
+    assert.strictEqual(r.image_shots[0].real_url, 'https://heure.sg/media/boutique-hero.jpg'); assert.strictEqual(r.image_shots[1].real_url, 'https://heure.sg/media/watch-macro.jpg');
+    assert.ok(!r.image_shots[2].real_url, 'the detail shot is generated (no third real photo)');
+    assert.ok(/REAL PHOTOS of this business/.test(r.build_prompt) && r.build_prompt.includes('https://heure.sg/media/watch-macro.jpg') && /never labelled/.test(r.build_prompt));
+    const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: photoreal beating heart with coronary arteries', real_photos: ['https://heart.sg/clinic.jpg | hero'] } });
+    const m = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heart Clinic', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: med } });
+    assert.ok(!m.image_shots[0].real_url && m.image_shots[1].real_url === 'https://heart.sg/clinic.jpg', 'the anatomy film keeps the clinic hero');
+    const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+    assert.ok(/`real_url`/.test(routine) && /do NOT generate it/.test(routine) && /the customer's own photo/.test(routine));
+  });
+}
+console.log('\n[28] One clean test: John never repeats or asks about the look; every build uses the master prompt (Ryan, 2026-09-29)');
+test('John drops a repeated question and any look/style question; statements stay; ATLAS skips near-duplicates', () => {
+  const w = require('../agents/website-builder/intake.js');
+  const hist = [{ role: 'customer', content: 'I run a dental clinic' }, { role: 'agent', content: 'Noted. Do most of your new patients currently reach you by calling, WhatsApp, or walking in?' }];
+  const out = w.wbCleanQuestions('Thank you, Ryan, the team is on it. Do most new patients reach you by calling, WhatsApp or walking in? What style or colours would you like for the website?', hist);
+  assert.strictEqual(out, 'Thank you, Ryan, the team is on it.', out);
+  assert.strictEqual(w.wbCleanQuestions('Great. How many staff handle bookings today?', hist), 'Great. How many staff handle bookings today?', 'a new question stays');
+  assert.ok(w.WB_LOOK_Q.test('How should the website look?') && w.WB_LOOK_Q.test('Do you have brand colours you want?') && !w.WB_LOOK_Q.test('Which treatments do you offer most?'));
+  const at = require('../agents/atlas/atlas.js');
+  assert.strictEqual(at.atNextQuestion(['How do patients usually reach you today, by calling, WhatsApp or walking in?', 'Which software do you use for appointments?'], hist), 'Which software do you use for appointments?');
+  const glue = fs.readFileSync(path.join(__dirname, '../workflows/lead-intake/dist/code-nodes/finalize-and-validate-result.js'), 'utf8');
+  assert.ok(glue.indexOf('wbCleanQuestions(r.recommended_reply, histAll)') !== -1 && glue.indexOf('wbCleanQuestions(r.recommended_reply, histAll)') < glue.indexOf('const johnAiReply = r.recommended_reply;'));
+  const prompt = fs.readFileSync(path.join(__dirname, '../prompts/sales-qualification.system.md'), 'utf8');
+  assert.ok(/NEVER ask how the website should look/.test(prompt) && /Ask at most ONE question/.test(prompt));
+});
+test('every build prompt is the master prompt: steps 1-10 in order, with the industry story, shots, assets and QA', () => {
+  [['Smile Plus Dental Surgery', 'dental clinic'], ['Heure Atelier', 'luxury watch boutique'], ['Skyline Realty', 'real estate agency'], ['Prestige Motors', 'BMW car dealership'], ['Tan Plumbing', 'plumber']].forEach(([c, m]) => {
+    const p = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: 'build me a website for my ' + m } }).build_prompt;
+    const at = ['1 INTELLIGENCE', '2 CREATIVE', '3 STORY', '4 ANIMATION', '5 ENGINE', '6 ASSETS', '7 HIGGSFIELD', '8 LOVABLE', '9 CONVERSION', '10 QA'].map((k) => p.indexOf(k));
+    assert.ok(at.every((x, i) => x > 0 && (i === 0 || x > at[i - 1])), c + ': ' + at.join(','));
+    assert.ok(p.includes(wb.WB_MAX_PROMPT > p.length ? 'MASTER ORCHESTRATOR' : '??') && p.length <= wb.WB_MAX_PROMPT, c);
+  });
+  const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Hero and section visuals: photoreal jaw and teeth anatomy', real_photos: [] } });
+  const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json: med } });
+  assert.ok(/educational anatomy/.test(r.film_brief.scenes[0].section) && /100mm macro/.test(r.film_brief.scenes[0].shot.lens) && /no gore/.test(r.film_brief.scenes[0].shot.negative));
+  const prop = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website' } });
+  prop.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.lens && sc.shot.negative, 'property shot'));
+});
+console.log('\n[29] Two builders: clinics on Lovable, everything else by Claude on Higgsfield (Ryan, 2026-09-29)');
+test('the build worker routes medical to Lovable and every other business to Claude on Higgsfield\'s scroll-scrub engine, with the film on Kling', () => {
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/f0\. Choose the builder: `brief\.mode` `medical`/.test(routine) && /Every other business → Claude on Higgsfield, step F/.test(routine));
+  assert.ok(/`template` `scroll-scrub`/.test(routine) && /do NOT publish to the\s+community feed/.test(routine) && /website-builder-flow/.test(routine) && /scroll-scrub-video\.sh/.test(routine));
+  assert.ok(/made on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
+  assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && /higgsfield\.app/.test(routine));
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

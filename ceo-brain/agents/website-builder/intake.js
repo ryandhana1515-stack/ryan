@@ -167,9 +167,45 @@ function wbInfoReplyDue(history) {
   return false;
 }
 
+// John never repeats a question and never asks how the website should look (Ryan, 2026-09-29: "make sure John doesn't
+// repeat questions … and no like how [it looks] questions"). A question sentence in John's reply is dropped when it
+// asks about look, style, colours or design (our team designs it; property rooms are Website Intelligence's), or when
+// an earlier agent message already asked nearly the same thing.
+var WB_LOOK_Q = /\b(look and feel|how (should|would|do) (it|the (web)?site|your (web)?site) look|what (style|look|colou?rs?|theme|design)|which (style|colou?rs?|theme|design)|design (style|preference)|colou?r (scheme|palette|preference)|brand colou?rs?|websites? (you|that you) (like|admire)|any (reference|example) (sites?|websites?)|preferred (style|look|design))\b/i;
+var WB_STOP = ['the', 'a', 'an', 'and', 'or', 'to', 'of', 'for', 'in', 'on', 'at', 'is', 'are', 'do', 'does', 'did', 'you', 'your', 'we', 'our', 'us', 'it', 'its', 'this', 'that', 'with', 'what', 'which', 'how', 'who', 'when', 'where', 'can', 'could', 'would', 'will', 'any', 'have', 'has', 'be', 'me', 'my', 'i', 'so', 'if', 'as', 'by', 'from', 'about', 'there', 'currently', 'usually', 'roughly', 'tell', 'let', 'know', 'while', 'wait', 'also', 'just', 'like', 'mind', 'may', 'ask'];
+function wbQWords(t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 2 && WB_STOP.indexOf(w) === -1; }); }
+function wbSimilar(a, b) {
+  var A = wbQWords(a), B = wbQWords(b); if (!A.length || !B.length) return 0;
+  var inter = A.filter(function (w, i) { return B.indexOf(w) !== -1 && A.indexOf(w) === i; }).length;
+  var uni = A.concat(B).filter(function (w, i, arr) { return arr.indexOf(w) === i; }).length;
+  return inter / uni;
+}
+/** The question sentences of earlier agent messages. */
+function wbAskedQuestions(history) {
+  var out = [];
+  (Array.isArray(history) ? history : []).forEach(function (m) {
+    if (!m || m.role !== 'agent') return;
+    String(m.content || '').split(/(?<=[.!?])\s+/).forEach(function (sent) { if (/\?\s*$/.test(sent)) out.push(sent); });
+  });
+  return out;
+}
+/** Drops look/style questions and repeated questions from John's reply; keeps every statement. */
+function wbCleanQuestions(reply, history) {
+  var text = String(reply || '').trim(); if (!text) return text;
+  var asked = wbAskedQuestions(history);
+  var parts = text.split(/(?<=[.!?])\s+/);
+  var kept = parts.filter(function (p) {
+    if (!/\?\s*$/.test(p)) return true;
+    if (WB_LOOK_Q.test(p)) return false;
+    return !asked.some(function (q) { return wbSimilar(p, q) >= 0.5; });
+  });
+  if (!kept.length) kept = [parts[0].replace(/\?\s*$/, '.')];
+  return kept.join(' ').trim();
+}
+
 // ---- Node module wrapper (stripped when inlined into n8n) ----
 if (typeof module !== 'undefined') {
   var _b = require('./brief.js');
   wbDetectMode = _b.wbDetectMode; wbDetectCategory = _b.wbDetectCategory; wbGuessBusinessName = _b.wbGuessBusinessName; wbDetectSiteType = _b.wbDetectSiteType; wbDetectGoal = _b.wbDetectGoal;
-  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, WI_INFO_THANKS: WI_INFO_THANKS, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, WI_HOLD_MARK: WI_HOLD_MARK, wbInfoReplyDue: wbInfoReplyDue, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
+  module.exports = { WI_VERSION: WI_VERSION, WI_STARTED_MARK: WI_STARTED_MARK, WI_INFO_THANKS: WI_INFO_THANKS, wbIntake: wbIntake, wbIntakeInProgress: wbIntakeInProgress, wbBuildAlreadyStarted: wbBuildAlreadyStarted, WI_HOLD_MARK: WI_HOLD_MARK, wbInfoReplyDue: wbInfoReplyDue, WB_LOOK_Q: WB_LOOK_Q, wbSimilar: wbSimilar, wbAskedQuestions: wbAskedQuestions, wbCleanQuestions: wbCleanQuestions, wiCustomerText: wiCustomerText, wiAsksForBuild: wiAsksForBuild, wiAcceptedOffer: wiAcceptedOffer, WI_OFFER: WI_OFFER };
 }
