@@ -317,3 +317,7 @@ tags: [zaphiel, changelog]
 - 2026-09-29 — **Film on Kling directly** (Ryan). Routine e2 rewritten (Kling `image_to_video` with first/tail frames,
   `enable_audio` false, `prefer_multi_shots` false; Higgsfield `flux_3_video`/`minimax_h3_max` as backup); the
   builder and research prompts name Kling as the film maker. Tests 120/120.
+- 2026-09-29 — **Claude builder path** (routine): f0 routes medical → Lovable (f-g2), others → step F (Higgsfield
+  `website-builder-flow` + `scroll-scrub` template, design brief from the master prompt, Kling film cropped and
+  encoded with `scroll-scrub-video.sh`, real photos first, GLB 360 for luxury, storyboard + QA report, Phase 5
+  gate, `deploy_website`). Routine model → `claude-fable-5-1`. Tests 121/121.

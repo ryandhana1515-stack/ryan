@@ -8,6 +8,12 @@ Lovable login: Lovable only allows hosted OAuth clients it has approved, and n8n
 create projects and needs a Business plan. Ryan's Lovable and Kling accounts are connected
 to Zaphiel's environment instead, so the build step runs here.
 
+Decision (Ryan, 2026-09-29): **two builders.** Clinics and medical sites are built on **Lovable** (Ryan: "I tried
+Lovable's artery design and it's better … Claude is better for cinematic scrolling websites, 360 watches, fashion
+houses, properties"). Every other business is built by **Claude (this session, Claude Fable 5.1)** on Higgsfield's
+website platform with its tested `scroll-scrub` engine, published at `<slug>.higgsfield.app`. Kling makes the film for
+both.
+
 Decision (Ryan, 2026-09-29): **the Full Master Cinematic Website Agent 2026 governs every build** (vault:
 `Knowledge/Full Master Cinematic Website Agent 2026`, PDF in `_sources/`). The Higgsfield Director role (continuous
 chapters with matching start/end frames) is carried out on **Kling directly** (Ryan, 2026-09-29: "if you want to use
@@ -37,10 +43,9 @@ brief, a Kling scroll film and posters, a Higgsfield 3D model for product busine
 under Ryan's Full Master Cinematic Website Agent 2026 doctrine and published), then report the link back to n8n so John sends it. Nobody approves anything. Work silently;
 end with one short line per task you touched, or nothing if there was no work. The full, current version of
 these instructions is in the repo at `ceo-brain/agents/website-build-worker/ROUTINE.md`; if it differs from
-this text, the repo wins. You need the n8n, Lovable and Kling connectors (tools named
-mcp__n8n__*, mcp__Lovable__*, mcp__kling__*; load them with ToolSearch). If any of them
-is missing, stop and say which one in one line. Higgsfield (mcp__higgsfield__*) is used too; if it is missing,
-build without the 3D model and say so in `notes`.
+this text, the repo wins. You need the n8n, Lovable, Kling and Higgsfield connectors (tools named
+mcp__n8n__*, mcp__Lovable__*, mcp__kling__*, mcp__higgsfield__*; load them with ToolSearch). If any of them
+is missing, stop and say which one in one line (Lovable is needed only for clinic and medical builds).
 
 ## Where things are
 
@@ -49,7 +54,10 @@ build without the 3D model and say so in `notes`.
 - Build Record workflow `RVPBGpBzj2SUQlgX`, trigger node "Website Built Webhook" (POST
   `/webhook/ceo-brain/website-built`). Call it with `execute_workflow` (executionMode `production`,
   triggerNodeName "Website Built Webhook", `inputs.webhookData.body` = the payload below).
-- Lovable workspace "Ryan's Lovable" = `zjVuSnHzhPWFroVpa2KX`.
+- Lovable workspace "Ryan's Lovable" = `zjVuSnHzhPWFroVpa2KX` (clinic and medical builds only).
+- Higgsfield website platform (every other build): `get_workflow_instructions` `website-builder-flow`,
+  `get_workflow_bundle_file`, `create_website`, `website_repo_access`, `sandbox_exec`, `deploy_website`,
+  `list_websites`, `media_upload`. Sites go live at `https://<subdomain>.higgsfield.app`.
 - The chapter posters (photos) and the scroll film come from **Kling** directly (`who_am_i` once per session for the
   current model names and argument shapes; `text_to_image`, `image_to_video`, `query_tasks`). **Higgsfield** (tools
   `mcp__higgsfield__*`: `generate_3d`, `jobs_wait`, `media_import_url`, `generate_video`) makes the 3D model and is the
@@ -118,7 +126,40 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       technology): Higgsfield `generate_3d` from the step-e `hero` or `detail` photo that shows the product most
       clearly, then `jobs_wait` (at most ~8 minutes). Keep the GLB URL. Never for clinics (their anatomy stays the
       photoreal film). If it fails, skip it and say so in `notes`.
-   f. Lovable: `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
+   f0. Choose the builder: `brief.mode` `medical` (clinics, doctors, dental, aesthetics) → Lovable, steps f to g2.
+      Every other business → Claude on Higgsfield, step F, then step h. (After e2/e3 the film and model exist.)
+   F. Claude on Higgsfield (Ryan, 2026-09-29) — you, Claude Fable 5.1, write the website yourself:
+      F1. `get_workflow_instructions` `website-builder-flow`, then `get_workflow_bundle_file` for
+          `references/website-flow.md` and `references/scroll-scrub.md`, and follow them, with these answers already
+          given (ask nobody anything): type `website`; Animated → `template` `scroll-scrub`; do NOT publish to the
+          community feed; `subdomain` = `<business-slug>-mockup` (lowercase, hyphens, more than 4 characters; add
+          `-2` if taken). Brand: the customer's own logo and photos from the brief's REAL PHOTOS when found,
+          otherwise free rein from art direction A.
+      F2. `app/design-brief.md` is built from the task's `brief.build_prompt`: the MASTER ORCHESTRATOR steps 1-10,
+          the FULL WEBSITE and STRATEGY sections are the contract (Ryan's Full Master Cinematic Website Agent 2026).
+          Journey = the `film_brief` chapters; Journey shape `single-shot` (property: `multi-leg`, the 5 walkthrough
+          legs, architecture A). Never invent facts; placeholders stay labelled.
+      F3. The film is made on **Kling directly**, not Higgsfield (Ryan: "go to the actual Kling"), following the
+          flow's footage contract (one continuous move, subject centred on a dark seamless background, slow steady
+          motion, locked exposure, no text, logos or watermark). Single-shot: ONE Kling `image_to_video`,
+          `kling-video-v3_0`, `duration` 15, `first_image` = the hero photo (its `real_url` or the step-e photo),
+          `enable_audio` false, `prefer_multi_shots` false, prompt = the chapters' `shot` packages written as one
+          continuous move. Multi-leg (property): one Kling leg per chapter, each starting from the previous leg's
+          ACTUAL last frame (extract it in the sandbox, `file_upload` it to Kling). Download each MP4 into the
+          sandbox with curl, crop Kling's corner watermark (`ffmpeg -vf "crop=iw*0.94:ih*0.94:iw*0.03:0"`), then
+          encode desktop, mobile and posters with the flow's `scroll-scrub-video.sh`. If Kling fails twice, make the
+          film on Higgsfield as the flow describes and say so in `notes`.
+      F4. Images: download the customer's own photos (`real_url`s and the brief's REAL PHOTOS) into
+          `app/public/assets/` and use them first; generate only what they do not cover, as the flow's asset
+          system says. Luxury retail with a step-e3 GLB: a pinned REAL_TIME_3D 360 section (model-viewer or three.js,
+          rotation driven by scroll, reversible) after the film; quiet selling; label only generated products
+          "Illustrative".
+      F5. Build every page in the FULL WEBSITE section (TanStack routes), the forms, WhatsApp and booking as the
+          brief says; write `docs/storyboard.md` and `docs/qa-report.md` (BLOCKER / HIGH / MEDIUM / POLISH, fix,
+          owner); pass the flow's Phase 5 mechanical gate with no BLOCKER or HIGH open; `bun run typecheck` once;
+          `deploy_website`. `preview_url` = the live `https://<subdomain>.higgsfield.app`, `project_id` = the
+          website id, `editor_url` = "". Then step h.
+   f. Lovable (clinics and medical only): `create_project` with `workspace_id` `zjVuSnHzhPWFroVpa2KX`, `wait` false,
       `initial_message` = `brief.build_prompt` + a blank line + the poster block:
       "Film posters for this customer (each is ONLY the first frame of its film chapter, never a static section, never
       used twice; load by URL; a poster marked 'the customer\'s own photo' is real and never labelled illustrative):"
@@ -163,7 +204,7 @@ cleanly. A build in progress is never abandoned at the 55-minute mark: finish it
       … do not stop for approval or questions; finish the whole build in this turn." and poll again. Also confirm
       `list_files` has page/components files under `src/` beyond the blank template, including a page for each page in
       the FULL WEBSITE section; if pages are missing, send "Build the missing pages now, fully: <names>" once more. At most two such nudges, then report `build_failed` with the reason.
-   g1. Scroll-film check (Ryan, 2026-09-29: "no scroll effects, no nothing"): `read_file` the home route and the
+   g1. Scroll-film check (Lovable builds; Ryan, 2026-09-29: "no scroll effects, no nothing"): `read_file` the home route and the
       film component it imports (`list_files` shows them under `src/`). It passes only when: the clips are drawn
       or played under scroll control (ScrollTrigger, `useScroll` or a scroll listener) with pinning; nothing turns
       the film off on phones (no `innerWidth <` / `matchMedia("(max-width` guard around the film, no

@@ -258,3 +258,11 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   model in Higgsfield, can you go to the actual Kling?"). The film chapters are made on Ryan's Kling Pro account
   (`kling-video-v3_0`, first frame = this chapter's photo, tail frame = the next chapter's, no audio, one continuous
   shot). Higgsfield keeps the 3D product model and is the backup film maker with its non-Kling models.
+
+- 2026-09-29 — **Two website builders** (Ryan: "don't use Lovable as the website builder, use Claude Fable 5.1 … I tried
+  Lovable's artery design and it's better … Claude is better for cinematic scrolling websites, 360 watches, fashion
+  houses, properties"). Clinics and medical sites: Lovable (with the Kling anatomy film). Every other business:
+  Claude Fable 5.1 writes the site itself on Higgsfield's website platform with its tested `scroll-scrub` engine
+  (reverse scroll, phone encodes, posters), live at `<slug>-mockup.higgsfield.app`; the film is made on Kling
+  directly, the watermark cropped in the encode; the customer's real photos first. The build worker runs on
+  Claude Fable 5.1.

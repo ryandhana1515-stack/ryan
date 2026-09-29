@@ -1362,6 +1362,14 @@ test('every build prompt is the master prompt: steps 1-10 in order, with the ind
   const prop = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website' } });
   prop.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.lens && sc.shot.negative, 'property shot'));
 });
+console.log('\n[29] Two builders: clinics on Lovable, everything else by Claude on Higgsfield (Ryan, 2026-09-29)');
+test('the build worker routes medical to Lovable and every other business to Claude on Higgsfield\'s scroll-scrub engine, with the film on Kling', () => {
+  const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
+  assert.ok(/f0\. Choose the builder: `brief\.mode` `medical`/.test(routine) && /Every other business → Claude on Higgsfield, step F/.test(routine));
+  assert.ok(/`template` `scroll-scrub`/.test(routine) && /do NOT publish to the\s+community feed/.test(routine) && /website-builder-flow/.test(routine) && /scroll-scrub-video\.sh/.test(routine));
+  assert.ok(/made on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
+  assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && /higgsfield\.app/.test(routine));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
