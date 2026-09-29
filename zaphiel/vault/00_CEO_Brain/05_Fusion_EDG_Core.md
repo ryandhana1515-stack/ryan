@@ -30,7 +30,9 @@ test report and client demo script. `pnpm demo` runs the demo.
 
 ## What Ryan does (the system cannot do these itself)
 1. ~~Create the private GitHub repo `fusion-edg-core`~~ **done 2026-09-30**: the code is there and 51/51 tests pass.
-2. **Create a Supabase project for development/staging** (Pro plan, about $25/month; it includes a $10 compute credit).
+2. ~~Create a Supabase project~~ **done 2026-09-30**: `fusion-edg-dev` (Tokyo). Migrations 001–008 and FAKE data are
+   applied, RLS is verified there, and the security advisor reports 0 findings. The original wording of this step was:
+   **Create a Supabase project for development/staging** (Pro plan, about $25/month; it includes a $10 compute credit).
    Then connect Supabase to Claude, or give a database URL through the secret manager, **never in chat**.
 3. **Approve each next step:** staging deploy (L3), then production (L4, needs the QA gate), and any L5 action.
 4. **Per real client:** WhatsApp Business Platform setup, CRM/accounting connections, and a signed data-ownership and
