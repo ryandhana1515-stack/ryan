@@ -109,3 +109,7 @@ tags: [zaphiel, open-loops]
     credential and allows n8n past the Vercel login (protection bypass).
   - Optional: a CRM screen for FusionTech staff.
   - Minor: the test-form banner still says "local EDG API"; fix the wording for staging.
+- **EDG modules, 2026-09-30 (built, tested on FAKE data):** what is still needed before the first real client:
+  - Verify the live adapters on real TEST accounts: a Meta test WhatsApp number, a Xero demo company, a Google test calendar. This needs FusionTech's own Meta / Xero / Google developer apps; Ryan creates those accounts once and Zaphiel guides him.
+  - Staff web sign-in (Supabase Auth) is not built; people act through one-click email links for now.
+  - For each client: the price list, tax rate, quote validity and payment terms come from the client during onboarding.
