@@ -33,6 +33,11 @@ Website Intelligence, Website Builder = Claude Fable 5.1 (thinking on, premium p
 Gateway credits; when the credits run out every agent answers from its rule backup. Website Intelligence now plans
 the funnel, the sales strategy, the 3D parallax scroll film (Kling) and realistic medical anatomy (9 Google searches incl. socials, maps and competitors; 5 pages read); the creator builds Apple-grade sites with 5–6 scroll effects per industry (Kling film + a Higgsfield 3D product model); ATLAS asks its questions in its own name in John's chat; the builder follows that plan in
 every Lovable prompt; the Build Worker makes the anatomy video for specialist clinics.
+**Website Build Worker** (routine `trig_01K4UinSX4tQWK537MeHQuuc`, hourly at :25, Claude Fable 5.1). Its prompt clones
+this repo and follows `ceo-brain/agents/website-build-worker/ROUTINE.md`.
+- Clinics are built on Lovable.
+- Every other business is built by Claude from `ceo-brain/site-kit`, following [[Knowledge/Wow website playbook]], and
+  published on Vercel (project `fusiontech-mockups`, `<slug>-mockup.vercel.app`).
 
 ## The twelve-agent workforce
 The full roster Ryan defined and what exists today: [[Knowledge/AI Workforce — roster]]. Product

@@ -7,6 +7,7 @@
 // media.json:
 // {
 //   "films":  [{ "id": "hero", "src": "https://...mp4" | ["leg1.mp4", "leg2.mp4"], "crop": "kling", "frames": 150 }],
+//   (the kit demo marks its sample film "optional": true so an expired sample link never fails a build)
 //   "stills": [{ "src": "https://.../shopfront.jpg", "out": "assets/shopfront.jpg" }]
 // }
 // Output: public/film/<id>/{d,m}/0001.<ext>, public/film/<id>/poster.<ext>, public/film/<id>/manifest.json
@@ -115,7 +116,13 @@ async function buildFilm(film) {
 }
 
 async function main() {
-  for (const film of films) await buildFilm(film);
+  for (const film of films) {
+    try { await buildFilm(film); }
+    catch (e) {
+      if (!film.optional) throw e; // a customer's film must build, or nothing is published
+      console.warn(`[media] optional film ${film.id} skipped: ${e.message || e}`);
+    }
+  }
   for (const s of stills) {
     const out = join(root, 'public', s.out);
     mkdirSync(dirname(out), { recursive: true });

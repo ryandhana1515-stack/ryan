@@ -36,7 +36,12 @@ export class ScrollFilm {
   }
 
   async init() {
-    this.m = await loadManifest(this.id);
+    try { this.m = await loadManifest(this.id); }
+    catch (e) { // no film built: the chapters still read, over the brand background
+      this.section.classList.add('film--still');
+      this.chapters.forEach(c => { c.style.opacity = '1'; c.classList.add('is-on'); });
+      throw e;
+    }
     this.set = isPhone() ? 'm' : 'd';
     this.frames = new Array(this.m.count);
     this.resize();

@@ -4,7 +4,8 @@
       "id": "hero",
       "src": "https://v15-kling.klingai.com/bs2/upload-ylab-stunt-sgp/ac5daa12-47fe-4d7b-8e23-62531aee94c2-lHLNjChNPGbUcbe5HXwWpQ-output.mp4?x-kcdn-pid=112372",
       "crop": "kling",
-      "frames": 150
+      "frames": 150,
+      "optional": true
     }
   ],
   "stills": []

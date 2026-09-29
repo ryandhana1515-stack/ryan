@@ -281,3 +281,16 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   particles, glass cards, brand tint); a 3D model only when textured and true to the product (never for fashion or
   furniture). Found the same day: Higgsfield-hosted mock-ups open a Higgsfield sign-in page for visitors, so
   customers cannot see them yet (hosting decision asked).
+
+- 2026-09-29 — **Claude-built mock-ups are hosted on Vercel** (Ryan: "vercel and teach the website agent how to build
+  these crazy wow factor website"). This replaces Higgsfield hosting, whose links open a sign-in page.
+  - Every non-medical mock-up starts from the FusionTech site kit (`ceo-brain/site-kit`):
+    - a pinned canvas scroll film that plays backwards on scroll-up, with the film kept on phones;
+    - a motion vocabulary;
+    - a cinematic layer: grain, vignette, particles, cursor and an opening curtain.
+  - The build worker follows the **Wow website playbook** (vault `Knowledge/`).
+  - Mock-ups are deployed as files to the Vercel project `fusiontech-mockups`, with no git and no media in the
+    call. Vercel's build fetches the engine from this public repo, downloads the Kling film, crops the watermark and
+    cuts the frames.
+  - Links take the form `<slug>-mockup.vercel.app`.
+  - Clinics stay on Lovable.

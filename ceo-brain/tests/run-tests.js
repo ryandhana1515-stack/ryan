@@ -1362,13 +1362,41 @@ test('every build prompt is the master prompt: steps 1-10 in order, with the ind
   const prop = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website' } });
   prop.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.lens && sc.shot.negative, 'property shot'));
 });
-console.log('\n[29] Two builders: clinics on Lovable, everything else by Claude on Higgsfield (Ryan, 2026-09-29)');
-test('the build worker routes medical to Lovable and every other business to Claude on Higgsfield\'s scroll-scrub engine, with the film on Kling', () => {
+console.log('\n[29] Two builders: clinics on Lovable, everything else by Claude from the site kit on Vercel (Ryan, 2026-09-29)');
+test('the build worker routes medical to Lovable and every other business to Claude with the site kit on Vercel, with the film on Kling', () => {
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/f0\. Choose the builder: `brief\.mode` `medical`/.test(routine) && /Every other business → Claude on Higgsfield, step F/.test(routine));
-  assert.ok(/`template` `scroll-scrub`/.test(routine) && /do NOT publish to the\s+community feed/.test(routine) && /website-builder-flow/.test(routine) && /scroll-scrub-video\.sh/.test(routine));
+  assert.ok(/f0\. Choose the builder: `brief\.mode` `medical`/.test(routine) && /Every other business → Claude with the site kit on Vercel, step F/.test(routine));
+  assert.ok(/ceo-brain\/site-kit\/README\.md/.test(routine) && /Wow website playbook\.md/.test(routine) && /fusiontech-mockups/.test(routine) && /mcp__Vercel__create_deployment/.test(routine) && /mcp__Vercel__\*/.test(routine));
   assert.ok(/made on \*\*Kling directly\*\*/.test(routine) && /crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(routine) && /MASTER ORCHESTRATOR steps 1-10/.test(routine) && /REAL_TIME_3D 360/.test(routine));
-  assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && /higgsfield\.app/.test(routine));
+  assert.ok(/f\. Lovable \(clinics and medical only\)/.test(routine) && !/deploy_website/.test(routine) && /only after g2 or F5 gave a public/.test(routine));
+  assert.ok(/no git, no push, no `projectSettings`/.test(routine) && /deploy-plan\.mjs mockups\/<slug>/.test(routine) && /2b0/.test(routine), 'file deploys; a missing builder connector makes the task wait');
+});
+console.log('\n[29b] The site kit: a reversible scroll film, the motion vocabulary and a media step that runs on Vercel');
+test('the kit builds the film from media.json on Vercel, plays it backwards on scroll-up and never hides copy at rest', () => {
+  const kit = (f) => fs.readFileSync(path.join(__dirname, '../site-kit', f), 'utf8');
+  const pkg = JSON.parse(kit('package.json'));
+  assert.ok(pkg.devDependencies['ffmpeg-static'] && pkg.dependencies.gsap && pkg.dependencies.lenis);
+  const media = kit('scripts/media.mjs');
+  assert.ok(/crop=iw\*0\.94:ih\*0\.94:iw\*0\.03:0/.test(media) && /manifest\.json/.test(media) && /process\.exit\(1\)/.test(media), 'media step crops Kling, writes a manifest and fails loudly');
+  const film = kit('src/engine/film.js');
+  assert.ok(/scrub: true/.test(film) && /pin: true/.test(film) && /self\.progress \* \(this\.m\.count - 1\)/.test(film), 'frame follows scroll progress both ways');
+  assert.ok(!/max-width: 7\d\dpx\)'\)\.matches\) return/.test(film) && /isPhone\(\) \? 'm' : 'd'/.test(film), 'phones get smaller frames, never no film');
+  const css = kit('src/styles/engine.css');
+  assert.ok(/html\.js \.film-chapter\[data-from="0"\] \{ opacity: 1; \}/.test(css) && /prefers-reduced-motion/.test(css));
+  const motion = kit('src/engine/motion.js');
+  ['lines', 'clip', 'scrub-text', 'data-bg', 'hscroll', 'stack', 'marquee', 'data-magnetic', 'data-count', 'data-parallax'].forEach((k) => assert.ok(motion.includes(k), k));
+  const readme = kit('README.md');
+  assert.ok(/team_aaKLA8GAfgGYn4ocuu0hA7EG/.test(readme) && /deploy-plan\.mjs mockups\/<slug>/.test(readme) && /assign_alias/.test(readme) && /Never deploy a mock-up to any other Vercel project/.test(readme) && /Never pass `projectSettings`/.test(readme));
+  assert.ok(/node scripts\/kit\.mjs && node scripts\/media\.mjs && vite build/.test(pkg.scripts.build) && /raw\.githubusercontent\.com\/ryandhana1515-stack\/ryan/.test(kit('scripts/kit.mjs')), 'the engine is fetched at build time');
+  const crypto = require('crypto');
+  const manifest = JSON.parse(kit('kit-files.json'));
+  Object.keys(manifest).forEach((f) => {
+    const buf = fs.readFileSync(path.join(__dirname, '../site-kit', f));
+    assert.strictEqual(crypto.createHash('sha1').update(buf).digest('hex'), manifest[f].sha, f + ' changed: run deploy-plan.mjs --write-kit and upload it to Vercel');
+  });
+  assert.ok(/if \(!film\.optional\) throw e/.test(media), 'a customer film failure fails the build');
+  const vault = fs.readFileSync(path.join(__dirname, '../../zaphiel/vault/Knowledge/Wow website playbook.md'), 'utf8');
+  assert.ok(/One continuous transformation film/.test(vault) && /What kills the wow/.test(vault) && /Recipe per industry/.test(vault));
 });
 console.log('\n[30] Clinics get a narrated explainer film inside the site (Ryan, 2026-09-29)');
 test('a clinic brief plans a 6-scene narrated film going inside the tooth or body; the Lovable prompt holds its player; the worker makes it', () => {
