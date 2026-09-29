@@ -90,3 +90,11 @@ tags: [zaphiel, open-loops]
     the developer artist's-impression rule. Singapore Statutes Online was down; top up Firecrawl credits first.
   - Ryan: source the first 30–50 floor plans, with permission, for the Phase 0 test set.
   - Decide whether John should hand floor plans to the agent (today it runs in Claude Code only).
+- **Fusion EDG Core (2026-09-30):**
+  - Ryan: create the empty private GitHub repo `fusion-edg-core`; Zaphiel then moves `fusion-edg-core/` there with its
+    history. The connector cannot create repos.
+  - Ryan: create a Supabase dev/staging project and connect it (never paste keys in chat). Then Zaphiel runs the
+    migrations there and deploys the API to a Vercel preview (L3, needs Ryan's OK).
+  - Production scheduling for the dispatcher and follow-ups: Vercel Cron or pg_cron, not n8n (execution limits).
+  - The 8 n8n EDG templates sit inactive, pointing at a placeholder URL. Connect them to a client's API only after
+    approval.

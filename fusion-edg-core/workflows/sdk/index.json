@@ -1,0 +1,10 @@
+{
+  "edg-lead-intake": "EDG — Lead Intake (forward to EDG API)",
+  "edg-whatsapp-intake": "EDG — WhatsApp Intake (forward provider webhook)",
+  "edg-email-intake": "EDG — Email Intake (IMAP → EDG API)",
+  "edg-lead-deduplication": "EDG — Lead Deduplication check (sub-workflow)",
+  "edg-lead-assignment": "EDG — Lead Assignment (sub-workflow, round-robin)",
+  "edg-follow-up": "EDG — Follow-up runner (every 15 min)",
+  "edg-ceo-daily-brief": "EDG — CEO Daily Brief (weekdays 08:00, set workflow timezone to the client)",
+  "edg-outbox-dispatcher": "EDG — Outbox dispatcher (every minute)"
+}

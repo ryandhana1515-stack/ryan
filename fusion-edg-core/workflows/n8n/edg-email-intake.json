@@ -1,0 +1,143 @@
+{
+  "id": "edg-email-intake",
+  "name": "EDG — Email Intake (IMAP → EDG API)",
+  "nodes": [
+    {
+      "id": "7597f3a7-603c-5d58-a6e3-5cf60d44398c",
+      "name": "New Email",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "mailbox": "INBOX",
+        "postProcessAction": "nothing",
+        "format": "simple",
+        "options": {
+          "trackLastMessageId": true
+        }
+      },
+      "credentials": {}
+    },
+    {
+      "id": "20713201-cd69-5fdf-a11a-0386d332ae07",
+      "name": "EDG Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "api",
+              "name": "edg_api_url",
+              "value": "https://edg-api.example.invalid",
+              "type": "string"
+            },
+            {
+              "id": "org",
+              "name": "org",
+              "value": "acme-demo",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2774241a-ca4c-54d7-a384-d6ea8f16ab54",
+      "name": "Send Email to EDG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('EDG Config').item.json.edg_api_url }}/api/o/{{ $('EDG Config').item.json.org }}/email-intake",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Correlation-Id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: $('New Email').item.json.from, subject: $('New Email').item.json.subject, text: $('New Email').item.json.textPlain, message_id: $('New Email').item.json.metadata && $('New Email').item.json.metadata['message-id'] }) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {},
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "1edb51cc-b988-5b27-a8b0-a691bfcaff7d",
+      "name": "Fail Loudly",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        660,
+        420
+      ],
+      "parameters": {
+        "errorMessage": "EDG email intake failed after retries. The email stays unread in the mailbox; EDG dedupes by message id, so the next poll or a manual re-run is safe."
+      }
+    }
+  ],
+  "connections": {
+    "New Email": {
+      "main": [
+        [
+          {
+            "node": "EDG Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDG Config": {
+      "main": [
+        [
+          {
+            "node": "Send Email to EDG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email to EDG": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fail Loudly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "active": false
+}

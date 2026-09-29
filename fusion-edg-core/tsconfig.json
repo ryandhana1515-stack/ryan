@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@edg/core": ["./packages/core/src/index.ts"],
+      "@edg/db": ["./packages/db/src/index.ts"],
+      "@edg/events": ["./packages/events/src/index.ts"],
+      "@edg/crm": ["./packages/crm/src/index.ts"]
+    }
+  },
+  "include": ["packages/*/src", "packages/*/test", "apps/*/src", "scripts/*.ts", "vitest.config.ts"]
+}

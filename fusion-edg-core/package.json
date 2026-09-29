@@ -1,0 +1,39 @@
+{
+  "name": "fusion-edg-core",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Fusion AI EDG Core: reusable multi-tenant CRM + EDG engine built by ATLAS.",
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:unit": "vitest run packages/core packages/events/test/unit.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:local": "bash scripts/dev-db.sh",
+    "db:migrate": "tsx packages/db/src/cli.ts migrate",
+    "db:seed": "tsx packages/db/src/cli.ts seed",
+    "db:reset": "tsx packages/db/src/cli.ts reset",
+    "dev": "tsx apps/api/src/server.ts",
+    "brief": "tsx packages/crm/src/cli-brief.ts",
+    "demo": "tsx scripts/demo.ts"
+  },
+  "devDependencies": {
+    "@n8n/workflow-sdk": "0.34.0",
+    "@types/node": "26.6.3",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.2"
+  },
+  "dependencies": {
+    "@edg/core": "workspace:*",
+    "@edg/crm": "workspace:*",
+    "@edg/db": "workspace:*",
+    "@edg/events": "workspace:*",
+    "pg": "8.23.0",
+    "zod": "4.6.5"
+  }
+}

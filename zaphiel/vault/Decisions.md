@@ -332,3 +332,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   and Asia expansion"). Agent file `.claude/agents/fusion-property-sg.md` (verbatim, [[10_Agents/16_Fusion_Property_SG]]);
   knowledge in [[70_Industry_Packs/Singapore_Property/00_Index]]; product in `90_Products/Fusion_Property_AI/`. Roadmap
   rule: don't build the marketplace first. Singapore rules are never applied to another country.
+
+- 2026-09-30 — **ATLAS builds, not only designs; EDG Core first, property later** (Ryan: "Don't do property first do
+  this first", then "Build all now"). ATLAS keeps ONE agent file, with BUILD ENGINE (v2) added. Client systems are built
+  on the shared Fusion EDG Core ([[00_CEO_Brain/05_Fusion_EDG_Core]]): development only until Ryan approves staging
+  (L3) and production (L4); L5 always needs a named human approver. Code lives outside the vault; the vault keeps the
+  docs and links. n8n is the trigger layer only; business rules stay in tested code (ADR-0004).
