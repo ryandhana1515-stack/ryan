@@ -1,0 +1,18 @@
+{
+  "package.json": {
+    "sha": "63ecb2927abb9eac8ec791f488ea0df3b1b25351",
+    "size": 594
+  },
+  "vercel.json": {
+    "sha": "dad6114e8ac2c5bf3819f84015e880ddb039c5e8",
+    "size": 307
+  },
+  "vite.config.js": {
+    "sha": "a6bea7bfa9b6308e9c490b1baa25f56dc28585f7",
+    "size": 499
+  },
+  "scripts/kit.mjs": {
+    "sha": "61550eb7345c608b160a16725eba0908bab7fa9f",
+    "size": 1407
+  }
+}

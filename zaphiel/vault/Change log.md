@@ -328,3 +328,18 @@ tags: [zaphiel, changelog]
 - 2026-09-29 — **Transformation film + cinematic finish** (`brief.js` `WB_TRANSFORM` → `film_brief.transformation`;
   routine F3 one 15-second Kling first→tail transformation, F3b film grain / vignette / particles / glass cards /
   tint, no untextured 3D, e2 chapter clips for Lovable builds only). Tests 123/123.
+- 2026-09-29 — **Site kit + Vercel hosting + Wow playbook.**
+  - `ceo-brain/site-kit`:
+    - the engine: film, motion, fx and boot;
+    - `scripts/media.mjs` (Kling download, watermark crop, desktop and phone frames, poster);
+    - `scripts/kit.mjs` (the engine is fetched at build time);
+    - `scripts/deploy-plan.mjs` with `kit-files.json` (the four build files are already uploaded to Vercel);
+    - a demo tailoring page, tested on desktop and iPhone: the film scrubs forward and back, no overflow, no
+      errors.
+  - Vault note `Knowledge/Wow website playbook.md`.
+  - Routine:
+    - steps F1–F5 rewritten for the kit on Vercel;
+    - new step 2b0 (a task waits while its builder's connector is missing);
+    - the live prompt is now a short pointer that clones the public repo and follows `ROUTINE.md`, so a merge
+      updates the worker.
+  - Tests 124/124.

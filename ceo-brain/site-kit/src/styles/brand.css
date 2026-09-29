@@ -1,0 +1,55 @@
+/* Brand layer for the demo (a tailoring house). Every mock-up rewrites this file from its art
+   direction: palette, type pairing, spacing rhythm, the section looks. The engine never changes. */
+:root {
+  --bg: #0c0b0a;
+  --ink: #f2ede4;
+  --muted: rgba(242, 237, 228, 0.6);
+  --accent: #b89455;
+  --particle: 214, 184, 128;
+  --tint: rgba(10, 9, 8, 0.35);
+  --display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --text: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.eyebrow { font: 600 12px/1 var(--text); letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); }
+.display { font: 300 clamp(44px, 9vw, 132px)/0.92 var(--display); letter-spacing: -0.02em; margin: 14px 0 0; text-wrap: balance; }
+.h2 { font: 300 clamp(36px, 6vw, 84px)/1 var(--display); letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.lede { font: 400 clamp(16px, 1.6vw, 19px)/1.6 var(--text); color: var(--muted); max-width: 52ch; }
+.section { padding: clamp(96px, 16vh, 180px) var(--gutter); position: relative; }
+
+.nav { position: fixed; z-index: 40; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: calc(18px + env(safe-area-inset-top, 0px)) var(--gutter) 18px; mix-blend-mode: difference; }
+.nav a { color: #fff; text-decoration: none; font: 500 13px/1 var(--text); letter-spacing: 0.14em; text-transform: uppercase; }
+.brandmark { font: 400 22px/1 var(--display) !important; letter-spacing: 0.3em !important; }
+
+.btn { display: inline-flex; align-items: center; gap: 12px; padding: 17px 28px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 14px/1 var(--text); letter-spacing: 0.06em; text-decoration: none; }
+.btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+.curtain-brand { font: 300 clamp(36px, 7vw, 80px)/1 var(--display); letter-spacing: 0.3em; }
+.curtain-count { position: absolute; bottom: 32px; right: var(--gutter); font: 500 13px/1 var(--text); letter-spacing: 0.2em; color: var(--muted); }
+
+.manifesto p { font: 300 clamp(28px, 4.4vw, 60px)/1.18 var(--display); max-width: 22ch; margin: 0; }
+
+.cloths { padding-block: 18vh; }
+.cloth { width: min(78vw, 460px); aspect-ratio: 3 / 4; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; color: #f5efe4; position: relative; overflow: hidden; }
+.cloth::before { content: ''; position: absolute; inset: 0; opacity: .35; background: repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 2px, transparent 2px 7px), repeating-linear-gradient(-45deg, rgba(0,0,0,.18) 0 2px, transparent 2px 7px); }
+.cloth > * { position: relative; }
+.cloth h3 { font: 300 clamp(34px, 4vw, 52px)/1 var(--display); margin: 0; }
+.cloth p { margin: 0; color: rgba(245, 239, 228, .75); font: 400 15px/1.5 var(--text); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-top: 64px; }
+.stat b { display: block; font: 300 clamp(56px, 7vw, 96px)/1 var(--display); font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; }
+
+.marquee { padding-block: 40px; border-block: 1px solid var(--line); font: 300 clamp(40px, 7vw, 96px)/1 var(--display); }
+.marquee-inner span::after { content: '✦'; margin-left: 3rem; color: var(--accent); font-size: .5em; vertical-align: middle; }
+
+.process { display: grid; gap: 22px; margin-top: 56px; }
+.stack-card { padding: clamp(28px, 4vw, 56px); min-height: 52vh; display: grid; align-content: space-between; gap: 24px; }
+.stack-card h3 { font: 300 clamp(34px, 4.6vw, 64px)/1 var(--display); margin: 0; }
+.stack-card .n { font: 500 13px/1 var(--text); letter-spacing: .2em; color: var(--accent); }
+
+.book { text-align: center; display: grid; justify-items: center; gap: 18px; }
+.footer { padding: 48px var(--gutter) calc(48px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+.nav a { white-space: nowrap; }
+@media (max-width: 760px) { .brandmark { font-size: 17px !important; letter-spacing: 0.18em !important; } .nav a:not(.brandmark) { font-size: 11px; } }
