@@ -1,9 +1,9 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-09-29T15:35:25.760Z
+updated: 2026-09-29T15:37:06.118Z
 ---
-# Management view — Tue, 29 Sept, 11:35 pm SGT
+# Management view — Tue, 29 Sept, 11:37 pm SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
@@ -11,16 +11,16 @@ updated: 2026-09-29T15:35:25.760Z
 |---|---|
 | Real leads (new 24 h) | 5 (3) |
 | Pipeline | HUMAN_REVIEW 1 · QUALIFYING 3 · NEW 1 |
-| Open tasks | 42 |
-| Approvals waiting | 13 |
+| Open tasks | 44 |
+| Approvals waiting | 14 |
 | Exceptions open | 0 |
 | Website builds | building 0 · built 5 · failed 0 |
-| Agent runs 24 h | 61 (failed 0, AI fallback 0) |
+| Agent runs 24 h | 63 (failed 0, AI fallback 0) |
 | Test leads excluded | 23 |
 
-## Unresolved (27, 12 high)
+## Unresolved (28, 12 high)
 
-### Approvals waiting (13)
+### Approvals waiting (14)
 - **APPROVAL: build MEDICAL business website for Dashboard tester** · 94 h · `task_web_lead_dash_v2medtest1`
 - **APPROVAL: Ryan — ask qualifying questions** · 49 h · `task_mujy2u7k7vj21`
 - **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 48 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
@@ -34,6 +34,7 @@ updated: 2026-09-29T15:35:25.760Z
 - **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 6 h · `task_edg_lead_wa6587587170_mulklh7n`
 - **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 6 h · `task_evt_kpo8f5`
 - ATLAS checkpoint 1: confirm understanding of OrangeTee · 0 h · `task_edg_lead_wa6587587170_mumu7duk`
+- REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough · 0 h · `task_evt_lb9wyi`
 
 ### Leads needing a human (1)
 - Ryan @ Free & Easy Minimart needs a human · 31 h · `lead_mujy2p8v3o4tx_1suvdli`
