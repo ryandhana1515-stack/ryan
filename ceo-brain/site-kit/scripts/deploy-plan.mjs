@@ -30,7 +30,7 @@ function walk(dir, base = dir, out = []) {
 const sha1 = buf => createHash('sha1').update(buf).digest('hex');
 const UPLOADED = ['package.json', 'vercel.json', 'vite.config.js', 'scripts/kit.mjs'];
 const ENGINE = ['scripts/media.mjs', 'src/engine/film.js', 'src/engine/fx.js', 'src/engine/index.js',
-  'src/engine/motion.js', 'src/styles/engine.css'];
+  'src/engine/motion.js', 'src/engine/sequence.js', 'src/styles/engine.css'];
 
 const args = process.argv.slice(2);
 if (args[0] === '--write-kit') {

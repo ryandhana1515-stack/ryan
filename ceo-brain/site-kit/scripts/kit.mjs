@@ -8,7 +8,7 @@ import { dirname, join, resolve } from 'node:path';
 const REF = process.env.FUSIONTECH_KIT_REF || 'claude/setup-nano-banana-openrouter-u2JAQ';
 const BASE = `https://raw.githubusercontent.com/ryandhana1515-stack/ryan/${REF}/ceo-brain/site-kit/`;
 const ENGINE = ['scripts/media.mjs', 'src/engine/film.js', 'src/engine/fx.js', 'src/engine/index.js',
-  'src/engine/motion.js', 'src/styles/engine.css'];
+  'src/engine/motion.js', 'src/engine/sequence.js', 'src/styles/engine.css'];
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 
 for (const f of ENGINE) {
