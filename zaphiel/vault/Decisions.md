@@ -325,3 +325,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - A property agent's site pairs that film with listings, neighbourhoods, valuation and the agent profile.
   - Recipe: [[Knowledge/Wow website playbook]] "Property".
   - Ryan wants to test it through John himself, not have Zaphiel build it.
+
+- 2026-09-30 — **Fusion Property AI is a separate specialist agent** (Ryan: "This is a SEPARATE specialist agent,
+  only for property: Singapore floor-plan intelligence, 3D + photoreal interior visualisation, property websites and
+  landing pages, developer projects, listing marketing, and later my own property platform (bigger than PropertyGuru)
+  and Asia expansion"). Agent file `.claude/agents/fusion-property-sg.md` (verbatim, [[10_Agents/16_Fusion_Property_SG]]);
+  knowledge in [[70_Industry_Packs/Singapore_Property/00_Index]]; product in `90_Products/Fusion_Property_AI/`. Roadmap
+  rule: don't build the marketplace first. Singapore rules are never applied to another country.

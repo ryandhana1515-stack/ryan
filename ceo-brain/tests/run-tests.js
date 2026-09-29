@@ -1434,6 +1434,28 @@ test('a suit brand gets one continuous fabric-to-suit transformation film; the w
   assert.ok(/Make 5-7 scenes/.test(routine) && /look bible/.test(routine) && /`tail_image` =\s+the next scene's keyframe/.test(routine) && /The Claude path skips the step-e2 chapter clips/.test(routine) && /Fewer than 4 scenes made/.test(routine));
   assert.ok(/film grain/.test(routine) && /vignette/.test(routine) && /glass-style cards/.test(routine) && /untextured or grey model is never shown/.test(routine) && /Skip it for fashion and furniture/.test(routine));
 });
+console.log('\n[32] Fusion Property AI — Singapore property specialist installed (Ryan, 2026-09-30)');
+test('the agent file, the Singapore pack (with a dated register) and the product folder are in place and linked', () => {
+  const repo = path.join(__dirname, '../..');
+  const vault = path.join(repo, 'zaphiel/vault');
+  const agent = fs.readFileSync(path.join(repo, '.claude/agents/fusion-property-sg.md'), 'utf8');
+  assert.ok(/^---\nname: fusion-property-sg\n/.test(agent) && /ONE FLOOR PLAN → TEN POSSIBLE HOMES/.test(agent) && /## MUST NOT DO/.test(agent));
+  const pack = path.join(vault, '70_Industry_Packs/Singapore_Property');
+  for (const n of ['00_Index', '01_Property_Types', '02_Authority_Map', '03_Regulation_Register', '04_Renovation_Compliance_Matrix',
+    '05_Marketing_Advertising_Rules', '06_Design_Systems', '07_Geometry_Model_Schema']) assert.ok(fs.existsSync(path.join(pack, n + '.md')), n);
+  for (const n of ['Architecture', 'Roadmap', 'Data_Model', 'Test_Dataset_Plan']) assert.ok(fs.existsSync(path.join(vault, '90_Products/Fusion_Property_AI', n + '.md')), n);
+  const reg = fs.readFileSync(path.join(pack, '03_Regulation_Register.md'), 'utf8');
+  const rows = reg.split('\n').filter(l => /^\| R\d+ /.test(l));
+  assert.ok(rows.length >= 20, 'register rows: ' + rows.length);
+  for (const r of rows) {
+    assert.ok(/\| (VERIFIED|NEEDS VERIFICATION) \|$/.test(r), 'status: ' + r.slice(0, 60));
+    if (/\| VERIFIED \|$/.test(r)) assert.ok(/https:\/\/[\w.-]*(gov\.sg)\//.test(r) && /\| 2026-\d\d-\d\d \|/.test(r), 'verified rows carry an official URL and a date: ' + r.slice(0, 60));
+  }
+  const note = fs.readFileSync(path.join(vault, '10_Agents/16_Fusion_Property_SG.md'), 'utf8');
+  for (const l of ['[[cinematic-website]]', '[[10_Agents/05a_Website_Intelligence]]', '[[10_Agents/07_CRM_Architect', '[[10_Agents/03_Marketing_Growth]]',
+    '[[10_Agents/04_Creative_Studio]]', '[[10_Agents/15_Security_Governance_QA]]']) assert.ok(note.includes(l), l);
+  assert.ok(fs.existsSync(path.join(vault, 'Knowledge/cinematic-website.md')));
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
