@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { backup, createPool, DEMO, migrate, restore, schemaVersion, withTenant, type Pool } from '@edg/db';
+import { backup, createPool, DEMO, migrate, MIGRATIONS_DIR, restore, schemaVersion, withTenant, type Pool } from '@edg/db';
 import { closeDb, freshDb, HAS_DB } from './testdb';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -15,7 +15,8 @@ describe.skipIf(!HAS_DB)('B2 multi-tenant database (Row Level Security)', () => 
   afterAll(closeDb);
 
   it('applies every migration and records the schema version', async () => {
-    expect(await schemaVersion(owner)).toBe('004_rls.sql');
+    const latest = readdirSync(MIGRATIONS_DIR).filter((f) => /^\d{3}_.+\.sql$/.test(f)).sort().at(-1);
+    expect(await schemaVersion(owner)).toBe(latest);
     expect(await migrate(owner)).toEqual([]); // idempotent: nothing left to apply
   });
 

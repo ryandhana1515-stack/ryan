@@ -2,6 +2,7 @@ import type {
   AdapterKind, ApprovalRequest, ApprovalStore, AuditEntry, AuditStore, BusinessEvent, Connection, ConnectionStore, Environment, EventSink,
   IdempotencyRecord, IdempotencyStore,
 } from '@edg/core';
+import { randomUUID } from 'node:crypto';
 import { withTenant, type Client, type Pool, type TenantContext } from './client';
 
 /**
@@ -19,13 +20,15 @@ export class PgAuditStore implements AuditStore {
   private run: (orgId: string) => Runner;
   constructor(private pool: Pool, client?: Client) { this.run = runner(pool, systemTenant, client); }
   async append(e: Omit<AuditEntry, 'id' | 'createdAt'>): Promise<AuditEntry> {
+    // No RETURNING: every role may append to the audit log, only managers may read it (RLS).
+    const id = randomUUID(); const createdAt = new Date().toISOString();
     return this.run(e.organizationId)(async (c) => {
-      const r = await c.query(
-        `INSERT INTO audit_logs (organization_id, actor_type, actor_id, action, resource, previous_state, new_state, result, error, level, environment, workflow, correlation_id)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id, created_at`,
-        [e.organizationId, e.actorType, e.actorId, e.action, e.resource ?? null, json(e.previousState), json(e.newState), e.result, e.error ?? null, e.level ?? null, e.environment ?? null, e.workflow ?? null, e.correlationId],
+      await c.query(
+        `INSERT INTO audit_logs (id, organization_id, actor_type, actor_id, action, resource, previous_state, new_state, result, error, level, environment, workflow, correlation_id, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+        [id, e.organizationId, e.actorType, e.actorId, e.action, e.resource ?? null, json(e.previousState), json(e.newState), e.result, e.error ?? null, e.level ?? null, e.environment ?? null, e.workflow ?? null, e.correlationId, createdAt],
       );
-      return { ...e, id: r.rows[0].id, createdAt: r.rows[0].created_at.toISOString() };
+      return { ...e, id, createdAt };
     });
   }
   async list(orgId: string): Promise<AuditEntry[]> {
@@ -61,9 +64,11 @@ export class PgOutboxSink implements EventSink {
   private run: (orgId: string) => Runner;
   constructor(pool: Pool, client?: Client) { this.run = runner(pool, systemTenant, client); }
   async emit(e: Omit<BusinessEvent, 'id' | 'createdAt'>): Promise<BusinessEvent> {
+    // No RETURNING: writers (e.g. sales) may insert events but not read the outbox back (RLS).
+    const id = randomUUID(); const createdAt = new Date().toISOString();
     return this.run(e.organizationId)(async (c) => {
-      const r = await c.query('INSERT INTO events (organization_id, type, payload, correlation_id) VALUES ($1,$2,$3,$4) RETURNING id, created_at', [e.organizationId, e.type, json(e.payload), e.correlationId]);
-      return { ...e, id: r.rows[0].id, createdAt: r.rows[0].created_at.toISOString() };
+      await c.query('INSERT INTO events (id, organization_id, type, payload, correlation_id, created_at) VALUES ($1,$2,$3,$4,$5,$6)', [id, e.organizationId, e.type, json(e.payload), e.correlationId, createdAt]);
+      return { ...e, id, createdAt };
     });
   }
 }

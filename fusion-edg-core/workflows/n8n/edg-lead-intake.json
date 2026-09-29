@@ -1,0 +1,168 @@
+{
+  "id": "edg-lead-intake",
+  "name": "EDG — Lead Intake (forward to EDG API)",
+  "nodes": [
+    {
+      "id": "b4bfc2a3-a306-5125-adea-fcce930a16c1",
+      "name": "Receive",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edg/lead-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "d0dfb05f-906f-542f-a322-44278c460d3f"
+    },
+    {
+      "id": "5b80d3cd-fad6-5064-a427-8c75cbaae3d2",
+      "name": "EDG Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "api",
+              "name": "edg_api_url",
+              "value": "https://edg-api.example.invalid",
+              "type": "string"
+            },
+            {
+              "id": "org",
+              "name": "org",
+              "value": "acme-demo",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "27472ba3-0daa-5383-a3f0-03e4d53eceab",
+      "name": "Create Lead in EDG",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('EDG Config').item.json.edg_api_url }}/api/o/{{ $('EDG Config').item.json.org }}/leads",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Correlation-Id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Receive').item.json.body) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {},
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "e40e4ef4-22e7-517c-ac5c-28ba956f21ea",
+      "name": "Accepted",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        660,
+        200
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, lead_id: $json.lead_id, duplicate: $json.duplicate }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "adf5beb6-0de2-5e36-ac6e-4974b58f0e4e",
+      "name": "EDG Unavailable (sender retries)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        660,
+        420
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, retry: true }) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Receive": {
+      "main": [
+        [
+          {
+            "node": "EDG Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EDG Config": {
+      "main": [
+        [
+          {
+            "node": "Create Lead in EDG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Lead in EDG": {
+      "main": [
+        [
+          {
+            "node": "Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EDG Unavailable (sender retries)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "active": false
+}

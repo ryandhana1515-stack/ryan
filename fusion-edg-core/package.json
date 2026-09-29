@@ -21,6 +21,7 @@
     "demo": "tsx scripts/demo.ts"
   },
   "devDependencies": {
+    "@n8n/workflow-sdk": "0.34.0",
     "@types/node": "26.6.3",
     "@types/pg": "8.23.1",
     "tsx": "4.23.15",
@@ -28,11 +29,11 @@
     "vitest": "5.0.2"
   },
   "dependencies": {
-    "pg": "8.23.0",
-    "zod": "4.6.5",
     "@edg/core": "workspace:*",
+    "@edg/crm": "workspace:*",
     "@edg/db": "workspace:*",
     "@edg/events": "workspace:*",
-    "@edg/crm": "workspace:*"
+    "pg": "8.23.0",
+    "zod": "4.6.5"
   }
 }
