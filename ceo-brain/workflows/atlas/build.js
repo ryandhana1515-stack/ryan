@@ -16,6 +16,8 @@ const j = (v) => JSON.stringify(v);
 
 const TABLES_JSON = JSON.parse(read('database/n8n-data-tables.json'));
 const TABLES = TABLES_JSON.tables;
+const WF = TABLES_JSON.workflows || {};
+const SENDER_ID = WF.outbound_sender || 'REPLACE_ME';
 const GITHUB = TABLES_JSON.github;
 const manifest = JSON.parse(read('agents/atlas/agent.json'));
 const runtime = read('prompts/atlas.runtime.md');
@@ -99,6 +101,13 @@ return [{ json: {
 } }];
 `;
 
+const codeDemo = `${pick('agents/atlas/atlas.js', ['atStr', 'atDemoMessage'])}
+// ---- n8n glue: John sends the prospect their "Try your system" link (on the channel they used) ----
+const f = $('Finalize ATLAS').first().json;
+const b = $('Build on EDG (automatic)').first().json || {};
+return [{ json: Object.assign({ tenant_id: f.input.tenant_id, lead_id: f.input.lead_id, test_mode: f.input.test_mode, ts: new Date().toISOString() }, atDemoMessage(f.input, b)) }];
+`;
+
 const codeFiles = `// One item per checkpoint-1 file.
 const f = $('Finalize ATLAS').first().json;
 return f.files.map((x) => ({ json: { path: x.path, content: x.content, commit: 'vault: ATLAS checkpoint 1 — ' + (f.input.company_name || f.input.lead_id) } }));
@@ -122,6 +131,7 @@ const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cache
 const taskCols = [['tenant_id','string'],['task_id','string'],['lead_id','string'],['task_type','string'],['title','string'],['description','string'],['due_at','string'],['status','string'],['assigned_to','string'],['requires_approval','boolean'],['approval_reason','string'],['payload_json','string'],['created_by','string'],['ts','string']];
 const runCols = [['tenant_id','string'],['run_id','string'],['agent','string'],['agent_version','string'],['lead_id','string'],['workflow_id','string'],['execution_id','string'],['model','string'],['provider','string'],['input_ref','string'],['output_json','string'],['success','boolean'],['error','string'],['latency_ms','number'],['test_mode','boolean'],['started_at','string'],['finished_at','string']];
 const auditCols = [['tenant_id','string'],['entity_type','string'],['entity_id','string'],['action','string'],['old_value','string'],['new_value','string'],['actor','string'],['execution_id','string'],['reason','string'],['ts','string']];
+const msgCols = [['tenant_id','string'],['lead_id','string'],['message_id','string'],['direction','string'],['channel','string'],['sender','string'],['content','string'],['status','string'],['execution_id','string'],['created_by','string'],['ts','string']];
 const inputs = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']];
 const F = "$('Finalize ATLAS').first().json";
 const OWNER = { __rl: true, mode: 'name', value: GITHUB.owner };
@@ -315,6 +325,47 @@ const emailBuilt = node({
   output: [{ id: 'gmail_y' }]
 });
 
+const demoMsg = ${code('John Writes the Demo Message', codeDemo, [3980, 450], [{ send: true, channel: 'whatsapp', to: '+6590000000', text: 'Hi', message_id: 'm' }])};
+
+const demoGate = ifElse({
+  version: 2.3,
+  config: { name: 'Demo Link to Send?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'send', leftValue: expr('{{ $json.send }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [4200, 450] }
+});
+
+const D = "$('John Writes the Demo Message').first().json";
+const logDemo = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: "Log John's Demo Message",
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'insert', dataTableId: ${j(table('ceo_messages'))}, columns: { mappingMode: 'defineBelow', value: {
+      tenant_id: expr("{{ " + D + ".tenant_id }}"), lead_id: expr("{{ " + D + ".lead_id }}"), message_id: expr("{{ " + D + ".message_id }}"), direction: 'outbound', channel: expr("{{ " + D + ".channel }}"), sender: 'agent:john', content: expr("{{ " + D + ".text }}"), status: 'draft', execution_id: expr('{{ $execution.id }}'), created_by: 'agent:atlas', ts: expr("{{ " + D + ".ts }}")
+    }, schema: ${j(schemaFor(msgCols))} } },
+    position: [4420, 380]
+  },
+  output: [{ id: 1 }]
+});
+
+const sendDemo = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'John Sends the Demo Link (Outbound Sender)',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once', source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(SENDER_ID)}, cachedResultName: 'CEO Brain — Outbound Sender' },
+      workflowInputs: { mappingMode: 'defineBelow', value: {
+        tenant_id: expr("{{ " + D + ".tenant_id }}"), lead_id: expr("{{ " + D + ".lead_id }}"), message_id: expr("{{ " + D + ".message_id }}"), channel: expr("{{ " + D + ".channel }}"), to: expr("{{ " + D + ".to }}"), text: expr("{{ " + D + ".text }}"), subject: 'Your system is ready to try', test_mode: expr("{{ " + D + ".test_mode }}"), actor: 'agent:john@atlas'
+      }, matchingColumns: [], schema: ${j([['tenant_id','string'],['lead_id','string'],['message_id','string'],['channel','string'],['to','string'],['text','string'],['subject','string'],['test_mode','boolean'],['actor','string']].map(([id, type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))}, attemptToConvertTypes: false, convertFieldsToString: false },
+      options: { waitForSubWorkflow: true }
+    },
+    position: [4640, 380]
+  },
+  output: [{ sent: true }]
+});
+
 const note = sticky(${j('## CEO Brain — ATLAS (EDG & CRM Systems Architect)\nCalled by Lead Intake when John has learned that a named company needs CRM / automation / integrations (not only a website). Once per lead. Never talks to the customer.\n\nFlow: normalise the hand-off → skip if ATLAS already opened a checkpoint for this lead → Ryan\'s agent file .claude/agents/atlas.md live from GitHub + n8n runtime addendum → Claude (DESIGN mode, CHECKPOINT 1; deterministic fallback from John\'s facts when the model is unavailable) → approval task for Ryan (Approval Inbox) → run + audit → email Ryan → event edg.checkpoint_1 → the five checkpoint-1 files in 80_Clients/<slug>/edg/ (test leads under 80_Clients/_Test/).\n\nCheckpoint 2+ (architecture, build spec), BUILD and AUDIT modes run in Claude Code with the same agent file and all tools, after Ryan confirms. Source of truth: ryan/ceo-brain/workflows/atlas/build.js — do not hand-edit Code nodes.')}, [whenCalled, prepare, loadTasks, check], { color: 4 });
 
 export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Systems Architect)')
@@ -338,10 +389,12 @@ export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Syste
   .to(waitVault)
   .to(autoBuild)
   .to(emailBuilt)
+  .to(demoMsg)
+  .to(demoGate.onTrue(logDemo.to(sendDemo)))
   .add(note);
 `.replace(/OWNER_RL/g, j(OWNER)).replace(/REPO_RL/g, j(REPO)).replace(/GH_CRED/g, j(GH_CRED)).replace(/COMMITTER_P/g, j(COMMITTER));
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
 fs.writeFileSync(path.join(DIST, 'atlas.sdk.ts'), sdk);
-[['prepare-atlas-input.js', codePrepare], ['check-existing-design.js', codeCheck], ['compose-atlas-prompt.js', codeCompose], ['finalize-atlas.js', codeFinalize], ['files-to-write.js', codeFiles], ['create-or-edit.js', codePair]].forEach(([f, c]) => fs.writeFileSync(path.join(DIST, 'code-nodes', f), c));
+[['prepare-atlas-input.js', codePrepare], ['check-existing-design.js', codeCheck], ['compose-atlas-prompt.js', codeCompose], ['finalize-atlas.js', codeFinalize], ['files-to-write.js', codeFiles], ['create-or-edit.js', codePair], ['john-writes-the-demo-message.js', codeDemo]].forEach(([f, c]) => fs.writeFileSync(path.join(DIST, 'code-nodes', f), c));
 console.log('built', path.relative(ROOT, path.join(DIST, 'atlas.sdk.ts')), sdk.length, 'chars');

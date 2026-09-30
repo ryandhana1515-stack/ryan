@@ -1544,6 +1544,22 @@ test('a clinic hands every medical question to a person; a business without What
   assert.deepStrictEqual(noWa.agents, []);
   assert.deepStrictEqual(noWa.automations.map((a) => a.key), ['quiet_new_enquiry', 'morning_numbers']);
 });
+console.log('\n[35] John sends the prospect their "Try your system" link once ATLAS built it (Ryan, 2026-09-30: "he didn\'t reply me the link")');
+test('built + demo link + WhatsApp → John sends the link in plain words; nothing without a link, a build or a channel', () => {
+  const input = at.atInput({ lead_id: 'lead_wa', contact_name: 'Ryan Dhana', company_name: 'Ah Kow Plumbing', channel: 'whatsapp', phone: '+6591234567', extracted_json: '{}', conversation_json: '[]' });
+  const url = 'https://fusion-edg-core-api.vercel.app/d/' + 'a'.repeat(43);
+  const m = at.atDemoMessage(input, { status: 'built', demo_url: url });
+  assert.strictEqual(m.send, true); assert.strictEqual(m.channel, 'whatsapp'); assert.strictEqual(m.to, '+6591234567');
+  assert.ok(m.text.startsWith('Hi Ryan, ') && m.text.includes(url) && m.text.includes("Ah Kow Plumbing's system"));
+  assert.ok(/chat with your new AI assistant/.test(m.text) && /nothing is sent to real customers/.test(m.text));
+  assert.ok(!/(s?\$|sgd)\s?\d|\bfree\b|price|guarantee/i.test(m.text), 'no price, no free, no promise');
+  assert.strictEqual(at.atDemoMessage(input, { status: 'already_built', demo_url: url }).send, true);
+  assert.strictEqual(at.atDemoMessage(input, { ok: false, error: 'timeout' }).send, false);
+  assert.strictEqual(at.atDemoMessage(input, { status: 'built', demo_url: 'https://evil.example/x' }).send, false);
+  assert.strictEqual(at.atDemoMessage(Object.assign({}, input, { channel: 'web' }), { status: 'built', demo_url: url }).send, false);
+  const em = at.atDemoMessage(Object.assign({}, input, { channel: 'email', email: 'owner@example.com' }), { status: 'built', demo_url: url });
+  assert.strictEqual(em.send, true); assert.strictEqual(em.to, 'owner@example.com');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

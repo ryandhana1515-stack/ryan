@@ -136,4 +136,4 @@ tags: [zaphiel, open-loops]
   - The Sparkle build took about 44 s and Ah Kow Plumbing about 52 s; the test platform stops a request at 60 s. It fits now, but a bigger company (more workflows) could come close. Next step: run the build's checks in the background and email the result.
   - Tan Aircon was built before the AI team existed (design v1), so it has no assistant or workflows. It is never built twice. To give it the AI team: a "rebuild" option, or a new test slug.
   - AI billing (proposed 2026-09-30, waiting for Ryan's "yes"): FusionTech holds one Anthropic key for all clients and bills each client's AI usage as a separate line. Then Zaphiel builds a monthly usage report per client and a spending cap per client.
-  - After ATLAS builds a system, John does not yet send the link on WhatsApp; it goes to Ryan by email. Proposed: for Ryan's own test chats, John sends the link in the chat too.
+  - ~~John does not send the link on WhatsApp~~ Done 2026-09-30: John sends the "Try your system" page automatically.

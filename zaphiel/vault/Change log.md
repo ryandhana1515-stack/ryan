@@ -500,3 +500,15 @@ tags: [zaphiel, changelog]
     - an amount that is not on the approved price list, or "free", discount or no-charge wording, is never sent;
     - the AI rewrites the reply once, otherwise a person takes over.
   - Tests 122/122.
+
+- 2026-09-30 — **Prospects now get a simple "Try your system" page from John on WhatsApp** (Ryan: "I don't understand what to do on that app and he didn't reply me the link … people will be confused").
+  - **New page** (Fusion EDG Core PR #12). It is one phone-sized page in plain words:
+    - what ATLAS found in the business;
+    - **1** chat with your new AI assistant as if you were your own customer;
+    - **2** see that customer land in your CRM;
+    - **3** the workflows that run by themselves;
+    - what is still needed to switch it on for real.
+  - Test system only; AI replies are capped at 60 per company per hour. The link cannot open the staff app.
+  - **John sends the link automatically** after ATLAS builds, on the channel the customer used. ATLAS n8n workflow `9XQWSgTBszRc0Jxj` gained 4 steps (published version `c1eee7a5`, identical to the repo; ceo-brain tests 132/132).
+  - Ryan's email also gets a "Try it as the customer" button.
+  - Ah Kow Plumbing's link was sent to Ryan on WhatsApp through the same sender, as a one-off (the one-off workflow `yEShZhncnlbA6jnK` is archived).
