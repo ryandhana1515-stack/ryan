@@ -59,3 +59,8 @@ Demo: `80_Clients/_Test/lim-renovation-fake-demo/edg/16_edg_spec.json`.
 **Automatic build (2026-09-30, Ryan: "Yes"; Fusion EDG Core PR #6):** no button needed. The ATLAS workflow calls
 `POST /atlas/auto-build` 30 seconds after saving the design, and Ryan gets a second email with the review link. Test platform only;
 going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authentication must be "Only Preview Deployments".
+
+**Team app (2026-09-30, Fusion EDG Core PR #7):** every built system has a phone screen at `/app`. It has five tabs: Customers board, Jobs, Quotes, Today and Team.
+- Open it from the system page ("Open the app"). Team members sign in with a one-time link the owner makes in Team.
+- Customers move through the stages by themselves when a quote is sent, a job is booked or a job is done.
+- Test tools (fake data): "Test WhatsApp" and "Add example customers".

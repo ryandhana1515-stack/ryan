@@ -351,3 +351,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-09-30 — **Automatic build, no approval click** (Ryan: "Yes"). ATLAS builds each client's system on the EDG **test** platform straight after the design and emails Ryan the review link. This supersedes "ATLAS builds client systems on one approval click" for the test platform only.
   - Going live with a real client is still Ryan's decision: real prices and details, the client's WhatsApp number and his OK.
   - The same company is never built twice.
+
+- 2026-09-30 — **Build the team's screen before the WhatsApp connection** (Ryan: "go"). Order:
+  1. A working screen the client and prospects can see (test platform, fake data).
+  2. Then the real WhatsApp connection with the first client who says yes.
+  - Sign-in uses one-time links until proper logins (Supabase Auth) are built.
+  - Test tools work only on the test system, and never while real providers are switched on.

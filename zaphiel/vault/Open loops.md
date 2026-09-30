@@ -118,7 +118,7 @@ tags: [zaphiel, open-loops]
   - Going live per client: the client's real details, their WhatsApp number and Ryan's OK.
 - **Automatic build is blocked by one Vercel setting (2026-09-30).** Ryan: Vercel → project `fusion-edg-core-api` → Settings → Deployment Protection → Vercel Authentication → set it to "Only Preview Deployments" (or off) → Save. Zaphiel's own attempt was refused (403). Until then n8n cannot reach the EDG platform: the "built" email says so and gives the manual link. After the change, Zaphiel builds Tan Aircon.
 - **Still to build before the first paying client (proposed 2026-09-30):**
-  - A staff login and CRM screen (Supabase Auth).
+  - ~~A staff login and CRM screen~~ Done 2026-09-30 (team app, one-time sign-in links). Still to do: proper logins (Supabase Auth) instead of links.
   - Real email sending (for quotes, invoices and reminders).
   - A scheduler (Vercel Cron) for reminders, follow-ups and the 8am report.
   - A production environment that is separate from test.
