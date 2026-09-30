@@ -1,0 +1,270 @@
+{
+  "schema": "edg.spec.v2",
+  "generated_by": "atlas-n8n-1.0.0",
+  "generated_at": "2026-09-30T17:35:33.637Z",
+  "company": {
+    "name": "Sparkle Home Cleaning Pte Ltd",
+    "slug": "test-sparkle-home-cleaning",
+    "industry": "Home cleaning services",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": true,
+    "invoices": true,
+    "appointments": true,
+    "accounting": "unknown",
+    "calendar": "unknown",
+    "ceo_brief": true
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 1
+    },
+    {
+      "key": "contacted",
+      "name": "Contacted",
+      "sla_hours": 24
+    },
+    {
+      "key": "quotation",
+      "name": "Quotation sent",
+      "sla_hours": 72
+    },
+    {
+      "key": "job_booked",
+      "name": "Job booked",
+      "sla_hours": 72
+    },
+    {
+      "key": "job_done",
+      "name": "Job done",
+      "sla_hours": 168
+    }
+  ],
+  "team": {
+    "sales": 5,
+    "managers": 1,
+    "support": 0,
+    "label": "Cleaner"
+  },
+  "services": [
+    {
+      "name": "Service visit",
+      "duration_minutes": 90,
+      "buffer_minutes": 30,
+      "location": "At the customer's home"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "start": "09:00",
+    "end": "18:00"
+  },
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "to_confirm": [
+    "Staff names, roles and emails (who gets new leads)",
+    "Working hours (placeholder Mon–Fri 09:00–18:00)",
+    "Services customers book and how long each takes",
+    "Price list: every product/service and its price (the AI only quotes approved prices)",
+    "GST registration and rate (needed before any quote or invoice)",
+    "Payment terms (days) and how long a quote stays valid",
+    "Which accounting software they use (e.g. Xero)",
+    "Their WhatsApp Business number and Meta business verification (for the live system)"
+  ],
+  "why": {
+    "appointments": "CLIENT-PROVIDED: mentioned bookings/visits",
+    "quotes": "CLIENT-PROVIDED: mentioned quotations",
+    "team": "CLIENT-PROVIDED: \"5 cleaners\""
+  },
+  "source": {
+    "lead_id": "lead_fake_sparkle",
+    "design_path": "zaphiel/vault/80_Clients/_Test/sparkle-home-cleaning/edg/",
+    "test_mode": true
+  },
+  "problems": [
+    {
+      "problem": "Appointments are missed",
+      "solution": "Bookings in one calendar per person, and every customer gets a reminder a day before"
+    },
+    {
+      "problem": "Customers are forgotten and lost",
+      "solution": "Every enquiry gets an owner, a next step and a reminder; nothing waits without someone responsible"
+    },
+    {
+      "problem": "Quotations take time and are not followed up",
+      "solution": "Quotations from the price list in one tap, and an automatic follow-up when the customer goes quiet"
+    },
+    {
+      "problem": "Everything is written by hand in different places",
+      "solution": "One system for customers, jobs, quotations and invoices"
+    },
+    {
+      "problem": "Replying to every WhatsApp message takes the owner's time",
+      "solution": "The AI assistant answers in seconds, day and night, and books the job"
+    },
+    {
+      "problem": "Invoices and payments are tracked by hand",
+      "solution": "Invoices from accepted quotations, and payments tracked until paid"
+    },
+    {
+      "problem": "The owner cannot see what is happening",
+      "solution": "A morning report with the numbers that matter"
+    }
+  ],
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Sparkle Home Cleaning Assistant",
+      "purpose": "Answer customers on WhatsApp day and night: understand the problem (what is wrong, how many units, the address), offer free service visits and book them, and prepare quotations from the price list.",
+      "persona": "warm, short and professional, like a helpful front-desk person; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "find_free_times",
+        "book_job",
+        "prepare_quote",
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "complaints about a past job",
+        "warranty or refund questions"
+      ],
+      "rules": [
+        "Put the customer's address and job details in the booking notes.",
+        "Ask one question at a time."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "quote_follow_up",
+      "name": "Follow up quotations",
+      "trigger": {
+        "event": "quote.sent",
+        "after_hours": 48
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "quote_still_open"
+      ],
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "Politely check whether the customer has questions about quotation {quote_number}; offer to book the job. No pressure, no new prices.",
+          "fallback_text": "Hi {first_name}, just checking if you have any questions about quotation {quote_number} from {business}?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "Quotation {quote_number} has had no answer for 2 days. The AI assistant followed up."
+        }
+      ]
+    },
+    {
+      "key": "thank_after_job",
+      "name": "Thank the customer after the job",
+      "trigger": {
+        "event": "appointment.completed",
+        "after_hours": 2
+      },
+      "actions": [
+        {
+          "do": "message_customer",
+          "text": "Hi {first_name}, thank you for choosing {business} today. If anything is not right, just reply here."
+        }
+      ]
+    },
+    {
+      "key": "no_show_rebook",
+      "name": "Rebook customers who missed their appointment",
+      "trigger": {
+        "event": "appointment.no_show",
+        "after_hours": 1
+      },
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "The customer missed their {service} today. Kindly offer to book a new time.",
+          "fallback_text": "Hi {first_name}, we missed you today. Would you like to book a new time?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "{first_name} missed their {service}. The AI assistant offered a new time."
+        }
+      ]
+    },
+    {
+      "key": "overdue_invoice_owner",
+      "name": "Tell the owner about overdue invoices",
+      "trigger": {
+        "event": "invoice.overdue",
+        "after_hours": 0
+      },
+      "actions": [
+        {
+          "do": "notify_owner",
+          "text": "Invoice {invoice_number} is overdue. A reminder draft is ready for you to send."
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    }
+  ],
+  "knowledge": [
+    {
+      "title": "What does Sparkle Home Cleaning do?",
+      "body": "Home cleaning services (in the owner's words; approve or correct before the AI uses it)",
+      "category": "faq"
+    }
+  ]
+}
