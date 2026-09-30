@@ -490,3 +490,13 @@ tags: [zaphiel, changelog]
     - a build that was cut off finishes its checks on the next run.
   - Now about 44 s. Tests 121/121.
   - The temporary n8n test workflow `fbfGt6dS62t1ZnIw` is archived.
+
+- 2026-09-30 — **Ryan tested ATLAS on WhatsApp (FAKE company "Ah Kow Plumbing"). It worked end to end.**
+  - Ryan wrote to John as a plumbing owner. John answered and asked ATLAS's first question. In the background ATLAS designed the system and the test platform built it in about 52 s.
+  - Result: 7 working, 5 waiting for the client's details. Ryan got the "ATLAS built Ah Kow Plumbing" email with the link.
+  - **Found a real problem:** the AI assistant offered "a free plumbing service visit" even though there is no price list.
+  - Fixed in Fusion EDG Core PR #11:
+    - every AI reply is checked before it is sent;
+    - an amount that is not on the approved price list, or "free", discount or no-charge wording, is never sent;
+    - the AI rewrites the reply once, otherwise a person takes over.
+  - Tests 122/122.
