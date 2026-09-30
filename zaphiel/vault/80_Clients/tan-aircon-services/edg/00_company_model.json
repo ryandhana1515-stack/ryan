@@ -1,0 +1,159 @@
+{
+  "company_name": {
+    "value": "Tan Aircon Services Pte Ltd",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_name": {
+    "value": "Ryan",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_phone": {
+    "value": "+6587587170",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "preferred_channel": {
+    "value": "WhatsApp",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Aircon servicing and repair",
+    "label": "CLIENT-PROVIDED"
+  },
+  "location": {
+    "value": "Singapore",
+    "label": "CLIENT-PROVIDED"
+  },
+  "customer_type": {
+    "value": "Homes (residential)",
+    "label": "CLIENT-PROVIDED"
+  },
+  "company_size_employees": {
+    "value": 3,
+    "label": "CLIENT-PROVIDED"
+  },
+  "roles_present": {
+    "value": [
+      "Owner/Decision-maker (Ryan)",
+      "3 technicians"
+    ],
+    "label": "INFERENCE"
+  },
+  "decision_maker": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "products_services": {
+    "value": [
+      "Aircon servicing",
+      "Aircon repair"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "lead_sources": {
+    "value": [
+      "WhatsApp"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_tools": {
+    "value": [
+      "WhatsApp",
+      "Excel",
+      "Notebook"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_whatsapp": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "whatsapp_setup_type": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "uses_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "accounting_or_erp_tools": {
+    "value": [],
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_booking_process": {
+    "value": "Customer WhatsApps to book a service; details are written into a notebook and Excel.",
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_follow_up_process": {
+    "value": "Follow-ups on quotations are handled manually and often forgotten.",
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_problems": {
+    "value": [
+      "Technicians sometimes miss appointments",
+      "Quotation follow-ups are often forgotten",
+      "Lost customers as a result",
+      "Booking info scattered across notebook and Excel"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_automation": {
+    "value": [
+      "WhatsApp enquiry capture",
+      "Automatic bookings with reminders",
+      "Follow-up automation",
+      "Quotations",
+      "Invoices",
+      "Payment tracking",
+      "Daily CEO report"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_outcome": {
+    "value": "One connected system so no booking is missed, no customer is forgotten, and Ryan can see everything happening in the business daily.",
+    "label": "CLIENT-PROVIDED"
+  },
+  "users_needed": {
+    "value": 3,
+    "label": "CLIENT-PROVIDED"
+  },
+  "quotation_invoice_process_today": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "payment_methods_used": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "appointment_scheduling_tool_today": {
+    "value": "None — notebook/Excel only",
+    "label": "INFERENCE"
+  },
+  "number_of_technicians": {
+    "value": 3,
+    "label": "CLIENT-PROVIDED"
+  },
+  "technician_scheduling_method": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "service_area_coverage": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "recurring_vs_onetime_service": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": null,
+    "label": "UNKNOWN"
+  }
+}
