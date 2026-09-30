@@ -116,3 +116,9 @@ tags: [zaphiel, open-loops]
 - **ATLAS builds (2026-09-30).** Built and working on the test system. Still open:
   - Scheduled jobs on the test system (follow-up reminders, appointment reminders, daily report) run only when called; production gets a scheduler (Vercel Cron / pg_cron, ADR-0004).
   - Going live per client: the client's real details, their WhatsApp number and Ryan's OK.
+- **Automatic build is blocked by one Vercel setting (2026-09-30).** Ryan: Vercel → project `fusion-edg-core-api` → Settings → Deployment Protection → Vercel Authentication → set it to "Only Preview Deployments" (or off) → Save. Zaphiel's own attempt was refused (403). Until then n8n cannot reach the EDG platform: the "built" email says so and gives the manual link. After the change, Zaphiel builds Tan Aircon.
+- **Still to build before the first paying client (proposed 2026-09-30):**
+  - A staff login and CRM screen (Supabase Auth).
+  - Real email sending (for quotes, invoices and reminders).
+  - A scheduler (Vercel Cron) for reminders, follow-ups and the 8am report.
+  - A production environment that is separate from test.

@@ -1,7 +1,7 @@
 {
   "schema": "edg.spec.v1",
   "generated_by": "atlas-n8n-1.0.0",
-  "generated_at": "2026-09-30T13:52:17.128Z",
+  "generated_at": "2026-09-30T14:43:20.360Z",
   "company": {
     "name": "Tan Aircon Services Pte Ltd",
     "slug": "tan-aircon-services",
@@ -32,32 +32,33 @@
       "sla_hours": 24
     },
     {
-      "key": "qualified",
-      "name": "Qualified",
+      "key": "quotation",
+      "name": "Quotation sent",
       "sla_hours": 72
     },
     {
-      "key": "proposal",
-      "name": "Proposal sent",
-      "sla_hours": 120
+      "key": "job_booked",
+      "name": "Job booked",
+      "sla_hours": 72
     },
     {
-      "key": "negotiation",
-      "name": "Negotiation",
+      "key": "job_done",
+      "name": "Job done",
       "sla_hours": 168
     }
   ],
   "team": {
-    "sales": 2,
+    "sales": 3,
     "managers": 1,
-    "support": 0
+    "support": 0,
+    "label": "Technician"
   },
   "services": [
     {
-      "name": "Consultation",
-      "duration_minutes": 60,
-      "buffer_minutes": 15,
-      "location": "To confirm"
+      "name": "Service visit",
+      "duration_minutes": 90,
+      "buffer_minutes": 30,
+      "location": "At the customer's home"
     }
   ],
   "working_hours": {
@@ -89,7 +90,7 @@
   "why": {
     "appointments": "CLIENT-PROVIDED: mentioned bookings/visits",
     "quotes": "CLIENT-PROVIDED: mentioned quotations",
-    "team": "INFERENCE: 2 placeholder salespeople until the client gives the team"
+    "team": "CLIENT-PROVIDED: \"3 technicians\""
   },
   "source": {
     "lead_id": "lead_wa6587587170_muo5thc0",

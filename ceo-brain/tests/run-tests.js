@@ -1465,7 +1465,7 @@ test('the build plan follows what the customer said: team size, quotations, book
   assert.strictEqual(s1.schema, 'edg.spec.v1');
   assert.strictEqual(s1.company.slug, 'test-lim-renovation', 'test leads never collide with a real client');
   assert.ok(/^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$/.test(s1.company.slug), 'EDG slug rule');
-  assert.deepStrictEqual(s1.team, { sales: 4, managers: 1, support: 0 });
+  assert.deepStrictEqual(s1.team, { sales: 4, managers: 1, support: 0, label: 'Sales' });
   assert.strictEqual(s1.modules.quotes, true); assert.strictEqual(s1.modules.invoices, true); assert.strictEqual(s1.modules.accounting, 'xero');
   assert.ok(s1.pipeline.some((p) => p.name === 'Site visit'), 'renovation pipeline');
   assert.deepStrictEqual(s1.catalog, [], 'no products or prices invented');
@@ -1478,13 +1478,36 @@ test('the build plan follows what the customer said: team size, quotations, book
   assert.strictEqual(clinic.team.sales, 2, 'placeholder team when the size is not given');
   for (const p of s1.pipeline.concat(clinic.pipeline)) assert.ok(/^[a-z0-9_]{2,40}$/.test(p.key) && p.sla_hours >= 1, 'EDG pipeline rule');
 });
-test('the email links to the Approve & build page on the EDG test system (the vault path, never the spec itself)', () => {
+test('the email says ATLAS is building now and keeps the manual build page as a fallback (the vault path, never the spec itself)', () => {
   const input = at.atInput({ lead_id: 'l3', company_name: 'ABC Property', test_mode: true });
   const fin = at.atFinalize({ error: 'x', input });
   assert.strictEqual(fin.build_url, 'https://fusion-edg-core-api.vercel.app/atlas/build?path=zaphiel%2Fvault%2F80_Clients%2F_Test%2Fabc-property%2Fedg%2F16_edg_spec.json');
-  assert.ok(/approve & build/i.test(fin.email_subject));
+  assert.ok(/building now/i.test(fin.email_subject) && !/approve/i.test(fin.email_subject), 'no approval click (Ryan, 2026-09-30)');
+  assert.strictEqual(at.atAutoBuildUrl(), 'https://fusion-edg-core-api.vercel.app/atlas/auto-build');
   const spec = JSON.parse(fin.files.find((f) => f.path.endsWith('16_edg_spec.json')).content);
   assert.strictEqual(spec.source.design_path, input.base_path);
+});
+test('service businesses (aircon, plumbing, cleaning): technicians, service visits and a job pipeline (Tan Aircon test)', () => {
+  const s = at.atEdgSpec(at.atInput({ lead_id: 'l4', company_name: 'Tan Aircon Services Pte Ltd', industry: 'Aircon servicing and repair', test_mode: false,
+    message: 'We have 3 technicians. Customers WhatsApp us for quotations and to book servicing.', extracted_json: JSON.stringify({ uses_whatsapp: true }), conversation_json: '[]' }));
+  assert.deepStrictEqual(s.team, { sales: 3, managers: 1, support: 0, label: 'Technician' });
+  assert.strictEqual(s.services[0].name, 'Service visit'); assert.strictEqual(s.services[0].location, "At the customer's home");
+  assert.deepStrictEqual(s.pipeline.map((p) => p.key), ['new', 'contacted', 'quotation', 'job_booked', 'job_done']);
+  assert.strictEqual(s.modules.quotes, true); assert.strictEqual(s.modules.appointments, true); assert.strictEqual(s.modules.whatsapp, true);
+  assert.ok(/^[A-Za-z][A-Za-z ]{1,30}$/.test(s.team.label), 'EDG team.label rule');
+  const plumber = at.atEdgSpec(at.atInput({ lead_id: 'l5', company_name: 'Ah Seng Plumbing', test_mode: true, message: 'need bookings', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(plumber.team.label, 'Technician', 'services default to technicians'); assert.strictEqual(plumber.team.sales, 2);
+  assert.ok(/^CLIENT-PROVIDED/.test(s.why.appointments) && /^CLIENT-PROVIDED/.test(s.why.team), 'what the customer said is labelled as such');
+  const cleaner = at.atEdgSpec(at.atInput({ lead_id: 'l6', company_name: 'Sparkle Cleaning', test_mode: true, message: 'we need a CRM', extracted_json: '{}', conversation_json: '[]' }));
+  assert.ok(cleaner.modules.appointments && /^INFERENCE/.test(cleaner.why.appointments), 'a guess is labelled INFERENCE');
+});
+test('ATLAS builds automatically: wait for the vault → POST /atlas/auto-build (retries, never stops the run) → email Ryan the review link', () => {
+  const sdk = fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/atlas.sdk.ts'), 'utf8');
+  for (const n of ['Wait for the Vault', 'Build on EDG (automatic)', 'Email Ryan: Built']) assert.ok(sdk.includes("name: '" + n + "'") || sdk.includes('name: "' + n + '"'), n);
+  assert.ok(sdk.includes('https://fusion-edg-core-api.vercel.app/atlas/auto-build'));
+  assert.ok(/\.to\(waitVault\)\s*\.to\(autoBuild\)\s*\.to\(emailBuilt\)/.test(sdk), 'wired after the vault files');
+  assert.ok(/retryOnFail: true/.test(sdk) && /16_edg_spec\.json/.test(sdk));
+  assert.ok(!/atlas\/auto-build\?/.test(sdk), 'the spec is never put in a link');
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

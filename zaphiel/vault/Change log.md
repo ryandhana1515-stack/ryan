@@ -431,3 +431,10 @@ tags: [zaphiel, changelog]
   - Nothing about prices, tax or staff is invented; the page lists what the client must still provide.
   - Code: Fusion EDG Core PR #5 (91/91 tests; migration 012 on Supabase, 0 advisor findings). The ATLAS n8n workflow was updated from the repo and published (127/127 tests).
   - A FAKE demo plan (Lim Renovation) sits in `80_Clients/_Test/lim-renovation-fake-demo/edg/` so the button can be tried at once.
+
+- 2026-09-30 — **ATLAS builds automatically, with no button** (Ryan: "Yes … I want to actually make Atlas work").
+  - After ATLAS saves its design, the n8n workflow waits 30 seconds, then asks the EDG test platform to build the client's system (`POST /atlas/auto-build`). Ryan gets a second email, "ATLAS built <company>: check it", with the review link.
+  - If the build cannot run, that email says why and keeps the old "see the plan and build" link as a backup.
+  - Service businesses (aircon, plumbing, cleaning, pest control, repairs) now get technicians instead of salespeople, a "Service visit" booking (90 min + 30 min travel) and the pipeline New enquiry → Contacted → Quotation sent → Job booked → Job done.
+  - The Tan Aircon plan was re-made with this logic: 3 technicians, service visits, quotations, invoices and bookings.
+  - Code: Fusion EDG Core PR #6 (92/92 tests). ATLAS workflow `9XQWSgTBszRc0Jxj` was updated from the repo and published (version `2eec5462`; 129/129 tests; the deployed code is identical to the repo).

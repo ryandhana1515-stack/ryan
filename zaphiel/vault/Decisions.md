@@ -347,3 +347,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-09-30 — **ATLAS builds client systems on one approval click** (Ryan: "Atlas must be able to build CRM and EDG … do all to make atlas actually working"). Builds happen on the EDG test system only.
   - Going live with a real client stays a separate step for Ryan (the client's real prices and details plus his OK).
   - Tax rate, prices and staff always come from the client.
+
+- 2026-09-30 — **Automatic build, no approval click** (Ryan: "Yes"). ATLAS builds each client's system on the EDG **test** platform straight after the design and emails Ryan the review link. This supersedes "ATLAS builds client systems on one approval click" for the test platform only.
+  - Going live with a real client is still Ryan's decision: real prices and details, the client's WhatsApp number and his OK.
+  - The same company is never built twice.
