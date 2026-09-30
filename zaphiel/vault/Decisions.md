@@ -343,3 +343,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - An AI never invents a price (it uses the approved price list only).
   - Approving or sending a quote, issuing an invoice, WON/LOST and "completed / no-show" are human decisions, made with one click from an email link.
   - An AI never records payments.
+
+- 2026-09-30 — **ATLAS builds client systems on one approval click** (Ryan: "Atlas must be able to build CRM and EDG … do all to make atlas actually working"). Builds happen on the EDG test system only.
+  - Going live with a real client stays a separate step for Ryan (the client's real prices and details plus his OK).
+  - Tax rate, prices and staff always come from the client.

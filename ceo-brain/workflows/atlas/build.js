@@ -83,10 +83,12 @@ const fin = atFinalize({ raw_text: rawText, error, input });
 const now = new Date().toISOString();
 const esc = (s) => String(s === undefined || s === null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const repoBase = 'https://github.com/${GITHUB.owner}/${GITHUB.repo}/tree/HEAD/' + input.base_path.split('/').map(encodeURIComponent).join('/');
-const email_html = '<h2>ATLAS checkpoint 1 — ' + esc(input.company_name) + '</h2>'
+const email_html = '<h2>ATLAS design — ' + esc(input.company_name) + '</h2>'
   + '<p>' + esc(fin.pack.summary_for_ryan) + '</p>'
+  + '<p style="margin:20px 0"><a href="' + esc(fin.build_url) + '" style="background:#0b5cad;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">Approve &amp; build this system</a></p>'
+  + '<p style="color:#555">The button opens a page that shows exactly what ATLAS will build (sales pipeline, team, bookings, quotes, automations). Nothing is built until you press <b>Approve &amp; build</b> there. It is built on the TEST system with test providers: no real customer is messaged. Afterwards you get a page to check it and send a test enquiry. (You must be signed in to Vercel.)</p>'
   + '<p><b>Questions for John to ask:</b></p><ol>' + fin.pack.questions_open.map((q) => '<li>' + esc(q) + '</li>').join('') + '</ol>'
-  + '<p>Files in your vault: <code>' + esc(input.base_path.replace(/^zaphiel\\/vault\\//, '')) + '</code> (<a href="' + repoBase + '">open on GitHub</a>). Confirm the understanding in the Approval Inbox, then ask Zaphiel to continue ATLAS to checkpoint 2 (architecture).</p>'
+  + '<p>Files in your vault: <code>' + esc(input.base_path.replace(/^zaphiel\\/vault\\//, '')) + '</code> (<a href="' + repoBase + '">open on GitHub</a>). The build plan ATLAS used is <code>16_edg_spec.json</code> in the same folder.</p>'
   + '<p style="color:#888">' + esc(fin.provider) + (fin.fallback_used ? ' (fallback: ' + esc(fin.fallback_reason) + ')' : '') + ' · agent file: ' + esc(pre.agent_file_source) + ' · lead ' + esc(input.lead_id) + (input.test_mode ? ' · TEST' : '') + '</p>';
 return [{ json: {
   input, pack: fin.pack, files: fin.files, provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason,

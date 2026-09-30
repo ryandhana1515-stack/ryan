@@ -711,8 +711,8 @@ test('atFinalize fallback: 5 labelled checkpoint-1 files, test leads under _Test
   const input = at.atInput({ lead_id: 'lead_1', company_name: 'Tan Brothers Construction Pte Ltd', test_mode: true, extracted_json: JSON.stringify({ problem: 'quotations get lost in Excel', current_tools: ['Spreadsheets'], lead_sources: ['whatsapp'], desired_automation: ['quote_generation'] }) });
   assert.strictEqual(input.base_path, 'zaphiel/vault/80_Clients/_Test/tan-brothers-construction/edg/');
   const fin = at.atFinalize({ error: 'Payment required', input });
-  assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.files.length, 5);
-  assert.deepStrictEqual(fin.files.map((f) => f.path.split('/').pop()), ['00_company_model.json', '01_current_state.md', '02_problem_map.md', '14_report_to_john.md', '15_questions_open.md']);
+  assert.strictEqual(fin.provider, 'rules'); assert.strictEqual(fin.files.length, 6);
+  assert.deepStrictEqual(fin.files.map((f) => f.path.split('/').pop()), ['00_company_model.json', '01_current_state.md', '02_problem_map.md', '14_report_to_john.md', '15_questions_open.md', '16_edg_spec.json']);
   const model = JSON.parse(fin.files[0].content);
   assert.strictEqual(model.problems.stated_problem.label, 'CLIENT-PROVIDED'); assert.strictEqual(model.acquisition.monthly_lead_volume.label, 'UNKNOWN');
   assert.ok(!/"VERIFIED"/.test(fin.files[0].content), 'nothing can be VERIFIED without checking');
@@ -744,11 +744,12 @@ test('ATLAS code nodes run as deployed (vm): prepare → check → compose (agen
   assert.strictEqual(store['Compose ATLAS Prompt'][0].agent_file_source, 'github');
   assert.ok(/^# ATLAS — EDG & CRM SYSTEMS ARCHITECT/.test(store['Compose ATLAS Prompt'][0].system_prompt) && /CHECKPOINT 1/.test(store['Compose ATLAS Prompt'][0].system_prompt));
   store['Finalize ATLAS'] = run('finalize-atlas.js', items([{ error: { message: 'Payment required' } }]));
-  assert.strictEqual(store['Finalize ATLAS'][0].files.length, 5); assert.ok(/ATLAS checkpoint 1/.test(store['Finalize ATLAS'][0].email_html));
+  assert.strictEqual(store['Finalize ATLAS'][0].files.length, 6); assert.ok(/ATLAS design/.test(store['Finalize ATLAS'][0].email_html));
+  assert.ok(store['Finalize ATLAS'][0].email_html.includes('https://fusion-edg-core-api.vercel.app/atlas/build?path=zaphiel%2Fvault%2F80_Clients%2F_Test%2Fabc-property%2Fedg%2F16_edg_spec.json'), 'Approve & build button');
   store['Files to Write'] = run('files-to-write.js', items([{}]));
-  assert.strictEqual(store['Files to Write'].length, 5);
-  const modes = run('create-or-edit.js', items([{ sha: 'abc' }, { error: 'Not Found' }, {}, {}, {}])).map((x) => x.mode);
-  assert.deepStrictEqual(modes, ['edit', 'create', 'create', 'create', 'create']);
+  assert.strictEqual(store['Files to Write'].length, 6);
+  const modes = run('create-or-edit.js', items([{ sha: 'abc' }, { error: 'Not Found' }, {}, {}, {}, {}])).map((x) => x.mode);
+  assert.deepStrictEqual(modes, ['edit', 'create', 'create', 'create', 'create', 'create']);
 });
 
 
@@ -1455,6 +1456,35 @@ test('the agent file, the Singapore pack (with a dated register) and the product
   for (const l of ['[[cinematic-website]]', '[[10_Agents/05a_Website_Intelligence]]', '[[10_Agents/07_CRM_Architect', '[[10_Agents/03_Marketing_Growth]]',
     '[[10_Agents/04_Creative_Studio]]', '[[10_Agents/15_Security_Governance_QA]]']) assert.ok(note.includes(l), l);
   assert.ok(fs.existsSync(path.join(vault, 'Knowledge/cinematic-website.md')));
+});
+console.log('\n[33] ATLAS builds: edg_spec.json + Approve & build (Ryan, 2026-09-30: "Atlas must be able to build CRM and EDG")');
+test('the build plan follows what the customer said: team size, quotations, bookings, accounting; nothing about prices or tax is invented', () => {
+  const reno = at.atInput({ lead_id: 'l1', company_name: 'Lim Renovation Pte Ltd', test_mode: true, notify_email: 'owner@example.com', message: 'we need a CRM, our quotations get lost',
+    extracted_json: JSON.stringify({ problem: 'we track leads in Excel and my 4 sales guys forget follow-ups', current_tools: ['Excel'], accounting_or_erp: ['Xero'] }), conversation_json: '[]' });
+  const s1 = at.atEdgSpec(reno);
+  assert.strictEqual(s1.schema, 'edg.spec.v1');
+  assert.strictEqual(s1.company.slug, 'test-lim-renovation', 'test leads never collide with a real client');
+  assert.ok(/^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$/.test(s1.company.slug), 'EDG slug rule');
+  assert.deepStrictEqual(s1.team, { sales: 4, managers: 1, support: 0 });
+  assert.strictEqual(s1.modules.quotes, true); assert.strictEqual(s1.modules.invoices, true); assert.strictEqual(s1.modules.accounting, 'xero');
+  assert.ok(s1.pipeline.some((p) => p.name === 'Site visit'), 'renovation pipeline');
+  assert.deepStrictEqual(s1.catalog, [], 'no products or prices invented');
+  assert.ok(s1.to_confirm.some((t) => /Price list/.test(t)) && s1.to_confirm.some((t) => /GST/.test(t)) && s1.to_confirm.some((t) => /Staff names/.test(t)));
+  assert.ok(!/\b\d+(\.\d+)?\s*%|\$\s?\d/.test(JSON.stringify(s1)), 'no percentages or money in the spec');
+  assert.deepStrictEqual(s1.reviewer, { name: 'Ryan', email: 'owner@example.com' });
+  const clinic = at.atEdgSpec(at.atInput({ lead_id: 'l2', company_name: 'Smile Dental Clinic', test_mode: false, message: 'patients keep missing appointments', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(clinic.company.slug, 'smile-dental-clinic');
+  assert.strictEqual(clinic.modules.appointments, true); assert.strictEqual(clinic.services[0].name, 'Consultation'); assert.strictEqual(clinic.modules.quotes, false);
+  assert.strictEqual(clinic.team.sales, 2, 'placeholder team when the size is not given');
+  for (const p of s1.pipeline.concat(clinic.pipeline)) assert.ok(/^[a-z0-9_]{2,40}$/.test(p.key) && p.sla_hours >= 1, 'EDG pipeline rule');
+});
+test('the email links to the Approve & build page on the EDG test system (the vault path, never the spec itself)', () => {
+  const input = at.atInput({ lead_id: 'l3', company_name: 'ABC Property', test_mode: true });
+  const fin = at.atFinalize({ error: 'x', input });
+  assert.strictEqual(fin.build_url, 'https://fusion-edg-core-api.vercel.app/atlas/build?path=zaphiel%2Fvault%2F80_Clients%2F_Test%2Fabc-property%2Fedg%2F16_edg_spec.json');
+  assert.ok(/approve & build/i.test(fin.email_subject));
+  const spec = JSON.parse(fin.files.find((f) => f.path.endsWith('16_edg_spec.json')).content);
+  assert.strictEqual(spec.source.design_path, input.base_path);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

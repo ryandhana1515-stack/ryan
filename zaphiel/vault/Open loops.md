@@ -113,3 +113,6 @@ tags: [zaphiel, open-loops]
   - Verify the live adapters on real TEST accounts: a Meta test WhatsApp number, a Xero demo company, a Google test calendar. This needs FusionTech's own Meta / Xero / Google developer apps; Ryan creates those accounts once and Zaphiel guides him.
   - Staff web sign-in (Supabase Auth) is not built; people act through one-click email links for now.
   - For each client: the price list, tax rate, quote validity and payment terms come from the client during onboarding.
+- **ATLAS builds (2026-09-30).** Built and working on the test system. Still open:
+  - Scheduled jobs on the test system (follow-up reminders, appointment reminders, daily report) run only when called; production gets a scheduler (Vercel Cron / pg_cron, ADR-0004).
+  - Going live per client: the client's real details, their WhatsApp number and Ryan's OK.

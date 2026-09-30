@@ -50,3 +50,8 @@ Quotations → invoices → payments · appointment booking · client WhatsApp n
 one-click approval links. They are listed for ATLAS in `.claude/agents/atlas.md` → **B19 EDG MODULE CATALOG**; the
 details are in `fusion-edg-core/docs/modules.md`. 82/82 tests pass on FAKE data. The live WhatsApp, Xero and Google
 connections are written from each provider's documentation but NEED VERIFICATION on real test accounts.
+
+## ATLAS Approve & build (2026-09-30, Fusion EDG Core PR #5)
+ATLAS design → `16_edg_spec.json` → Ryan's email button → `/atlas/build` shows the plan → **Approve & build** → the
+client's own system is built on the test system in one step, self-tested with a fake enquiry, and shown on a review page.
+Demo: `80_Clients/_Test/lim-renovation-fake-demo/edg/16_edg_spec.json`.

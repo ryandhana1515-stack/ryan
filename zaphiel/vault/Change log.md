@@ -423,3 +423,11 @@ tags: [zaphiel, changelog]
   - Accounting. The client connects Xero with one link; invoices go to Xero and payments come back.
   - ATLAS's agent file gained section **B19 EDG MODULE CATALOG** (added only; nothing removed), so every design now uses these parts.
   - 82/82 tests pass. The staging database (Supabase `fusion-edg-dev`) got the 3 new table sets; its fingerprint matches the tested copy, and the security advisor reports 0 findings. All data is FAKE.
+
+- 2026-09-30 — **ATLAS now BUILDS the CRM/EDG system, not only designs it** (Ryan: "do all to make atlas actually working").
+  - ATLAS writes a build plan (`16_edg_spec.json`) next to its design. Ryan's email has an **Approve & build** button.
+  - One click (with Vercel sign-in) builds the client's own system on the EDG test system: pipeline, team (placeholders), bookings, quotes and invoices, automations and the owner's daily numbers.
+  - A self-test then runs a fake enquiry through it, and Ryan gets a review page with a "send a test enquiry" form.
+  - Nothing about prices, tax or staff is invented; the page lists what the client must still provide.
+  - Code: Fusion EDG Core PR #5 (91/91 tests; migration 012 on Supabase, 0 advisor findings). The ATLAS n8n workflow was updated from the repo and published (127/127 tests).
+  - A FAKE demo plan (Lim Renovation) sits in `80_Clients/_Test/lim-renovation-fake-demo/edg/` so the button can be tried at once.
