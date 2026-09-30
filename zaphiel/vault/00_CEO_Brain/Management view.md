@@ -1,9 +1,9 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-09-30T07:07:02.117Z
+updated: 2026-09-30T08:07:02.050Z
 ---
-# Management view — Wed, 30 Sept, 03:07 pm SGT
+# Management view — Wed, 30 Sept, 04:07 pm SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
@@ -21,41 +21,41 @@ updated: 2026-09-30T07:07:02.117Z
 ## Unresolved (32, 15 high)
 
 ### Approvals waiting (14)
-- **APPROVAL: build MEDICAL business website for Dashboard tester** · 110 h · `task_web_lead_dash_v2medtest1`
-- **APPROVAL: Ryan — ask qualifying questions** · 64 h · `task_mujy2u7k7vj21`
-- **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 64 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
-- **REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n** · 64 h · `task_evt_3lrywe`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 61 h · `task_muk537y1951na`
-- **APPROVAL: Ryan @ Free & Easy Minimart — ask qualifying questions** · 47 h · `task_mukzgvq238yoy`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 47 h · `task_mukzhqlw45yfy`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 47 h · `task_mukziu5g8qfxy`
-- **ATLAS checkpoint 1: confirm understanding of Smile Plus Dental Surgery** · 37 h · `task_edg_lead_wa6587587170_mukzk1yq`
-- **REVIEW: website info needed — Research brief ready for Smile Plus Dental Surgery (high identity) — questions for John: Which treatments should be feat** · 37 h · `task_evt_kgtsqk`
-- **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 22 h · `task_edg_lead_wa6587587170_mulklh7n`
-- **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 22 h · `task_evt_kpo8f5`
-- **ATLAS checkpoint 1: confirm understanding of OrangeTee** · 16 h · `task_edg_lead_wa6587587170_mumu7duk`
-- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 15 h · `task_evt_lb9wyi`
+- **APPROVAL: build MEDICAL business website for Dashboard tester** · 111 h · `task_web_lead_dash_v2medtest1`
+- **APPROVAL: Ryan — ask qualifying questions** · 65 h · `task_mujy2u7k7vj21`
+- **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 65 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
+- **REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n** · 65 h · `task_evt_3lrywe`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 62 h · `task_muk537y1951na`
+- **APPROVAL: Ryan @ Free & Easy Minimart — ask qualifying questions** · 48 h · `task_mukzgvq238yoy`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 48 h · `task_mukzhqlw45yfy`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 48 h · `task_mukziu5g8qfxy`
+- **ATLAS checkpoint 1: confirm understanding of Smile Plus Dental Surgery** · 38 h · `task_edg_lead_wa6587587170_mukzk1yq`
+- **REVIEW: website info needed — Research brief ready for Smile Plus Dental Surgery (high identity) — questions for John: Which treatments should be feat** · 38 h · `task_evt_kgtsqk`
+- **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 23 h · `task_edg_lead_wa6587587170_mulklh7n`
+- **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 23 h · `task_evt_kpo8f5`
+- **ATLAS checkpoint 1: confirm understanding of OrangeTee** · 17 h · `task_edg_lead_wa6587587170_mumu7duk`
+- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 16 h · `task_evt_lb9wyi`
 
 ### Website builds failed (1)
-- **Build business website for Ryan @ OrangeTee** · 14 h · `task_web_lead_wa6587587170_mumu7duk`
+- **Build business website for Ryan @ OrangeTee** · 15 h · `task_web_lead_wa6587587170_mumu7duk`
 
 ### Leads needing a human (1)
-- Ryan @ Free & Easy Minimart needs a human · 47 h · `lead_mujy2p8v3o4tx_1suvdli`
+- Ryan @ Free & Easy Minimart needs a human · 48 h · `lead_mujy2p8v3o4tx_1suvdli`
 
 ### Overdue follow-ups (16)
-- Follow up: Ryan @ Free & Easy Minimart — send reply · 63 h · `task_mujz6ojo5a82r`
-- Follow up: Ryan — send reply · 21 h · `task_mumgfey34s0or`
-- Follow up: Ryan @ Edit Suits Co. Singapore — send reply · 20 h · `task_mumhyd3n103qr`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujy8dd72eiep`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujy9wj66qkde`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyhlaf3isrc`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyjysj7jjer`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyq0h97jcd1`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyqx4a4h4vw`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyrw1q335vl`
-- Follow up: Ryan — ask qualifying questions · 16 h · `task_mujyuei44djvz`
-- Follow up: Ryan @ Free & Easy Minimart — ask qualifying questions · 16 h · `task_mujz16cvoj71`
-- Follow up: Ryan @ Free & Easy Minimart — send reply · 16 h · `task_mujz67pg9jwhy`
-- Follow up: Ryan @ OrangeTee — send reply · 14 h · `task_mumucjvo5z9vq`
-- Follow up: Ryan @ OrangeTee — send reply · 14 h · `task_mumvnxwjfzkm`
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 64 h · `task_mujz6ojo5a82r`
+- Follow up: Ryan — send reply · 22 h · `task_mumgfey34s0or`
+- Follow up: Ryan @ Edit Suits Co. Singapore — send reply · 21 h · `task_mumhyd3n103qr`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujy8dd72eiep`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujy9wj66qkde`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyhlaf3isrc`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyjysj7jjer`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyq0h97jcd1`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyqx4a4h4vw`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyrw1q335vl`
+- Follow up: Ryan — ask qualifying questions · 17 h · `task_mujyuei44djvz`
+- Follow up: Ryan @ Free & Easy Minimart — ask qualifying questions · 17 h · `task_mujz16cvoj71`
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 17 h · `task_mujz67pg9jwhy`
+- Follow up: Ryan @ OrangeTee — send reply · 15 h · `task_mumucjvo5z9vq`
+- Follow up: Ryan @ OrangeTee — send reply · 15 h · `task_mumvnxwjfzkm`
 - … +1 more
