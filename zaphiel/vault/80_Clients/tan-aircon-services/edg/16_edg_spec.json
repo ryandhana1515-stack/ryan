@@ -1,7 +1,7 @@
 {
-  "schema": "edg.spec.v1",
+  "schema": "edg.spec.v2",
   "generated_by": "atlas-n8n-1.0.0",
-  "generated_at": "2026-09-30T14:43:20.360Z",
+  "generated_at": "2026-09-30T16:28:03.019Z",
   "company": {
     "name": "Tan Aircon Services Pte Ltd",
     "slug": "tan-aircon-services",
@@ -96,5 +96,175 @@
     "lead_id": "lead_wa6587587170_muo5thc0",
     "design_path": "zaphiel/vault/80_Clients/tan-aircon-services/edg/",
     "test_mode": false
-  }
+  },
+  "problems": [
+    {
+      "problem": "Appointments are missed",
+      "solution": "Bookings in one calendar per person, and every customer gets a reminder a day before"
+    },
+    {
+      "problem": "Customers are forgotten and lost",
+      "solution": "Every enquiry gets an owner, a next step and a reminder; nothing waits without someone responsible"
+    },
+    {
+      "problem": "Quotations take time and are not followed up",
+      "solution": "Quotations from the price list in one tap, and an automatic follow-up when the customer goes quiet"
+    },
+    {
+      "problem": "Everything is written by hand in different places",
+      "solution": "One system for customers, jobs, quotations and invoices"
+    },
+    {
+      "problem": "Replying to every WhatsApp message takes the owner's time",
+      "solution": "The AI assistant answers in seconds, day and night, and books the job"
+    },
+    {
+      "problem": "Invoices and payments are tracked by hand",
+      "solution": "Invoices from accepted quotations, and payments tracked until paid"
+    },
+    {
+      "problem": "The owner cannot see what is happening",
+      "solution": "A morning report with the numbers that matter"
+    }
+  ],
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Tan Aircon Services Assistant",
+      "purpose": "Answer customers on WhatsApp day and night: understand the problem (what is wrong, how many units, the address), offer free service visits and book them, and prepare quotations from the price list.",
+      "persona": "warm, short and professional, like a helpful front-desk person; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "find_free_times",
+        "book_job",
+        "prepare_quote",
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "complaints about a past job",
+        "warranty or refund questions"
+      ],
+      "rules": [
+        "Put the customer's address and job details in the booking notes.",
+        "Ask one question at a time."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "quote_follow_up",
+      "name": "Follow up quotations",
+      "trigger": {
+        "event": "quote.sent",
+        "after_hours": 48
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "quote_still_open"
+      ],
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "Politely check whether the customer has questions about quotation {quote_number}; offer to book the job. No pressure, no new prices.",
+          "fallback_text": "Hi {first_name}, just checking if you have any questions about quotation {quote_number} from {business}?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "Quotation {quote_number} has had no answer for 2 days. The AI assistant followed up."
+        }
+      ]
+    },
+    {
+      "key": "thank_after_job",
+      "name": "Thank the customer after the job",
+      "trigger": {
+        "event": "appointment.completed",
+        "after_hours": 2
+      },
+      "actions": [
+        {
+          "do": "message_customer",
+          "text": "Hi {first_name}, thank you for choosing {business} today. If anything is not right, just reply here."
+        }
+      ]
+    },
+    {
+      "key": "no_show_rebook",
+      "name": "Rebook customers who missed their appointment",
+      "trigger": {
+        "event": "appointment.no_show",
+        "after_hours": 1
+      },
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "The customer missed their {service} today. Kindly offer to book a new time.",
+          "fallback_text": "Hi {first_name}, we missed you today. Would you like to book a new time?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "{first_name} missed their {service}. The AI assistant offered a new time."
+        }
+      ]
+    },
+    {
+      "key": "overdue_invoice_owner",
+      "name": "Tell the owner about overdue invoices",
+      "trigger": {
+        "event": "invoice.overdue",
+        "after_hours": 0
+      },
+      "actions": [
+        {
+          "do": "notify_owner",
+          "text": "Invoice {invoice_number} is overdue. A reminder draft is ready for you to send."
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    }
+  ],
+  "knowledge": [
+    {
+      "title": "What does Tan Aircon Services do?",
+      "body": "Aircon servicing and repair (in the owner's words; approve or correct before the AI uses it)",
+      "category": "faq"
+    }
+  ]
 }

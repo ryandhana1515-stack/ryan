@@ -122,3 +122,13 @@ tags: [zaphiel, open-loops]
   - Real email sending (for quotes, invoices and reminders).
   - A scheduler (Vercel Cron) for reminders, follow-ups and the 8am report.
   - A production environment that is separate from test.
+- **Switch the AI team on (Ryan, 2026-09-30).** The assistants and workflows are built and tested, but the test platform shows "AI: not connected". Ryan adds two settings in Vercel (never in chat):
+  - `ANTHROPIC_API_KEY`: an Anthropic API key (console.anthropic.com → API keys).
+  - `CRON_SECRET`: any long random text.
+  - Where: Vercel → fusion-edg-core-api → Settings → Environment Variables. Then redeploy (Deployments → ⋯ → Redeploy).
+  - Zaphiel then rebuilds Tan Aircon as a test company and checks a real AI chat.
+- **Before a real client's WhatsApp (NEEDS VERIFICATION):**
+  - Move the AI reply out of the WhatsApp webhook request (Meta wants a fast answer).
+  - Confirm the daily Vercel Cron gets past Deployment Protection.
+  - WhatsApp templates for messages sent more than 24 h after the customer last wrote. FusionTech writes them; Meta approves them.
+- **Custom workflows outside the catalog** (other systems, other channels) are still built by Zaphiel by hand in n8n. Next step: ATLAS writes those n8n workflows itself.

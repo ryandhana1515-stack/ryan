@@ -450,3 +450,26 @@ tags: [zaphiel, changelog]
   - How to get in: on the system page, press **Open the app**. Test tools there: "Test WhatsApp" (fake 9000 numbers only) and "Add example customers" (7 fake customers with jobs).
   - Also fixed: test messages would have failed after the test server restarted.
   - Code: Fusion EDG Core PR #7 (106/106 tests; database change 013 applied to Supabase, 0 security findings).
+
+- 2026-09-30 — **ATLAS now designs and builds each business's AI team, not only its CRM/EDG** (Ryan: "build agents for people … it needs to know how to build AI agents, workflows, solve people problems … not only [one company]").
+  - **AI assistant** (the business's own "John"):
+    - Answers the business's customers on WhatsApp.
+    - Uses only that business's facts: services, hours, approved prices, the answers the owner approved.
+    - Finds free times, books the job, prepares quotations from the price list, and saves details and notes.
+    - Hands the customer to a person (complaints, money, medical, or when unsure) and then stays quiet.
+    - Can never approve a quote, take a payment, mark won/lost, or invent a price.
+  - **Workflows** ("when this happens, do that"), for example:
+    - call new enquiries that went quiet;
+    - follow up quotations after 2 days, with the AI writing the follow-up;
+    - thank the customer after the job;
+    - rebook customers who didn't show up;
+    - tell the owner about overdue invoices;
+    - the owner's numbers every morning at 8.
+  - **ATLAS** reads the owner's message and lists the problems in the owner's words. It then designs the assistant and the workflows together with the CRM/EDG (`16_edg_spec.json` v2). The test platform builds it all and runs a test chat with the assistant.
+  - **Tan Aircon's design** now has 7 problems, the "Tan Aircon Services Assistant" and 6 workflows.
+  - **Team app:** a new "AI team" tab showing what ATLAS found, the assistants (on/off), a test chat, the workflows in plain sentences, and the answers the AI may give (the owner approves them).
+  - **Timer:** runs every day at 08:00 Singapore time for every business.
+  - Code:
+    - Fusion EDG Core PR #8 (119/119 tests; database change 014 on Supabase, 0 security findings).
+    - ATLAS workflow `9XQWSgTBszRc0Jxj` published as version `051d0507` (131/131 tests; the deployed code is identical to the repo).
+    - `.claude/agents/atlas.md` gained section B20 (added only).
