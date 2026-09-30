@@ -443,5 +443,23 @@ function atOneQuestion(reply, question) {
   if (!kept.length) kept = parts.slice(0, 1).map(function (p) { return p.replace(/\?\s*$/, '.'); });
   return kept.join(' ').trim() + ' ' + AT_VOICE + question;
 }
+/** John's WhatsApp/email message once the system is built (Ryan, 2026-09-30: "he didn't reply me the link … people will be
+ *  confused"). The link opens the prospect's "Try your system" page (their AI assistant, their CRM, what runs by itself).
+ *  Sent only for a built system with a demo link, on the channel the customer used; no price, no promise. */
+function atDemoMessage(input, build) {
+  input = input || {}; build = build || {};
+  var url = atStr(build.demo_url, 300);
+  var ok = (build.status === 'built' || build.status === 'already_built') && /^https:\/\/[^\s]+\/d\/[A-Za-z0-9_-]{40,60}$/.test(url);
+  var channel = input.channel === 'whatsapp' ? 'whatsapp' : (input.channel === 'email' ? 'email' : null);
+  var to = channel === 'whatsapp' ? atStr(input.phone, 40) : (channel === 'email' ? atStr(input.email, 200) : '');
+  var first = atStr(input.contact_name, 60).split(' ')[0];
+  var biz = atStr(input.company_name, 80);
+  var text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + 'good news: I have set up a working demo of ' + (biz ? biz + '\'s' : 'your') + ' system for you to try:\n\n' + url + '\n\n'
+    + 'Tap the link and chat with your new AI assistant as if you were one of your customers. You will see each enquiry land in your CRM, and what now runs by itself every day. '
+    + 'It is a safe demo, so nothing is sent to real customers, and it takes about 2 minutes. Tell me what you think!';
+  return { send: !!(ok && channel && to), channel: channel, to: to, text: text, message_id: 'msg_atlas_demo_' + atStr(input.lead_id, 80) + '_' + Date.now().toString(36) };
+}
+
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atAskedBefore: atAskedBefore, atOneQuestion: atOneQuestion, atEdgSpec: atEdgSpec, atAiTeam: atAiTeam, atBuildUrl: atBuildUrl, atAutoBuildUrl: atAutoBuildUrl, atIndustryKey: atIndustryKey, AT_EDG_URL: AT_EDG_URL };
+
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atAskedBefore: atAskedBefore, atOneQuestion: atOneQuestion, atEdgSpec: atEdgSpec, atAiTeam: atAiTeam, atBuildUrl: atBuildUrl, atAutoBuildUrl: atAutoBuildUrl, atDemoMessage: atDemoMessage, atIndustryKey: atIndustryKey, AT_EDG_URL: AT_EDG_URL };

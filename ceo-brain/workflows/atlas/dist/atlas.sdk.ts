@@ -181,6 +181,47 @@ const emailBuilt = node({
   output: [{ id: 'gmail_y' }]
 });
 
+const demoMsg = node({ type: 'n8n-nodes-base.code', version: 2, config: { name: "John Writes the Demo Message", parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: "function atStr(v, max) {\n  if (v === undefined || v === null) return '';\n  var s = String(v).replace(/\\s+/g, ' ').trim();\n  return max && s.length > max ? s.slice(0, max) : s;\n}\nfunction atDemoMessage(input, build) {\n  input = input || {}; build = build || {};\n  var url = atStr(build.demo_url, 300);\n  var ok = (build.status === 'built' || build.status === 'already_built') && /^https:\\/\\/[^\\s]+\\/d\\/[A-Za-z0-9_-]{40,60}$/.test(url);\n  var channel = input.channel === 'whatsapp' ? 'whatsapp' : (input.channel === 'email' ? 'email' : null);\n  var to = channel === 'whatsapp' ? atStr(input.phone, 40) : (channel === 'email' ? atStr(input.email, 200) : '');\n  var first = atStr(input.contact_name, 60).split(' ')[0];\n  var biz = atStr(input.company_name, 80);\n  var text = (first ? 'Hi ' + first + ', ' : 'Hi, ') + 'good news: I have set up a working demo of ' + (biz ? biz + '\\'s' : 'your') + ' system for you to try:\\n\\n' + url + '\\n\\n'\n    + 'Tap the link and chat with your new AI assistant as if you were one of your customers. You will see each enquiry land in your CRM, and what now runs by itself every day. '\n    + 'It is a safe demo, so nothing is sent to real customers, and it takes about 2 minutes. Tell me what you think!';\n  return { send: !!(ok && channel && to), channel: channel, to: to, text: text, message_id: 'msg_atlas_demo_' + atStr(input.lead_id, 80) + '_' + Date.now().toString(36) };\n}\n// ---- n8n glue: John sends the prospect their \"Try your system\" link (on the channel they used) ----\nconst f = $('Finalize ATLAS').first().json;\nconst b = $('Build on EDG (automatic)').first().json || {};\nreturn [{ json: Object.assign({ tenant_id: f.input.tenant_id, lead_id: f.input.lead_id, test_mode: f.input.test_mode, ts: new Date().toISOString() }, atDemoMessage(f.input, b)) }];\n" }, position: [3980,450] }, output: [{"send":true,"channel":"whatsapp","to":"+6590000000","text":"Hi","message_id":"m"}] });
+
+const demoGate = ifElse({
+  version: 2.3,
+  config: { name: 'Demo Link to Send?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'send', leftValue: expr('{{ $json.send }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [4200, 450] }
+});
+
+const D = "$('John Writes the Demo Message').first().json";
+const logDemo = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: "Log John's Demo Message",
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'insert', dataTableId: {"__rl":true,"mode":"id","value":"eImH5AdVZEOW0t31","cachedResultName":"ceo_messages"}, columns: { mappingMode: 'defineBelow', value: {
+      tenant_id: expr("{{ " + D + ".tenant_id }}"), lead_id: expr("{{ " + D + ".lead_id }}"), message_id: expr("{{ " + D + ".message_id }}"), direction: 'outbound', channel: expr("{{ " + D + ".channel }}"), sender: 'agent:john', content: expr("{{ " + D + ".text }}"), status: 'draft', execution_id: expr('{{ $execution.id }}'), created_by: 'agent:atlas', ts: expr("{{ " + D + ".ts }}")
+    }, schema: [{"id":"tenant_id","displayName":"tenant_id","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"lead_id","displayName":"lead_id","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"message_id","displayName":"message_id","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"direction","displayName":"direction","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"channel","displayName":"channel","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"sender","displayName":"sender","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"content","displayName":"content","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"status","displayName":"status","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"execution_id","displayName":"execution_id","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"created_by","displayName":"created_by","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true},{"id":"ts","displayName":"ts","required":false,"defaultMatch":false,"display":true,"type":"string","canBeUsedToMatch":true}] } },
+    position: [4420, 380]
+  },
+  output: [{ id: 1 }]
+});
+
+const sendDemo = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'John Sends the Demo Link (Outbound Sender)',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once', source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: "SAcnNxG1GWPwn3N7", cachedResultName: 'CEO Brain — Outbound Sender' },
+      workflowInputs: { mappingMode: 'defineBelow', value: {
+        tenant_id: expr("{{ " + D + ".tenant_id }}"), lead_id: expr("{{ " + D + ".lead_id }}"), message_id: expr("{{ " + D + ".message_id }}"), channel: expr("{{ " + D + ".channel }}"), to: expr("{{ " + D + ".to }}"), text: expr("{{ " + D + ".text }}"), subject: 'Your system is ready to try', test_mode: expr("{{ " + D + ".test_mode }}"), actor: 'agent:john@atlas'
+      }, matchingColumns: [], schema: [{"id":"tenant_id","displayName":"tenant_id","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"lead_id","displayName":"lead_id","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"message_id","displayName":"message_id","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"channel","displayName":"channel","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"to","displayName":"to","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"text","displayName":"text","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"subject","displayName":"subject","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"},{"id":"test_mode","displayName":"test_mode","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"boolean"},{"id":"actor","displayName":"actor","required":false,"defaultMatch":false,"display":true,"canBeUsedToMatch":true,"type":"string"}], attemptToConvertTypes: false, convertFieldsToString: false },
+      options: { waitForSubWorkflow: true }
+    },
+    position: [4640, 380]
+  },
+  output: [{ sent: true }]
+});
+
 const note = sticky("## CEO Brain — ATLAS (EDG & CRM Systems Architect)\nCalled by Lead Intake when John has learned that a named company needs CRM / automation / integrations (not only a website). Once per lead. Never talks to the customer.\n\nFlow: normalise the hand-off → skip if ATLAS already opened a checkpoint for this lead → Ryan's agent file .claude/agents/atlas.md live from GitHub + n8n runtime addendum → Claude (DESIGN mode, CHECKPOINT 1; deterministic fallback from John's facts when the model is unavailable) → approval task for Ryan (Approval Inbox) → run + audit → email Ryan → event edg.checkpoint_1 → the five checkpoint-1 files in 80_Clients/<slug>/edg/ (test leads under 80_Clients/_Test/).\n\nCheckpoint 2+ (architecture, build spec), BUILD and AUDIT modes run in Claude Code with the same agent file and all tools, after Ryan confirms. Source of truth: ryan/ceo-brain/workflows/atlas/build.js — do not hand-edit Code nodes.", [whenCalled, prepare, loadTasks, check], { color: 4 });
 
 export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Systems Architect)')
@@ -204,4 +245,6 @@ export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Syste
   .to(waitVault)
   .to(autoBuild)
   .to(emailBuilt)
+  .to(demoMsg)
+  .to(demoGate.onTrue(logDemo.to(sendDemo)))
   .add(note);
