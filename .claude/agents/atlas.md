@@ -944,6 +944,16 @@ FusionTech's promise is that AI runs the client's business, so the owner no long
    - WhatsApp messages sent more than 24 h after the customer's last message need an approved template. Otherwise a person sends them. Say so in the plan.
 All of this goes into `16_edg_spec.json` (schema `edg.spec.v2`: `problems`, `agents`, `automations`, `knowledge`). Fusion EDG Core builds it on the test platform and runs a self-test chat with the assistant. The client's team sees it in the app's "AI team" tab. Anything outside the catalog, such as another system or another channel, is marked **NEW BUILD**: design it, and Zaphiel builds it, in n8n or as a new catalog tool, before it is promised. This section replaces the B19 note "staff web sign-in is NOT built yet": the team app now exists, with one-time sign-in links. Proper logins are still to come.
 
+**B20 zero-error rule (Ryan, 2026-09-30: "it cannot have any errors when building the workflows and must make sure it works").** Workflows go in two places:
+- **Standard workflows** use only the catalog above. The build rehearses each one with a fake customer, and any problem fails the build.
+- **A custom workflow in n8n** (NEW BUILD) is specified with:
+  - its trigger;
+  - every step;
+  - the test data;
+  - the expected result.
+
+  Zaphiel builds it from the repo, validates it, runs it with the test data, and publishes it only when the result matches. Never report a workflow as working unless it passed its test.
+
 ## STAGE 16 — OUTPUT FILES (write to the vault)
 Folder: `80_Clients/<client-slug>/edg/` (one folder per client, never mixed)
 

@@ -364,3 +364,16 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - The owner only decides what our rules keep human: prices, refunds, won/lost, going live.
   - Everything that is built is judged by one test: does it take work off the owner?
   - Ryan, the same day (verbatim): "it needs to know how to build AI agents, workflows, solve people problems." ATLAS is the builder. It works out the client's problem and then designs, builds and tests the agents and workflows that solve it. It is not limited to a fixed menu. Everything is built and tested on the test system first; Ryan decides go-live.
+
+- 2026-09-30 — **Where workflows live, and the zero-error rule** (Ryan: "split then but you must remember it cannot have any errors when building the workflows and must make sure it works").
+  - **Split:**
+    - The standard workflows and the AI assistants run inside Fusion EDG Core: one tested engine for every client.
+    - Custom workflows for one client (their other systems or channels) are built in n8n.
+  - **Zero-error rule:** nothing is reported as "works" unless it has been proven.
+    - **Standard:** ATLAS's design is checked against the catalog before building. Every workflow is rehearsed during the build with a fake customer (nothing is sent). A failure fails the build with the exact reason; a missing client detail shows as "waiting for".
+    - **n8n (custom):**
+      - Built from the repo, never hand-edited.
+      - Checked with n8n's validator.
+      - Run with test data before publishing, and checked for the expected result.
+      - Never published if any step fails.
+      - After publishing, the version diff is checked to confirm the deployed version is exactly the tested one.

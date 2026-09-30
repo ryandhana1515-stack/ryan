@@ -473,3 +473,9 @@ tags: [zaphiel, changelog]
     - Fusion EDG Core PR #8 (119/119 tests; database change 014 on Supabase, 0 security findings).
     - ATLAS workflow `9XQWSgTBszRc0Jxj` published as version `051d0507` (131/131 tests; the deployed code is identical to the repo).
     - `.claude/agents/atlas.md` gained section B20 (added only).
+
+- 2026-09-30 — **Every workflow is proven during the build** (Ryan: "it cannot have any errors … must make sure it works").
+  - The build now rehearses each workflow with a fake customer, without sending anything. It checks that the words fill in, the stages exist, someone receives owner notices, the customer can be reached, and the AI message gets written.
+  - A problem fails the build with the reason. A missing client detail (for example the owner's email) shows as "waiting for".
+  - Fusion EDG Core PR #9 (120/120 tests). Tan Aircon's and a dental clinic's designs rehearse with no failures.
+  - Also: the rule is in Decisions, and ATLAS's file has a new B20 zero-error paragraph (added only).
