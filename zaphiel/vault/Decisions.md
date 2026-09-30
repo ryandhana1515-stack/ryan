@@ -357,3 +357,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   2. Then the real WhatsApp connection with the first client who says yes.
   - Sign-in uses one-time links until proper logins (Supabase Auth) are built.
   - Test tools work only on the test system, and never while real providers are switched on.
+
+- 2026-09-30 — **What FusionTech sells: an AI team that runs a client's business** (Ryan, verbatim: "build agents for people because it needs to know the entire CRM, EDG, can build automations for people … what if you don't have to work a 9-to-5 anymore, what if you can spend time with your family, with your kids, with AI automating your entire systems, business, workflows, everything for you").
+  - ATLAS designs each client's **agents** as well as their automations. For example, the client's own "John" answers their customers, books jobs and follows up.
+  - The CRM/EDG is the memory and the rules those agents work from.
+  - The owner only decides what our rules keep human: prices, refunds, won/lost, going live.
+  - Everything that is built is judged by one test: does it take work off the owner?
