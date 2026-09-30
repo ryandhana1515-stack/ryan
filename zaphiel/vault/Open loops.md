@@ -116,13 +116,13 @@ tags: [zaphiel, open-loops]
 - **ATLAS builds (2026-09-30).** Built and working on the test system. Still open:
   - Scheduled jobs on the test system (follow-up reminders, appointment reminders, daily report) run only when called; production gets a scheduler (Vercel Cron / pg_cron, ADR-0004).
   - Going live per client: the client's real details, their WhatsApp number and Ryan's OK.
-- **Automatic build is blocked by one Vercel setting (2026-09-30).** Ryan: Vercel → project `fusion-edg-core-api` → Settings → Deployment Protection → Vercel Authentication → set it to "Only Preview Deployments" (or off) → Save. Zaphiel's own attempt was refused (403). Until then n8n cannot reach the EDG platform: the "built" email says so and gives the manual link. After the change, Zaphiel builds Tan Aircon.
+- ~~**Automatic build is blocked by one Vercel setting (2026-09-30).**~~ Done 2026-09-30: Ryan turned Deployment Protection off; n8n reaches the platform.
 - **Still to build before the first paying client (proposed 2026-09-30):**
   - ~~A staff login and CRM screen~~ Done 2026-09-30 (team app, one-time sign-in links). Still to do: proper logins (Supabase Auth) instead of links.
   - Real email sending (for quotes, invoices and reminders).
   - A scheduler (Vercel Cron) for reminders, follow-ups and the 8am report.
   - A production environment that is separate from test.
-- **Switch the AI team on (Ryan, 2026-09-30).** The assistants and workflows are built and tested, but the test platform shows "AI: not connected". Ryan adds two settings in Vercel (never in chat):
+- ~~**Switch the AI team on (Ryan, 2026-09-30).**~~ Done 2026-09-30: Ryan added `ANTHROPIC_API_KEY` and `CRON_SECRET` in Vercel and redeployed; `/health` says AI: anthropic. First real test (FAKE Sparkle Home Cleaning) passed. The steps below are kept for reference.
   - `ANTHROPIC_API_KEY`: an Anthropic API key (console.anthropic.com → API keys).
   - `CRON_SECRET`: any long random text.
   - Where: Vercel → fusion-edg-core-api → Settings → Environment Variables. Then redeploy (Deployments → ⋯ → Redeploy).
@@ -132,3 +132,7 @@ tags: [zaphiel, open-loops]
   - Confirm the daily Vercel Cron gets past Deployment Protection.
   - WhatsApp templates for messages sent more than 24 h after the customer last wrote. FusionTech writes them; Meta approves them.
 - **Custom workflows outside the catalog** (other systems, other channels) are still built by Zaphiel by hand in n8n. Next step: ATLAS writes those n8n workflows itself.
+- **After the first real AI test (2026-09-30):**
+  - The Sparkle build took about 44 s, and the test platform stops a request at 60 s. It fits now, but a bigger company (more workflows) could come close. Next step: run the build's checks in the background and email the result.
+  - Tan Aircon was built before the AI team existed (design v1), so it has no assistant or workflows. It is never built twice. To give it the AI team: a "rebuild" option, or a new test slug.
+  - AI billing (proposed 2026-09-30, waiting for Ryan's "yes"): FusionTech holds one Anthropic key for all clients and bills each client's AI usage as a separate line. Then Zaphiel builds a monthly usage report per client and a spending cap per client.

@@ -479,3 +479,14 @@ tags: [zaphiel, changelog]
   - A problem fails the build with the reason. A missing client detail (for example the owner's email) shows as "waiting for".
   - Fusion EDG Core PR #9 (120/120 tests). Tan Aircon's and a dental clinic's designs rehearse with no failures.
   - Also: the rule is in Decisions, and ATLAS's file has a new B20 zero-error paragraph (added only).
+
+- 2026-09-30 — **First real AI test passed (FAKE company "Sparkle Home Cleaning").**
+  - Ryan connected the AI (Anthropic key in Vercel) and turned the login wall off. ATLAS's design was built automatically from n8n on the test platform.
+  - Result: 7 checks working, 5 waiting for the client's details (the owner's email, a price list). None failed.
+  - The real AI assistant answered a test customer: "Our earliest free slots are Thu 1 Oct 9:00am, 9:30am, or 10:00am. Would any of these work for you?" It looked up the calendar itself.
+  - The first attempt hit the platform's 60-second limit. Fixed in Fusion EDG Core PR #10:
+    - the AI answers in quick mode;
+    - the AI checks and workflow rehearsals run side by side, each with a 30 s budget;
+    - a build that was cut off finishes its checks on the next run.
+  - Now about 44 s. Tests 121/121.
+  - The temporary n8n test workflow `fbfGt6dS62t1ZnIw` is archived.
