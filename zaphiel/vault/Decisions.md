@@ -363,3 +363,4 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - The CRM/EDG is the memory and the rules those agents work from.
   - The owner only decides what our rules keep human: prices, refunds, won/lost, going live.
   - Everything that is built is judged by one test: does it take work off the owner?
+  - Ryan, the same day (verbatim): "it needs to know how to build AI agents, workflows, solve people problems." ATLAS is the builder. It works out the client's problem and then designs, builds and tests the agents and workflows that solve it. It is not limited to a fixed menu. Everything is built and tested on the test system first; Ryan decides go-live.
