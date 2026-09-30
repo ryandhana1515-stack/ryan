@@ -1,0 +1,130 @@
+{
+  "company_name": {
+    "value": "Ah Kow Plumbing",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_name": {
+    "value": "Ryan",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_phone": {
+    "value": "+6587587170",
+    "label": "CLIENT-PROVIDED"
+  },
+  "contact_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "primary_channel": {
+    "value": "WhatsApp",
+    "label": "CLIENT-PROVIDED"
+  },
+  "industry": {
+    "value": "Plumbing services",
+    "label": "CLIENT-PROVIDED"
+  },
+  "location": {
+    "value": "Singapore",
+    "label": "CLIENT-PROVIDED"
+  },
+  "company_size": {
+    "value": 4,
+    "label": "CLIENT-PROVIDED"
+  },
+  "roles_in_company": {
+    "value": "1 owner (Ryan, decision maker) + 3 plumbers, implied",
+    "label": "INFERENCE"
+  },
+  "decision_maker": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "users_needed": {
+    "value": 4,
+    "label": "CLIENT-PROVIDED"
+  },
+  "lead_sources": {
+    "value": [
+      "WhatsApp"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_tools": {
+    "value": [
+      "WhatsApp",
+      "paper notebook"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "uses_whatsapp": {
+    "value": true,
+    "label": "CLIENT-PROVIDED"
+  },
+  "whatsapp_setup_type": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "uses_email": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "accounting_or_erp": {
+    "value": [],
+    "label": "CLIENT-PROVIDED"
+  },
+  "current_workflow_summary": {
+    "value": "Customer WhatsApps the business; Ryan personally replies, often late at night; job details are written into a paper notebook; quotes are sent but follow-up is not tracked and gets forgotten",
+    "label": "CLIENT-PROVIDED"
+  },
+  "core_problems": {
+    "value": [
+      "All WhatsApp enquiries answered manually by the owner, including outside work hours",
+      "Jobs tracked only in a paper notebook — no shared visibility across 4 plumbers",
+      "Quote follow-ups are forgotten — no reminder system",
+      "No appointment/job reminder system"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_automation": {
+    "value": [
+      "CRM",
+      "AI WhatsApp responder",
+      "job booking",
+      "appointment/job reminders",
+      "quote follow-up automation"
+    ],
+    "label": "CLIENT-PROVIDED"
+  },
+  "desired_outcome": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "budget": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "timeline": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "pricing_structure": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "service_area_hours": {
+    "value": null,
+    "label": "UNKNOWN"
+  },
+  "quotation_process_today": {
+    "value": "Quotes are sent to customers but no structured follow-up happens",
+    "label": "INFERENCE"
+  },
+  "job_scheduling_today": {
+    "value": "Jobs are written in a notebook; no indication of a shared calendar or dispatch method between the 4 plumbers",
+    "label": "INFERENCE"
+  },
+  "payment_process_today": {
+    "value": null,
+    "label": "UNKNOWN"
+  }
+}
