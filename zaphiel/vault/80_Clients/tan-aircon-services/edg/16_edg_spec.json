@@ -1,0 +1,99 @@
+{
+  "schema": "edg.spec.v1",
+  "generated_by": "atlas-n8n-1.0.0",
+  "generated_at": "2026-09-30T13:52:17.128Z",
+  "company": {
+    "name": "Tan Aircon Services Pte Ltd",
+    "slug": "tan-aircon-services",
+    "industry": "Aircon servicing and repair",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": true,
+    "invoices": true,
+    "appointments": true,
+    "accounting": "unknown",
+    "calendar": "unknown",
+    "ceo_brief": true
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 1
+    },
+    {
+      "key": "contacted",
+      "name": "Contacted",
+      "sla_hours": 24
+    },
+    {
+      "key": "qualified",
+      "name": "Qualified",
+      "sla_hours": 72
+    },
+    {
+      "key": "proposal",
+      "name": "Proposal sent",
+      "sla_hours": 120
+    },
+    {
+      "key": "negotiation",
+      "name": "Negotiation",
+      "sla_hours": 168
+    }
+  ],
+  "team": {
+    "sales": 2,
+    "managers": 1,
+    "support": 0
+  },
+  "services": [
+    {
+      "name": "Consultation",
+      "duration_minutes": 60,
+      "buffer_minutes": 15,
+      "location": "To confirm"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "start": "09:00",
+    "end": "18:00"
+  },
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "to_confirm": [
+    "Staff names, roles and emails (who gets new leads)",
+    "Working hours (placeholder Mon–Fri 09:00–18:00)",
+    "Services customers book and how long each takes",
+    "Price list: every product/service and its price (the AI only quotes approved prices)",
+    "GST registration and rate (needed before any quote or invoice)",
+    "Payment terms (days) and how long a quote stays valid",
+    "Which accounting software they use (e.g. Xero)",
+    "Their WhatsApp Business number and Meta business verification (for the live system)"
+  ],
+  "why": {
+    "appointments": "CLIENT-PROVIDED: mentioned bookings/visits",
+    "quotes": "CLIENT-PROVIDED: mentioned quotations",
+    "team": "INFERENCE: 2 placeholder salespeople until the client gives the team"
+  },
+  "source": {
+    "lead_id": "lead_wa6587587170_muo5thc0",
+    "design_path": "zaphiel/vault/80_Clients/tan-aircon-services/edg/",
+    "test_mode": false
+  }
+}
