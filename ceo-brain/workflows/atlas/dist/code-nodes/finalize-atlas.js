@@ -168,7 +168,8 @@ var AT_INDUSTRY = [
   ['clinic', /\b(clinic|dental|dentist|medical|aesthetic|physio\w*|doctor|chiropract\w*|tcm|healthcare)\b/i],
   ['property', /\b(property|real estate|realtor|condo|hdb agent|property agent)\b/i],
   ['education', /\b(tuition|education|school|academy|enrichment|course|training centre|training center)\b/i],
-  ['beauty', /\b(salon|spa|beauty|hair|nail|lash|facial|massage)\b/i]
+  ['beauty', /\b(salon|spa|beauty|hair|nail|lash|facial|massage)\b/i],
+  ['services', /\b(air-?cons?|aircon\w*|air con|plumb\w*|electricians?|electrical works|cleaning|cleaners?|pest control|handyman|locksmiths?|laundry|movers?|moving company|repairs?|servicing)\b/i]
 ];
 var AT_PIPELINES = {
   renovation: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['site_visit', 'Site visit', 72], ['quotation', 'Quotation sent', 120], ['negotiation', 'Negotiation', 168]],
@@ -176,6 +177,7 @@ var AT_PIPELINES = {
   property: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['viewing', 'Viewing', 72], ['offer', 'Offer', 120], ['negotiation', 'Negotiation', 168]],
   education: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['trial', 'Trial class', 120], ['enrolment', 'Enrolment', 168]],
   beauty: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['booked', 'Appointment booked', 72], ['returning', 'Returning customer', 720]],
+  services: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['quotation', 'Quotation sent', 72], ['job_booked', 'Job booked', 72], ['job_done', 'Job done', 168]],
   general: [['new', 'New enquiry', 1], ['contacted', 'Contacted', 24], ['qualified', 'Qualified', 72], ['proposal', 'Proposal sent', 120], ['negotiation', 'Negotiation', 168]]
 };
 var AT_SERVICES = {
@@ -184,6 +186,7 @@ var AT_SERVICES = {
   property: { name: 'Viewing', duration_minutes: 45, buffer_minutes: 15, location: 'At the property' },
   education: { name: 'Trial class', duration_minutes: 60, buffer_minutes: 15, location: 'Centre' },
   beauty: { name: 'Appointment', duration_minutes: 60, buffer_minutes: 15, location: 'Salon' },
+  services: { name: 'Service visit', duration_minutes: 90, buffer_minutes: 30, location: "At the customer's home" },
   general: { name: 'Consultation', duration_minutes: 60, buffer_minutes: 15, location: 'To confirm' }
 };
 function atCustomerText(input) {
@@ -202,17 +205,21 @@ function atEdgSpec(input) {
   var ind = atIndustryKey(input);
   var wants = atArr(ex.desired_automation).join(' ');
   var why = {};
-  var appt = /\b(appointments?|bookings?|book(ing)? (a|an|the)|consultations?|site visits?|viewings?|trial class|schedul\w+|calendar)\b/i.test(text + ' ' + wants) || ind === 'clinic' || ind === 'beauty';
-  why.appointments = appt ? (ind === 'clinic' || ind === 'beauty' ? 'INFERENCE: ' + ind + ' businesses run on appointments' : 'CLIENT-PROVIDED: mentioned bookings/visits') : 'not mentioned';
+  var apptSaid = /\b(appointments?|bookings?|book(s|ed|ing)?|consultations?|site visits?|viewings?|trial class|schedul\w+|calendar)\b/i.test(text + ' ' + wants);
+  var appt = apptSaid || ind === 'clinic' || ind === 'beauty' || ind === 'services';
+  why.appointments = apptSaid ? 'CLIENT-PROVIDED: mentioned bookings/visits' : appt ? 'INFERENCE: ' + ind + ' businesses run on appointments/visits' : 'not mentioned';
   var quotes = /\b(quot\w*|estimates?|proposals?|pricing)\b/i.test(text + ' ' + wants) || ind === 'renovation';
   why.quotes = quotes ? (/\b(quot\w*|estimates?|proposals?)\b/i.test(text) ? 'CLIENT-PROVIDED: mentioned quotations' : 'INFERENCE: renovation work is sold by quotation') : 'not mentioned';
   var invoices = quotes || /\b(invoices?|billing|deposits?|payments?|receipts?)\b/i.test(text);
   var acc = atArr(ex.accounting_or_erp).join(' ') + ' ' + text;
   var accounting = /\bxero\b/i.test(acc) ? 'xero' : /\bquickbooks\b/i.test(acc) ? 'quickbooks' : atArr(ex.accounting_or_erp).length ? 'other' : 'unknown';
   var calendar = /google (calendar|workspace)|\bgmail\b/i.test(text) ? 'google' : 'unknown';
-  var m = /\b(\d{1,2})\s*(?:sales(?:\s*(?:guys|staff|people|team|reps|persons?|agents))?|salespeople|salesmen|agents|consultants|designers)\b/i.exec(text);
+  var m = /\b(\d{1,2})\s*(sales(?:\s*(?:guys|staff|people|team|reps|persons?|agents))?|salespeople|salesmen|agents|consultants|designers|technicians?|techs|installers|cleaners|workers|therapists|stylists|tutors|teachers)\b/i.exec(text);
   var sales = m ? Math.max(1, Math.min(50, parseInt(m[1], 10))) : 2;
-  why.team = m ? 'CLIENT-PROVIDED: "' + m[0] + '"' : 'INFERENCE: 2 placeholder salespeople until the client gives the team';
+  var who = m ? m[2].toLowerCase() : '';
+  var label = /^tech/.test(who) ? 'Technician' : /^install/.test(who) ? 'Installer' : /^clean/.test(who) ? 'Cleaner' : /^design/.test(who) ? 'Designer' : /^consult/.test(who) ? 'Consultant'
+    : /^therap/.test(who) ? 'Therapist' : /^stylist/.test(who) ? 'Stylist' : /^(tutor|teacher)/.test(who) ? 'Tutor' : /^worker/.test(who) ? 'Staff' : !m && ind === 'services' ? 'Technician' : 'Sales';
+  why.team = m ? 'CLIENT-PROVIDED: "' + m[0] + '"' : 'INFERENCE: 2 placeholder people until the client gives the team';
   var confirm = ['Staff names, roles and emails (who gets new leads)', 'Working hours (placeholder Mon–Fri 09:00–18:00)'];
   if (appt) confirm.push('Services customers book and how long each takes');
   if (quotes) confirm.push('Price list: every product/service and its price (the AI only quotes approved prices)');
@@ -225,7 +232,7 @@ function atEdgSpec(input) {
     company: { name: input.company_name || 'Unnamed company', slug: (input.test_mode ? 'test-' : '') + input.slug, industry: atStr(input.industry || ex.industry, 120) || ind, timezone: 'Asia/Singapore', currency: 'SGD' },
     modules: { lead_capture: true, follow_ups: true, whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt, accounting: accounting, calendar: calendar, ceo_brief: true },
     pipeline: AT_PIPELINES[ind].map(function (s) { return { key: s[0], name: s[1], sla_hours: s[2] }; }),
-    team: { sales: sales, managers: 1, support: 0 },
+    team: { sales: sales, managers: 1, support: 0, label: label },
     services: appt ? [AT_SERVICES[ind]] : [],
     working_hours: { weekdays: [1, 2, 3, 4, 5], start: '09:00', end: '18:00' },
     catalog: [],
@@ -236,6 +243,7 @@ function atEdgSpec(input) {
   };
 }
 function atBuildUrl(input) { return AT_EDG_URL + '/atlas/build?path=' + encodeURIComponent(input.base_path + '16_edg_spec.json'); }
+function atAutoBuildUrl() { return AT_EDG_URL + '/atlas/auto-build'; }
 /** finalize({ raw_text, error, input }) → everything the workflow writes. */
 function atFinalize(opts) {
   opts = opts || {};
@@ -253,7 +261,7 @@ function atFinalize(opts) {
     pack: pack, files: files, provider: provider, fallback_used: fallback, fallback_reason: reason,
     task: { task_id: taskId, task_type: 'edg_design', title: 'ATLAS checkpoint 1: confirm understanding of ' + name, description: pack.summary_for_ryan + ' Files: ' + input.base_path, status: 'open', assigned_to: 'human', requires_approval: true, approval_reason: 'atlas_checkpoint_1_confirm_understanding' },
     event: { type: 'edg.checkpoint_1', source: 'atlas', tenant_id: input.tenant_id, lead_id: input.lead_id, entity_type: 'lead', entity_id: input.lead_id, severity: 'medium', summary: 'ATLAS checkpoint 1 ready for ' + name + ' — ' + pack.questions_open.length + ' questions for John', payload: { base_path: input.base_path, questions_for_john: pack.questions_open, provider: provider }, test_mode: input.test_mode, correlation_id: 'lead:' + input.lead_id },
-    email_subject: (input.test_mode ? '[TEST] ' : '') + 'ATLAS: design ready, approve & build — ' + name,
+    email_subject: (input.test_mode ? '[TEST] ' : '') + 'ATLAS: design ready, building now — ' + name,
     build_url: atBuildUrl(input)
   };
 }
@@ -277,8 +285,8 @@ const esc = (s) => String(s === undefined || s === null ? '' : s).replace(/&/g, 
 const repoBase = 'https://github.com/ryandhana1515-stack/ryan/tree/HEAD/' + input.base_path.split('/').map(encodeURIComponent).join('/');
 const email_html = '<h2>ATLAS design — ' + esc(input.company_name) + '</h2>'
   + '<p>' + esc(fin.pack.summary_for_ryan) + '</p>'
-  + '<p style="margin:20px 0"><a href="' + esc(fin.build_url) + '" style="background:#0b5cad;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">Approve &amp; build this system</a></p>'
-  + '<p style="color:#555">The button opens a page that shows exactly what ATLAS will build (sales pipeline, team, bookings, quotes, automations). Nothing is built until you press <b>Approve &amp; build</b> there. It is built on the TEST system with test providers: no real customer is messaged. Afterwards you get a page to check it and send a test enquiry. (You must be signed in to Vercel.)</p>'
+  + '<p><b>ATLAS is building this system for you now</b> on the TEST platform (test providers: no real customer is messaged). A second email with the link to the built system follows in about a minute.</p>'
+  + '<p style="color:#555">If that second email does not arrive, open the plan and build it yourself: <a href="' + esc(fin.build_url) + '">see the plan and build</a>.</p>'
   + '<p><b>Questions for John to ask:</b></p><ol>' + fin.pack.questions_open.map((q) => '<li>' + esc(q) + '</li>').join('') + '</ol>'
   + '<p>Files in your vault: <code>' + esc(input.base_path.replace(/^zaphiel\/vault\//, '')) + '</code> (<a href="' + repoBase + '">open on GitHub</a>). The build plan ATLAS used is <code>16_edg_spec.json</code> in the same folder.</p>'
   + '<p style="color:#888">' + esc(fin.provider) + (fin.fallback_used ? ' (fallback: ' + esc(fin.fallback_reason) + ')' : '') + ' · agent file: ' + esc(pre.agent_file_source) + ' · lead ' + esc(input.lead_id) + (input.test_mode ? ' · TEST' : '') + '</p>';

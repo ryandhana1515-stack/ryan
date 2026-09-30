@@ -55,3 +55,7 @@ connections are written from each provider's documentation but NEED VERIFICATION
 ATLAS design → `16_edg_spec.json` → Ryan's email button → `/atlas/build` shows the plan → **Approve & build** → the
 client's own system is built on the test system in one step, self-tested with a fake enquiry, and shown on a review page.
 Demo: `80_Clients/_Test/lim-renovation-fake-demo/edg/16_edg_spec.json`.
+
+**Automatic build (2026-09-30, Ryan: "Yes"; Fusion EDG Core PR #6):** no button needed. The ATLAS workflow calls
+`POST /atlas/auto-build` 30 seconds after saving the design, and Ryan gets a second email with the review link. Test platform only;
+going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authentication must be "Only Preview Deployments".

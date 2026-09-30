@@ -21,6 +21,7 @@ const manifest = JSON.parse(read('agents/atlas/agent.json'));
 const runtime = read('prompts/atlas.runtime.md');
 const userPrompt = read('prompts/atlas.user.md');
 const EVENT_URL = 'https://ryan1515.app.n8n.cloud/webhook/ceo-brain/event';
+const AT_AUTO_URL = 'https://fusion-edg-core-api.vercel.app/atlas/auto-build';
 
 function inline(file) {
   return read(file).replace(/\/\/ ---- Node module wrapper[\s\S]*$/m, '').split('\n').filter((l) => !/^\s*module\.exports\s*=/.test(l) && !/^\s*\/\//.test(l) && l.trim() !== '').join('\n');
@@ -85,8 +86,8 @@ const esc = (s) => String(s === undefined || s === null ? '' : s).replace(/&/g, 
 const repoBase = 'https://github.com/${GITHUB.owner}/${GITHUB.repo}/tree/HEAD/' + input.base_path.split('/').map(encodeURIComponent).join('/');
 const email_html = '<h2>ATLAS design — ' + esc(input.company_name) + '</h2>'
   + '<p>' + esc(fin.pack.summary_for_ryan) + '</p>'
-  + '<p style="margin:20px 0"><a href="' + esc(fin.build_url) + '" style="background:#0b5cad;color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600">Approve &amp; build this system</a></p>'
-  + '<p style="color:#555">The button opens a page that shows exactly what ATLAS will build (sales pipeline, team, bookings, quotes, automations). Nothing is built until you press <b>Approve &amp; build</b> there. It is built on the TEST system with test providers: no real customer is messaged. Afterwards you get a page to check it and send a test enquiry. (You must be signed in to Vercel.)</p>'
+  + '<p><b>ATLAS is building this system for you now</b> on the TEST platform (test providers: no real customer is messaged). A second email with the link to the built system follows in about a minute.</p>'
+  + '<p style="color:#555">If that second email does not arrive, open the plan and build it yourself: <a href="' + esc(fin.build_url) + '">see the plan and build</a>.</p>'
   + '<p><b>Questions for John to ask:</b></p><ol>' + fin.pack.questions_open.map((q) => '<li>' + esc(q) + '</li>').join('') + '</ol>'
   + '<p>Files in your vault: <code>' + esc(input.base_path.replace(/^zaphiel\\/vault\\//, '')) + '</code> (<a href="' + repoBase + '">open on GitHub</a>). The build plan ATLAS used is <code>16_edg_spec.json</code> in the same folder.</p>'
   + '<p style="color:#888">' + esc(fin.provider) + (fin.fallback_used ? ' (fallback: ' + esc(fin.fallback_reason) + ')' : '') + ' · agent file: ' + esc(pre.agent_file_source) + ' · lead ' + esc(input.lead_id) + (input.test_mode ? ' · TEST' : '') + '</p>';
@@ -285,6 +286,35 @@ const createFile = node({
   output: [{ ok: true }]
 });
 
+const waitVault = node({
+  type: 'n8n-nodes-base.wait',
+  version: 1.1,
+  config: { name: 'Wait for the Vault', executeOnce: true, parameters: { resume: 'timeInterval', amount: 30, unit: 'seconds' }, position: [3320, 450] },
+  output: [{ path: 'x' }]
+});
+
+// Automatic build (Ryan, 2026-09-30): the EDG test platform builds the client's system from the design just saved.
+const autoBuild = node({
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.5,
+  config: { name: 'Build on EDG (automatic)', executeOnce: true, retryOnFail: true, maxTries: 4, waitBetweenTries: 5000, onError: 'continueRegularOutput',
+    parameters: { method: 'POST', url: ${j(AT_AUTO_URL)}, sendBody: true, contentType: 'json', specifyBody: 'json',
+      jsonBody: expr("{{ JSON.stringify({ path: ${F}.input.base_path + '16_edg_spec.json' }) }}"), options: { timeout: 60000 } }, position: [3540, 450] },
+  output: [{ ok: true, status: 'built', review_url: 'https://example.invalid/v/x', email_subject: 's', email_html: 'h' }]
+});
+
+const emailBuilt = node({
+  type: 'n8n-nodes-base.gmail',
+  version: 2.2,
+  config: { name: 'Email Ryan: Built', executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'message', operation: 'send', sendTo: expr("{{ ${F}.input.notify_email || '${manifest.notify_email}' }}"),
+      subject: expr("{{ $json.email_subject || ((${F}.input.test_mode ? '[TEST] ' : '') + 'ATLAS could not build ' + (${F}.input.company_name || ${F}.input.lead_id) + ' automatically') }}"),
+      emailType: 'html',
+      message: expr("{{ $json.email_html || ('<p>The automatic build did not finish (' + String(($json.error && ($json.error.message || $json.error)) || 'no answer from the EDG platform') + ').</p><p>Build it with one click instead: ' + ${F}.build_url + '</p>') }}"),
+      options: { appendAttribution: false, senderName: 'CEO Brain' } }, position: [3760, 450] },
+  output: [{ id: 'gmail_y' }]
+});
+
 const note = sticky(${j('## CEO Brain — ATLAS (EDG & CRM Systems Architect)\nCalled by Lead Intake when John has learned that a named company needs CRM / automation / integrations (not only a website). Once per lead. Never talks to the customer.\n\nFlow: normalise the hand-off → skip if ATLAS already opened a checkpoint for this lead → Ryan\'s agent file .claude/agents/atlas.md live from GitHub + n8n runtime addendum → Claude (DESIGN mode, CHECKPOINT 1; deterministic fallback from John\'s facts when the model is unavailable) → approval task for Ryan (Approval Inbox) → run + audit → email Ryan → event edg.checkpoint_1 → the five checkpoint-1 files in 80_Clients/<slug>/edg/ (test leads under 80_Clients/_Test/).\n\nCheckpoint 2+ (architecture, build spec), BUILD and AUDIT modes run in Claude Code with the same agent file and all tools, after Ryan confirms. Source of truth: ryan/ceo-brain/workflows/atlas/build.js — do not hand-edit Code nodes.')}, [whenCalled, prepare, loadTasks, check], { color: 4 });
 
 export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Systems Architect)')
@@ -304,6 +334,10 @@ export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Syste
   .to(getFile)
   .to(pair)
   .to(exists.onTrue(editFile).onFalse(createFile))
+  .add(filesToWrite)
+  .to(waitVault)
+  .to(autoBuild)
+  .to(emailBuilt)
   .add(note);
 `.replace(/OWNER_RL/g, j(OWNER)).replace(/REPO_RL/g, j(REPO)).replace(/GH_CRED/g, j(GH_CRED)).replace(/COMMITTER_P/g, j(COMMITTER));
 
