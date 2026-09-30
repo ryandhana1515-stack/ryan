@@ -1,0 +1,99 @@
+{
+  "schema": "edg.spec.v1",
+  "generated_by": "atlas-n8n-1.0.0",
+  "generated_at": "2026-09-30T13:18:16.300Z",
+  "company": {
+    "name": "Lim Renovation Pte Ltd (FAKE demo)",
+    "slug": "test-lim-renovation-fake-demo",
+    "industry": "renovation",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": true,
+    "invoices": true,
+    "appointments": true,
+    "accounting": "unknown",
+    "calendar": "unknown",
+    "ceo_brief": true
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 1
+    },
+    {
+      "key": "contacted",
+      "name": "Contacted",
+      "sla_hours": 24
+    },
+    {
+      "key": "site_visit",
+      "name": "Site visit",
+      "sla_hours": 72
+    },
+    {
+      "key": "quotation",
+      "name": "Quotation sent",
+      "sla_hours": 120
+    },
+    {
+      "key": "negotiation",
+      "name": "Negotiation",
+      "sla_hours": 168
+    }
+  ],
+  "team": {
+    "sales": 4,
+    "managers": 1,
+    "support": 0
+  },
+  "services": [
+    {
+      "name": "Site visit",
+      "duration_minutes": 60,
+      "buffer_minutes": 30,
+      "location": "At the customer's home"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "start": "09:00",
+    "end": "18:00"
+  },
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "to_confirm": [
+    "Staff names, roles and emails (who gets new leads)",
+    "Working hours (placeholder Mon–Fri 09:00–18:00)",
+    "Services customers book and how long each takes",
+    "Price list: every product/service and its price (the AI only quotes approved prices)",
+    "GST registration and rate (needed before any quote or invoice)",
+    "Payment terms (days) and how long a quote stays valid",
+    "Which accounting software they use (e.g. Xero)",
+    "Their WhatsApp Business number and Meta business verification (for the live system)"
+  ],
+  "why": {
+    "appointments": "CLIENT-PROVIDED: mentioned bookings/visits",
+    "quotes": "CLIENT-PROVIDED: mentioned quotations",
+    "team": "CLIENT-PROVIDED: \"4 sales guys\""
+  },
+  "source": {
+    "lead_id": "demo_lim_renovation",
+    "design_path": "zaphiel/vault/80_Clients/_Test/lim-renovation-fake-demo/edg/",
+    "test_mode": true
+  }
+}
