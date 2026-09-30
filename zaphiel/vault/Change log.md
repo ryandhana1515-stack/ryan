@@ -438,3 +438,15 @@ tags: [zaphiel, changelog]
   - Service businesses (aircon, plumbing, cleaning, pest control, repairs) now get technicians instead of salespeople, a "Service visit" booking (90 min + 30 min travel) and the pipeline New enquiry → Contacted → Quotation sent → Job booked → Job done.
   - The Tan Aircon plan was re-made with this logic: 3 technicians, service visits, quotations, invoices and bookings.
   - Code: Fusion EDG Core PR #6 (92/92 tests). ATLAS workflow `9XQWSgTBszRc0Jxj` was updated from the repo and published (version `2eec5462`; 129/129 tests; the deployed code is identical to the repo).
+
+- 2026-09-30 — **The team app: a screen for the system ATLAS builds** (Ryan: "I don't know what's the point … I want to actually make Atlas work"; "go").
+  - Every system ATLAS builds now has a phone app for the client's team at `/app`, with five tabs:
+    - **Customers**: every WhatsApp enquiry on a board in the client's own stages (for aircon: New enquiry → Contacted → Quotation sent → Job booked → Job done).
+    - **Jobs**: each technician's day, with booking and "job done".
+    - **Quotes**: quotations, invoices and payments, the price list, and the GST and payment settings the client enters.
+    - **Today**: the owner's numbers and morning report.
+    - **Team**: real names instead of placeholders, and one-time sign-in links you can send on WhatsApp.
+  - Customers move stages by themselves: quote sent → "Quotation sent", job booked → "Job booked", job done → "Job done".
+  - How to get in: on the system page, press **Open the app**. Test tools there: "Test WhatsApp" (fake 9000 numbers only) and "Add example customers" (7 fake customers with jobs).
+  - Also fixed: test messages would have failed after the test server restarted.
+  - Code: Fusion EDG Core PR #7 (106/106 tests; database change 013 applied to Supabase, 0 security findings).
