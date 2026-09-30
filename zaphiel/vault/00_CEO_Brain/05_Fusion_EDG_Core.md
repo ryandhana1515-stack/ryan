@@ -64,3 +64,8 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
 - Open it from the system page ("Open the app"). Team members sign in with a one-time link the owner makes in Team.
 - Customers move through the stages by themselves when a quote is sent, a job is booked or a job is done.
 - Test tools (fake data): "Test WhatsApp" and "Add example customers".
+
+**The AI team (2026-09-30, Fusion EDG Core PR #8):** every business ATLAS builds gets an AI assistant plus workflows. They are stored as data and run by one tested engine (`packages/crm/src/agents.ts`, `automations.ts`).
+- The assistant thinks with Claude (`claude-sonnet-5`) once `ANTHROPIC_API_KEY` is set in Vercel.
+- The daily timer (`/cron/tick`, 08:00 SGT) needs `CRON_SECRET`.
+- Details: `docs/modules.md` → "The AI team". ATLAS's rules for designing it: `.claude/agents/atlas.md` → B20.

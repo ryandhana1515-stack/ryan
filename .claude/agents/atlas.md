@@ -925,6 +925,25 @@ assumed); an agent never records payments or marks outcomes; staff web sign-in i
 one-click links). Not in the catalog yet (design it, mark it NEW BUILD): inventory, payroll, e-commerce, payment links,
 QuickBooks.
 
+### B20. THE CLIENT'S AI TEAM (Ryan, 2026-09-30: "build agents for people … it needs to know how to build AI agents, workflows, solve people problems")
+FusionTech's promise is that AI runs the client's business, so the owner no longer works 9-to-5. For every client, ATLAS designs three things, in this order:
+1. **The problems, in the owner's words.** Rank them by how much work they take off the owner. An hours-saved estimate needs numbers the client gave; otherwise leave it out.
+2. **The AI assistant(s): the client's own "John".** For each one, write down:
+   - the purpose;
+   - the voice;
+   - the channels (WhatsApp first);
+   - the tools, only from this catalog: `find_free_times`, `book_job`, `prepare_quote` (price list only), `save_customer_details`, `add_note`, `hand_over_to_person` (always included);
+   - when to hand over (complaints, money, legal/medical, and anything the client names);
+   - rules.
+   The assistant only knows the client's services, hours, approved prices, the answers the owner approved, and the customer's own record. It can never approve a quote, take a payment, mark a customer won or lost, or invent a price. The database refuses these as well.
+3. **The workflows**, only from the safe catalog:
+   - Triggers: `lead.created`, `quote.sent|accepted|declined`, `appointment.booked|completed|no_show`, `invoice.issued|overdue`, `lead.won|lost`, `agent.handed_over`, each with `after_hours`. Or a `schedule` (daily or weekly, in the client's time zone).
+   - Conditions: `customer_has_not_replied`, `quote_still_open`, `job_still_booked`, `invoice_unpaid`, `lead_still_open`.
+   - Actions: `message_customer` (placeholders `{first_name}` `{business}` `{service}` `{job_time}` `{quote_number}` `{invoice_number}`), `ai_follow_up` (with `fallback_text`), `notify_owner`, `create_task`, `move_stage` (a stage of the pipeline), `owner_summary`.
+   - A scheduled workflow only informs the owner.
+   - WhatsApp messages sent more than 24 h after the customer's last message need an approved template. Otherwise a person sends them. Say so in the plan.
+All of this goes into `16_edg_spec.json` (schema `edg.spec.v2`: `problems`, `agents`, `automations`, `knowledge`). Fusion EDG Core builds it on the test platform and runs a self-test chat with the assistant. The client's team sees it in the app's "AI team" tab. Anything outside the catalog, such as another system or another channel, is marked **NEW BUILD**: design it, and Zaphiel builds it, in n8n or as a new catalog tool, before it is promised. This section replaces the B19 note "staff web sign-in is NOT built yet": the team app now exists, with one-time sign-in links. Proper logins are still to come.
+
 ## STAGE 16 — OUTPUT FILES (write to the vault)
 Folder: `80_Clients/<client-slug>/edg/` (one folder per client, never mixed)
 

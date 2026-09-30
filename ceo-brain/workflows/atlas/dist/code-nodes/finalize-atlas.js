@@ -227,8 +227,9 @@ function atEdgSpec(input) {
   if (accounting === 'unknown') confirm.push('Which accounting software they use (e.g. Xero)');
   if (ex.uses_whatsapp !== false) confirm.push('Their WhatsApp Business number and Meta business verification (for the live system)');
   var email = atStr(input.notify_email, 200);
+  var team = atAiTeam(input, ind, { whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt }, text);
   return {
-    schema: 'edg.spec.v1', generated_by: AT_VERSION, generated_at: new Date().toISOString(),
+    schema: 'edg.spec.v2', generated_by: AT_VERSION, generated_at: new Date().toISOString(),
     company: { name: input.company_name || 'Unnamed company', slug: (input.test_mode ? 'test-' : '') + input.slug, industry: atStr(input.industry || ex.industry, 120) || ind, timezone: 'Asia/Singapore', currency: 'SGD' },
     modules: { lead_capture: true, follow_ups: true, whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt, accounting: accounting, calendar: calendar, ceo_brief: true },
     pipeline: AT_PIPELINES[ind].map(function (s) { return { key: s[0], name: s[1], sla_hours: s[2] }; }),
@@ -239,8 +240,77 @@ function atEdgSpec(input) {
     reviewer: /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? { name: 'Ryan', email: email } : undefined,
     to_confirm: confirm,
     why: why,
-    source: { lead_id: input.lead_id, design_path: input.base_path, test_mode: !!input.test_mode }
+    source: { lead_id: input.lead_id, design_path: input.base_path, test_mode: !!input.test_mode },
+    problems: team.problems,
+    agents: team.agents,
+    automations: team.automations,
+    knowledge: team.knowledge
   };
+}
+var AT_AGENT_PURPOSE = {
+  services: 'Answer customers on WhatsApp day and night: understand the problem (what is wrong, how many units, the address), offer free service visits and book them, and prepare quotations from the price list.',
+  renovation: 'Answer homeowners on WhatsApp: understand the project (type of home, rooms, budget range the customer gives), book site visits, and pass design and pricing questions to the team.',
+  clinic: 'Answer patients on WhatsApp: book consultations, answer questions about opening hours and services, and pass every medical or symptom question to the clinic team.',
+  property: 'Answer buyers and tenants on WhatsApp: understand what they are looking for, book viewings, and pass offers and negotiations to the agent.',
+  education: 'Answer parents and students on WhatsApp: explain the classes, book trial classes, and pass fee and schedule exceptions to the team.',
+  beauty: 'Answer customers on WhatsApp: explain the treatments, book appointments, and pass anything unusual to the team.',
+  general: 'Answer enquiries on WhatsApp: understand what the customer needs, collect their details, book appointments when offered, and pass anything else to the team.'
+};
+var AT_HANDOVER = {
+  services: ['complaints about a past job', 'warranty or refund questions'],
+  renovation: ['design or pricing decisions', 'complaints about a past project'],
+  clinic: ['any medical, symptom or medication question', 'emergencies (tell them to call emergency services)'],
+  property: ['offers, prices or negotiation', 'legal or financing questions'],
+  education: ['fee discounts or exceptions', 'complaints'],
+  beauty: ['allergies, skin conditions or medical questions', 'complaints'],
+  general: ['complaints', 'anything about money or contracts']
+};
+var AT_PROBLEMS = [
+  [/\b(miss(ed|ing)? (appointments?|bookings?|jobs?)|no[- ]?shows?|forget (the )?appointments?)\b/i, 'Appointments are missed', 'Bookings in one calendar per person, and every customer gets a reminder a day before'],
+  [/\b(forget|forgot|forgotten|lose customers|lost customers|no follow[- ]?up|nobody follows? up)\b/i, 'Customers are forgotten and lost', 'Every enquiry gets an owner, a next step and a reminder; nothing waits without someone responsible'],
+  [/\b(quot\w*)\b/i, 'Quotations take time and are not followed up', 'Quotations from the price list in one tap, and an automatic follow-up when the customer goes quiet'],
+  [/\b(notebook|excel|spreadsheet|paper|google sheets?)\b/i, 'Everything is written by hand in different places', 'One system for customers, jobs, quotations and invoices'],
+  [/\b(reply|replies|respond|slow|busy|whatsapp)\b/i, 'Replying to every WhatsApp message takes the owner\'s time', 'The AI assistant answers in seconds, day and night, and books the job'],
+  [/\b(invoice|payments?|paid|deposit)\b/i, 'Invoices and payments are tracked by hand', 'Invoices from accepted quotations, and payments tracked until paid'],
+  [/\b(report|see everything|overview|dashboard|numbers)\b/i, 'The owner cannot see what is happening', 'A morning report with the numbers that matter']
+];
+function atAiTeam(input, ind, m, text) {
+  var name = String(input.company_name || 'the business').replace(/\s*\b(pte\.?|ltd\.?|llp|inc\.?)\b\.?/gi, '').replace(/\s+/g, ' ').trim();
+  var problems = [];
+  for (var i = 0; i < AT_PROBLEMS.length; i++) {
+    if (AT_PROBLEMS[i][1] === 'Replying to every WhatsApp message takes the owner\'s time' && !m.whatsapp) continue;
+    if (/Quotations/.test(AT_PROBLEMS[i][1]) && !m.quotes) continue;
+    if (/Invoices/.test(AT_PROBLEMS[i][1]) && !m.invoices) continue;
+    if (AT_PROBLEMS[i][0].test(text)) problems.push({ problem: AT_PROBLEMS[i][1], solution: AT_PROBLEMS[i][2] });
+  }
+  var tools = [];
+  if (m.appointments) tools.push('find_free_times', 'book_job');
+  if (m.quotes) tools.push('prepare_quote');
+  tools.push('save_customer_details', 'add_note', 'hand_over_to_person');
+  var agents = m.whatsapp ? [{
+    key: 'front_desk', name: (name + ' Assistant').slice(0, 80), purpose: AT_AGENT_PURPOSE[ind] || AT_AGENT_PURPOSE.general,
+    persona: 'warm, short and professional, like a helpful front-desk person; Singapore customers', channels: ['whatsapp'], tools: tools,
+    handover_when: AT_HANDOVER[ind] || AT_HANDOVER.general,
+    rules: ['Put the customer\'s address and job details in the booking notes.', 'Ask one question at a time.']
+  }] : [];
+  var autos = [{ key: 'quiet_new_enquiry', name: 'Call new enquiries that went quiet', trigger: { event: 'lead.created', after_hours: 4 }, conditions: ['customer_has_not_replied', 'lead_still_open'],
+    actions: [{ do: 'create_task', title: 'Call {first_name}: no reply since the first message', due_in_hours: 2 }] }];
+  if (m.quotes) autos.push({ key: 'quote_follow_up', name: 'Follow up quotations', trigger: { event: 'quote.sent', after_hours: 48 }, conditions: ['customer_has_not_replied', 'quote_still_open'],
+    actions: [{ do: 'ai_follow_up', instruction: 'Politely check whether the customer has questions about quotation {quote_number}; offer to book the job. No pressure, no new prices.', fallback_text: 'Hi {first_name}, just checking if you have any questions about quotation {quote_number} from {business}?' },
+      { do: 'notify_owner', text: 'Quotation {quote_number} has had no answer for 2 days. The AI assistant followed up.' }] });
+  if (m.appointments) {
+    autos.push({ key: 'thank_after_job', name: 'Thank the customer after the job', trigger: { event: 'appointment.completed', after_hours: 2 },
+      actions: [{ do: 'message_customer', text: 'Hi {first_name}, thank you for choosing {business} today. If anything is not right, just reply here.' }] });
+    autos.push({ key: 'no_show_rebook', name: 'Rebook customers who missed their appointment', trigger: { event: 'appointment.no_show', after_hours: 1 },
+      actions: [{ do: 'ai_follow_up', instruction: 'The customer missed their {service} today. Kindly offer to book a new time.', fallback_text: 'Hi {first_name}, we missed you today. Would you like to book a new time?' }, { do: 'notify_owner', text: '{first_name} missed their {service}. The AI assistant offered a new time.' }] });
+  }
+  if (m.invoices) autos.push({ key: 'overdue_invoice_owner', name: 'Tell the owner about overdue invoices', trigger: { event: 'invoice.overdue', after_hours: 0 },
+    actions: [{ do: 'notify_owner', text: 'Invoice {invoice_number} is overdue. A reminder draft is ready for you to send.' }] });
+  autos.push({ key: 'morning_numbers', name: 'Morning numbers for the owner', trigger: { schedule: { every: 'day', time: '08:00' } }, actions: [{ do: 'owner_summary' }] });
+  var knowledge = [];
+  var what = atStr(input.industry || (input.extracted || {}).industry, 300);
+  if (what) knowledge.push({ title: 'What does ' + name + ' do?', body: what + ' (in the owner\'s words; approve or correct before the AI uses it)', category: 'faq' });
+  return { problems: problems, agents: agents, automations: autos, knowledge: knowledge };
 }
 function atBuildUrl(input) { return AT_EDG_URL + '/atlas/build?path=' + encodeURIComponent(input.base_path + '16_edg_spec.json'); }
 function atAutoBuildUrl() { return AT_EDG_URL + '/atlas/auto-build'; }

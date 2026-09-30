@@ -1462,7 +1462,7 @@ test('the build plan follows what the customer said: team size, quotations, book
   const reno = at.atInput({ lead_id: 'l1', company_name: 'Lim Renovation Pte Ltd', test_mode: true, notify_email: 'owner@example.com', message: 'we need a CRM, our quotations get lost',
     extracted_json: JSON.stringify({ problem: 'we track leads in Excel and my 4 sales guys forget follow-ups', current_tools: ['Excel'], accounting_or_erp: ['Xero'] }), conversation_json: '[]' });
   const s1 = at.atEdgSpec(reno);
-  assert.strictEqual(s1.schema, 'edg.spec.v1');
+  assert.strictEqual(s1.schema, 'edg.spec.v2');
   assert.strictEqual(s1.company.slug, 'test-lim-renovation', 'test leads never collide with a real client');
   assert.ok(/^[a-z0-9](?:[a-z0-9-]{0,58}[a-z0-9])?$/.test(s1.company.slug), 'EDG slug rule');
   assert.deepStrictEqual(s1.team, { sales: 4, managers: 1, support: 0, label: 'Sales' });
@@ -1508,6 +1508,41 @@ test('ATLAS builds automatically: wait for the vault → POST /atlas/auto-build 
   assert.ok(/\.to\(waitVault\)\s*\.to\(autoBuild\)\s*\.to\(emailBuilt\)/.test(sdk), 'wired after the vault files');
   assert.ok(/retryOnFail: true/.test(sdk) && /16_edg_spec\.json/.test(sdk));
   assert.ok(!/atlas\/auto-build\?/.test(sdk), 'the spec is never put in a link');
+});
+console.log('\n[34] ATLAS designs the AI team: problems, the AI assistant, workflows (Ryan, 2026-09-30: "build agents for people … solve people problems")');
+test('from the owner\'s words: problems in plain language, an assistant with only the tools of the modules, workflows from the safe catalog', () => {
+  const tan = at.atEdgSpec(at.atInput({ lead_id: 'l7', company_name: 'Tan Aircon Services Pte Ltd', industry: 'Aircon servicing and repair', test_mode: false,
+    message: 'Customers WhatsApp us to book. We write everything in a notebook and Excel. My 3 technicians miss appointments and we forget to follow up on quotations. I want invoices, payments and a daily report.',
+    extracted_json: JSON.stringify({ uses_whatsapp: true }), conversation_json: '[]' }));
+  assert.strictEqual(tan.schema, 'edg.spec.v2');
+  assert.deepStrictEqual(tan.problems.map((p) => p.problem), ['Appointments are missed', 'Customers are forgotten and lost', 'Quotations take time and are not followed up',
+    'Everything is written by hand in different places', "Replying to every WhatsApp message takes the owner's time", 'Invoices and payments are tracked by hand', 'The owner cannot see what is happening']);
+  assert.ok(tan.problems.every((p) => p.hours_saved_per_week === undefined), 'no invented numbers');
+  assert.strictEqual(tan.agents.length, 1);
+  assert.strictEqual(tan.agents[0].name, 'Tan Aircon Services Assistant');
+  assert.deepStrictEqual(tan.agents[0].tools, ['find_free_times', 'book_job', 'prepare_quote', 'save_customer_details', 'add_note', 'hand_over_to_person']);
+  assert.ok(tan.agents[0].handover_when.some((h) => /warranty or refund/.test(h)));
+  assert.deepStrictEqual(tan.automations.map((a) => a.key), ['quiet_new_enquiry', 'quote_follow_up', 'thank_after_job', 'no_show_rebook', 'overdue_invoice_owner', 'morning_numbers']);
+  const EVENTS = ['lead.created', 'quote.sent', 'quote.accepted', 'quote.declined', 'appointment.booked', 'appointment.completed', 'appointment.no_show', 'invoice.issued', 'invoice.overdue', 'lead.won', 'lead.lost', 'agent.handed_over'];
+  const ACTS = ['message_customer', 'ai_follow_up', 'notify_owner', 'create_task', 'move_stage', 'owner_summary'];
+  const CONDS = ['customer_has_not_replied', 'quote_still_open', 'job_still_booked', 'invoice_unpaid', 'lead_still_open'];
+  for (const a of tan.automations) {
+    assert.ok(/^[a-z0-9_]{2,40}$/.test(a.key));
+    assert.ok(a.trigger.schedule ? a.actions.every((x) => x.do === 'owner_summary' || x.do === 'notify_owner') : EVENTS.includes(a.trigger.event), a.key + ' trigger');
+    assert.ok(a.actions.every((x) => ACTS.includes(x.do)), a.key + ' actions');
+    assert.ok((a.conditions || []).every((c) => CONDS.includes(c)), a.key + ' conditions');
+  }
+  assert.ok(!/\$\s?\d|\b\d+(\.\d+)?\s*%/.test(JSON.stringify(tan.agents.concat(tan.automations))), 'no prices or percentages in the AI team');
+  assert.ok(tan.knowledge[0].body.includes('approve or correct'), 'knowledge waits for the owner');
+});
+test('a clinic hands every medical question to a person; a business without WhatsApp gets no assistant; no quotes module → no quoting tool', () => {
+  const clinic = at.atEdgSpec(at.atInput({ lead_id: 'l8', company_name: 'Smile Dental Clinic', test_mode: true, message: 'patients keep missing appointments', extracted_json: '{}', conversation_json: '[]' }));
+  assert.ok(clinic.agents[0].handover_when.some((h) => /medical, symptom or medication/.test(h)));
+  assert.ok(!clinic.agents[0].tools.includes('prepare_quote'));
+  assert.ok(clinic.automations.some((a) => a.key === 'no_show_rebook'));
+  const noWa = at.atEdgSpec(at.atInput({ lead_id: 'l9', company_name: 'ABC Trading', test_mode: true, message: 'we need a crm', extracted_json: JSON.stringify({ uses_whatsapp: false }), conversation_json: '[]' }));
+  assert.deepStrictEqual(noWa.agents, []);
+  assert.deepStrictEqual(noWa.automations.map((a) => a.key), ['quiet_new_enquiry', 'morning_numbers']);
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
