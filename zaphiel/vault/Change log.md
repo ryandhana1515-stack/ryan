@@ -577,3 +577,4 @@ tags: [zaphiel, changelog]
   business; the person who enquired is read from the email. Anything unreadable goes to a person, never lost. Test
   tools "Send a test Facebook lead" / "Send a test portal email". Migration 017 on staging; 161/161 tests; checked in a
   phone-sized browser. Cards 01 + property archetype updated.
+- 2026-10-01 — **ATLAS B19: Facebook lead forms + portal enquiry emails row added** (Ryan: "save"). ATLAS now offers them as TESTED, staging (real Page and real portal emails NEEDS VERIFICATION).
