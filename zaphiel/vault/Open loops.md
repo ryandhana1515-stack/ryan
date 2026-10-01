@@ -135,7 +135,7 @@ tags: [zaphiel, open-loops]
 - **After the first real AI test (2026-09-30):**
   - The Sparkle build took about 44 s and Ah Kow Plumbing about 52 s; the test platform stops a request at 60 s. It fits now, but a bigger company (more workflows) could come close. Next step: run the build's checks in the background and email the result.
   - Tan Aircon was built before the AI team existed (design v1), so it has no assistant or workflows. It is never built twice. To give it the AI team: a "rebuild" option, or a new test slug.
-  - AI billing (proposed 2026-09-30, waiting for Ryan's "yes"): FusionTech holds one Anthropic key for all clients and bills each client's AI usage as a separate line. Then Zaphiel builds a monthly usage report per client and a spending cap per client.
+  - ~~AI billing (proposed 2026-09-30)~~ Done 2026-10-01: Ryan said yes; usage and monthly limits per client are built (Fusion EDG Core PR #14).
   - ~~John does not send the link on WhatsApp~~ Done 2026-09-30: John sends the "Try your system" page automatically.
 - **Website Build Worker resume gap (found 2026-10-01).** If a worker session stops mid-build, the next hourly run skips the task for 75 minutes, so a website can wait up to 2 hours. Fix: let the next run resume when the last progress row is older than about 15 minutes instead of keying on the start row (`ceo-brain/agents/website-build-worker/ROUTINE.md` step b).
 - **Roen (CRM built by mistake, 2026-10-01).** The test platform holds a Roen CRM that Ryan did not want. It is harmless test data; delete it on Ryan's word.
@@ -146,4 +146,6 @@ tags: [zaphiel, open-loops]
   4. proper staff logins;
   5. a separate live system (monthly hosting fee, shown to Ryan before paying);
   6. builds checked in the background (no 60-second limit).
-  - Waiting on Ryan: "yes" on AI billing (Option 1); FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business.
+  - Waiting on Ryan: FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business. (AI billing: done 2026-10-01.)
+  - Found 2026-10-01: on the test system's free hosting plan the timer runs once a day and handles 50 workflow runs per client per run. Step 5 (live system) needs a proper scheduler (every few minutes), or "2 hours later" workflows wait until the next morning.
+  - Still to build for billing: a monthly all-clients AI usage email to Ryan (with step 2, real email).
