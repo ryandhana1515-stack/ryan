@@ -149,3 +149,10 @@ tags: [zaphiel, open-loops]
   - Waiting on Ryan: FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business. (AI billing: done 2026-10-01.)
   - Found 2026-10-01: on the test system's free hosting plan the timer runs once a day and handles 50 workflow runs per client per run. Step 5 (live system) needs a proper scheduler (every few minutes), or "2 hours later" workflows wait until the next morning.
   - Still to build for billing: a monthly all-clients AI usage email to Ryan (with step 2, real email).
+- 2026-10-01 — **ATLAS v3 follow-ups.**
+  - Ryan: send sections 36–49 of the v3 prompt (cut off at section 35); Zaphiel merges only what is new or stricter.
+  - NEW BUILD items the scenario tests surfaced: mobile job card (checklist, photos, signature, materials), inventory
+    and procurement (only if a client cannot keep or buy a system), proper staff logins (agents seeing only their
+    own leads), Meta lead-form and portal intake, DNC checks, more than one WhatsApp number per client.
+  - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
+
