@@ -21,6 +21,6 @@ traps). A starting point, never the final architecture: "Never use the exact sam
 - **Common integrations:** WhatsApp, Google Calendar, accounting (Xero), maps link on the job card.
 - **Signature KPIs:** Jobs completed vs scheduled; late jobs; callbacks/rework; completion-to-invoice time. Each one needs its management question in `11_dashboard_kpis.md`.
 - **Typical traps:** Building the job card before fixing how jobs come in; tracking technicians' location without consent; materials never recorded, so jobs look profitable when they are not.
-- **Fusion EDG Core fit today:** Strong fit: lead intake, quotations, appointments, the mobile job card (checklist, materials, photos, signature, works on a weak signal), invoices and the AI front desk are TESTED. Stock deduction for materials and GPS tracking are NEW BUILD.
+- **Fusion EDG Core fit today:** Strong fit: lead intake, quotations, appointments, the mobile job card (checklist, materials, photos, signature, works on a weak signal), invoices and the AI front desk are TESTED. Materials taken off the technician's van stock when the job is completed, and stock with purchase orders, are TESTED, staging (2026-10-01). GPS tracking is NEW BUILD.
 
 Back to [[60_Skill_Packs/ATLAS_Business_Systems/00_Index|00_Index]].

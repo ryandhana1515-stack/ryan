@@ -578,3 +578,12 @@ tags: [zaphiel, changelog]
   tools "Send a test Facebook lead" / "Send a test portal email". Migration 017 on staging; 161/161 tests; checked in a
   phone-sized browser. Cards 01 + property archetype updated.
 - 2026-10-01 — **ATLAS B19: Facebook lead forms + portal enquiry emails row added** (Ryan: "save"). ATLAS now offers them as TESTED, staging (real Page and real portal emails NEEDS VERIFICATION).
+- 2026-10-01 — **Stock and purchasing built** (Ryan: "stock and purchasing"; Fusion EDG Core PR #19, deployed to the
+  test system). Items, stores and technician vans, suppliers; stock changes only through recorded movements (the
+  database keeps the figure, nobody can type it in); manager corrections with a reason; counts approved by a different
+  manager; materials on the job card come off the van when the job is completed; low stock drafts one purchase order
+  per supplier for a manager to approve (never sent by itself); approve & email the supplier (approval limit: the
+  preparer cannot approve above it); deliveries in full or in part; supplier bill checked against what arrived.
+  Team app: Stock tab, owner switch, test tools. Migration 018 on staging (in parts); 174/174 tests; checked in a
+  phone-sized browser. ATLAS (n8n `9XQWSgTBszRc0Jxj`, Finalize ATLAS) switches stock on when a client talks about
+  stock/parts and has no ERP (ceo-brain tests 136/136; deployed code verified identical). Cards 11/13/14 + field-service archetype updated.

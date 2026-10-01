@@ -45,7 +45,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — Approval thresholds from the client. The requester is not the approver. 3-way match before payment.
 
 ## Fusion EDG Core today
-Procurement: **NEW BUILD**. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Procurement: suppliers, low stock → draft purchase order (one per supplier) → approval by a person (approval limit from the client; the preparer cannot approve above it) → emailed to the supplier → deliveries in full or in part → stock up → supplier bill checked against what arrived (order ↔ delivery ↔ bill): **TESTED, staging (2026-10-01)**. Supplier quotation comparison, pushing supplier bills to Xero, supplier performance reports: **NEW BUILD**. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 

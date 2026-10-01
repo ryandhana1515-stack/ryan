@@ -413,3 +413,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   portal publishes a lead API (checked 2026-10-01), so each business gets a private forwarding address; the enquirer is
   read from the email, and any email that cannot be read goes to a person. Facebook/Instagram lead forms use Meta's
   official Lead Ads webhook; one FusionTech Meta app serves every client Page (each Page belongs to one business).
+
+- 2026-10-01 — **Stock and purchasing: small-business stock inside EDG Core, not an ERP** (Ryan: "stock and purchasing",
+  Zaphiel's design). Stock changes only through movements (Ryan's card 13 rule); a person approves every purchase order
+  and the person who prepared an order cannot approve it above the client's limit (card 14); costs and reorder levels
+  come from the client, never invented. Where a client already runs an ERP or inventory system, ATLAS integrates with it
+  and leaves EDG stock off.

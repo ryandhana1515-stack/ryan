@@ -255,6 +255,12 @@ function atEdgSpec(input) {
   var acc = atArr(ex.accounting_or_erp).join(' ') + ' ' + text;
   var accounting = /\bxero\b/i.test(acc) ? 'xero' : /\bquickbooks\b/i.test(acc) ? 'quickbooks' : atArr(ex.accounting_or_erp).length ? 'other' : 'unknown';
   var calendar = /google (calendar|workspace)|\bgmail\b/i.test(text) ? 'google' : 'unknown';
+  // Stock and purchasing (Fusion EDG Core, 2026-10-01): only when the client talks about stock, parts or suppliers, and
+  // only where they do not already run an ERP / inventory system (then ATLAS integrates instead). Items are never invented.
+  var stockSaid = /\b(stock|inventory|spare parts?|parts (in|for) (the|our) vans?|warehouse|store ?room|purchase orders?|reorder\w*|run(s|ning)? out of (stock|parts|materials|items))\b/i.test(text + ' ' + wants);
+  var hasErp = /\b(sap|netsuite|odoo|dynamics|erp|unleashed|cin7|tradegecko|zoho inventory)\b/i.test(acc);
+  var stock = stockSaid && !hasErp;
+  why.stock = stock ? 'CLIENT-PROVIDED: mentioned stock, parts or suppliers' : stockSaid ? 'mentioned stock, but they already use ' + (acc.match(/\b(sap|netsuite|odoo|dynamics|erp|unleashed|cin7|tradegecko|zoho inventory)\b/i) || ['an inventory system'])[0] + ': integrate, do not rebuild' : 'not mentioned';
   var m = /\b(\d{1,2})\s*(sales(?:\s*(?:guys|staff|people|team|reps|persons?|agents))?|salespeople|salesmen|agents|consultants|designers|technicians?|techs|installers|cleaners|workers|therapists|stylists|tutors|teachers)\b/i.exec(text);
   var sales = m ? Math.max(1, Math.min(50, parseInt(m[1], 10))) : 2;
   var who = m ? m[2].toLowerCase() : '';
@@ -266,13 +272,14 @@ function atEdgSpec(input) {
   if (quotes) confirm.push('Price list: every product/service and its price (the AI only quotes approved prices)');
   if (quotes || invoices) { confirm.push('GST registration and rate (needed before any quote or invoice)'); confirm.push('Payment terms (days) and how long a quote stays valid'); }
   if (accounting === 'unknown') confirm.push('Which accounting software they use (e.g. Xero)');
+  if (stock) { confirm.push('Stock items they keep (code, name, unit), where stock is kept (store, vans) and their suppliers'); confirm.push('When to reorder each item and how many, and what each item costs'); confirm.push('Spending limit above which a second person approves a purchase order'); }
   if (ex.uses_whatsapp !== false) confirm.push('Their WhatsApp Business number and Meta business verification (for the live system)');
   var email = atStr(input.notify_email, 200);
   var team = atAiTeam(input, ind, { whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt }, text);
   return {
     schema: 'edg.spec.v2', generated_by: AT_VERSION, generated_at: new Date().toISOString(),
     company: { name: input.company_name || 'Unnamed company', slug: (input.test_mode ? 'test-' : '') + input.slug, industry: atStr(input.industry || ex.industry, 120) || ind, timezone: 'Asia/Singapore', currency: 'SGD' },
-    modules: { lead_capture: true, follow_ups: true, whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt, accounting: accounting, calendar: calendar, ceo_brief: true },
+    modules: { lead_capture: true, follow_ups: true, whatsapp: ex.uses_whatsapp !== false, quotes: quotes, invoices: invoices, appointments: appt, accounting: accounting, calendar: calendar, ceo_brief: true, stock: stock },
     pipeline: AT_PIPELINES[ind].map(function (s) { return { key: s[0], name: s[1], sla_hours: s[2] }; }),
     team: { sales: sales, managers: 1, support: 0, label: label },
     services: appt ? [AT_SERVICES[ind]] : [],

@@ -48,7 +48,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — Ryan's rule. One source of truth for stock figures. Adjustments need a reason and an approver.
 
 ## Fusion EDG Core today
-Inventory: **NEW BUILD** (not in the catalog). Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Inventory (small-business stock, not an ERP): items, stores and technician vans, stock changed only by movements (received, used on a job, moved, returned, corrected by a manager with a reason), counts approved by a different manager, low-stock alerts: **TESTED, staging (2026-10-01)**. Reserved stock, sales orders, barcode scanning, stock value reports: **NEW BUILD**. Where the client runs an ERP or inventory system, integrate instead. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 

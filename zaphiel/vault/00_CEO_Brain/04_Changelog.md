@@ -85,3 +85,5 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   parts: the migration tool timed out on one statement pattern). 147/147 tests. Cards 01/09 + property archetype updated.
 - 2026-10-01 — **Lead sources: Facebook/Instagram lead forms + property-portal enquiry emails** (Ryan: "do"; Fusion EDG
   Core PR #18, test system). Migration 017 on staging; 161/161 tests. Real Page and real portal emails NEEDS VERIFICATION.
+- 2026-10-01 — **Stock and purchasing** (Ryan: "stock and purchasing"; Fusion EDG Core PR #19, test system; ATLAS n8n
+  Finalize ATLAS republished). Migration 018 on staging; 174/174 EDG tests, 136/136 ceo-brain tests.
