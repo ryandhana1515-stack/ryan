@@ -570,3 +570,10 @@ tags: [zaphiel, changelog]
   hashes only. Owner switch "Who sees which customers" enforced by the database for salespeople/support; managers,
   the AI and the system unaffected; free times stay true. Migration 016 on staging (applied through the SQL tool in
   parts: the migration tool timed out on one statement pattern). 147/147 tests. Cards 01/09 + property archetype updated.
+- 2026-10-01 — **Facebook lead forms + property-portal enquiries come in as customers** (Ryan: "do"; Fusion EDG Core
+  PR #18, deployed to the test system). Facebook/Instagram lead forms: one webhook for every client Page, the lead is
+  read from Meta and goes through the normal intake (owner in turn, follow-ups); Meta retries ignored. Enquiry emails
+  (PropertyGuru, 99.co, EdgeProp, SRX, Ohmyhome, Carousell, website plug-ins): a private forwarding address per
+  business; the person who enquired is read from the email. Anything unreadable goes to a person, never lost. Test
+  tools "Send a test Facebook lead" / "Send a test portal email". Migration 017 on staging; 161/161 tests; checked in a
+  phone-sized browser. Cards 01 + property archetype updated.

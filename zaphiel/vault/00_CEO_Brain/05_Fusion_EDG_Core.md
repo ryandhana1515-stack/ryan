@@ -88,3 +88,13 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
   The database enforces it. ATLAS can preset it for a client (e.g. a property agency).
 - Tested 147/147; database change on the test system; checked live there (admin 5 customers, one technician 2).
 
+
+**Facebook lead forms + property-portal enquiries (2026-10-01, Ryan: "do"; Fusion EDG Core PR #18):**
+- Facebook/Instagram lead forms: when someone fills in a client's form, the customer appears on the board by itself,
+  given to the next person in turn, with follow-ups. Before the first client: the client gives FusionTech access to
+  their Facebook Page, and Meta must approve FusionTech's app (app review).
+- Property portals and other enquiry emails: the owner gets a private address in Team → "Where customers come from";
+  FusionTech connects the client's enquiry inbox to it. The person who enquired is read from the email; an email that
+  cannot be read goes to a person.
+- Test system: Team → Test tools → "Send a test Facebook lead" / "Send a test portal email".
+- Tested 161/161; database change on the test system. NEEDS VERIFICATION: a real Page, and one real email per portal.

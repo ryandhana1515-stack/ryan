@@ -58,7 +58,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — WON/LOST is a human decision. A lead never exists without an owner and a next action. Prices only from the client's approved list. Lead source captured at intake (agent file §4).
 
 ## Fusion EDG Core today
-Lead intake + CRM: **TESTED, staging**. Quotations from the approved price list: **TESTED**. Staff app (Customers board) with **staff logins** (own email + password, lockout) and an owner switch so **each salesperson sees only their own customers** (enforced by the database): **TESTED, staging (2026-10-01)**. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Lead intake + CRM: **TESTED, staging**. Quotations from the approved price list: **TESTED**. Staff app (Customers board) with **staff logins** (own email + password, lockout) and an owner switch so **each salesperson sees only their own customers** (enforced by the database): **TESTED, staging (2026-10-01)**. Facebook/Instagram lead forms and property-portal / enquiry emails come in as customers by themselves: **TESTED, staging (2026-10-01)**; real Page and real portal emails NEEDS VERIFICATION per client. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 

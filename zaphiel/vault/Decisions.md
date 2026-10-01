@@ -408,3 +408,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-10-01 — **AI billing: Option 1** (Ryan: "yes"). FusionTech holds one Anthropic key for every client. Each client's AI use is a separate line on their bill (third-party costs are always separate from FusionTech fees).
   - Each client has a monthly AI limit. The default is **US$20/month**, set by Zaphiel; Ryan changes it per client on the review page.
   - At 80% Ryan is told. At 100% the client's AI pauses until next month and a person answers; customers are never left without a reply.
+
+- 2026-10-01 — **Property-portal leads arrive by email, not by API** (Ryan: "do", Zaphiel's approach). No Singapore
+  portal publishes a lead API (checked 2026-10-01), so each business gets a private forwarding address; the enquirer is
+  read from the email, and any email that cannot be read goes to a person. Facebook/Instagram lead forms use Meta's
+  official Lead Ads webhook; one FusionTech Meta app serves every client Page (each Page belongs to one business).

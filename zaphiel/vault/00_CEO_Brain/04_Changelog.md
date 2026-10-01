@@ -83,3 +83,5 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   hashes only. Owner switch "Who sees which customers" enforced by the database for salespeople/support; managers,
   the AI and the system unaffected; free times stay true. Migration 016 on staging (applied through the SQL tool in
   parts: the migration tool timed out on one statement pattern). 147/147 tests. Cards 01/09 + property archetype updated.
+- 2026-10-01 — **Lead sources: Facebook/Instagram lead forms + property-portal enquiry emails** (Ryan: "do"; Fusion EDG
+  Core PR #18, test system). Migration 017 on staging; 161/161 tests. Real Page and real portal emails NEEDS VERIFICATION.

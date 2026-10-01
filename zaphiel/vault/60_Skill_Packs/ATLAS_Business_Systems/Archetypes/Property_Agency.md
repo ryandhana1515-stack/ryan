@@ -18,7 +18,7 @@ traps). A starting point, never the final architecture: "Never use the exact sam
 - **Likely system type:** SALES-CRM (confirm with the agent file's SYSTEM-TYPE DECISION RULES).
 - **Core flow:** as in Ryan's line above.
 - **Must-have modules (cards):** [[01_Sales_CRM]] · [[02_Follow_Up]] · [[06_Calendar_Appointments]] · [[17_WhatsApp_Messaging]] · [[22_Forms]] · [[28_Management_Dashboard]]
-- **Common integrations:** Meta lead ads, WhatsApp, property portals (check how each portal delivers leads before promising an integration).
+- **Common integrations:** Meta lead ads (TESTED, staging: Facebook/Instagram lead forms become customers by themselves; needs Meta app review + the client's Page before the first client), WhatsApp, property portals (TESTED, staging: enquiry emails forwarded to a private address become customers; no portal publishes a lead API, so check one real email from each portal the client uses).
 - **Signature KPIs:** Response time; viewings per lead; leads without a next action per agent. Each one needs its management question in `11_dashboard_kpis.md`.
 - **Typical traps:** Agents keeping leads on personal phones (the agency loses the data when they leave); messaging numbers on the DNC Registry; ads that break CEA rules ([[70_Industry_Packs/Singapore_Property/05_Marketing_Advertising_Rules]]).
 - **Fusion EDG Core fit today:** Good fit: lead intake, round-robin owner, follow-ups, viewing bookings, AI assistant, staff logins and "each agent sees only their own customers" (ATLAS spec `team.visibility: own`) are TESTED. Property know-how: [[fusion-property-sg]].
