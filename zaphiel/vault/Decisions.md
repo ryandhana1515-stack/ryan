@@ -5,6 +5,10 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-01 — **Staff logins: own email + password, not a separate login service** (Ryan: "do", Zaphiel's approach). Works
+  now without the email key; a manager's one-time link sets or resets the password. The owner decides per business
+  whether staff see all customers or only their own; the database enforces it.
+
 - 2026-10-01 — **Build order: the mobile job card first** (Ryan: "ok" to Zaphiel's recommendation after the ATLAS v3 tests).
   Field-service businesses are the most common FusionTech client. Next in line: staff logins, Meta lead forms /
   portal leads, then stock and purchasing (only where a client cannot keep or buy a system).
