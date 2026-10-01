@@ -157,6 +157,6 @@ tags: [zaphiel, open-loops]
   - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
 - 2026-10-01 — **Job card follow-ups.**
   - Ryan: try it on a phone. The test system's team app → Jobs → Open job card (any FAKE test company).
-  - The ATLAS agent file's module catalog (B19) does not list the job card yet: the 1-row change waits for Ryan's OK.
+  - ~~ATLAS module catalog (B19) row for the job card~~ added 2026-10-01 (Ryan: "save", PR #111).
   - Not built yet: materials taken off stock, GPS/time-on-site tracking, a photo report emailed to the customer.
 
