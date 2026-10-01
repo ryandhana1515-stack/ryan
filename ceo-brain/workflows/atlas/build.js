@@ -101,7 +101,7 @@ return [{ json: {
 } }];
 `;
 
-const codeDemo = `${pick('agents/atlas/atlas.js', ['atStr', 'atDemoMessage'])}
+const codeDemo = `${pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'AT_EXPLICIT', 'AT_SYS', 'AT_DECLINED', 'atDeclinedSystems', 'atSystemsWanted', 'atDemoMessage'])}
 // ---- n8n glue: John sends the prospect their "Try your system" link (on the channel they used) ----
 const f = $('Finalize ATLAS').first().json;
 const b = $('Build on EDG (automatic)').first().json || {};

@@ -11,7 +11,7 @@ function atParse(v, dflt) {
   if (v && typeof v === 'object') return v;
   try { var o = JSON.parse(v || ''); return o === null || o === undefined ? dflt : o; } catch (e) { return dflt; }
 }
-/** Should John wake ATLAS for this lead? Needs a named company, a systems need (not only a website) and at least one fact about how they work today. */
+/** The customer said they do not want systems work (Ryan, 2026-10-01: "I don't want that, I want a website"). */
 function atInput(inp) {
   inp = inp || {};
   var ex = atParse(inp.extracted_json, {}) || {};

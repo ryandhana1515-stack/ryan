@@ -512,3 +512,16 @@ tags: [zaphiel, changelog]
   - **John sends the link automatically** after ATLAS builds, on the channel the customer used. ATLAS n8n workflow `9XQWSgTBszRc0Jxj` gained 4 steps (published version `c1eee7a5`, identical to the repo; ceo-brain tests 132/132).
   - Ryan's email also gets a "Try it as the customer" button.
   - Ah Kow Plumbing's link was sent to Ryan on WhatsApp through the same sender, as a one-off (the one-off workflow `yEShZhncnlbA6jnK` is archived).
+
+- 2026-10-01 — **John retrained after Ryan's Roen test.**
+  - What happened: Ryan asked for a website for Roen (electrician) and gave the link. Because of the 27 Sep rule, John also woke ATLAS. ATLAS built a CRM and sent a CRM demo link. After Ryan said "I didn't want a CRM or EDG", John still added ATLAS's CRM question.
+  - Now:
+    - a website request never wakes ATLAS;
+    - "don't want a CRM", "just a website" and similar end all CRM/EDG talk;
+    - the CRM demo link is never sent to a website-only customer;
+    - the service-business assistant template no longer says "free" visits.
+  - Tests 135/135, including a replay of the Roen chat.
+  - Deployed, and checked to be identical to the repo:
+    - Lead Intake `b7kbJpnKLN2uQxyn` (version `2a440fd9`);
+    - ATLAS `9XQWSgTBszRc0Jxj` (version `2443b4ec`).
+  - The Roen website itself: the build worker started it at 09:17 UTC (keyframes and scenes made by 09:23); the session stopped before finishing. Zaphiel set a check-in for 10:35 UTC to resume it.
