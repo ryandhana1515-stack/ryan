@@ -139,3 +139,11 @@ tags: [zaphiel, open-loops]
   - ~~John does not send the link on WhatsApp~~ Done 2026-09-30: John sends the "Try your system" page automatically.
 - **Website Build Worker resume gap (found 2026-10-01).** If a worker session stops mid-build, the next hourly run skips the task for 75 minutes, so a website can wait up to 2 hours. Fix: let the next run resume when the last progress row is older than about 15 minutes instead of keying on the start row (`ceo-brain/agents/website-build-worker/ROUTINE.md` step b).
 - **Roen (CRM built by mistake, 2026-10-01).** The test platform holds a Roen CRM that Ryan did not want. It is harmless test data; delete it on Ryan's word.
+- **Make the CRM/EDG work for real businesses (Ryan said "go", 2026-10-01).** Order:
+  1. ~~Finish-your-setup page~~ (done 2026-10-01);
+  2. real email sending (Ryan creates one email-sending account);
+  3. AI replies on WhatsApp in the background, and connecting a client's own number;
+  4. proper staff logins;
+  5. a separate live system (monthly hosting fee, shown to Ryan before paying);
+  6. builds checked in the background (no 60-second limit).
+  - Waiting on Ryan: "yes" on AI billing (Option 1); FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business.
