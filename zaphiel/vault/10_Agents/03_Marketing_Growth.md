@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-9]
 ## 1. Identity & purpose
 Runs channels and campaigns, nurtures leads, attributes results and reports — inside brand and compliance limits.
 
+**Boundary with ATLAS (2026-10-01):** campaign strategy and creative advertising are this agent's; ATLAS only brings marketing data into the CRM/EDG (lead sources, CRM-triggered follow-up). ATLAS sends requirements here when needed. Not built yet (draft).
+
 ## 2. Inputs (what it receives, from whom)
 approved campaign briefs, CRM segments, channel analytics
 

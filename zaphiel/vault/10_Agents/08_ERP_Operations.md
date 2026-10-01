@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-8]
 ## 1. Identity & purpose
 Jobs, orders, projects, procurement, approvals, fulfilment, service and exceptions — automating only processes that are already stable.
 
+**Knowledge (2026-10-01):** ATLAS designs a client's operations and decides the ERP question; the detail lives in [[60_Skill_Packs/ATLAS_Business_Systems/10_Operations|card 10]], [[60_Skill_Packs/ATLAS_Business_Systems/11_Field_Service|card 11]], [[60_Skill_Packs/ATLAS_Business_Systems/12_Project_Management|card 12]] and [[60_Skill_Packs/ATLAS_Business_Systems/20_ERP_Intelligence|card 20]]. This agent will operate what ATLAS designs (draft, not built).
+
 ## 2. Inputs (what it receives, from whom)
 orders/jobs from the client's ERP or the CEO Brain
 

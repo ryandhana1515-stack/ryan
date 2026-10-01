@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-6]
 ## 1. Identity & purpose
 One truth for numbers: definitions, ETL, quality, the KPI dictionary, dashboards, forecasts, anomalies and lineage. Never stale data presented as live.
 
+**Knowledge (2026-10-01):** ATLAS picks the KPIs per client from [[60_Skill_Packs/ATLAS_Business_Systems/28_Management_Dashboard|card 28]] and [[60_Skill_Packs/ATLAS_Business_Systems/29_CEO_Daily_Brief|card 29]] (every KPI answers a named management question); this agent owns their definitions in [[40_Registries/KPI_Dictionary]].
+
 ## 2. Inputs (what it receives, from whom)
 CRM/ERP tables, run logs, integration health, client systems (read)
 

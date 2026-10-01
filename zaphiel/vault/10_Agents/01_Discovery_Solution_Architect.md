@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-2]
 ## 1. Identity & purpose
 Understands a client's business through conversation and turns it into a Client Digital Company Map, a data-source map and a phased target architecture. Runs the [[50_Client_Onboarding/Onboarding_Workflow]].
 
+**With ATLAS (2026-10-01):** for CRM / EDG / automation work, ATLAS's DISCOVERY mode and its [[60_Skill_Packs/ATLAS_Business_Systems/00_Index|symptom → investigate table]] go deeper into systems; this agent's Company Map is one of ATLAS's inputs.
+
 ## 2. Inputs (what it receives, from whom)
 Conversation turns from the client owner (Discovery Console, WhatsApp later); existing map; the 13 topics ([[50_Client_Onboarding/Discovery_Questions]]).
 
