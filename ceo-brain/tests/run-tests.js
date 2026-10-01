@@ -233,9 +233,9 @@ test('refund lead produces an approval task and email trigger', () => {
 test('logistics website lead is handed off to the Website Builder', () => {
   const run = simulate(fx('logistics-website.json'));
   assert.strictEqual(run.fin.website_requested, true);
-  // Ryan, 2026-09-27: ATLAS joins every mock-up request for a named company.
-  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder","atlas"]');
-  assert.strictEqual(JSON.stringify(run.fin.response.handoffs), '["website-builder","atlas"]');
+  // Ryan, 2026-10-01: a website request goes to the Website Builder only; ATLAS waits until the customer asks for systems.
+  assert.strictEqual(JSON.stringify(run.fin.handoffs), '["website-builder"]');
+  assert.strictEqual(JSON.stringify(run.fin.response.handoffs), '["website-builder"]');
   assert.ok(run.fin.result.extracted.desired_automation.includes('website_build'), 'rules must tag website_build');
   assert.strictEqual(run.fin.result.extracted.industry, 'logistics');
   assert.strictEqual(run.fin.result.intent !== 'spam', true);
@@ -701,7 +701,7 @@ console.log('\n[13] ATLAS — EDG & CRM Systems Architect (agents/atlas/atlas.js
 const at = require('../agents/atlas/atlas.js');
 test('atNeeded: named company + systems need + a fact about today; never for a website-only or anonymous ask', () => {
   assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['whatsapp_auto_reply'], problem: 'agents do not follow up' } }), true);
-  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['website_build'], problem: 'no enquiries' } }), true, 'a named company asking for a website brings ATLAS in (Ryan, 2026-09-27)');
+  assert.strictEqual(at.atNeeded({ company_name: 'ABC Property', extracted: { desired_automation: ['website_build'], problem: 'no enquiries' } }), false, 'a website request alone never brings ATLAS in (Ryan, 2026-10-01 replaces 2026-09-27)');
   assert.strictEqual(at.atNeeded({ extracted: { desired_automation: ['website_build'] } }), false, 'no company name, no ATLAS');
   assert.strictEqual(at.atNeeded({ company_name: '', extracted: { desired_automation: ['crm_sync'], problem: 'x' } }), false, 'no company');
   assert.strictEqual(at.atNeeded({ company_name: 'ABC', extracted: { desired_automation: ['crm_sync'], lead_sources: ['website'] } }), false, 'nothing known about today');
@@ -1546,7 +1546,7 @@ test('a clinic hands every medical question to a person; a business without What
 });
 console.log('\n[35] John sends the prospect their "Try your system" link once ATLAS built it (Ryan, 2026-09-30: "he didn\'t reply me the link")');
 test('built + demo link + WhatsApp → John sends the link in plain words; nothing without a link, a build or a channel', () => {
-  const input = at.atInput({ lead_id: 'lead_wa', contact_name: 'Ryan Dhana', company_name: 'Ah Kow Plumbing', channel: 'whatsapp', phone: '+6591234567', extracted_json: '{}', conversation_json: '[]' });
+  const input = at.atInput({ lead_id: 'lead_wa', contact_name: 'Ryan Dhana', company_name: 'Ah Kow Plumbing', channel: 'whatsapp', phone: '+6591234567', message: 'I want a CRM and automation: an AI that answers WhatsApp', extracted_json: '{}', conversation_json: '[]' });
   const url = 'https://fusion-edg-core-api.vercel.app/d/' + 'a'.repeat(43);
   const m = at.atDemoMessage(input, { status: 'built', demo_url: url });
   assert.strictEqual(m.send, true); assert.strictEqual(m.channel, 'whatsapp'); assert.strictEqual(m.to, '+6591234567');
@@ -1559,6 +1559,36 @@ test('built + demo link + WhatsApp → John sends the link in plain words; nothi
   assert.strictEqual(at.atDemoMessage(Object.assign({}, input, { channel: 'web' }), { status: 'built', demo_url: url }).send, false);
   const em = at.atDemoMessage(Object.assign({}, input, { channel: 'email', email: 'owner@example.com' }), { status: 'built', demo_url: url });
   assert.strictEqual(em.send, true); assert.strictEqual(em.to, 'owner@example.com');
+});
+console.log('\n[36] A website request stays a website request (Ryan, 2026-10-01: "I asked for a website … he built a CRM and EDG for no reason … I don\'t want that")');
+test('Roen: website + link only → no ATLAS, no CRM questions, no CRM demo link; "I didn\'t want a CRM" ends it; a later CRM ask starts it again', () => {
+  const ex = { company_name: 'Roen', industry: 'electrician services', desired_automation: ['website_build'], uses_whatsapp: true, current_tools: [] };
+  const first = 'Hi can you help me build a website for my company? Here https://roen.com.sg/electrician-singapore/';
+  assert.strictEqual(at.atNeeded({ company_name: 'Roen', extracted: ex, message: first, history_text: '' }), false);
+  assert.strictEqual(at.atNeeded({ company_name: 'Roen', extracted: Object.assign({}, ex, { problem: 'no online enquiries' }), message: 'ROEN HERE https://roen.com.sg/electrician-singapore/', history_text: first }), false, 'website-only, even with a problem');
+  const no = "I actually didn't want a CRM or EDG, I wanted a website.";
+  assert.strictEqual(at.atSystemsWanted({ extracted: ex, message: no, history_text: first }), false);
+  assert.strictEqual(at.atNeeded({ company_name: 'Roen', extracted: Object.assign({}, ex, { current_tools: ['WhatsApp'] }), message: no, history_text: first }), false, 'mentioning CRM to refuse it is not asking for it');
+  assert.strictEqual(at.atSystemsWanted({ extracted: ex, message: 'Actually, can you also add a CRM for my leads?', history_text: first + '\n' + no }), true, 'the latest word counts');
+  for (const m of ['I just want a website', 'Only the website for now', "We don't need any automation", 'Not interested in the CRM, thanks']) assert.strictEqual(at.atDeclinedSystems(m), true, m);
+  for (const m of ["We're not able to follow up, we need a CRM", 'I want a CRM and automation', 'Can you build a website?']) assert.strictEqual(at.atDeclinedSystems(m), false, m);
+  const input = at.atInput({ lead_id: 'l_roen', contact_name: 'Ryan', company_name: 'Roen', channel: 'whatsapp', phone: '+6590000000', message: no, extracted_json: JSON.stringify(ex), conversation_json: JSON.stringify([{ role: 'customer', content: first }]) });
+  assert.strictEqual(at.atDemoMessage(input, { status: 'built', demo_url: 'https://fusion-edg-core-api.vercel.app/d/' + 'a'.repeat(43) }).send, false, 'no CRM demo link for a website-only customer');
+});
+test('Lead Intake (Roen replay): with an ATLAS task open, "I didn\'t want a CRM or EDG, I wanted a website" gets no CRM question and wakes no ATLAS', () => {
+  const rows = [{ task_type: 'edg_design', lead_id: 'x', payload_json: JSON.stringify({ questions_for_john: ['How do you track jobs and follow-ups today?'] }) }];
+  const lead = Object.assign({}, fx('john-tan.json'), { company: 'Roen', message: "I actually didn't want a CRM or EDG, I wanted a website.",
+    conversation_history: [{ role: 'customer', content: 'Hi can you help me build a website for my company? Here https://roen.com.sg/electrician-singapore/' }, { role: 'customer', content: 'ROEN HERE https://roen.com.sg/electrician-singapore/' }] });
+  const run = simulate(lead, { atlasRows: rows });
+  assert.strictEqual(run.fin.atlas_question, null, 'no ATLAS question after the customer said no');
+  assert.ok(!/ATLAS, our systems architect/.test(run.fin.result.recommended_reply || ''));
+  assert.strictEqual(run.fin.edg_requested, false, 'ATLAS is not woken');
+});
+test('ATLAS never tells an AI assistant something is free (it caused "a free plumbing service visit", 2026-09-30)', () => {
+  for (const key of ['services', 'renovation', 'clinic', 'property', 'education', 'beauty', 'general']) {
+    const spec = at.atEdgSpec(at.atInput({ lead_id: 'lf_' + key, company_name: 'Test ' + key, test_mode: true, industry: key === 'services' ? 'plumbing' : key, message: 'we reply on whatsapp and forget quotes', extracted_json: '{}', conversation_json: '[]' }));
+    assert.ok(!/\b(free|complimentary|no charge|discount)\b/i.test(JSON.stringify(spec.agents.concat(spec.automations))), key);
+  }
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));

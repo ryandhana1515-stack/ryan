@@ -60,7 +60,7 @@ function pick(file, names) {
 }
 const briefSrc = pick('agents/website-builder/brief.js', ['wbStr', 'WB_MEDICAL_RE', 'wbDetectMode', 'WB_LUXURY_KINDS', 'WB_LUXURY_RE', 'WB_CATEGORY_RULES', 'wbDetectCategory', 'wbDetectSiteType', 'wbDetectGoal', 'wbGuessBusinessName']);
 const intakeSrc = inline('agents/website-builder/intake.js');    // John's website intake gate
-const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atAskedBefore', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
+const atlasSrc = pick('agents/atlas/atlas.js', ['atStr', 'atArr', 'atParse', 'AT_EXPLICIT', 'AT_SYS', 'AT_DECLINED', 'atDeclinedSystems', 'atSystemsWanted', 'atNeeded', 'AT_UNSAFE_Q', 'atQuestionsFromRows', 'atIsAtlasQuestion', 'AT_VOICE', 'AT_ANSWERED', 'atAlreadyAnswered', 'atAskedBefore', 'atNextQuestion', 'atOneQuestion']);   // when John wakes ATLAS
 
 // ---------------------------------------------------------------- Code nodes
 const codeNormalize = `${normalizeSrc}
@@ -174,7 +174,9 @@ try {
   const johnsOwnReply = !(websiteTopic && intake.intent) && !/mock-?up made for your business/i.test(r.recommended_reply || '');
   // ATLAS speaks in its own name (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"), one question per
   // message (Ryan, 2026-09-29): John's own questions wait, and nothing is added while the customer answers the website team.
-  if (nextQ && johnsOwnReply && !infoAnswered && !holdForRyan && r.recommended_reply) { r.recommended_reply = atOneQuestion(r.recommended_reply, nextQ); atlasQuestion = nextQ; }
+  // Only while the customer wants systems work: never on a website-only chat, never after they said no (Ryan, 2026-10-01).
+  const systemsWanted = atSystemsWanted({ extracted: r.extracted, message: ctx.lead.message, history_text: custHist });
+  if (nextQ && systemsWanted && johnsOwnReply && !infoAnswered && !holdForRyan && r.recommended_reply) { r.recommended_reply = atOneQuestion(r.recommended_reply, nextQ); atlasQuestion = nextQ; }
 } catch (e) { atlasQuestion = null; }
 // John never sends the same message twice in a row (Ryan, 2026-09-27: "it can't just keep spamming the same thing").
 // If the reply repeats his last one, use his own AI answer or his backup answer instead; never re-send a question.

@@ -377,3 +377,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
       - Run with test data before publishing, and checked for the expected result.
       - Never published if any step fails.
       - After publishing, the version diff is checked to confirm the deployed version is exactly the tested one.
+
+- 2026-10-01 — **A website request stays a website request** (Ryan: "when I asked him to build a website … he built a CRM and EDG for me for no reason … I don't want that, I want a website"). **Replaces the 2026-09-27 rule** that ATLAS joins every website request for a named company.
+  - ATLAS (CRM/EDG) wakes only when the customer asks for systems work themselves: a CRM, automation, workflows, integrations or AI agents.
+  - When the customer says no ("I don't want a CRM", "just a website"), John stops all CRM/EDG questions and no CRM demo link is sent. If they later ask for it, it starts again.
+  - AI assistants are never told anything is "free" (this caused "a free plumbing service visit" on 2026-09-30).

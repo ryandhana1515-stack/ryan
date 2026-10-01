@@ -137,3 +137,5 @@ tags: [zaphiel, open-loops]
   - Tan Aircon was built before the AI team existed (design v1), so it has no assistant or workflows. It is never built twice. To give it the AI team: a "rebuild" option, or a new test slug.
   - AI billing (proposed 2026-09-30, waiting for Ryan's "yes"): FusionTech holds one Anthropic key for all clients and bills each client's AI usage as a separate line. Then Zaphiel builds a monthly usage report per client and a spending cap per client.
   - ~~John does not send the link on WhatsApp~~ Done 2026-09-30: John sends the "Try your system" page automatically.
+- **Website Build Worker resume gap (found 2026-10-01).** If a worker session stops mid-build, the next hourly run skips the task for 75 minutes, so a website can wait up to 2 hours. Fix: let the next run resume when the last progress row is older than about 15 minutes instead of keying on the start row (`ceo-brain/agents/website-build-worker/ROUTINE.md` step b).
+- **Roen (CRM built by mistake, 2026-10-01).** The test platform holds a Roen CRM that Ryan did not want. It is harmless test data; delete it on Ryan's word.

@@ -15,17 +15,34 @@ function atParse(v, dflt) {
   if (v && typeof v === 'object') return v;
   try { var o = JSON.parse(v || ''); return o === null || o === undefined ? dflt : o; } catch (e) { return dflt; }
 }
-/** Should John wake ATLAS for this lead? Needs a named company, a systems need (not only a website) and at least one fact about how they work today. */
+/** The customer said they do not want systems work (Ryan, 2026-10-01: "I don't want that, I want a website"). */
+var AT_SYS = '(?:crms?|edg|erp|automat\\w*|workflows?|systems?|dashboards?|ai agents?|pipelines?)';
+var AT_DECLINED = new RegExp("\\b(?:don'?t|do not|didn'?t|did not)\\s+(?:really\\s+)?(?:want|need)\\b[^.?!\\n]{0,30}\\b" + AT_SYS + "\\b"
+  + "|\\bno need (?:for )?(?:a |an |the |any )?" + AT_SYS + "\\b|\\bnot interested in\\b[^.?!\\n]{0,30}\\b" + AT_SYS + "\\b|\\bno (?:crm|edg)\\b"
+  + "|\\b(?:only|just)\\s+(?:(?:want|need|wanted|needed)\\s+)?(?:a |the |my )?(?:new )?web ?sites?\\b", 'i');
+function atDeclinedSystems(text) { return AT_DECLINED.test(String(text || '')); }
+/** Did the customer ask for systems work (CRM, automation, integrations, AI agents) themselves? Their latest word on it
+ *  counts: "I don't want a CRM" ends it, a later "actually, add a CRM" starts it again. A website request alone is never
+ *  systems work (Ryan, 2026-10-01: he asked for a website and got a CRM). */
+function atSystemsWanted(o) {
+  o = o || {};
+  var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
+  var sentences = [o.history_text || '', o.message || ''].join('\n').split(/(?<=[.!?])\s+|\n+/);
+  for (var i = sentences.length - 1; i >= 0; i--) {
+    if (atDeclinedSystems(sentences[i])) return false;
+    if (AT_EXPLICIT.test(sentences[i])) return true;
+  }
+  var wants = atArr(ex.desired_automation).filter(function (w) { return w !== 'website_build' && !/web ?site/i.test(String(w)); });
+  return wants.length > 0;
+}
+/** Should John wake ATLAS for this lead? Needs a named company, a systems need the customer asked for (never only a
+ *  website: Ryan, 2026-10-01 replaces the 2026-09-27 rule) and at least one fact about how they work today. */
 function atNeeded(o) {
   o = o || {};
   var ex = (o.extracted && typeof o.extracted === 'object') ? o.extracted : {};
   var company = atStr(o.company_name || ex.company_name, 160);
   if (!company) return false;
-  if (atArr(ex.desired_automation).indexOf('website_build') !== -1) return true;
-  var wants = atArr(ex.desired_automation).filter(function (w) { return w !== 'website_build'; });
-  var said = [o.message || '', o.history_text || ''].join('\n');
-  var systemsNeed = wants.length > 0 || AT_EXPLICIT.test(said);
-  if (!systemsNeed) return false;
+  if (!atSystemsWanted(o)) return false;
   var knowsToday = !!(atStr(ex.problem) || atStr(ex.current_follow_up_process) || atArr(ex.current_tools).length || atArr(ex.accounting_or_erp).length);
   return knowsToday;
 }
@@ -248,7 +265,7 @@ function atEdgSpec(input) {
   };
 }
 var AT_AGENT_PURPOSE = {
-  services: 'Answer customers on WhatsApp day and night: understand the problem (what is wrong, how many units, the address), offer free service visits and book them, and prepare quotations from the price list.',
+  services: 'Answer customers on WhatsApp day and night: understand the problem (what is wrong, how many units, the address), offer service visits and book them, and prepare quotations from the price list.',
   renovation: 'Answer homeowners on WhatsApp: understand the project (type of home, rooms, budget range the customer gives), book site visits, and pass design and pricing questions to the team.',
   clinic: 'Answer patients on WhatsApp: book consultations, answer questions about opening hours and services, and pass every medical or symptom question to the clinic team.',
   property: 'Answer buyers and tenants on WhatsApp: understand what they are looking for, book viewings, and pass offers and negotiations to the agent.',
