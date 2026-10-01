@@ -525,3 +525,16 @@ tags: [zaphiel, changelog]
     - Lead Intake `b7kbJpnKLN2uQxyn` (version `2a440fd9`);
     - ATLAS `9XQWSgTBszRc0Jxj` (version `2443b4ec`).
   - The Roen website itself: the build worker started it at 09:17 UTC (keyframes and scenes made by 09:23); the session stopped before finishing. Zaphiel set a check-in for 10:35 UTC to resume it.
+
+- 2026-10-01 — **"Finish your setup" page: a built system can now be made to work for a real business** (Ryan: "make it work, build CRM, EDG for people … workflows, automations, everything"; first of 6 steps).
+  - From the "Try your system" page, the owner taps **Fill in your details** and fills in, on one phone page:
+    - their name and email;
+    - the team (real names, who gets new enquiries; add or remove people);
+    - opening days and hours;
+    - the services customers book;
+    - the price list;
+    - GST, quote validity and payment terms.
+  - **Save and check** re-rehearses every workflow and shows "N of M ready". Prices the owner types count as approved, so the AI assistant quotes exactly those.
+  - Tested: a full save goes from 6 to 12 of 13 ready. Only the WhatsApp number is left; FusionTech connects it at go-live.
+  - Also fixed: "tell the owner" notices now go to the business owner, not the customer's salesperson.
+  - Fusion EDG Core PR #13 (124/124 tests, checked at phone width).
