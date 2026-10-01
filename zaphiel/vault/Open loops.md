@@ -152,7 +152,7 @@ tags: [zaphiel, open-loops]
 - 2026-10-01 — **ATLAS v3 follow-ups.**
   - Ryan: send sections 36–49 of the v3 prompt (cut off at section 35); Zaphiel merges only what is new or stricter.
   - NEW BUILD items the scenario tests surfaced: ~~mobile job card~~ (built 2026-10-01, PR #16), inventory
-    and procurement (only if a client cannot keep or buy a system), ~~proper staff logins~~ (built 2026-10-01, PR #17), Meta lead-form and portal intake, DNC checks, more than one WhatsApp number per client.
+    and procurement (only if a client cannot keep or buy a system), ~~proper staff logins~~ (built 2026-10-01, PR #17), ~~Meta lead-form and portal intake~~ (built 2026-10-01, PR #18), DNC checks, more than one WhatsApp number per client.
   - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
 - 2026-10-01 — **Job card follow-ups.**
   - Ryan: try it on a phone. The test system's team app → Jobs → Open job card (any FAKE test company).
@@ -162,3 +162,12 @@ tags: [zaphiel, open-loops]
   - ~~ATLAS agent file B19: logins line + catalog row~~ updated 2026-10-01 (Ryan: "save").
   - Password reset by email (instead of asking the manager for a link) needs the email key in Vercel first.
 
+- 2026-10-01 — **Lead sources follow-ups** (Facebook lead forms + portal emails, PR #18).
+  - Ryan, once: in the Meta app dashboard, add the "Lead Ads" webhook (page → leadgen) pointing to
+    `https://fusion-edg-core-api.vercel.app/webhooks/meta-leads`, and submit app review for leads_retrieval,
+    pages_manage_metadata, pages_show_list, pages_read_engagement, pages_manage_ads. Zaphiel walks him through it when
+    the first client with Facebook ads is signed. Then set META_GRAPH_VERSION in Vercel.
+  - An email service that posts forwarded enquiry emails to the private address (e.g. Cloudflare Email Routing or
+    Resend inbound): choose and set up with the first property client. NEEDS VERIFICATION.
+  - Check one real email from each portal a client uses; adjust the reader if needed.
+  - ATLAS module catalog (B19) row: diff shown to Ryan, waiting for "save".
