@@ -979,9 +979,10 @@ exists, not yet proven on a real account.
 | Calendar (Google) | client connects by one link; bookings appear in staff calendars | — | TESTED (MOCK); live NEEDS VERIFICATION |
 | CEO Daily Brief + KPIs | numbers from SQL only; "data unavailable" when a source is missing | — | TESTED, staging |
 | Mobile job card | technician's phone screen: address + map, checklist per service, materials, before/after photos, customer signature or reason, complete; works on a weak signal | completing the job (proof required); checklist steps come from the client | TESTED, staging |
+| Staff logins + who sees which customers | own email + password, lockout after 5 wrong tries; owner chooses "everyone sees all" or "each person sees only their own customers" (spec `team.visibility`) | choosing who sees what | TESTED, staging |
 Rules that come with the catalog: prices, tax rate, quote validity and payment terms come from the client (never
-assumed); an agent never records payments or marks outcomes; staff use the team app with one-time sign-in links
-(proper logins are not built yet). Not in the catalog yet (design it, mark it NEW BUILD): inventory, payroll, e-commerce, payment links,
+assumed); an agent never records payments or marks outcomes; staff sign in with their own email and password
+(first time / forgot password: a one-time link from the owner). Not in the catalog yet (design it, mark it NEW BUILD): inventory, payroll, e-commerce, payment links,
 QuickBooks.
 
 ### B20. THE CLIENT'S AI TEAM (Ryan, 2026-09-30: "build agents for people … it needs to know how to build AI agents, workflows, solve people problems")

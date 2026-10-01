@@ -159,6 +159,6 @@ tags: [zaphiel, open-loops]
   - ~~ATLAS module catalog (B19) row for the job card~~ added 2026-10-01 (Ryan: "save", PR #111).
   - Not built yet: materials taken off stock, GPS/time-on-site tracking, a photo report emailed to the customer.
 - 2026-10-01 — **Staff logins follow-ups.**
-  - The ATLAS agent file still says "proper logins are not built yet" (B19 rules line); the update waits for Ryan's OK.
+  - ~~ATLAS agent file B19: logins line + catalog row~~ updated 2026-10-01 (Ryan: "save").
   - Password reset by email (instead of asking the manager for a link) needs the email key in Vercel first.
 
