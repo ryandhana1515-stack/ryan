@@ -151,13 +151,13 @@ tags: [zaphiel, open-loops]
   - Still to build for billing: a monthly all-clients AI usage email to Ryan (with step 2, real email).
 - 2026-10-01 — **ATLAS v3 follow-ups.**
   - Ryan: send sections 36–49 of the v3 prompt (cut off at section 35); Zaphiel merges only what is new or stricter.
-  - NEW BUILD items the scenario tests surfaced: ~~mobile job card~~ (built 2026-10-01, PR #16), inventory
-    and procurement (only if a client cannot keep or buy a system), ~~proper staff logins~~ (built 2026-10-01, PR #17), ~~Meta lead-form and portal intake~~ (built 2026-10-01, PR #18), DNC checks, more than one WhatsApp number per client.
+  - NEW BUILD items the scenario tests surfaced: ~~mobile job card~~ (built 2026-10-01, PR #16), ~~inventory
+    and procurement~~ (built 2026-10-01, PR #19), ~~proper staff logins~~ (built 2026-10-01, PR #17), ~~Meta lead-form and portal intake~~ (built 2026-10-01, PR #18), DNC checks, more than one WhatsApp number per client.
   - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
 - 2026-10-01 — **Job card follow-ups.**
   - Ryan: try it on a phone. The test system's team app → Jobs → Open job card (any FAKE test company).
   - ~~ATLAS module catalog (B19) row for the job card~~ added 2026-10-01 (Ryan: "save", PR #111).
-  - Not built yet: materials taken off stock, GPS/time-on-site tracking, a photo report emailed to the customer.
+  - Not built yet: GPS/time-on-site tracking, a photo report emailed to the customer. (Materials taken off stock: built 2026-10-01, PR #19.)
 - 2026-10-01 — **Staff logins follow-ups.**
   - ~~ATLAS agent file B19: logins line + catalog row~~ updated 2026-10-01 (Ryan: "save").
   - Password reset by email (instead of asking the manager for a link) needs the email key in Vercel first.
@@ -171,3 +171,8 @@ tags: [zaphiel, open-loops]
     Resend inbound): choose and set up with the first property client. NEEDS VERIFICATION.
   - Check one real email from each portal a client uses; adjust the reader if needed.
   - ~~ATLAS module catalog (B19) row~~ added 2026-10-01 (Ryan: "save").
+- 2026-10-01 — **Stock and purchasing follow-ups** (PR #19).
+  - Ryan: try it on the test system (any FAKE company → Team → "Switch on Stock" → Stock → "Add example stock (test)").
+  - Real supplier emails go out only on the live system; on the test system they go to the stand-in email.
+  - ATLAS module catalog (B19) row: diff shown to Ryan, waiting for "save".
+  - Not built yet: reserved stock / sales orders, barcode scanning, stock value reports, supplier bills to Xero.

@@ -1501,6 +1501,18 @@ test('service businesses (aircon, plumbing, cleaning): technicians, service visi
   const cleaner = at.atEdgSpec(at.atInput({ lead_id: 'l6', company_name: 'Sparkle Cleaning', test_mode: true, message: 'we need a CRM', extracted_json: '{}', conversation_json: '[]' }));
   assert.ok(cleaner.modules.appointments && /^INFERENCE/.test(cleaner.why.appointments), 'a guess is labelled INFERENCE');
 });
+test('stock and purchasing: on only when the client talks about stock/parts/suppliers, never over an existing ERP; items never invented', () => {
+  const p = at.atEdgSpec(at.atInput({ lead_id: 'l10', company_name: 'Lim Plumbing', test_mode: true, message: 'Our technicians keep running out of parts in the van and nobody knows what to order from our suppliers.', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(p.modules.stock, true); assert.ok(/^CLIENT-PROVIDED/.test(p.why.stock));
+  assert.ok(p.to_confirm.some((x) => /Stock items they keep/.test(x)) && p.to_confirm.some((x) => /second person approves a purchase order/.test(x)));
+  assert.strictEqual(p.stock, undefined, 'no invented items, places or suppliers');
+  const erp = at.atEdgSpec(at.atInput({ lead_id: 'l11', company_name: 'Big Trading', test_mode: true, message: 'our stock is in NetSuite but sales follow-up is a mess', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(erp.modules.stock, false); assert.ok(/integrate, do not rebuild/.test(erp.why.stock));
+  const none = at.atEdgSpec(at.atInput({ lead_id: 'l12', company_name: 'Smile Dental Clinic', test_mode: true, message: 'patients keep missing appointments', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(none.modules.stock, false);
+  const reno = at.atEdgSpec(at.atInput({ lead_id: 'l13', company_name: 'Home Reno Pte Ltd', test_mode: true, message: 'our suppliers deliver materials late and quotations take long', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(reno.modules.stock, false, 'buying materials per project is not keeping stock');
+});
 test('ATLAS builds automatically: wait for the vault → POST /atlas/auto-build (retries, never stops the run) → email Ryan the review link', () => {
   const sdk = fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/atlas.sdk.ts'), 'utf8');
   for (const n of ['Wait for the Vault', 'Build on EDG (automatic)', 'Email Ryan: Built']) assert.ok(sdk.includes("name: '" + n + "'") || sdk.includes('name: "' + n + '"'), n);

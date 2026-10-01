@@ -98,3 +98,15 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
   cannot be read goes to a person.
 - Test system: Team → Test tools → "Send a test Facebook lead" / "Send a test portal email".
 - Tested 161/161; database change on the test system. NEEDS VERIFICATION: a real Page, and one real email per portal.
+
+**Stock and purchasing (2026-10-01, Ryan: "stock and purchasing"; Fusion EDG Core PR #19):**
+- Team app → **Stock**: what is in the store and in each technician's van, what is low, and purchase orders.
+- Stock only changes when something is received, used on a job, moved or corrected, so the figures can be trusted.
+  A correction needs a manager and a reason; a team member's count needs a manager's OK.
+- Materials a technician picks on the job card come off their van when the job is completed.
+- When an item runs low, an order to the supplier is prepared and a manager is emailed. Nothing goes to a supplier
+  until a person approves it. Above the business's limit, a second person approves.
+- Deliveries are recorded in full or in part; the supplier's bill is checked against what actually arrived.
+- Owners switch it on under Team; ATLAS switches it on when a client talks about stock or parts (not when they
+  already use an ERP). Test system: Stock → "Add example stock (test)".
+- Tested 174/174; database change on the test system. Not built yet: barcode scanning, stock value reports, bills to Xero.
