@@ -170,4 +170,4 @@ tags: [zaphiel, open-loops]
   - An email service that posts forwarded enquiry emails to the private address (e.g. Cloudflare Email Routing or
     Resend inbound): choose and set up with the first property client. NEEDS VERIFICATION.
   - Check one real email from each portal a client uses; adjust the reader if needed.
-  - ATLAS module catalog (B19) row: diff shown to Ryan, waiting for "save".
+  - ~~ATLAS module catalog (B19) row~~ added 2026-10-01 (Ryan: "save").
