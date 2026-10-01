@@ -1,26 +1,26 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-10-01T09:07:01.957Z
+updated: 2026-10-01T09:12:58.058Z
 ---
-# Management view — Thu, 1 Oct, 05:07 pm SGT
+# Management view — Thu, 1 Oct, 05:12 pm SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
 | | |
 |---|---|
-| Real leads (new 24 h) | 7 (2) |
-| Pipeline | HUMAN_REVIEW 1 · QUALIFYING 5 · NEW 1 |
-| Open tasks | 52 |
-| Approvals waiting | 16 |
+| Real leads (new 24 h) | 8 (3) |
+| Pipeline | HUMAN_REVIEW 1 · QUALIFYING 6 · NEW 1 |
+| Open tasks | 55 |
+| Approvals waiting | 17 |
 | Exceptions open | 0 |
 | Website builds | building 0 · built 5 · failed 1 |
-| Agent runs 24 h | 30 (failed 0, AI fallback 0) |
+| Agent runs 24 h | 33 (failed 0, AI fallback 1) |
 | Test leads excluded | 23 |
 
-## Unresolved (45, 17 high)
+## Unresolved (47, 17 high)
 
-### Approvals waiting (16)
+### Approvals waiting (17)
 - **APPROVAL: build MEDICAL business website for Dashboard tester** · 136 h · `task_web_lead_dash_v2medtest1`
 - **APPROVAL: Ryan — ask qualifying questions** · 90 h · `task_mujy2u7k7vj21`
 - **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 90 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
@@ -34,9 +34,9 @@ updated: 2026-10-01T09:07:01.957Z
 - **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 48 h · `task_edg_lead_wa6587587170_mulklh7n`
 - **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 48 h · `task_evt_kpo8f5`
 - **ATLAS checkpoint 1: confirm understanding of OrangeTee** · 42 h · `task_edg_lead_wa6587587170_mumu7duk`
-- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 41 h · `task_evt_lb9wyi`
+- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 42 h · `task_evt_lb9wyi`
 - **ATLAS checkpoint 1: confirm understanding of Tan Aircon Services Pte Ltd** · 19 h · `task_edg_lead_wa6587587170_muo5thc0`
-- … +1 more
+- … +2 more
 
 ### Website builds failed (1)
 - **Build business website for Ryan @ OrangeTee** · 40 h · `task_web_lead_wa6587587170_mumu7duk`
@@ -58,10 +58,13 @@ updated: 2026-10-01T09:07:01.957Z
 - Follow up: Ryan — ask qualifying questions · 42 h · `task_mujyuei44djvz`
 - Follow up: Ryan @ Free & Easy Minimart — ask qualifying questions · 42 h · `task_mujz16cvoj71`
 - Follow up: Ryan @ Free & Easy Minimart — send reply · 42 h · `task_mujz67pg9jwhy`
-- Follow up: Ryan @ OrangeTee — send reply · 40 h · `task_mumucjvo5z9vq`
+- Follow up: Ryan @ OrangeTee — send reply · 41 h · `task_mumucjvo5z9vq`
 - Follow up: Ryan @ OrangeTee — send reply · 40 h · `task_mumvnxwjfzkm`
 - … +10 more
 
 ### Stale leads (2)
 - Ryan @ Smile Plus Dental Surgery — no contact for 63 h · 63 h · `lead_wa6587587170_mukzk1yq`
 - Ryan — no contact for 63 h · 63 h · `lead_wa6587587170_mulk11b8`
+
+### AI fallback (1)
+- 1 run(s) used the rule fallback (AI unavailable)
