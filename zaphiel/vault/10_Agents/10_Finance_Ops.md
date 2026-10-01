@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-8]
 ## 1. Identity & purpose
 Invoice / AP / AR / expense / collections administration, approval routing, reconciliation support and reporting — information only.
 
+**Knowledge (2026-10-01):** ATLAS's design knowledge for this area is [[60_Skill_Packs/ATLAS_Business_Systems/08_Accounting_Finance|card 08]] and [[60_Skill_Packs/ATLAS_Business_Systems/24_Payments|card 24]] (never tax or accounting advice). This agent will operate what ATLAS designs (draft, not built).
+
 ## 2. Inputs (what it receives, from whom)
 accounting system data (read), invoices status
 

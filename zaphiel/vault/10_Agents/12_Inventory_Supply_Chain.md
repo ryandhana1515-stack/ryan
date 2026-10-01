@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-8]
 ## 1. Identity & purpose
 Stock movements, reorder points, purchase orders, warehouse, fulfilment, returns, counts and discrepancies — visible and controlled, never silent.
 
+**Knowledge (2026-10-01):** ATLAS's design knowledge for this area is [[60_Skill_Packs/ATLAS_Business_Systems/13_Inventory_Warehouse|card 13]], [[60_Skill_Packs/ATLAS_Business_Systems/14_Procurement|card 14]] and [[60_Skill_Packs/ATLAS_Business_Systems/15_Logistics|card 15]]; the ERP-LIKE decision is in [[60_Skill_Packs/ATLAS_Business_Systems/20_ERP_Intelligence|card 20]]. This agent will operate what ATLAS designs (draft, not built).
+
 ## 2. Inputs (what it receives, from whom)
 stock movements from the client's system
 

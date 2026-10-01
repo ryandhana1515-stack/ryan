@@ -1,0 +1,14 @@
+{
+  "_status": "draft stub (2026-10-01). Written by ATLAS for the website agents (agent file B2): what the website must send into the EDG. Fill per client; never put secrets here (names of env vars only).",
+  "schema": "atlas.integration_spec.v0",
+  "client_slug": "",
+  "business_requirements": [],
+  "forms_required": [{ "form": "", "purpose": "", "fields": [{ "name": "", "type": "", "required": false, "maps_to_crm_field": "" }], "consent_text_needed": true }],
+  "crm_fields": [],
+  "api_requirements": [{ "endpoint_purpose": "", "method": "", "auth": "env var NAME only", "doc_url": "", "verified_on": "", "status": "UNVERIFIED" }],
+  "authentication_requirements": [],
+  "customer_portal_requirements": [],
+  "tracking_requirements": { "utm": true, "click_ids": [], "whatsapp_entry_tags": [], "how_did_you_hear_fallback": true },
+  "webhook_requirements": [{ "event": "", "target": "", "signature_verification": true, "idempotency_key": "" }],
+  "flow": "Form → API → CRM → Lead → Salesperson → WhatsApp → Follow-Up → Dashboard"
+}

@@ -27,6 +27,7 @@ client, never mixed. The files start empty; ATLAS fills them (STAGE 16 of its ag
 | `13_implementation_plan.md` | phases, first sellable slice |
 | `14_report_to_john.md` | plain-language summary for John, then the technical detail |
 | `15_questions_open.md` | ready-to-ask questions for John / Ryan |
+| `INTEGRATION_SPEC.json` | what the website must send into the EDG, for the website agents (agent file B2); draft stub |
 | `EDG_BUILD_SPEC.json` | build specification (only after Ryan approves the architecture) |
 | `.env.example` | variable names only, never values |
 

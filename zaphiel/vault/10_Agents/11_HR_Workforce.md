@@ -18,6 +18,8 @@ tags: [agent, head-agent, phase-8]
 ## 1. Identity & purpose
 Recruitment admin, onboarding, leave, training, performance process, offboarding and access revocation — process support, never employment decisions.
 
+**Knowledge (2026-10-01):** ATLAS's design knowledge for this area is [[60_Skill_Packs/ATLAS_Business_Systems/09_HR_People_Admin|card 09]] (no employment decisions by AI). This agent will operate what ATLAS designs (draft, not built).
+
 ## 2. Inputs (what it receives, from whom)
 HR requests, joiner/mover/leaver events
 

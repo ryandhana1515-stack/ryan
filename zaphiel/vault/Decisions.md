@@ -5,6 +5,20 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-01 — **ATLAS v3: business-systems intelligence; one home per rule** (Ryan: "ATLAS v3 … BUSINESS SYSTEMS
+  INTELLIGENCE UPGRADE + HEALTH CHECK", then "Ok" to the health-check recommendations). (1) ATLAS understands the whole
+  company and classifies it (SALES-CRM · SERVICE-CRM · FIELD-SERVICE EDG · PROJECT/OPS EDG · COMMERCE EDG · ERP-LIKE
+  EDG · HYBRID) before choosing the minimum modules; the router is in `.claude/agents/atlas.md`, the knowledge in
+  [[60_Skill_Packs/ATLAS_Business_Systems/00_Index|the ATLAS Business Systems pack]] (29 cards + 12 archetypes).
+  (2) Each rule has one home in the agent file; other places point to it. The vault discovery playbook is a pointer
+  (the agent file holds D0–D13). (3) **Supabase wording:** Fusion EDG Core is the default when its catalog fits the
+  client; otherwise keep or integrate what the client already has. (4) **Customer contact** (replaces the MUST NOT
+  DO line "Talk to the customer directly"): ATLAS never messages a customer on its own channel; outside DISCOVERY mode
+  its questions reach the customer through John's chat, in ATLAS's own name. (5) ATLAS is not the Website Agent or
+  the Marketing Agent ([[10_Agents/03_Marketing_Growth]]); it may bring marketing data into the CRM. (6) Raise the ERP
+  question early (from scenario test B). (7) Scenario tests live in `80_Clients/_Test/atlas-v3-scenarios/`.
+  Ryan's sections 36–49 are still to come; they will be merged only where new or stricter than BUILD ENGINE v2.
+
 - 2026-09-28 — **We design the look; we only ask for real facts** (Ryan: "John won't ask the customer how you want it
   to look … the website intelligence … will generate the best 3D scrolling website … how it looks is only for property,
   the property needs to give the room … only needs to know the important details like opening hours … the real

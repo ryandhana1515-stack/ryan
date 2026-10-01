@@ -549,3 +549,14 @@ tags: [zaphiel, changelog]
   - On the test system only the business's own people (owner and staff) get real email; test customers never do.
   - It switches on when Ryan adds `EMAIL_PROVIDER_API_KEY` in Vercel and redeploys. The domain is on Cloudflare, and Ryan has the click-by-click steps.
 - 2026-10-01 — The Roen website mock-up finished (the build worker resumed the stopped build) and John sent the link to Ryan on WhatsApp.
+- 2026-10-01 — **ATLAS v3: business-systems intelligence + health check** (Ryan's v3 prompt; "Ok" to the health-check fixes;
+  PR #109). Health check: no broken links; 13 duplicated rules and 5 conflicts found. Agent file `.claude/agents/atlas.md`:
+  Ryan's "BUSINESS SYSTEMS INTELLIGENCE (v3)" section (verbatim) + notes (pack location, Supabase wording, Marketing
+  Agent, raise the ERP question early); one home per rule (secrets §11, approvals B5+B15, n8n B9, lead rule §8, AI
+  agents B9, KPIs/CEO Brain B10, audit/failure B11, tests B12, industries → archetypes); conflicts fixed (customer
+  contact, website agent names, marketing boundary, B19 sign-in line, §28 real builders). New knowledge pack
+  `60_Skill_Packs/ATLAS_Business_Systems/` (29 cards, 12 archetypes; Ryan's text verbatim, card fields completed and
+  labelled). Discovery playbook → pointer; 07 ATLAS note links instead of copying; draft notes 01/03/08/10/11/12/14
+  link to their cards; `INTEGRATION_SPEC.json` stub in the client template. Scenario tests (fake data):
+  A field service PASS, B ERP-like FAIL → fixed → PASS, C property PASS
+  ([[80_Clients/_Test/atlas-v3-scenarios/00_Results]]). ceo-brain tests 135/135.
