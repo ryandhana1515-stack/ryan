@@ -11,7 +11,7 @@ channel: whatsapp
 source: whatsapp
 test_mode: false
 first_contact: 2026-10-01
-updated: 2026-10-01T09:12:28.622Z
+updated: 2026-10-01T09:36:35.253Z
 tags: [lead]
 ---
 # Ryan
@@ -21,12 +21,12 @@ Links: [[Industries/electrician services (inferred from link, unconfirmed)|elect
 ## Facts John has extracted
 (updated automatically — newest run wins)
 
-- Company size: - · Users: - · Decision maker: -
+- Company size: - · Users: - · Decision maker: true
 - Problem: -
 - Wants: website_build
 - Tools: -
 - Budget: - · Timeline: -
-- Outcome wanted: -
+- Outcome wanted: a website for his company
 
 ## Conversation log
 
@@ -43,3 +43,10 @@ _Summary:_ Ryan asked us to build a website for his company and shared an existi
 **John:** Hi Ryan, perfect, I have what I need to start on Roen. Our website team is researching your business now before building your first mock-up; if they need any detail, I will ask you here first, then I will send the link to +6587587170, usually within about an hour. If you have a logo, brand colours or photos you want used, send them here and we will work them in.
 
 _Summary:_ Ryan asked for a website mock-up for his electrician services company, sharing an existing site (roen.com.sg) as reference. He has now replied 'ROEN HERE' with the same link, suggesting the business name is Roen, but this is not fully explicit.
+
+### 2026-10-01 09:36 UTC · QUALIFYING / warm · next: send_reply · hand-off: atlas · anthropic
+**Prospect:** I actually didn't want a CRM or EDG, I wanted a website.
+
+**John:** Apologies for the mix-up, Ryan — that demo was for something else. Your website is still what we're focused on: our team is researching Roen now and the mock-up link will follow shortly, usually within about an hour. No CRM or EDG involved unless you want it later. ATLAS, our systems architect, would like to know: Which system do you use today to keep track of customers and leads (a CRM, Excel/Google Sheets, WhatsApp only)?
+
+_Summary:_ Ryan from Roen (electrician services) originally asked for a website build; the website mock-up was already started. However an agent mistakenly sent him a CRM/EDG demo link instead, and Ryan is clarifying he only wanted a website, not a CRM or EDG system.
