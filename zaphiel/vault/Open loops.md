@@ -151,8 +151,12 @@ tags: [zaphiel, open-loops]
   - Still to build for billing: a monthly all-clients AI usage email to Ryan (with step 2, real email).
 - 2026-10-01 — **ATLAS v3 follow-ups.**
   - Ryan: send sections 36–49 of the v3 prompt (cut off at section 35); Zaphiel merges only what is new or stricter.
-  - NEW BUILD items the scenario tests surfaced: mobile job card (checklist, photos, signature, materials), inventory
+  - NEW BUILD items the scenario tests surfaced: ~~mobile job card~~ (built 2026-10-01, PR #16), inventory
     and procurement (only if a client cannot keep or buy a system), proper staff logins (agents seeing only their
     own leads), Meta lead-form and portal intake, DNC checks, more than one WhatsApp number per client.
   - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
+- 2026-10-01 — **Job card follow-ups.**
+  - Ryan: try it on a phone. The test system's team app → Jobs → Open job card (any FAKE test company).
+  - The ATLAS agent file's module catalog (B19) does not list the job card yet: the 1-row change waits for Ryan's OK.
+  - Not built yet: materials taken off stock, GPS/time-on-site tracking, a photo report emailed to the customer.
 

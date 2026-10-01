@@ -5,6 +5,10 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-01 — **Build order: the mobile job card first** (Ryan: "ok" to Zaphiel's recommendation after the ATLAS v3 tests).
+  Field-service businesses are the most common FusionTech client. Next in line: staff logins, Meta lead forms /
+  portal leads, then stock and purchasing (only where a client cannot keep or buy a system).
+
 - 2026-10-01 — **ATLAS v3: business-systems intelligence; one home per rule** (Ryan: "ATLAS v3 … BUSINESS SYSTEMS
   INTELLIGENCE UPGRADE + HEALTH CHECK", then "Ok" to the health-check recommendations). (1) ATLAS understands the whole
   company and classifies it (SALES-CRM · SERVICE-CRM · FIELD-SERVICE EDG · PROJECT/OPS EDG · COMMERCE EDG · ERP-LIKE

@@ -44,7 +44,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — See Ryan's Decide list. Company-owned accounts; access by role; backups.
 
 ## Fusion EDG Core today
-File storage per client: **NEW BUILD** (photos for the job card would need it). Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Job-card photos are stored with the job inside the client's own data (≤ 20 per job, shrunk on the phone): **TESTED**. General document storage per client: **NEW BUILD**. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 
