@@ -69,3 +69,13 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
 - The assistant thinks with Claude (`claude-sonnet-5`) once `ANTHROPIC_API_KEY` is set in Vercel.
 - The daily timer (`/cron/tick`, 08:00 SGT) needs `CRON_SECRET`.
 - Details: `docs/modules.md` → "The AI team". ATLAS's rules for designing it: `.claude/agents/atlas.md` → B20.
+
+**Mobile job card (2026-10-01, Ryan: "ok" to building it first; Fusion EDG Core PR #16):** in the team app, Jobs → **Open job card**.
+- The technician sees the customer (call / WhatsApp), the job address with **Open map**, the job notes, the service's
+  checklist, materials used, before/after photos, notes for the office, the customer's signature, and **Complete job**.
+- Works on a weak signal: every tap is kept on the phone and sent by itself when there is signal again.
+- Completing needs the customer's signature or a written reason; the office sees the summary on the customer.
+- Checklists come from the business (Jobs → Checklists) or ATLAS's spec, never invented. AI agents can never touch a
+  job card. Tested: 137/137 on FAKE data; database change applied to the test system (0 security warnings).
+- Also fixed: a new system's self-test no longer leaves its FAKE booking in a technician's calendar.
+

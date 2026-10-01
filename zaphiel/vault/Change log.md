@@ -560,3 +560,8 @@ tags: [zaphiel, changelog]
   link to their cards; `INTEGRATION_SPEC.json` stub in the client template. Scenario tests (fake data):
   A field service PASS, B ERP-like FAIL → fixed → PASS, C property PASS
   ([[80_Clients/_Test/atlas-v3-scenarios/00_Results]]). ceo-brain tests 135/135.
+- 2026-10-01 — **Mobile job card built** (Ryan: "ok" to the field-service gap first; Fusion EDG Core PR #16, deployed to
+  the test system). Technician's phone screen: address + map link, checklist per service, materials, before/after photos,
+  notes, customer signature (or reason), complete; works offline and sends when the signal returns; AI agents refused by
+  the app and the database. Migration 015 applied to staging; 137/137 tests; checked in a phone-sized browser offline →
+  online → completed. Self-test bookings are now released. ATLAS cards 11/18 and the field-service archetype say TESTED.

@@ -53,7 +53,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — Location tracking only with staff consent and a written policy. Customer signature and photos stored with the job in the client's storage. Works offline / on a weak signal.
 
 ## Fusion EDG Core today
-Appointments, the staff app Jobs tab, quotations, invoices: **TESTED**. Mobile job card with checklist, photos, materials and signature: **NEW BUILD**. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Appointments, the staff app Jobs tab, quotations, invoices: **TESTED**. **Mobile job card** (job address + map link, checklist per service, materials used, before/after photos, customer signature or reason, complete; works on a weak signal; AI agents can never write it): **TESTED, staging (2026-10-01)**. Not yet: stock deduction for materials, GPS/time tracking. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 
