@@ -141,7 +141,7 @@ tags: [zaphiel, open-loops]
 - **Roen (CRM built by mistake, 2026-10-01).** The test platform holds a Roen CRM that Ryan did not want. It is harmless test data; delete it on Ryan's word.
 - **Make the CRM/EDG work for real businesses (Ryan said "go", 2026-10-01).** Order:
   1. ~~Finish-your-setup page~~ (done 2026-10-01);
-  2. real email sending (Ryan creates one email-sending account);
+  2. real email sending: code done (PR #15); **waiting on Ryan**: Resend account, domain send.fusiontech.com.sg verified on Cloudflare, `EMAIL_PROVIDER_API_KEY` in Vercel, redeploy;
   3. AI replies on WhatsApp in the background, and connecting a client's own number;
   4. proper staff logins;
   5. a separate live system (monthly hosting fee, shown to Ryan before paying);
