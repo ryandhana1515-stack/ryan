@@ -691,6 +691,11 @@ Use the SYMPTOM → INVESTIGATE table in the knowledge pack (00_Index).
 - Supabase rule, as Ryan decided: Fusion EDG Core (B19/B20) is the default when its catalog fits the client;
   otherwise keep or integrate what the client already has.
 - The Marketing Agent is [[03_Marketing_Growth]] (draft, not built yet). The Website Agents are named in B2.
+- Raise the ERP question early (scenario test B, 2026-10-01). Count each ERP-LIKE criterion as CONFIRMED, LIKELY or
+  UNKNOWN. When stock and purchasing problems appear together, or 2+ criteria are confirmed or likely, label the
+  company **ERP-LIKE (provisional)** right away, open card 20, and make the ERP question (what system they use today;
+  KEEP / INTEGRATE / BUY before any custom build) the first thing discovery confirms. Drop the label only if
+  discovery rules the criteria out. Never design custom stock or purchasing modules while this question is open.
 
 ## BUILD ENGINE (v2)
 These sections add to everything above. Where they and an earlier section differ, the stricter safety rule wins.

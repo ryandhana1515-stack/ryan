@@ -35,7 +35,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 
 **KEY EVENTS** — See the domain cards.
 
-**WORKFLOWS** — Count the ERP-LIKE criteria → decision (REMAINS / INTEGRATE / SUFFICIENT / MIGRATE / SPECIALIST) with the reason → only then design custom EDG parts around it (CRM, WhatsApp, dashboard).
+**WORKFLOWS** — Raise it early: count each criterion as CONFIRMED / LIKELY / UNKNOWN; stock + purchasing problems together, or 2+ confirmed-or-likely criteria, → **ERP-LIKE (provisional)** at once (agent file v3 NOTES). Then count the ERP-LIKE criteria → decision (REMAINS / INTEGRATE / SUFFICIENT / MIGRATE / SPECIALIST) with the reason → only then design custom EDG parts around it (CRM, WhatsApp, dashboard).
 
 **KPIs** — See the domain cards.
 
