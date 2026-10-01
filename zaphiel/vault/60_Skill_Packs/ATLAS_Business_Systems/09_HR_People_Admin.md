@@ -45,7 +45,7 @@ _Fields below complete Ryan's card format (SIGNALS • ASK • CORE OBJECTS • 
 **CONTROLS & RISKS** — Ryan's rules. Employment-law questions go to a person or lawyer.
 
 ## Fusion EDG Core today
-Team list and roles in the staff app: built. Leave, onboarding, access management: **NEW BUILD**. Payroll: not in the catalog. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
+Team list, roles and staff logins (own password; a new sign-in link from the manager resets it; changing it signs out other devices): **TESTED, staging**. Leave, onboarding checklists, access to other apps: **NEW BUILD**. Payroll: not in the catalog. Source: `fusion-edg-core/docs/modules.md`; agent file B19/B20. Status words are exact: TESTED = automated
 tests on FAKE data; NEEDS VERIFICATION = not yet proven on a real account; NEW BUILD = design it, Zaphiel builds it
 before it is promised.
 

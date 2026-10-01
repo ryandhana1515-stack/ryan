@@ -143,7 +143,7 @@ tags: [zaphiel, open-loops]
   1. ~~Finish-your-setup page~~ (done 2026-10-01);
   2. real email sending: code done (PR #15); **waiting on Ryan**: Resend account, domain send.fusiontech.com.sg verified on Cloudflare, `EMAIL_PROVIDER_API_KEY` in Vercel, redeploy;
   3. AI replies on WhatsApp in the background, and connecting a client's own number;
-  4. proper staff logins;
+  4. ~~proper staff logins~~ (done 2026-10-01, PR #17; also the mobile job card, PR #16);
   5. a separate live system (monthly hosting fee, shown to Ryan before paying);
   6. builds checked in the background (no 60-second limit).
   - Waiting on Ryan: FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business. (AI billing: done 2026-10-01.)
@@ -152,11 +152,13 @@ tags: [zaphiel, open-loops]
 - 2026-10-01 — **ATLAS v3 follow-ups.**
   - Ryan: send sections 36–49 of the v3 prompt (cut off at section 35); Zaphiel merges only what is new or stricter.
   - NEW BUILD items the scenario tests surfaced: ~~mobile job card~~ (built 2026-10-01, PR #16), inventory
-    and procurement (only if a client cannot keep or buy a system), proper staff logins (agents seeing only their
-    own leads), Meta lead-form and portal intake, DNC checks, more than one WhatsApp number per client.
+    and procurement (only if a client cannot keep or buy a system), ~~proper staff logins~~ (built 2026-10-01, PR #17), Meta lead-form and portal intake, DNC checks, more than one WhatsApp number per client.
   - The knowledge cards are `status: draft`; vendor names and Singapore rules in them are to be verified per client.
 - 2026-10-01 — **Job card follow-ups.**
   - Ryan: try it on a phone. The test system's team app → Jobs → Open job card (any FAKE test company).
   - ~~ATLAS module catalog (B19) row for the job card~~ added 2026-10-01 (Ryan: "save", PR #111).
   - Not built yet: materials taken off stock, GPS/time-on-site tracking, a photo report emailed to the customer.
+- 2026-10-01 — **Staff logins follow-ups.**
+  - The ATLAS agent file still says "proper logins are not built yet" (B19 rules line); the update waits for Ryan's OK.
+  - Password reset by email (instead of asking the manager for a link) needs the email key in Vercel first.
 

@@ -79,3 +79,12 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
   job card. Tested: 137/137 on FAKE data; database change applied to the test system (0 security warnings).
 - Also fixed: a new system's self-test no longer leaves its FAKE booking in a technician's calendar.
 
+**Staff logins + "own customers only" (2026-10-01, Ryan: "do"; Fusion EDG Core PR #17):**
+- Each person signs in at `/app/login` with their email and their own password. They set it under Team → My login
+  after signing in once with the link their manager makes; that link is also "forgot password".
+- 5 wrong tries → wait 15 minutes. Passwords are stored only as scrambled codes nobody can read, not even admins.
+- Owner switch in Team → **Who sees which customers**: everyone sees all (default), or each salesperson/technician
+  sees only their own customers and the customers of their own jobs. Owners, managers and the AI still see everything.
+  The database enforces it. ATLAS can preset it for a client (e.g. a property agency).
+- Tested 147/147; database change on the test system; checked live there (admin 5 customers, one technician 2).
+

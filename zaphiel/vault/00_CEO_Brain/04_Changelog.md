@@ -78,3 +78,8 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   notes, customer signature (or reason), complete; works offline and sends when the signal returns; AI agents refused by
   the app and the database. Migration 015 applied to staging; 137/137 tests; checked in a phone-sized browser offline →
   online → completed. Self-test bookings are now released. ATLAS cards 11/18 and the field-service archetype say TESTED.
+- 2026-10-01 — **Staff logins + "each person sees only their own customers"** (Ryan: "do"; Fusion EDG Core PR #17, deployed
+  to the test system). Own email + password at `/app/login`, set after a one-time link; lockout after 5 wrong tries;
+  hashes only. Owner switch "Who sees which customers" enforced by the database for salespeople/support; managers,
+  the AI and the system unaffected; free times stay true. Migration 016 on staging (applied through the SQL tool in
+  parts: the migration tool timed out on one statement pattern). 147/147 tests. Cards 01/09 + property archetype updated.
