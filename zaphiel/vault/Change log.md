@@ -543,3 +543,9 @@ tags: [zaphiel, changelog]
   - Every AI reply and AI follow-up records its cost at Claude's official prices (Sonnet 5: US$2 per million input tokens, US$10 per million output; cheaper for cached text).
   - The client sees "AI use this month: N replies · US$x of your US$y limit" in their app. Ryan sees the same on each client's review page and can change the limit there.
   - At the limit the AI pauses and a person answers. Ryan gets an alert at 80% and 100%.
+
+- 2026-10-01 — **Real email is ready on the platform's side** (Fusion EDG Core PR #15; 127/127 tests).
+  - Resend sends as "<Business> via FusionTech" from send.fusiontech.com.sg.
+  - On the test system only the business's own people (owner and staff) get real email; test customers never do.
+  - It switches on when Ryan adds `EMAIL_PROVIDER_API_KEY` in Vercel and redeploys. The domain is on Cloudflare, and Ryan has the click-by-click steps.
+- 2026-10-01 — The Roen website mock-up finished (the build worker resumed the stopped build) and John sent the link to Ryan on WhatsApp.
