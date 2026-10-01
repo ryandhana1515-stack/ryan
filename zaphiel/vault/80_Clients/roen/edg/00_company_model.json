@@ -1,0 +1,136 @@
+{
+  "schema": "atlas.company_model.v1",
+  "generated_by": "atlas-n8n-1.0.0",
+  "mode": "DESIGN",
+  "checkpoint": 1,
+  "company": {
+    "name": {
+      "value": "Roen",
+      "label": "CLIENT-PROVIDED"
+    },
+    "industry": {
+      "value": "electrician services (inferred from link, unconfirmed)",
+      "label": "CLIENT-PROVIDED"
+    },
+    "size_people": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "location": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "website": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "contact": {
+    "name": {
+      "value": "Ryan",
+      "label": "CLIENT-PROVIDED"
+    },
+    "email": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "phone": {
+      "value": "+6587587170",
+      "label": "CLIENT-PROVIDED"
+    },
+    "decision_maker": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "acquisition": {
+    "lead_sources": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "monthly_lead_volume": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "attribution": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "sales": {
+    "follow_up_process": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "pipeline_stages": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "salespeople": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "tools": {
+    "current_tools": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "accounting_or_erp": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "uses_whatsapp": {
+      "value": true,
+      "label": "CLIENT-PROVIDED"
+    },
+    "uses_email": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "problems": {
+    "stated_problem": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "goals": {
+    "desired_automation": {
+      "value": [
+        "website_build"
+      ],
+      "label": "CLIENT-PROVIDED"
+    },
+    "desired_outcome": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "timeline": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "budget": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  },
+  "operations": {
+    "delivery": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "payments": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "customer_service": {
+      "value": null,
+      "label": "UNKNOWN"
+    },
+    "reporting": {
+      "value": null,
+      "label": "UNKNOWN"
+    }
+  }
+}
