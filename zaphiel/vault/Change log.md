@@ -538,3 +538,8 @@ tags: [zaphiel, changelog]
   - Tested: a full save goes from 6 to 12 of 13 ready. Only the WhatsApp number is left; FusionTech connects it at go-live.
   - Also fixed: "tell the owner" notices now go to the business owner, not the customer's salesperson.
   - Fusion EDG Core PR #13 (124/124 tests, checked at phone width).
+
+- 2026-10-01 — **Per-client AI costs and monthly limits** (Fusion EDG Core PR #14; 125/125 tests).
+  - Every AI reply and AI follow-up records its cost at Claude's official prices (Sonnet 5: US$2 per million input tokens, US$10 per million output; cheaper for cached text).
+  - The client sees "AI use this month: N replies · US$x of your US$y limit" in their app. Ryan sees the same on each client's review page and can change the limit there.
+  - At the limit the AI pauses and a person answers. Ryan gets an alert at 80% and 100%.

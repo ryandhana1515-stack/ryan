@@ -382,3 +382,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - ATLAS (CRM/EDG) wakes only when the customer asks for systems work themselves: a CRM, automation, workflows, integrations or AI agents.
   - When the customer says no ("I don't want a CRM", "just a website"), John stops all CRM/EDG questions and no CRM demo link is sent. If they later ask for it, it starts again.
   - AI assistants are never told anything is "free" (this caused "a free plumbing service visit" on 2026-09-30).
+
+- 2026-10-01 — **AI billing: Option 1** (Ryan: "yes"). FusionTech holds one Anthropic key for every client. Each client's AI use is a separate line on their bill (third-party costs are always separate from FusionTech fees).
+  - Each client has a monthly AI limit. The default is **US$20/month**, set by Zaphiel; Ryan changes it per client on the review page.
+  - At 80% Ryan is told. At 100% the client's AI pauses until next month and a person answers; customers are never left without a reply.
