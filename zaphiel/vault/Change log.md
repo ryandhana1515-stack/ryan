@@ -587,3 +587,4 @@ tags: [zaphiel, changelog]
   Team app: Stock tab, owner switch, test tools. Migration 018 on staging (in parts); 174/174 tests; checked in a
   phone-sized browser. ATLAS (n8n `9XQWSgTBszRc0Jxj`, Finalize ATLAS) switches stock on when a client talks about
   stock/parts and has no ERP (ceo-brain tests 136/136; deployed code verified identical). Cards 11/13/14 + field-service archetype updated.
+- 2026-10-01 — **ATLAS B19: stock and purchasing row added** (Ryan: "save"); "inventory" removed from the not-yet list. ATLAS offers it as TESTED, staging, only where the client has no ERP or inventory system.
