@@ -174,5 +174,5 @@ tags: [zaphiel, open-loops]
 - 2026-10-01 — **Stock and purchasing follow-ups** (PR #19).
   - Ryan: try it on the test system (any FAKE company → Team → "Switch on Stock" → Stock → "Add example stock (test)").
   - Real supplier emails go out only on the live system; on the test system they go to the stand-in email.
-  - ATLAS module catalog (B19) row: diff shown to Ryan, waiting for "save".
+  - ~~ATLAS module catalog (B19) row~~ added 2026-10-01 (Ryan: "save").
   - Not built yet: reserved stock / sales orders, barcode scanning, stock value reports, supplier bills to Xero.
