@@ -24,3 +24,7 @@ platform, many clients; Fusion controls what each client can see and use.**
 1 Tenant/auth/security/entitlements + Fusion Master Control · 2 CRM/timeline/follow-ups/tasks · 3 Communications ·
 4 Home/approvals/notifications (largely built) · 5 Other modules · 6 AI workforce registry · 7 Builder/analytics/templates.
 Stop for Ryan after every phase.
+
+## Phase 1 — done (2026-10-02)
+FusionTech Master Control (`/control`) + module switches enforced by screen, server and database + paused businesses + keys
+per business + every-minute timer. Record: `fusion-edg-core/docs/platform-v4/01_PHASE1.md` (PR #27). Waiting for Ryan before Phase 2.
