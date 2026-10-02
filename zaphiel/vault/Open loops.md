@@ -185,6 +185,8 @@ tags: [zaphiel, open-loops]
   - ATLAS module catalog (B19): rows for "Owners make their own workflows" and "Connect another app" proposed to Ryan; waiting for his "save".
   - Not built yet: reading data *from* another app on a schedule (pulling), and apps that need a login (OAuth) rather than an address; those still need Zaphiel to build a connector.
 - 2026-10-02 — **Atlas master spec** ([[00_CEO_Brain/06_Atlas_Master_Gap_Analysis]]).
-  - Ryan: say "go" for Phase 1 (Command Center: approvals, notifications, work/exception queue, tasks, system health).
+  - ~~Ryan: say "go" for Phase 1~~ done 2026-10-02 ("Go"; Command Center built, PR #23). Ryan: try it (open the team app → Home).
+  - Next: Phase 2, Customer 360 (one timeline, merge duplicates with a person confirming, customer service cases) — waiting for Ryan's go.
+  - Supabase MCP note: statements that DROP something hang (it waits for a confirmation that never comes); migrations use CREATE OR REPLACE / ALTER instead.
   - Ryan: one pilot client (a real business) by Phase 3, so live integrations are proven.
   - Then phases 2–6 in order, each to the spec's Definition of Done.
