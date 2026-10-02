@@ -182,7 +182,7 @@ tags: [zaphiel, open-loops]
   - Step 2: a spare phone number + a separate Meta app "FusionTech Clients" (WhatsApp) → Vercel `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_GRAPH_VERSION`, `WA_TOKEN_DEMO`, `EDG_LIVE_ADAPTERS=1`; Zaphiel checks no test company can message a stranger before switching live sending on.
 - 2026-10-02 — **Owner workflows + Connect another app follow-ups** (PRs #21, #22).
   - Ryan: try both on the test system (AI team → "New workflow" / "Describe it in words"; Team → "Connect another app").
-  - ATLAS module catalog (B19): rows for "Owners make their own workflows" and "Connect another app" proposed to Ryan; waiting for his "save".
+  - ~~ATLAS module catalog (B19) rows~~ added 2026-10-02 (Ryan: "save").
   - Not built yet: reading data *from* another app on a schedule (pulling), and apps that need a login (OAuth) rather than an address; those still need Zaphiel to build a connector.
 - 2026-10-02 — **Atlas master spec** ([[00_CEO_Brain/06_Atlas_Master_Gap_Analysis]]).
   - ~~Ryan: say "go" for Phase 1~~ done 2026-10-02 ("Go"; Command Center built, PR #23). Ryan: try it (open the team app → Home).
