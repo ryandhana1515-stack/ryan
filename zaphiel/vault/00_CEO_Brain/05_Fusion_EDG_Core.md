@@ -110,3 +110,15 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
 - Owners switch it on under Team; ATLAS switches it on when a client talks about stock or parts (not when they
   already use an ERP). Test system: Stock → "Add example stock (test)".
 - Tested 174/174; database change on the test system. Not built yet: barcode scanning, stock value reports, bills to Xero.
+
+**Owners build their own workflows (2026-10-02, Ryan: "i want this"; Fusion EDG Core PR #21):**
+- AI team tab → **New workflow**: When (something happens, then wait; or every day/week) → Only if → Then do. Same safe building blocks as ATLAS; no code.
+- **Describe it in words**: the AI turns a sentence into the form; the owner checks and saves.
+- Rehearsed with a real customer of the business before saving (nothing sent); refused with a plain reason if it cannot work.
+- Change / Remove on every workflow (ATLAS's too); removing keeps the history. Owners, administrators, managers only.
+
+**Connect another app (2026-10-02, Ryan: "i want this"; Fusion EDG Core PR #22):**
+- Team → **Connect another app**. For a client's own software that has no ready-made link (booking system, form, shop, Zapier, Make).
+- **Receive customers**: a private address; each customer the other app sends arrives like any enquiry.
+- **Send to an app**: workflow step "Send the details to another app" (signed; public internet addresses only; owner told if it fails).
+- Tested 192/192; database change on the test system. Still needs Zaphiel: apps that need a login (OAuth) or pulling data on a schedule.
