@@ -85,5 +85,4 @@ KEEP/BUY/BUILD • CONTROLS & RISKS) and what Fusion EDG Core can do today.
 and creative are the Marketing Agent's, not ATLAS's).
 
 ## Still to come
-Ryan's sections 36–49 (cut off in his source prompt). When they arrive they are compared with BUILD ENGINE v2 first
-and only what is new or stricter is merged (no duplicates).
+~~Ryan's sections 36–49~~: superseded 2026-10-02 by the Atlas master spec (`_sources/Atlas_Master_CRM_EDG_AI_Workforce_Prompt.pdf`); see [[00_CEO_Brain/06_Atlas_Master_Gap_Analysis]].

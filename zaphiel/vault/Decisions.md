@@ -5,6 +5,14 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-02 — **The Atlas master spec is the target for Atlas** (Ryan shared *Atlas Master CRM + EDG + AI Workforce
+  System Prompt*, 58 sections, in `_sources/`: "I read this entire thing so you know what I actually want for Atlas right
+  now"). Atlas = the client's whole business operating system: ATLAS (the architect agent) designs it, Fusion EDG Core
+  builds and runs it, and John stays the sales agent. No new or replacement agent (spec §0). Sequence: audit → gap
+  analysis → plan → Ryan's go → build in phases ([[00_CEO_Brain/06_Atlas_Master_Gap_Analysis]]). This supersedes the
+  wait for "sections 36–49" of the earlier v3 prompt: anything those sections would have covered is judged against
+  this spec. Nothing in it contradicts an earlier decision.
+
 - 2026-10-01 — **Staff logins: own email + password, not a separate login service** (Ryan: "do", Zaphiel's approach). Works
   now without the email key; a manager's one-time link sets or resets the password. The owner decides per business
   whether staff see all customers or only their own; the database enforces it.
