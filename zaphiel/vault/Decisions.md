@@ -5,6 +5,8 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-02 — **The client app looks premium, never bland** (Ryan: "make it more premium… very posh… this looks way too bland and AI slop"). House style for everything a client sees (team app, sign-in, review pages): stone paper, obsidian ink, jade for actions, brass accents; Fraunces for headings and big numbers, Plus Jakarta Sans for the interface; full dark mode. New screens follow it (tokens in `apps/api/public/app.html`).
+
 - 2026-10-02 — **The Atlas master spec is the target for Atlas** (Ryan shared *Atlas Master CRM + EDG + AI Workforce
   System Prompt*, 58 sections, in `_sources/`: "I read this entire thing so you know what I actually want for Atlas right
   now"). Atlas = the client's whole business operating system: ATLAS (the architect agent) designs it, Fusion EDG Core
