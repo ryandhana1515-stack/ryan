@@ -180,3 +180,7 @@ tags: [zaphiel, open-loops]
   - ~~Step 1 email~~ done 2026-10-02 (Resend key in Vercel; sender onboarding@resend.dev until a domain exists).
   - Ryan has **no domain in Cloudflare** (Domains list empty). Before real clients: buy or locate the FusionTech domain, add the Resend records, switch `EMAIL_FROM_ADDRESS` to it.
   - Step 2: a spare phone number + a separate Meta app "FusionTech Clients" (WhatsApp) → Vercel `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_GRAPH_VERSION`, `WA_TOKEN_DEMO`, `EDG_LIVE_ADAPTERS=1`; Zaphiel checks no test company can message a stranger before switching live sending on.
+- 2026-10-02 — **Owner workflows + Connect another app follow-ups** (PRs #21, #22).
+  - Ryan: try both on the test system (AI team → "New workflow" / "Describe it in words"; Team → "Connect another app").
+  - ATLAS module catalog (B19): rows for "Owners make their own workflows" and "Connect another app" proposed to Ryan; waiting for his "save".
+  - Not built yet: reading data *from* another app on a schedule (pulling), and apps that need a login (OAuth) rather than an address; those still need Zaphiel to build a connector.
