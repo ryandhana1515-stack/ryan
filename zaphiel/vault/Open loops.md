@@ -176,3 +176,7 @@ tags: [zaphiel, open-loops]
   - Real supplier emails go out only on the live system; on the test system they go to the stand-in email.
   - ~~ATLAS module catalog (B19) row~~ added 2026-10-01 (Ryan: "save").
   - Not built yet: reserved stock / sales orders, barcode scanning, stock value reports, supplier bills to Xero.
+- 2026-10-02 — **Real test with Ryan (in progress).**
+  - ~~Step 1 email~~ done 2026-10-02 (Resend key in Vercel; sender onboarding@resend.dev until a domain exists).
+  - Ryan has **no domain in Cloudflare** (Domains list empty). Before real clients: buy or locate the FusionTech domain, add the Resend records, switch `EMAIL_FROM_ADDRESS` to it.
+  - Step 2: a spare phone number + a separate Meta app "FusionTech Clients" (WhatsApp) → Vercel `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_GRAPH_VERSION`, `WA_TOKEN_DEMO`, `EDG_LIVE_ADAPTERS=1`; Zaphiel checks no test company can message a stranger before switching live sending on.

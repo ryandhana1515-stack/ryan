@@ -588,3 +588,5 @@ tags: [zaphiel, changelog]
   phone-sized browser. ATLAS (n8n `9XQWSgTBszRc0Jxj`, Finalize ATLAS) switches stock on when a client talks about
   stock/parts and has no ERP (ceo-brain tests 136/136; deployed code verified identical). Cards 11/13/14 + field-service archetype updated.
 - 2026-10-01 — **ATLAS B19: stock and purchasing row added** (Ryan: "save"); "inventory" removed from the not-yet list. ATLAS offers it as TESTED, staging, only where the client has no ERP or inventory system.
+- 2026-10-02 — **Real email works on the test system** (Ryan added the Resend key + `EMAIL_FROM_ADDRESS=onboarding@resend.dev` in Vercel; no domain yet, so Resend delivers only to Ryan's own Resend address). Redeployed; Ryan received the low-stock purchase-order email ("got it").
+- 2026-10-02 — **"Run everything now (test)"** on the AI team tab (Ryan: "do"; Fusion EDG Core PR #20): waiting workflow steps run at once (conditions still checked), scheduled workflows run once more, nothing runs twice; test system only. 175/175 tests.
