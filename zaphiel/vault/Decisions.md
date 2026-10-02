@@ -5,6 +5,12 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-02 — **Atlas Platform v4 is the build plan: one platform, many clients, Fusion controls entitlements** (Ryan's
+  v4 master prompt, saved word for word in `fusion-edg-core/docs/platform-v4/SPEC.md`; see [[00_CEO_Brain/07_Atlas_Platform_v4]]).
+  Phase 0 audit first, then stop; after every phase stop for Ryan's approval. Never test on production data. This phase
+  plan replaces the order in [[00_CEO_Brain/06_Atlas_Master_Gap_Analysis]] (its "Step 2: Customer 360" becomes v4 Phase 2).
+  No conflict with earlier decisions.
+
 - 2026-10-02 — **The client app looks premium, never bland** (Ryan: "make it more premium… very posh… this looks way too bland and AI slop"). House style for everything a client sees (team app, sign-in, review pages): stone paper, obsidian ink, jade for actions, brass accents; Fraunces for headings and big numbers, Plus Jakarta Sans for the interface; full dark mode. New screens follow it (tokens in `apps/api/public/app.html`).
 
 - 2026-10-02 — **The Atlas master spec is the target for Atlas** (Ryan shared *Atlas Master CRM + EDG + AI Workforce
