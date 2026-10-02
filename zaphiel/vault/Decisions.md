@@ -5,6 +5,7 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-02 — **The client dashboard is Ryan's "ATLAS · AI Business Operating System" design** (Ryan sent a mockup: "I want the dashboard to be exactly this, replace the dashboard with this"). This replaces the stone/jade "private office" look decided earlier today (newest wins). House style for everything a client sees: light blue and white with a deep-blue Atlas card and footer band, Plus Jakarta Sans, Great Vibes for the "Build · Automate · Grow" script, Singapore skyline banner, full dark mode. Every number on it is real (counts of the business's own records); a comparison is shown only when there are earlier figures; modules in the mockup that are not built yet are not shown. Tokens in `fusion-edg-core/apps/api/public/app.html`.
 - 2026-10-02 — **Atlas Platform v4 is the build plan: one platform, many clients, Fusion controls entitlements** (Ryan's
   v4 master prompt, saved word for word in `fusion-edg-core/docs/platform-v4/SPEC.md`; see [[00_CEO_Brain/07_Atlas_Platform_v4]]).
   Phase 0 audit first, then stop; after every phase stop for Ryan's approval. Never test on production data. This phase

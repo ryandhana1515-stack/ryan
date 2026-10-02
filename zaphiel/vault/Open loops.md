@@ -197,3 +197,7 @@ tags: [zaphiel, open-loops]
   4. Plans/bundles and pricing (which modules in which package).
   5. Approve Phase 1 (Fusion Master Control + server-enforced module/agent switches).
   6. "save" for the ATLAS agent PLATFORM MODE section.
+- 2026-10-02 — **Atlas dashboard follow-ups** (PR #26).
+  - The skyline, Atlas and AI-team pictures load from the image service's storage; host them with the app so they never disappear.
+  - Build the mockup modules that are still hidden when Ryan wants them: Communications (one inbox), Marketing, Branding, Orders, HR, Projects, Documents.
+  - The AI Workforce panel shows the business's own assistants; names like John / Mia / Leo / Zoe in the mockup are examples, not built agents.
