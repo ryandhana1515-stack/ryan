@@ -42,6 +42,13 @@ exists: `Knowledge/AI Workforce — roster`.
   Claude Code with the `atlas` subagent (`.claude/agents/atlas.md`, all tools) once Ryan confirms.
   John asks ATLAS's open questions himself: Lead Intake's "Load ATLAS Questions" step reads the lead's
   `edg_design` task and Finalize adds the next unasked one to John's reply (`atlas_question` in the output).
+- **Atlas platform (`fusion-edg-core`, staging https://fusion-edg-core-api.vercel.app)**: client team app `/app`;
+  FusionTech **Master Control** `/control` (password + authenticator code; admins only by invitation:
+  `SELECT app.platform_invite(email, name)` on Supabase `umuzxrxredctpbveqxlt`, send the `/control/setup/<token>` link
+  privately) — clients, module switches (on/restricted/off), pause/resume, read-only view as client, `edgk_` machine keys
+  per business, new-client wizard. Every-minute timer = Supabase pg_cron job `atlas-platform-timer` → `/cron/tick`
+  (token in Supabase Vault; `scripts/supabase-timer.sql`). Function region hnd1 (next to the Tokyo database).
+  Phase records: `docs/platform-v4/`.
 - **Training Room** `AM59goLdbt0clv8q`: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents
