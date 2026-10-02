@@ -5,6 +5,8 @@ tags: [zaphiel, decisions]
 
 Newest first. Agents and Claude sessions obey these; contradict one only after flagging it to Ryan.
 
+- 2026-10-02 — **Atlas Platform v4 checkpoint 0 answered** (Ryan: "Ok" to all six recommendations). (1) `fusion-edg-core` IS the Atlas platform, no merge. (2) Background timer: the n8n "every minute" runner calling the platform. (3) Production setup (paid Supabase in Singapore + live Vercel project) later, before the first real client. (4) Packages and pricing later. (5) Phase 1 approved: Fusion Master Control + module/agent switches enforced by the server and database. (6) ATLAS agent PLATFORM MODE section saved. Still stop for Ryan after each phase (he did not say "go all phases").
+
 - 2026-10-02 — **The client dashboard is Ryan's "ATLAS · AI Business Operating System" design** (Ryan sent a mockup: "I want the dashboard to be exactly this, replace the dashboard with this"). This replaces the stone/jade "private office" look decided earlier today (newest wins). House style for everything a client sees: light blue and white with a deep-blue Atlas card and footer band, Plus Jakarta Sans, Great Vibes for the "Build · Automate · Grow" script, Singapore skyline banner, full dark mode. Every number on it is real (counts of the business's own records); a comparison is shown only when there are earlier figures; modules in the mockup that are not built yet are not shown. Tokens in `fusion-edg-core/apps/api/public/app.html`.
 - 2026-10-02 — **Atlas Platform v4 is the build plan: one platform, many clients, Fusion controls entitlements** (Ryan's
   v4 master prompt, saved word for word in `fusion-edg-core/docs/platform-v4/SPEC.md`; see [[00_CEO_Brain/07_Atlas_Platform_v4]]).

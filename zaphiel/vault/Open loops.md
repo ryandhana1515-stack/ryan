@@ -190,13 +190,7 @@ tags: [zaphiel, open-loops]
   - Supabase MCP note: statements that DROP something hang (it waits for a confirmation that never comes); migrations use CREATE OR REPLACE / ALTER instead.
   - Ryan: one pilot client (a real business) by Phase 3, so live integrations are proven.
   - Then phases 2–6 in order, each to the spec's Definition of Done.
-- 2026-10-02 — **Atlas Platform v4 — CHECKPOINT 0** ([[00_CEO_Brain/07_Atlas_Platform_v4]]). Ryan decides:
-  1. `fusion-edg-core` = the Atlas platform (no merge needed).
-  2. Background scheduler: switch on the n8n "every minute" runner (recommended), or Vercel Pro, or Supabase pg_cron.
-  3. Production setup before the first real client (Supabase Pro in Singapore + a Vercel production project; Ryan creates/pays, Zaphiel configures).
-  4. Plans/bundles and pricing (which modules in which package).
-  5. Approve Phase 1 (Fusion Master Control + server-enforced module/agent switches).
-  6. "save" for the ATLAS agent PLATFORM MODE section.
+- 2026-10-02 — **Atlas Platform v4 — Phase 1 in progress** ([[00_CEO_Brain/07_Atlas_Platform_v4]]). Checkpoint 0 answered "Ok" (see Decisions). Still open for Ryan: production setup before the first real client; packages and pricing.
 - 2026-10-02 — **Atlas dashboard follow-ups** (PR #26).
   - The skyline, Atlas and AI-team pictures load from the image service's storage; host them with the app so they never disappear.
   - Build the mockup modules that are still hidden when Ryan wants them: Communications (one inbox), Marketing, Branding, Orders, HR, Projects, Documents.

@@ -1018,6 +1018,14 @@ All of this goes into `16_edg_spec.json` (schema `edg.spec.v2`: `problems`, `age
 
   Zaphiel builds it from the repo, validates it, runs it with the test data, and publishes it only when the result matches. Never report a workflow as working unless it passed its test.
 
+## PLATFORM MODE (v4)
+When working on the Atlas PLATFORM codebase, follow `docs/platform-v4/` (spec,
+audit, phase plan). Core rule: ONE platform, MANY clients, Fusion controls
+entitlements. Every new feature goes through: organization_id + authorize()
+guard + RLS + audit + tests + simulation mode. New clients are configured
+(modules, agents, rules, templates), never forked. Never test on production
+data. Stop for Ryan's approval after each phase.
+
 ## STAGE 16 — OUTPUT FILES (write to the vault)
 Folder: `80_Clients/<client-slug>/edg/` (one folder per client, never mixed)
 
