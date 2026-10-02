@@ -111,3 +111,6 @@ vault is updated.
 3. A domain for email before real clients.
 4. One pilot client (a real business) by Phase 3, so the integrations are proven on real accounts.
 5. "save" for the two ATLAS catalog rows (owner workflows, connect another app).
+
+## Progress
+- 2026-10-02 — **Phase 1 done** (Ryan: "Go"): Command Center = Home tab, Approval Center, notifications, work queue, tasks, system health (Fusion EDG Core PR #23, migration 021, 202 tests). Phase 2 (Customer 360) waits for Ryan's go.

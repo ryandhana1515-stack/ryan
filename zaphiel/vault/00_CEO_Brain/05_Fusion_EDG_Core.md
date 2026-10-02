@@ -122,3 +122,11 @@ going live stays Ryan's decision. Needs n8n to reach the platform: Vercel Authen
 - **Receive customers**: a private address; each customer the other app sends arrives like any enquiry.
 - **Send to an app**: workflow step "Send the details to another app" (signed; public internet addresses only; owner told if it fails).
 - Tested 192/192; database change on the test system. Still needs Zaphiel: apps that need a login (OAuth) or pulling data on a schedule.
+
+**Command Center: the owner's Home screen (2026-10-02, Atlas Phase 1; Fusion EDG Core PR #23):**
+- First tab **Home**: do next · system health · waiting for your decision · needs attention · my tasks · last 24 hours.
+- **Approval Center**: quotations, invoices, purchase orders, stock counts → Approve / Turn down / Ask for changes (with a note).
+- **Notifications** (managers): every alert, with how serious it is; repeats counted once; mark read, resolve.
+- **Work queue** (managers): owner, priority, due time; give it to someone (it becomes their task); failed workflows land here.
+- **Tasks**: everyone's own; managers give tasks and see the team's (not given to anyone / overdue / blocked).
+- **System health** (managers): connections, messages, automation (failed, late, stuck), AI use.
