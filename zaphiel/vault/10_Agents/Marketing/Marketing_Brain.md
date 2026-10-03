@@ -34,4 +34,6 @@ and Meta currency are not available (they need a native API connector).
 
 **Targets:** [[60_Skill_Packs/Marketing/targets]].
 
-**Data source (2026-10-03):** FusionTech's own social and ad accounts, connected to Metricool. None are connected yet. BioGreen Elixirs is a separate business and is not read by this agent (Ryan).
+**Data source (2026-10-03):** FusionTech's own social and ad accounts, connected to Metricool.
+
+**Update (2026-10-03, after Ryan unlinked BioGreen):** Metricool brand `6656122` now holds FusionTech's Instagram `fusiontech.ai`, TikTok `Fusiontech.AI` and Facebook page `1237077816163178`; YouTube was removed. The brand still has its old label `biogreenelixirs`, which Ryan can rename to "FusionTech AI". The first read returned zeros because Metricool fills in the past 30 days overnight after a new connection. No ad account is connected yet. BioGreen Elixirs is a separate business and is not read by this agent (Ryan).

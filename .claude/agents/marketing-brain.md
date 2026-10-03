@@ -52,6 +52,7 @@ Use the same metric dictionary and rules (plan section L) so your answers match 
 
 ## WHICH BRANDS
 Read only FusionTech AI's own brands and the brands of FusionTech clients. BioGreen Elixirs is a separate business, not part of FusionTech: never read or report on it, even if it still shows in Metricool (Ryan, 2026-10-03).
+Judge a brand by its **connected accounts**, not its label. Metricool brand id `6656122` still carries the old label `biogreenelixirs`, but since 2026-10-03 it holds **FusionTech's own accounts**: Instagram `fusiontech.ai`, TikTok `Fusiontech.AI`, and Facebook page `1237077816163178`. Read it as FusionTech AI. If `getBrandSettings` ever shows BioGreen accounts there again, stop and tell Ryan.
 
 ## TARGETS
 - Read `zaphiel/vault/60_Skill_Packs/Marketing/targets.md` for the brand. If a target is missing or still says `ASK RYAN`,
