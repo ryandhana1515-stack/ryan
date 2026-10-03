@@ -607,3 +607,10 @@ tags: [zaphiel, changelog]
   - **Coverage found.** Metricool gives Meta and TikTok ads per ad per day, with ad set ids. It does not give campaign status, budgets, audience breakdowns or Meta's currency; those need a native connector.
   - **No FusionTech brand in Metricool yet.** The only brand there was BioGreen Elixirs, a separate business, so it is left out (Ryan).
 - 2026-10-03 — **Metricool now holds FusionTech's own accounts** (Ryan unlinked BioGreen). Brand `6656122` has Instagram `fusiontech.ai`, TikTok `Fusiontech.AI` and a Facebook page. The Marketing Brain reads it as FusionTech AI. The first numbers arrive after Metricool's overnight fill of the past 30 days.
+- 2026-10-03 — **Marketing step 1a: foundation** (Ryan: "go"; Fusion EDG Core PR #31, on the test system).
+  - **Module.** Marketing is now a module that FusionTech switches on per business in Master Control. It is off for everyone until then.
+  - **Database.** New tables keep each ad account (with its own currency and timezone), its campaigns, ad sets and ads, and the raw daily numbers (no ready-made ratios). Salespeople never see them; switched off, they are invisible.
+  - **Practice data.** A practice Metricool gives fixed FAKE example campaigns, including a tiring ad, a tracking break, a campaign with too little data and a weak TikTok video opening.
+  - **Saving.** Loading the same days twice changes nothing. A bad source saves nothing.
+  - **Screen.** A read-only Marketing screen shows the accounts, the saved days, the last update, and what Metricool cannot give.
+  - **Tests.** 245/245 (14 new). Checked on desktop and phone. Demo note: `docs/marketing/1A_FOUNDATION.md`.
