@@ -34,6 +34,4 @@ and Meta currency are not available (they need a native API connector).
 
 **Targets:** [[60_Skill_Packs/Marketing/targets]].
 
-**First live read (2026-10-03):** the BioGreen Elixirs brand returned 0 or empty Instagram values for 26 Sep – 2 Oct, and
-it has no ad accounts connected in Metricool. Either the account is new or quiet, or Metricool is not syncing it. Ryan
-should check this.
+**Data source (2026-10-03):** FusionTech's own social and ad accounts, connected to Metricool. None are connected yet. BioGreen Elixirs is a separate business and is not read by this agent (Ryan).

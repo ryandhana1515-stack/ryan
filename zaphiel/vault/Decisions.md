@@ -451,3 +451,6 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - **Campaign control** (pause, budget) comes only after the analytics are proven correct, and only with explicit
     approval. AI never launches ads or raises budgets.
   - **Order:** Marketing Phase 1 runs next, then v4 Phase 3; this replaces the marketing/branding part of v4 Phase 5.
+- 2026-10-03 — **BioGreen Elixirs is a separate business, not part of FusionTech** (Ryan: "BioGreen is just another
+  product … a separate thing"). Its data stays out of the brain and out of the marketing work. Ryan unlinks it from Metricool.
+  The Marketing Brain and the Atlas Marketing module read FusionTech's own brands and FusionTech clients only.

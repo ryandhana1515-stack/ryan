@@ -203,5 +203,5 @@ tags: [zaphiel, open-loops]
     - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);
     - put `METRICOOL_USER_TOKEN` and `METRICOOL_USER_ID` in Vercel (never in chat);
     - connect at least one Meta ad account in Metricool.
-  - Check BioGreen Elixirs in Metricool: Instagram showed empty or zero values for 26 Sep – 2 Oct (quiet account or not syncing?).
+  - Ryan: unlink BioGreen Elixirs from Metricool (a separate business). Then connect FusionTech AI's own Instagram / Facebook / TikTok and its Meta ad account, so the Marketing Brain and step 1b have FusionTech data.
   - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
