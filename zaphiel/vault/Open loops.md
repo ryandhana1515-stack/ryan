@@ -190,7 +190,7 @@ tags: [zaphiel, open-loops]
   - Supabase MCP note: statements that DROP something hang (it waits for a confirmation that never comes); migrations use CREATE OR REPLACE / ALTER instead.
   - Ryan: one pilot client (a real business) by Phase 3, so live integrations are proven.
   - Then phases 2–6 in order, each to the spec's Definition of Done.
-- 2026-10-02 — **Atlas Platform v4 — Phase 1 DONE, waiting for Ryan before Phase 2** ([[00_CEO_Brain/07_Atlas_Platform_v4]]). Ryan: open the Master Control invitation email (works once, 48 hours), set password + authenticator, look around, then say "go" for Phase 2 (customer timeline, follow-ups, stale/high-value detection). Still open: production setup before the first real client; packages and pricing.
+- 2026-10-03 — **Atlas Platform v4 — Phase 2 DONE, waiting for Ryan before Phase 3** ([[00_CEO_Brain/07_Atlas_Platform_v4]]). Ryan: open a customer in the team app (timeline), try Customers → List and Follow-ups, Team → Follow-up rules; then "go" for Phase 3 (one inbox for WhatsApp / email / web, human takeover, calendar). Master Control invitation (Phase 1) still to be used if not done. Still open: production setup before the first real client; packages and pricing.
   - Follow-ups: Supabase default privileges re-grant new tables to `anon` (RLS still forced); production needs `EDG_TOKEN_ENCRYPTION_KEY` and its own timer setup; move the ATLAS n8n workflow from the shared key to its own `edgk_` key.
 - 2026-10-02 — **Atlas dashboard follow-ups** (PR #26).
   - The skyline, Atlas and AI-team pictures load from the image service's storage; host them with the app so they never disappear.
