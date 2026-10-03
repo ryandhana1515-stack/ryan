@@ -26,3 +26,10 @@ Operational ids and the website chain: [[Agents]]. Roster by Ryan's twelve-agent
 
 **Specialist agents** (outside the sixteen): [[10_Agents/16_Fusion_Property_SG]] — Fusion Property AI, Singapore
 property only (Claude Code subagent `fusion-property-sg`, 2026-09-30).
+
+**Marketing & Branding Intelligence** (Ryan's v2 prompt, 2026-10-03): [[10_Agents/Marketing/_index]]. It has three agents:
+- Marketing Brain (read-only subagent today);
+- Ads & Data Diagnosis;
+- Creative & Branding.
+
+They sit under heads 03 / 04 / 14.

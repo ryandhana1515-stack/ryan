@@ -49,6 +49,12 @@ exists: `Knowledge/AI Workforce — roster`.
   per business, new-client wizard. Every-minute timer = Supabase pg_cron job `atlas-platform-timer` → `/cron/tick`
   (token in Supabase Vault; `scripts/supabase-timer.sql`). Function region hnd1 (next to the Tokyo database).
   Phase records: `docs/platform-v4/`.
+- **Marketing Brain (quick win, read-only)**: Claude Code subagent `.claude/agents/marketing-brain.md`. It reads Metricool
+  through the MCP (`getBrandSettings`, `getAnalyticsAvailableMetrics`, `getAnalyticsDataByMetrics`). It does every number
+  in python from base metrics (sums first, then ratios) and judges against `zaphiel/vault/60_Skill_Packs/Marketing/targets.md`.
+  It has no posting, scheduling or boosting tools. Metricool brand BioGreen Elixirs = id `6656122` (Asia/Singapore).
+  The product version (Atlas Marketing module) is planned in `fusion-edg-core/docs/marketing/PLAN.md` (PR #30, waiting
+  for Ryan's approval).
 - **Training Room** `AM59goLdbt0clv8q`: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/dashboard
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents

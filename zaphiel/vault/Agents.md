@@ -97,3 +97,7 @@ Lovable OAuth credential). Say so before promising an automation.
 
 ## CEO Brain v3 contracts
 Every agent now has a contract note in [[10_Agents/_index|10_Agents]] (16 head agents) and [[20_Specialist_Workers/_index|20_Specialist_Workers]] (9 workers); the rules they share are in [[00_CEO_Brain/00_Master_Rules]].
+
+## Marketing (2026-10-03)
+- **Marketing Brain:** a read-only Claude Code subagent, `.claude/agents/marketing-brain.md`. It reads Metricool through the MCP, calculates every number in code, and checks it against [[60_Skill_Packs/Marketing/targets]]. It never posts or changes anything. Map: [[10_Agents/Marketing/_index]].
+- **Not in n8n.** The product version is the Atlas Marketing module (plan `fusion-edg-core/docs/marketing/PLAN.md`, waiting for Ryan's approval).

@@ -16,6 +16,8 @@ tags: [agent, head-agent, phase-9]
 **Where it stands (2026-09-25):** Planned. Today the Website Build Runner generates cinematic photography (Higgsfield/Kling) for mock-ups; that capability moves under this agent later.
 
 ## 1. Identity & purpose
+**Update (2026-10-03):** the [[10_Agents/Marketing/Creative_Branding|Creative & Branding Agent]] (Brand Brain, Creative QA, `CreativeProvider`) is this head's first agent, planned for Marketing Phase 3 ([[10_Agents/Marketing/_index]]).
+
 Brand-consistent copy, visual briefs and assets (images, video, voice) with creative QA, for websites, campaigns and proposals.
 
 ## 2. Inputs (what it receives, from whom)
