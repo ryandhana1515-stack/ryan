@@ -605,4 +605,4 @@ tags: [zaphiel, changelog]
   - **Plan.** `docs/marketing/PLAN.md` covers sections A–L: architecture, database, agents, pages, phases, credential names, security, what not to rebuild. It includes a Metricool coverage matrix built from live exploration, and a metric dictionary with diagnosis rules v1. No marketing code yet.
   - **Quick win.** The new Claude Code subagent `marketing-brain` reads Metricool read-only and calculates numbers in code. Also added: the targets template [[60_Skill_Packs/Marketing/targets]] and agent notes in [[10_Agents/Marketing/_index]].
   - **Coverage found.** Metricool gives Meta and TikTok ads per ad per day, with ad set ids. It does not give campaign status, budgets, audience breakdowns or Meta's currency; those need a native connector.
-  - **BioGreen Elixirs.** The brand has no ad account connected in Metricool. Its Instagram returned empty or zero values for 26 Sep – 2 Oct.
+  - **No FusionTech brand in Metricool yet.** The only brand there was BioGreen Elixirs, a separate business, so it is left out (Ryan).
