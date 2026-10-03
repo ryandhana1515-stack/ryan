@@ -16,6 +16,8 @@ tags: [agent, head-agent, phase-9]
 **Where it stands (2026-09-25):** Planned. No workflow yet.
 
 ## 1. Identity & purpose
+**Update (2026-10-03):** Ryan's Marketing & Branding Intelligence v2 splits this head into the [[10_Agents/Marketing/Marketing_Brain|Marketing Brain]] and the [[10_Agents/Marketing/Ads_Data_Diagnosis|Ads & Data Diagnosis Agent]] ([[10_Agents/Marketing/_index]]). The Marketing Brain runs today as a read-only Claude Code subagent (Metricool). Product plan: `fusion-edg-core/docs/marketing/PLAN.md`, waiting for Ryan.
+
 Runs channels and campaigns, nurtures leads, attributes results and reports — inside brand and compliance limits.
 
 **Boundary with ATLAS (2026-10-01):** campaign strategy and creative advertising are this agent's; ATLAS only brings marketing data into the CRM/EDG (lead sources, CRM-triggered follow-up). ATLAS sends requirements here when needed. Not built yet (draft).

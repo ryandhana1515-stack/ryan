@@ -441,3 +441,13 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   and the person who prepared an order cannot approve it above the client's limit (card 14); costs and reorder levels
   come from the client, never invented. Where a client already runs an ERP or inventory system, ATLAS integrates with it
   and leaves EDG stock off.
+- 2026-10-03 — **Marketing & Branding Intelligence is a module inside Atlas, built on Metricool's API first** (Ryan's v2
+  prompt; plan by Zaphiel, waiting for Ryan's approval; Fusion EDG Core PR #30).
+  - **Golden rule:** NUMBERS COME FROM CODE, WORDS COME FROM AI.
+  - **Data:** Metricool's REST API is called server-side; the MCP is used only for build-time exploration. Raw base metrics
+    are stored per ad per day. Ratios are always computed from sums. Each account keeps its own currency and timezone.
+  - **Diagnosis:** deterministic, versioned rules with a minimum-data rule.
+  - **John is not rebuilt:** Marketing reads sales through a read-only `SalesBrainPort`.
+  - **Campaign control** (pause, budget) comes only after the analytics are proven correct, and only with explicit
+    approval. AI never launches ads or raises budgets.
+  - **Order:** Marketing Phase 1 runs next, then v4 Phase 3; this replaces the marketing/branding part of v4 Phase 5.

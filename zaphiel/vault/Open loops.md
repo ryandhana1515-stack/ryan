@@ -196,3 +196,12 @@ tags: [zaphiel, open-loops]
   - The skyline, Atlas and AI-team pictures load from the image service's storage; host them with the app so they never disappear.
   - Build the mockup modules that are still hidden when Ryan wants them: Communications (one inbox), Marketing, Branding, Orders, HR, Projects, Documents.
   - The AI Workforce panel shows the business's own assistants; names like John / Mia / Leo / Zoe in the mockup are examples, not built agents.
+- 2026-10-03 — **Marketing & Branding Intelligence: waiting for Ryan** ([[10_Agents/Marketing/_index]]).
+  - Ryan: read `fusion-edg-core/docs/marketing/PLAN.md` (PR #30) and approve it or say what to change. Marketing Phase 1 (steps 1a–1e) starts after that.
+  - Ryan: fill in [[60_Skill_Packs/Marketing/targets]] (CPL, cost per result, CTR, ROAS, frequency cap, first reply time).
+  - Ryan, at step 1b:
+    - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);
+    - put `METRICOOL_USER_TOKEN` and `METRICOOL_USER_ID` in Vercel (never in chat);
+    - connect at least one Meta ad account in Metricool.
+  - Check BioGreen Elixirs in Metricool: Instagram showed empty or zero values for 26 Sep – 2 Oct (quiet account or not syncing?).
+  - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).

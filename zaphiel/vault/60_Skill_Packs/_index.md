@@ -10,3 +10,4 @@ Reusable skills an agent can be given (a capability, its prompts, its tests). Th
   field service, projects, inventory, procurement, logistics, customer service, WhatsApp, storage, database, ERP,
   collaboration, forms, e-signature, payments, API, automation, AI agents, dashboards, CEO brief) + 12 business
   archetypes. Used by [[10_Agents/07_CRM_Architect|ATLAS]]; status draft.
+- [[60_Skill_Packs/Marketing/targets|Marketing targets]] (2026-10-03): marketing targets per business (CPL, cost per result, CTR, ROAS, frequency cap, response time). Read by the Marketing Brain. **Waiting for Ryan's numbers.**
