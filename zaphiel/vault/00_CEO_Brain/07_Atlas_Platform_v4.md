@@ -28,3 +28,7 @@ Stop for Ryan after every phase.
 ## Phase 1 — done (2026-10-02)
 FusionTech Master Control (`/control`) + module switches enforced by screen, server and database + paused businesses + keys
 per business + every-minute timer. Record: `fusion-edg-core/docs/platform-v4/01_PHASE1.md` (PR #27). Waiting for Ryan before Phase 2.
+
+## Phase 2 — done (2026-10-03)
+One customer timeline (who did what: customer / person / AI / workflow / system), CRM List + Follow-ups views, follow-up
+engine with 7 checks and rules + business hours per business, deal value. Record: `fusion-edg-core/docs/platform-v4/02_PHASE2.md` (PR #29). Waiting for Ryan before Phase 3.
