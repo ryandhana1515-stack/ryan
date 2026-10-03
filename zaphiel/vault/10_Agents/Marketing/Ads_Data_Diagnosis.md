@@ -11,7 +11,7 @@ tags: [agent, marketing]
 
 Part of [[10_Agents/03_Marketing_Growth]] · definitions with [[10_Agents/14_Data_BI_KPI]] · map: [[10_Agents/Marketing/_index]] · ATLAS boundary: [[10_Agents/07_CRM_Architect]]
 
-**Where it stands (2026-10-03):** Step 1a is built (Fusion EDG Core PR #31): the tables, the module switch, the connector contract, the practice Metricool and idempotent saving. Steps 1b–1e come next, each after Ryan's go.
+**Where it stands (2026-10-03):** Step 1a is built (Fusion EDG Core PR #31): the tables, the module switch, the connector contract, the practice Metricool and idempotent saving. Step 1b is built (PR #32): the Metricool connector, the connection test + FusionTech confirmation, and the daily update. Steps 1c–1e come next: numbers, rules and campaign health, then the owner's screen and report. Ryan's north star: an intelligence system answering the owner's 8 questions, never a reporting dashboard ([[Decisions]] 2026-10-03).
 
 **Job (mostly code, not AI):**
 - **Sync.** Atlas's own Metricool API connector runs server-side, every day, re-syncing the last 7 days (28 days once a

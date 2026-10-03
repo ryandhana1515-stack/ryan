@@ -197,7 +197,8 @@ tags: [zaphiel, open-loops]
   - Build the mockup modules that are still hidden when Ryan wants them: Communications (one inbox), Marketing, Branding, Orders, HR, Projects, Documents.
   - The AI Workforce panel shows the business's own assistants; names like John / Mia / Leo / Zoe in the mockup are examples, not built agents.
 - 2026-10-03 — **Marketing & Branding Intelligence: waiting for Ryan** ([[10_Agents/Marketing/_index]]).
-  - ~~Ryan: approve the plan~~ done 2026-10-03 ("go"). **Step 1a is done, waiting for Ryan.** Try it: Master Control → a FAKE business → Marketing on → team app → Marketing → "Add example ad data (test)". Then say "go" for 1b (the real Metricool connection and the daily update; needs the Metricool Advanced plan + 2 Vercel variables).
+  - ~~Ryan: approve the plan~~ done 2026-10-03 ("go"). ~~Step 1a~~ done. **Step 1b is done (PR #32), waiting for Ryan.** To switch on the real data: Metricool Advanced plan; Vercel `METRICOOL_USER_TOKEN` + `METRICOOL_USER_ID`; then Master Control → FusionTech's business → Marketing data source → Metricool → test → confirm. NEEDS VERIFICATION at that first test: Metricool's field-list parameter name and response shape (the test shows it; a one-line fix if different). Next: step 1c (the numbers: spend, leads, cost per lead, comparisons).
+  - (older) **Step 1a was done, waiting for Ryan.** Try it: Master Control → a FAKE business → Marketing on → team app → Marketing → "Add example ad data (test)". Then say "go" for 1b (the real Metricool connection and the daily update; needs the Metricool Advanced plan + 2 Vercel variables).
   - Ryan: fill in [[60_Skill_Packs/Marketing/targets]] (CPL, cost per result, CTR, ROAS, frequency cap, first reply time).
   - Ryan, at step 1b:
     - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);

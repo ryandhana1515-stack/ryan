@@ -614,3 +614,10 @@ tags: [zaphiel, changelog]
   - **Saving.** Loading the same days twice changes nothing. A bad source saves nothing.
   - **Screen.** A read-only Marketing screen shows the accounts, the saved days, the last update, and what Metricool cannot give.
   - **Tests.** 245/245 (14 new). Checked on desktop and phone. Demo note: `docs/marketing/1A_FOUNDATION.md`.
+- 2026-10-03 — **Marketing step 1b: Metricool connector and the daily update** (Ryan: "Continue with Step 1b"; Fusion EDG Core PR #32, on the test system).
+  - **Connector.** Reads Facebook/Instagram and TikTok ad results per ad per day from Metricool. It runs on the server and only ever reads.
+  - **Master Control.** A *Marketing data source* panel: load Metricool brands → pick → **Run connection test** → compare totals with Metricool → **Numbers match: confirm** → updates every morning (06:00 business time). Also *Update now* and *Pause*.
+  - **Daily update.** Each morning it re-reads the last 7 days, and 28 days once a week. If it fails, nothing is half-saved: one notification, a retry every hour (3 a day), and the notification clears by itself.
+  - **Team app.** Shows where the data comes from and whether it is up to date.
+  - **Plan.** Got a "North star" section with Ryan's direction.
+  - **Tests.** 259/259 (14 new). Demo note: `docs/marketing/1B_METRICOOL_DAILY_UPDATE.md`.
