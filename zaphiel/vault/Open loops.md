@@ -209,3 +209,7 @@ tags: [zaphiel, open-loops]
     - confirm that Facebook page `1237077816163178` is FusionTech's page;
     - connect FusionTech's Meta ad account when ads start.
   - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
+- 2026-10-03 — **Ad platform APIs checked** ([[Knowledge/Ad platform APIs — what each can do (2026-10-03)]]).
+  - Metricool's API can READ ad results only. It cannot create, upload creative, pause, change Meta/TikTok budgets or duplicate. Those need Meta's Marketing API and TikTok's API for Business.
+  - Step 1b's Metricool connector must be adjusted to the official response format before going live (waiting for Ryan's go).
+  - Blocker for Meta App Review and TikTok developer registration: a **FusionTech domain, website, privacy policy page and company email** (Ryan has no domain yet).
