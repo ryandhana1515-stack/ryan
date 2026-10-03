@@ -606,3 +606,4 @@ tags: [zaphiel, changelog]
   - **Quick win.** The new Claude Code subagent `marketing-brain` reads Metricool read-only and calculates numbers in code. Also added: the targets template [[60_Skill_Packs/Marketing/targets]] and agent notes in [[10_Agents/Marketing/_index]].
   - **Coverage found.** Metricool gives Meta and TikTok ads per ad per day, with ad set ids. It does not give campaign status, budgets, audience breakdowns or Meta's currency; those need a native connector.
   - **No FusionTech brand in Metricool yet.** The only brand there was BioGreen Elixirs, a separate business, so it is left out (Ryan).
+- 2026-10-03 — **Metricool now holds FusionTech's own accounts** (Ryan unlinked BioGreen). Brand `6656122` has Instagram `fusiontech.ai`, TikTok `Fusiontech.AI` and a Facebook page. The Marketing Brain reads it as FusionTech AI. The first numbers arrive after Metricool's overnight fill of the past 30 days.

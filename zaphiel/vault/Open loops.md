@@ -203,5 +203,8 @@ tags: [zaphiel, open-loops]
     - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);
     - put `METRICOOL_USER_TOKEN` and `METRICOOL_USER_ID` in Vercel (never in chat);
     - connect at least one Meta ad account in Metricool.
-  - Ryan: unlink BioGreen Elixirs from Metricool (a separate business). Then connect FusionTech AI's own Instagram / Facebook / TikTok and its Meta ad account, so the Marketing Brain and step 1b have FusionTech data.
+  - ~~Ryan: unlink BioGreen Elixirs from Metricool~~ done 2026-10-03. The brand (id `6656122`) now holds FusionTech's Instagram, TikTok and Facebook. Still to do:
+    - rename the brand from `biogreenelixirs` to "FusionTech AI" in Metricool;
+    - confirm that Facebook page `1237077816163178` is FusionTech's page;
+    - connect FusionTech's Meta ad account when ads start.
   - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
