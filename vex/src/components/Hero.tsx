@@ -21,7 +21,7 @@ export default function Hero() {
       {/* Foreground */}
       <div className="relative z-10 flex flex-col h-full">
         <div className="px-6 md:px-12 lg:px-16 flex-1 flex flex-col justify-end pb-12 lg:pb-16">
-          <Parallax speed={0.08}>
+          <Parallax speed={0.22}>
             <div className="lg:grid lg:grid-cols-2 lg:items-end">
             {/* Left column — main content */}
             <div>
