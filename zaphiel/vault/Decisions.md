@@ -455,3 +455,25 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   product … a separate thing"). Its data stays out of the brain and out of the marketing work. Ryan unlinks it from Metricool.
   The Marketing Brain and the Atlas Marketing module read FusionTech's own brands and FusionTech clients only.
 - 2026-10-03 — **Marketing plan approved; Marketing Phase 1 runs before Platform v4 Phase 3** (Ryan: "go"). It is built in steps 1a–1e. After each step: tests, the test system, a demo note, then a stop for Ryan.
+- 2026-10-03 — **Marketing is an intelligence system, never a Metricool reporting dashboard** (Ryan, after step 1a, binding for every step).
+  - **The finished module = three functions:**
+    1. Marketing Brain: CMO-level; explains what is happening and what to do next.
+    2. Ads & Data Diagnosis Agent: Meta / TikTok / other ads over time; flags abnormalities, wasted spend, rising CPL/CPA, falling CTR / conversions / ROAS, creative fatigue; evidence in simple words.
+    3. Creative & Branding Agent: knows each company's Brand Brain; later creates hooks, copy, scripts, images, UGC/video concepts and replacement creatives through connected providers.
+  - **The owner's screen must answer, simply:**
+    - How much did I spend?
+    - How many leads did I get?
+    - What did each lead cost?
+    - Which campaigns work?
+    - Which need attention?
+    - What changed?
+    - Why might it have changed?
+    - What does AI recommend next?
+  - **Must connect to the Sales/WhatsApp Brain:** Ad → Lead → Conversation → Qualified → Appointment → Follow-up → Won/Lost → Revenue. The goal is to diagnose qualified leads, sales, revenue and where money is lost, not just cheap leads.
+  - **Architecture:**
+    - multi-tenant and modular;
+    - Metricool is a first source only; the connector design stays so native Meta / TikTok / Google APIs plug in later;
+    - working parts are never rebuilt;
+    - each major stage is shown to Ryan before the next.
+  - **Recorded as** the "North star" section of `fusion-edg-core/docs/marketing/PLAN.md`.
+- 2026-10-03 — **Only FusionTech chooses a client's marketing data source** (Zaphiel's design, step 1b). FusionTech's Metricool key is one agency key, so a business picking a brand itself could read another client's data. The daily update runs only after the connection test passed and FusionTech confirmed the totals against Metricool's own screen.
