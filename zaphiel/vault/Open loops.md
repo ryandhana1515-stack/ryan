@@ -197,7 +197,7 @@ tags: [zaphiel, open-loops]
   - Build the mockup modules that are still hidden when Ryan wants them: Communications (one inbox), Marketing, Branding, Orders, HR, Projects, Documents.
   - The AI Workforce panel shows the business's own assistants; names like John / Mia / Leo / Zoe in the mockup are examples, not built agents.
 - 2026-10-03 — **Marketing & Branding Intelligence: waiting for Ryan** ([[10_Agents/Marketing/_index]]).
-  - Ryan: read `fusion-edg-core/docs/marketing/PLAN.md` (PR #30) and approve it or say what to change. Marketing Phase 1 (steps 1a–1e) starts after that.
+  - ~~Ryan: approve the plan~~ done 2026-10-03 ("go"). **Step 1a is done, waiting for Ryan.** Try it: Master Control → a FAKE business → Marketing on → team app → Marketing → "Add example ad data (test)". Then say "go" for 1b (the real Metricool connection and the daily update; needs the Metricool Advanced plan + 2 Vercel variables).
   - Ryan: fill in [[60_Skill_Packs/Marketing/targets]] (CPL, cost per result, CTR, ROAS, frequency cap, first reply time).
   - Ryan, at step 1b:
     - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);
