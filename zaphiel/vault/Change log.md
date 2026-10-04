@@ -621,3 +621,11 @@ tags: [zaphiel, changelog]
   - **Team app.** Shows where the data comes from and whether it is up to date.
   - **Plan.** Got a "North star" section with Ryan's direction.
   - **Tests.** 259/259 (14 new). Demo note: `docs/marketing/1B_METRICOOL_DAILY_UPDATE.md`.
+- 2026-10-04 — **AI Marketing & Ads OS: pre-implementation report** (Ryan's v-FINAL §17; Fusion EDG Core PR #33, draft, docs only).
+  - **Capability matrices** from official docs only: Metricool (its OpenAPI file parsed: read-only for ads), Meta Marketing API v26, TikTok API for Business v1.3, Google Ads API v25 / YouTube, creative providers (HeyGen v3, ElevenLabs, Kling, Runway, Higgsfield, Veo, Gemini images).
+  - **Also covers:** accounts, approvals, environment variable names, costs, DB/UI changes, security, phases.
+  - **Findings:**
+    - classic Google "Video" campaigns cannot be created by API (Demand Gen can, YouTube-only possible);
+    - Google developer tokens were retired on 2026-09-09;
+    - HeyGen's API is now v3;
+    - the Metricool parser from step 1b needs the documented format.

@@ -477,3 +477,13 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
     - each major stage is shown to Ryan before the next.
   - **Recorded as** the "North star" section of `fusion-edg-core/docs/marketing/PLAN.md`.
 - 2026-10-03 — **Only FusionTech chooses a client's marketing data source** (Zaphiel's design, step 1b). FusionTech's Metricool key is one agency key, so a business picking a brand itself could read another client's data. The daily update runs only after the connection test passed and FusionTech confirmed the totals against Metricool's own screen.
+- 2026-10-04 — **Fusion AI = "an AI marketing department for busy CEOs"** (Ryan's FINAL MASTER PROMPT v-FINAL; replaces earlier drafts).
+  - **Daily loop:** report → one-click pause → replacement angles → video uploaded or generated → AI-built campaign → APPROVE & LAUNCH through official APIs.
+  - **Channels:** Facebook + Instagram, TikTok, YouTube (via Google Ads Demand Gen). Metricool is invisible plumbing; the CEO only ever sees "Fusion".
+  - **Five agents:** Marketing Brain, Diagnosis, Creative Director, Market Intelligence, and the Ads Operator (the only one that touches ad accounts, through validated actions and approvals).
+  - **Rules:**
+    - launching, activating, raising a budget or deleting needs human approval;
+    - pausing is one click by the CEO;
+    - auto-rules are opt-in only;
+    - objects are created PAUSED and activated only after every step succeeded.
+  - **Gate:** Zaphiel produced the pre-implementation report (Fusion EDG Core PR #33, docs only). No architecture change and no money-spending code before Ryan approves it.
