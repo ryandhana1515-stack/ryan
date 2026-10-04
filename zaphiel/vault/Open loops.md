@@ -213,3 +213,6 @@ tags: [zaphiel, open-loops]
   - Metricool's API can READ ad results only. It cannot create, upload creative, pause, change Meta/TikTok budgets or duplicate. Those need Meta's Marketing API and TikTok's API for Business.
   - Step 1b's Metricool connector must be adjusted to the official response format before going live (waiting for Ryan's go).
   - Blocker for Meta App Review and TikTok developer registration: a **FusionTech domain, website, privacy policy page and company email** (Ryan has no domain yet).
+- 2026-10-04 — **AI Marketing & Ads OS: waiting for Ryan's approval** of `fusion-edg-core/docs/marketing/PRE_IMPLEMENTATION_REPORT.md` (PR #33). Phase 1 (drafts only, no spend) can start right after.
+  - Ryan's blockers for Phases 2–4: a **FusionTech domain, website, privacy-policy page and company email**; then Meta Business Verification + App Review, TikTok developer registration, and a Google Cloud project on paid billing with Basic access.
+  - Firecrawl (Zaphiel's documentation research tool) reported **low credits**.
