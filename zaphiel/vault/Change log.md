@@ -629,3 +629,9 @@ tags: [zaphiel, changelog]
     - Google developer tokens were retired on 2026-09-09;
     - HeyGen's API is now v3;
     - the Metricool parser from step 1b needs the documented format.
+- 2026-10-07 — **AI replies on WhatsApp and ATLAS builds now run in the background** (Ryan: "Go"; Fusion EDG Core PR #34, live on the test system).
+  - **WhatsApp.** A customer's message is stored and Meta gets its answer at once; the AI reply follows a moment later. The same message is never answered twice. Two quick messages get one reply that answers both. One customer never gets two replies at the same time. A reply that fails is retried twice (after 1 and 5 minutes); after that a person is asked to reply. The every-minute timer picks up anything that was cut off.
+  - **Templates (24-hour rule).** Already built: outside the 24-hour window, the system uses email or the business's approved WhatsApp template, never free text. Meta's approval of the wording is still needed for each number.
+  - **Builds.** "Approve & build" now opens a status page at once and builds in the background. Ryan gets the result by email: what works, what waits for the client, and the links. ATLAS's automatic build waits up to 45 s. A slower build answers "building", and the system emails the result itself (one email). A build cut off half-way is finished by the timer. A double click builds once.
+  - **Also fixed.** The marketing tests had started failing by date: their sign-in links expired. 270/270 tests pass.
+  - **Checked.** The new tables are on the test database, and the every-minute timer's answers since 10:58 (UTC) include the new steps, with no errors.
