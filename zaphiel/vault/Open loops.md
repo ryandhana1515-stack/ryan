@@ -128,12 +128,12 @@ tags: [zaphiel, open-loops]
   - Where: Vercel → fusion-edg-core-api → Settings → Environment Variables. Then redeploy (Deployments → ⋯ → Redeploy).
   - Zaphiel then rebuilds Tan Aircon as a test company and checks a real AI chat.
 - **Before a real client's WhatsApp (NEEDS VERIFICATION):**
-  - Move the AI reply out of the WhatsApp webhook request (Meta wants a fast answer).
+  - ~~Move the AI reply out of the WhatsApp webhook request (Meta wants a fast answer).~~ Done 2026-10-07 (Fusion EDG Core PR #34): Meta is answered at once, and the reply follows in the background.
   - Confirm the daily Vercel Cron gets past Deployment Protection.
-  - WhatsApp templates for messages sent more than 24 h after the customer last wrote. FusionTech writes them; Meta approves them.
+  - WhatsApp templates for messages sent more than 24 h after the customer last wrote. The code is ready (checked 2026-10-07: approved templates are saved per number and used outside the 24 h window). Still open: FusionTech writes the wording for each client's number; Meta approves it.
 - **Custom workflows outside the catalog** (other systems, other channels) are still built by Zaphiel by hand in n8n. Next step: ATLAS writes those n8n workflows itself.
 - **After the first real AI test (2026-09-30):**
-  - The Sparkle build took about 44 s and Ah Kow Plumbing about 52 s; the test platform stops a request at 60 s. It fits now, but a bigger company (more workflows) could come close. Next step: run the build's checks in the background and email the result.
+  - The Sparkle build took about 44 s and Ah Kow Plumbing about 52 s; the test platform stops a request at 60 s. It fits now, but a bigger company (more workflows) could come close. ~~Next step: run the build's checks in the background and email the result.~~ Done 2026-10-07 (PR #34).
   - Tan Aircon was built before the AI team existed (design v1), so it has no assistant or workflows. It is never built twice. To give it the AI team: a "rebuild" option, or a new test slug.
   - ~~AI billing (proposed 2026-09-30)~~ Done 2026-10-01: Ryan said yes; usage and monthly limits per client are built (Fusion EDG Core PR #14).
   - ~~John does not send the link on WhatsApp~~ Done 2026-09-30: John sends the "Try your system" page automatically.
@@ -142,10 +142,10 @@ tags: [zaphiel, open-loops]
 - **Make the CRM/EDG work for real businesses (Ryan said "go", 2026-10-01).** Order:
   1. ~~Finish-your-setup page~~ (done 2026-10-01);
   2. real email sending: code done (PR #15); **waiting on Ryan**: Resend account, domain send.fusiontech.com.sg verified on Cloudflare, `EMAIL_PROVIDER_API_KEY` in Vercel, redeploy;
-  3. AI replies on WhatsApp in the background, and connecting a client's own number;
+  3. ~~AI replies on WhatsApp in the background~~ (done 2026-10-07, PR #34), and connecting a client's own number;
   4. ~~proper staff logins~~ (done 2026-10-01, PR #17; also the mobile job card, PR #16);
   5. a separate live system (monthly hosting fee, shown to Ryan before paying);
-  6. builds checked in the background (no 60-second limit).
+  6. ~~builds checked in the background (no 60-second limit)~~ (done 2026-10-07, PR #34).
   - Waiting on Ryan: FusionTech's own WhatsApp Business number verified with Meta; one friendly pilot business. (AI billing: done 2026-10-01.)
   - Found 2026-10-01: on the test system's free hosting plan the timer runs once a day and handles 50 workflow runs per client per run. Step 5 (live system) needs a proper scheduler (every few minutes), or "2 hours later" workflows wait until the next morning.
   - Still to build for billing: a monthly all-clients AI usage email to Ryan (with step 2, real email).
