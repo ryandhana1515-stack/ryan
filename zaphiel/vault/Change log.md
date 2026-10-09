@@ -640,3 +640,9 @@ tags: [zaphiel, changelog]
   - **The one thing checked at the first live test.** Where the day sits in Metricool's numbers. Both possible layouts are read. If the day is missing, the reader asks day by day instead of guessing. The connection test shows the metric names, so FusionTech can compare them once with Metricool's screen.
   - **Found.** The FusionTech.AI brand has Instagram, TikTok and the Facebook page, but no ad account (Meta Ads or TikTok Ads) yet.
   - 270/270 tests pass.
+- 2026-10-09 — **Metricool account check** (Ryan's "Metricool Advanced API integration" prompt; Fusion EDG Core PR #36, live on the test system).
+  - **Key name.** The key's name is now `METRICOOL_API_TOKEN`. The user id is still needed: Metricool's documented calls require it.
+  - **The check.** As soon as the key is in Vercel (and again once a day, or when the key changes), the system checks it by itself, read-only. It covers 8 points: the key works, which brands it reaches, social profiles, ad accounts, Meta / TikTok / Google ad data, and campaign data.
+  - **Results.** Each point says ok, or why not: not connected in Metricool, no permission (key or plan), not offered by Metricool, or a real error.
+  - **Where it is kept.** A platform-only table, `app.provider_checks`.
+  - **Working style (Ryan).** Ryan wants one step at a time, in simple words, waiting for his confirmation.
