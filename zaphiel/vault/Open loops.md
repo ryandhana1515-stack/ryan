@@ -226,3 +226,24 @@ tags: [zaphiel, open-loops]
     - `atlas.md` does not mention HR yet (the diff goes to Ryan before saving);
     - the payroll provider is not chosen.
   - **Supabase MCP note:** a function body containing DELETE also hangs (it waits for a confirmation); split migrations, or keep DELETE out of function bodies.
+- 2026-10-09 — **Atlas Universal Business OS (Ryan's "ATLAS MASTER PROMPT (FINAL)"): the pre-development report is done; STOP, waiting for Ryan.**
+  - **Where:** Fusion EDG Core PR #40 (docs only): `docs/atlas-os/00_PRE_DEVELOPMENT_REPORT.md` + `01_PROVIDER_CARDS.md`. Ryan's readable page: https://claude.ai/artifact/RLVPhXwEBnt5objvcP6F9v
+  - **Waiting for Ryan, 9 decisions:**
+    1. Keep the automatic test build (approval only for go-live and for real client accounts).
+    2. No unified API now.
+    3. Ask Intuit about Singapore eligibility before QuickBooks.
+    4. Gmail later.
+    5. **Next build: Software Knowledge Base + compatibility checker (Phase A).**
+    6. Free developer accounts, one at a time, starting with Xero.
+    7. A lawyer prepares the PDPA data-processing agreement.
+    8. Client workflows stay in the platform engine, not n8n Cloud (licence).
+    9. WhatsApp Embedded Signup v4 after Meta verification.
+  - **Do not build anything from that report before Ryan says go.**
+  - **Facts to remember** (read on 2026-10-09; sources are in the provider cards):
+    - **Xero:** Starter is 5 connections free; Core AUD 35 up to 50; certification needed beyond 50.
+    - **QuickBooks:** the partner programme names US/UK/AU/CA companies.
+    - **WhatsApp:** service messages are charged after 1,000 per number per month since 1 Oct 2026; Singapore has been its own market since 1 Jul 2026; Embedded Signup v2/v3 end on 15 Oct 2026.
+    - **n8n Cloud** self-serve is for internal use only.
+    - **Google Ads** developer tokens were retired on 9 Sept 2026.
+    - **Metricool:** "standard use" is about 500 calls per brand per month.
+    - **InvoiceNow:** phased in until 2031.
