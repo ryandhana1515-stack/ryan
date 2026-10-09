@@ -646,3 +646,23 @@ tags: [zaphiel, changelog]
   - **Results.** Each point says ok, or why not: not connected in Metricool, no permission (key or plan), not offered by Metricool, or a real error.
   - **Where it is kept.** A platform-only table, `app.provider_checks`.
   - **Working style (Ryan).** Ryan wants one step at a time, in simple words, waiting for his confirmation.
+- 2026-10-09 — **HR plan v2 approved; HR Part 1 (People and Identity) built** (Fusion EDG Core PRs #37, #38, on the test system).
+  - **One record per person:** an employee is their staff account (the same record for sign-in, bookings and sales). HR adds a profile, identity details and documents. Atlas builds with HR switched on create the records.
+  - **Identity (NRIC / FIN / passport, date of birth, work pass number, emergency contact) and documents are encrypted** before they reach the database:
+    - a separate key, locked to company + employee + field;
+    - shown masked (S••••567A);
+    - "Show" needs a reason and is recorded;
+    - the AI never sees them.
+  - **Who sees what:**
+    - owner, admin and the new HR role: everything in HR;
+    - managers: their team, expiry dates only;
+    - staff: themselves;
+    - the new Payroll role: profiles (pay details come in Part 5);
+    - HR and Payroll people only reach Home, Settings and HR.
+  - **Linked to bookings:** an expired work pass or a leaver's last day blocks new bookings through the existing time-off rule (website, staff and AI alike). Booked jobs go to the work queue; a renewed pass lifts the block.
+  - **Daily HR checks:** reminders 60 / 30 / 7 days before an expiry and on the day; a leaver's account closes the day after their last day; a notice when identity details may be erased (HR decides).
+  - **Screens:**
+    - HR / My team / My HR in the team app;
+    - Master Control "Employee-data key" card: creates a key once and never stores it.
+  - **Correction recorded:** v1 said "partial NRIC only". An employer must keep the NRIC or work-pass number (MOM employment records), so the full number is stored encrypted.
+  - 285/285 tests (12 new), and the screens were checked in a browser (computer and phone).
