@@ -675,3 +675,17 @@ tags: [zaphiel, changelog]
   - **Safety lock:** if a half ever changes, staff identity details lock instead of being saved in a way nobody could read back.
   - **Checked live:** `/health` → `employee_data_key: automatic`. Master Control shows "Set automatically".
   - **Tests:** 292/292 (7 new).
+- 2026-10-09 — **Atlas Universal Business OS: pre-development report** (Fusion EDG Core PR #40, docs only; no code changed).
+  - **Audit:** 24 modules — 13 built, 7 partial, 4 not built; 428 tests green (292 platform, 136 brain).
+  - **Live-proven:** Claude, staff email and Metricool. WhatsApp, Xero, Google and Meta lead forms are tested only against stand-in servers.
+  - **Main gaps:**
+    - software knowledge base and compatibility checker;
+    - Blueprint record;
+    - connectors;
+    - orders, projects, documents and support cases;
+    - a shared inbox;
+    - templates as platform configurations.
+  - **Found by the audit:**
+    - The Discovery Console is not connected to John → ATLAS.
+    - John's flow has no WhatsApp message-id dedupe.
+  - **Research:** about 30 providers checked against official docs, written up as provider cards.
