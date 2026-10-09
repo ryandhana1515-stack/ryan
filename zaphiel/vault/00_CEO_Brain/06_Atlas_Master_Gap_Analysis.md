@@ -114,3 +114,18 @@ vault is updated.
 
 ## Progress
 - 2026-10-02 — **Phase 1 done** (Ryan: "Go"): Command Center = Home tab, Approval Center, notifications, work queue, tasks, system health (Fusion EDG Core PR #23, migration 021, 202 tests). Phase 2 (Customer 360) waits for Ryan's go.
+
+## Status against the 24-module blueprint (2026-10-09, Ryan sent "Atlas Complete Business Operating System Breakdown")
+- **Built (13):**
+  - 01 Command Center; 02 CRM; 03 Sales; 05 Follow-ups; 08 Appointments;
+  - 10 Inventory; 12 Procurement; 13 Finance; 14 Accounting (Xero);
+  - 19 AI Workforce; 20 Automation Center; 21 Approval Center; 24 Master Control.
+- **Partly built (6):**
+  - 04 WhatsApp & Communications: no shared inbox, no mailbox reading; live WhatsApp waits for a number.
+  - 06 Marketing: the Metricool data reader is done; the dashboard and Ads Diagnosis are not built.
+  - 17 Documents & Company Brain: approved FAQ and knowledge for agents only.
+  - 18 Reports: morning brief and KPIs only; no weekly or monthly reports.
+  - 22 Integrations: adapters and status exist; live accounts are unverified.
+  - 23 Permissions: 6 roles; no finance, HR or warehouse roles.
+- **Not built (5):** 07 Branding & Creative Studio; 09 Customer Service cases; 11 Orders & Fulfilment; 15 HR; 16 Projects & Tasks (only the tasks list exists).
+- The blueprint's own rule: "Do not build 25 independent agents"; agents are reusable capabilities switched on per company.
