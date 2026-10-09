@@ -201,17 +201,17 @@ tags: [zaphiel, open-loops]
   - (older) **Step 1a was done, waiting for Ryan.** Try it: Master Control → a FAKE business → Marketing on → team app → Marketing → "Add example ad data (test)". Then say "go" for 1b (the real Metricool connection and the daily update; needs the Metricool Advanced plan + 2 Vercel variables).
   - Ryan: fill in [[60_Skill_Packs/Marketing/targets]] (CPL, cost per result, CTR, ROAS, frequency cap, first reply time).
   - Ryan, at step 1b:
-    - upgrade Metricool to **Advanced** (the API is not on Free/Starter, about $53–67/mo);
+    - ~~upgrade Metricool to **Advanced**~~ done 2026-10-09 (Ryan paid);
     - put `METRICOOL_USER_TOKEN` and `METRICOOL_USER_ID` in Vercel (never in chat);
-    - connect at least one Meta ad account in Metricool.
+    - connect at least one Meta ad account in Metricool. Checked 2026-10-09: the FusionTech.AI brand has Instagram, TikTok and the Facebook page, but **no ad account** yet (no Meta Ads, no TikTok Ads), so there are no ad numbers to read until one is connected.
   - ~~Ryan: unlink BioGreen Elixirs from Metricool~~ done 2026-10-03. The brand (id `6656122`) now holds FusionTech's Instagram, TikTok and Facebook. Still to do:
-    - rename the brand from `biogreenelixirs` to "FusionTech AI" in Metricool;
+    - ~~rename the brand from `biogreenelixirs` to "FusionTech AI" in Metricool~~ done (it is "FusionTech.AI", checked 2026-10-09);
     - confirm that Facebook page `1237077816163178` is FusionTech's page;
     - connect FusionTech's Meta ad account when ads start.
   - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
 - 2026-10-03 — **Ad platform APIs checked** ([[Knowledge/Ad platform APIs — what each can do (2026-10-03)]]).
   - Metricool's API can READ ad results only. It cannot create, upload creative, pause, change Meta/TikTok budgets or duplicate. Those need Meta's Marketing API and TikTok's API for Business.
-  - Step 1b's Metricool connector must be adjusted to the official response format before going live (waiting for Ryan's go).
+  - ~~Step 1b's Metricool connector must be adjusted to the official response format before going live~~ done 2026-10-09 (Fusion EDG Core PR #35). One detail is checked at the first live test: which level of Metricool's numbers is the day. The reader handles every case and shows the metric names.
   - Blocker for Meta App Review and TikTok developer registration: a **FusionTech domain, website, privacy policy page and company email** (Ryan has no domain yet).
 - 2026-10-04 — **AI Marketing & Ads OS: waiting for Ryan's approval** of `fusion-edg-core/docs/marketing/PRE_IMPLEMENTATION_REPORT.md` (PR #33). Phase 1 (drafts only, no spend) can start right after.
   - Ryan's blockers for Phases 2–4: a **FusionTech domain, website, privacy-policy page and company email**; then Meta Business Verification + App Review, TikTok developer registration, and a Google Cloud project on paid billing with Basic access.
