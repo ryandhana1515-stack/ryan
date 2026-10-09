@@ -202,7 +202,7 @@ tags: [zaphiel, open-loops]
   - Ryan: fill in [[60_Skill_Packs/Marketing/targets]] (CPL, cost per result, CTR, ROAS, frequency cap, first reply time).
   - Ryan, at step 1b:
     - ~~upgrade Metricool to **Advanced**~~ done 2026-10-09 (Ryan paid);
-    - put `METRICOOL_USER_TOKEN` and `METRICOOL_USER_ID` in Vercel (never in chat);
+    - put `METRICOOL_API_TOKEN` (the key; the old name `METRICOOL_USER_TOKEN` also works) and `METRICOOL_USER_ID` (`5123090`) in Vercel (never in chat). After the next deploy, the timer checks the key by itself within a minute; Zaphiel reads the result in `app.provider_checks`;
     - connect at least one Meta ad account in Metricool. Checked 2026-10-09: the FusionTech.AI brand has Instagram, TikTok and the Facebook page, but **no ad account** yet (no Meta Ads, no TikTok Ads), so there are no ad numbers to read until one is connected.
   - ~~Ryan: unlink BioGreen Elixirs from Metricool~~ done 2026-10-03. The brand (id `6656122`) now holds FusionTech's Instagram, TikTok and Facebook. Still to do:
     - ~~rename the brand from `biogreenelixirs` to "FusionTech AI" in Metricool~~ done (it is "FusionTech.AI", checked 2026-10-09);
