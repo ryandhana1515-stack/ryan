@@ -635,3 +635,8 @@ tags: [zaphiel, changelog]
   - **Builds.** "Approve & build" now opens a status page at once and builds in the background. Ryan gets the result by email: what works, what waits for the client, and the links. ATLAS's automatic build waits up to 45 s. A slower build answers "building", and the system emails the result itself (one email). A build cut off half-way is finished by the timer. A double click builds once.
   - **Also fixed.** The marketing tests had started failing by date: their sign-in links expired. 270/270 tests pass.
   - **Checked.** The new tables are on the test database, and the every-minute timer's answers since 10:58 (UTC) include the new steps, with no errors.
+- 2026-10-09 — **Metricool Advanced paid; the ad-data reader now follows Metricool's published API** (Fusion EDG Core PR #35, live on the test system).
+  - **Why.** Step 1b had assumed a format that Metricool's official spec does not use. The reader now asks only for the dates, reads the list of ads Metricool sends, and picks out the base numbers by Metricool's own metric names (never a ready-made ratio).
+  - **The one thing checked at the first live test.** Where the day sits in Metricool's numbers. Both possible layouts are read. If the day is missing, the reader asks day by day instead of guessing. The connection test shows the metric names, so FusionTech can compare them once with Metricool's screen.
+  - **Found.** The FusionTech.AI brand has Instagram, TikTok and the Facebook page, but no ad account (Meta Ads or TikTok Ads) yet.
+  - 270/270 tests pass.
