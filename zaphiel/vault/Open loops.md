@@ -216,3 +216,12 @@ tags: [zaphiel, open-loops]
 - 2026-10-04 — **AI Marketing & Ads OS: waiting for Ryan's approval** of `fusion-edg-core/docs/marketing/PRE_IMPLEMENTATION_REPORT.md` (PR #33). Phase 1 (drafts only, no spend) can start right after.
   - Ryan's blockers for Phases 2–4: a **FusionTech domain, website, privacy-policy page and company email**; then Meta Business Verification + App Review, TikTok developer registration, and a Google Cloud project on paid billing with Basic access.
   - Firecrawl (Zaphiel's documentation research tool) reported **low credits**.
+- 2026-10-09 — **HR (Atlas module 15).** Part 1 is built (People and Identity, PR #38).
+  - **Ryan, now:** create the employee-data key. Master Control → Clients page → "Employee-data key" → **Create a key** → Vercel `EDG_PII_ENCRYPTION_KEY` → Redeploy. Never in chat. Never replace it once staff details are saved.
+  - **Waiting for Ryan's approval:** Part 2 (leave + Approval Center + bookings), then Part 3 (attendance), Part 4 (CEO HR dashboard, onboarding, HR Assistant) and Part 5 (payroll exports and reports). Each part is shown before the next.
+  - **To confirm with the first real client's HR adviser:** identity retention after leaving (default 12 months, from MOM's employment-records page) and the default leave policy.
+  - **Known gaps:**
+    - HR and Payroll people can open Home, which shows the overall business numbers;
+    - `atlas.md` does not mention HR yet (the diff goes to Ryan before saving);
+    - the payroll provider is not chosen.
+  - **Supabase MCP note:** a function body containing DELETE also hangs (it waits for a confirmation); split migrations, or keep DELETE out of function bodies.
