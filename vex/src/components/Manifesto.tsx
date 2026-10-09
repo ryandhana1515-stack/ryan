@@ -5,7 +5,7 @@ export default function Manifesto() {
   return (
     <section id="story" className="px-6 md:px-12 lg:px-16 py-28 md:py-40">
       <div className="max-w-5xl mx-auto">
-        <Parallax speed={-0.06}>
+        <Parallax speed={-0.16}>
           <Reveal>
             <span className="text-sm uppercase tracking-[0.2em] text-gray-400">
               Our thesis
