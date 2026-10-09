@@ -487,3 +487,4 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
     - auto-rules are opt-in only;
     - objects are created PAUSED and activated only after every step succeeded.
   - **Gate:** Zaphiel produced the pre-implementation report (Fusion EDG Core PR #33, docs only). No architecture change and no money-spending code before Ryan approves it.
+- 2026-10-09 — **HR employee-data key is automatic (split key), not created by hand.** Ryan: "Is there any easier way? I don't want to do this." The key is derived from a Supabase Vault half plus `EDG_WEBHOOK_SECRET`. As a consequence, `EDG_WEBHOOK_SECRET` must never be rotated once staff details are saved (it would lock them). If it ever has to be rotated, first plan a re-encryption step.

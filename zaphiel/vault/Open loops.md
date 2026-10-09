@@ -217,7 +217,8 @@ tags: [zaphiel, open-loops]
   - Ryan's blockers for Phases 2–4: a **FusionTech domain, website, privacy-policy page and company email**; then Meta Business Verification + App Review, TikTok developer registration, and a Google Cloud project on paid billing with Basic access.
   - Firecrawl (Zaphiel's documentation research tool) reported **low credits**.
 - 2026-10-09 — **HR (Atlas module 15).** Part 1 is built (People and Identity, PR #38).
-  - **Ryan, now:** create the employee-data key. Master Control → Clients page → "Employee-data key" → **Create a key** → Vercel `EDG_PII_ENCRYPTION_KEY` → Redeploy. Never in chat. Never replace it once staff details are saved.
+  - ~~**Ryan, now:** create the employee-data key in Master Control.~~ Not needed (2026-10-09, Fusion EDG Core PR #39): the key now sets itself up. The test system shows `employee_data_key: automatic`. Ryan can ignore the Master Control invitation email.
+  - **Rules for Zaphiel (never break them once staff details are saved):** never change `EDG_WEBHOOK_SECRET` in Vercel, never add `EDG_PII_ENCRYPTION_KEY`, and never remove the vault secret `edg_pii_key_part` in Supabase. Any of these locks HR identity details; nothing is lost, and putting the original back unlocks them.
   - **Waiting for Ryan's approval:** Part 2 (leave + Approval Center + bookings), then Part 3 (attendance), Part 4 (CEO HR dashboard, onboarding, HR Assistant) and Part 5 (payroll exports and reports). Each part is shown before the next.
   - **To confirm with the first real client's HR adviser:** identity retention after leaving (default 12 months, from MOM's employment-records page) and the default leave policy.
   - **Known gaps:**

@@ -666,3 +666,12 @@ tags: [zaphiel, changelog]
     - Master Control "Employee-data key" card: creates a key once and never stores it.
   - **Correction recorded:** v1 said "partial NRIC only". An employer must keep the NRIC or work-pass number (MOM employment records), so the full number is stored encrypted.
   - 285/285 tests (12 new), and the screens were checked in a browser (computer and phone).
+- 2026-10-09 — **HR employee-data key: automatic, nothing for Ryan to do** (Fusion EDG Core PR #39, live on the test system).
+  - **Why:** Ryan did not want to set up Master Control (invitation, account, authenticator) just to create a key.
+  - **How it works:** the key is made from two random halves kept in two places:
+    - one half is created inside the database's secure vault (Supabase Vault); nobody ever sees or copies it;
+    - the other half is a secret that already lives only in Vercel (`EDG_WEBHOOK_SECRET`).
+    - Neither half alone can unlock staff details.
+  - **Safety lock:** if a half ever changes, staff identity details lock instead of being saved in a way nobody could read back.
+  - **Checked live:** `/health` → `employee_data_key: automatic`. Master Control shows "Set automatically".
+  - **Tests:** 292/292 (7 new).
