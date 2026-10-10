@@ -20,7 +20,9 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 function inline(file) {
   return read(file).replace(/\/\/ ---- Node module wrapper[\s\S]*$/m, '').split('\n').filter((l) => !/^\s*module\.exports\s*=/.test(l) && !/^\s*\/\//.test(l) && l.trim() !== '').join('\n');
 }
-const src = inline('agents/whatsapp-inbound/inbound.js');
+const srcAll = inline('agents/whatsapp-inbound/inbound.js');
+// The duplicate guard's helper lives only in its own node; the other nodes stay exactly as deployed before it.
+const src = srcAll.replace(/\/\*\* Meta can deliver the same WhatsApp message twice[\s\S]*?\n}\n/, '');
 
 const codePrepare = `${src}
 // ---- n8n glue ----
@@ -51,7 +53,7 @@ return [{ json: { new_chat: newChat, phone: wa.phone, new_lead: newChat ? waNewC
 
 // Duplicate guard (2026-10-10): Prepare Message → Find Seen Message (ceo_seen_messages) → Check Seen Message →
 // Seen Before? ─ yes → Ignore Duplicate · no → Remember Message → Find Lead by Phone.
-const codeCheckSeen = `${src}
+const codeCheckSeen = `${srcAll}
 // ---- n8n glue ----
 const wa = $('Prepare Message').first().json;
 const rows = $input.all().map((i) => i.json);

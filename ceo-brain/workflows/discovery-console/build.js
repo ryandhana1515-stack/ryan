@@ -26,7 +26,9 @@ const NOTIFY = 'ryandhana1515@gmail.com';
 function inline(file) {
   return read(file).split('\n').filter((l) => !/^\s*module\.exports\s*=/.test(l) && !/^\s*\/\//.test(l) && l.trim() !== '').join('\n');
 }
-const dsSrc = inline('agents/company-discovery/discovery.js');
+const dsSrcAll = inline('agents/company-discovery/discovery.js');
+// The ATLAS hand-off helper lives only in its own node; the turn node stays exactly as deployed before it.
+const dsSrc = dsSrcAll.replace(/\n\/\*\* The Discovery Console joined to ATLAS[\s\S]*?\n}(?=\n|$)/, '');
 const prSrc = inline('agents/proposal/draft.js');
 
 const codeContext = `// Session → map id + test flag. Test sessions (Ryan's console / dashboard) write under Discovery/Test.
@@ -115,17 +117,31 @@ return [{ json: {
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, guardrails: fin.guardrails, brain_source: pre.brain_source,
   row_exists: pre.row_exists, created_at: pre.created_at, updated_at: now, discovery_complete: fin.discovery_complete,
   reply: fin.turn.reply, output: fin.turn.reply + '\\n\\n— discovery' + meta,
-  // Joined to ATLAS (Phase A step 2, 2026-10-10): a complete discovery is handed to ATLAS, which designs and builds the test system.
-  atlas_handoff: fin.discovery_complete ? dsAtlasHandoff(fin.map, conversation, { tenant_id: ctx.tenant_id, map_id: ctx.map_id, contact_name: pre.contact_name, coverage: fin.coverage, test_mode: ctx.test_mode, notify_email: ${j(NOTIFY)}, execution_id: $execution.id }) : null,
   task: fin.discovery_complete ? { task_id: 'task_proposal_' + ctx.map_id.replace(/[^a-z0-9_]/gi, '').slice(0, 60), title: 'REVIEW: proposal draft for ' + (companyName || ctx.map_id), description: 'Discovery complete (' + Math.round(fin.coverage * 100) + '%). Company Map + proposal draft (no pricing) in ' + vaultPath + '. Review, price and approve before anything is sent.' } : null,
   run_id: 'run_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36), started_at: ctx.started_at, finished_at: now, latency_ms: Math.max(0, new Date(now).getTime() - new Date(ctx.started_at).getTime())
 } }];
 `;
 
 const ATLAS_ID = (TABLES_JSON.workflows || {}).atlas || 'REPLACE_ME';
-const H = "$('Finalize Discovery Turn').first().json.atlas_handoff";
+const H = "$('Prepare ATLAS Hand-off').first().json.handoff";
 const atlasCols = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']];
 const atlasValues = '{ ' + atlasCols.map(([k]) => k + ': expr(' + j('{{ ' + H + '.' + k + ' }}') + ')').join(', ') + ' }';
+// Joined to ATLAS (Phase A step 2, 2026-10-10): a complete discovery is handed to ATLAS, which designs and builds the test
+// system. Its own small node (only the map helpers + dsAtlasHandoff), so the big turn node stays unchanged.
+const dsPick = (names) => {
+  const lines = dsSrcAll.split('\n'); const blocks = {}; let cur = null;
+  for (const l of lines) { const m = l.match(/^(?:var|function)\s+([A-Za-z_$][\w$]*)/); if (m) { cur = m[1]; blocks[cur] = []; } if (cur) blocks[cur].push(l); }
+  return names.map((n) => { if (!blocks[n]) throw new Error('dsPick: ' + n); return blocks[n].join('\n'); }).join('\n');
+};
+const codeHandoff = `${dsPick(['DS_SCHEMA_VERSION', 'DS_MODULES', 'DS_AGENTS', 'DS_CHANNELS', 'DS_MKT', 'DS_SW_CATS', 'DS_DATA_CATS', 'DS_AVAIL', 'DS_HANDLING', 'dsStr', 'dsArr', 'dsIntOrNull', 'dsBoolOrNull', 'dsEmptyMap', 'dsCoerceMap', 'dsAtlasHandoff'])}
+// ---- n8n glue: the finished Company Map → ATLAS's hand-off (null without a company name) ----
+const f = $('Finalize Discovery Turn').first().json;
+let map = {}, conversation = [];
+try { map = JSON.parse(f.map_json || '{}'); } catch (e) { map = {}; }
+try { conversation = JSON.parse(f.conversation_json || '[]'); } catch (e) { conversation = []; }
+const handoff = f.discovery_complete ? dsAtlasHandoff(map, conversation, { tenant_id: f.tenant_id, map_id: f.map_id, contact_name: f.contact_name, coverage: f.coverage, test_mode: f.test_mode, notify_email: ${j(NOTIFY)}, execution_id: $execution.id }) : null;
+return [{ json: { ready: !!handoff, handoff } }];
+`;
 const col = (id, type) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, type, canBeUsedToMatch: true });
 const schemaFor = (cols) => cols.map(([id, type]) => col(id, type));
 const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cachedResultName: name });
@@ -321,7 +337,9 @@ const toAtlas = node({
   output: [{}]
 });
 
-const atlasReady = ifElse({ version: 2.3, config: { name: 'Company Named for ATLAS?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'h', leftValue: expr(${j('{{ !!' + H + ' }}')}), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3360, 300] } });
+const prepHandoff = node({ type: 'n8n-nodes-base.code', version: 2, config: { name: 'Prepare ATLAS Hand-off', parameters: { mode: 'runOnceForAllItems', language: 'javaScript', jsCode: ${j(codeHandoff)} }, position: [3360, 420] }, output: [{ ready: true, handoff: {} }] });
+
+const atlasReady = ifElse({ version: 2.3, config: { name: 'Company Named for ATLAS?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'h', leftValue: expr('{{ $json.ready }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3360, 300] } });
 
 const reply = node({
   type: 'n8n-nodes-base.code',
@@ -349,7 +367,7 @@ export default workflow('ceo-brain-discovery-console', 'CEO Brain — Discovery 
     .onTrue(editNote.to(isComplete))
     .onFalse(createNote.to(isComplete)))
   .add(isComplete
-    .onTrue(proposalTask.to(emailOwner).to(atlasReady.onTrue(toAtlas.to(reply)).onFalse(reply)))
+    .onTrue(proposalTask.to(emailOwner).to(prepHandoff).to(atlasReady.onTrue(toAtlas.to(reply)).onFalse(reply)))
     .onFalse(reply))
   .add(note);
 `;
@@ -359,5 +377,6 @@ fs.writeFileSync(path.join(DIST, 'discovery-console.sdk.ts'), sdk);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'build-discovery-context.js'), codeContext);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'compose-discovery-prompt.js'), codeCompose);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'finalize-discovery-turn.js'), codeFinalize);
+fs.writeFileSync(path.join(DIST, 'code-nodes', 'prepare-atlas-hand-off.js'), codeHandoff);
 fs.writeFileSync(path.join(DIST, 'system-prompt.compiled.md'), systemBody);
 console.log('built', path.relative(ROOT, path.join(DIST, 'discovery-console.sdk.ts')), sdk.length, 'chars');

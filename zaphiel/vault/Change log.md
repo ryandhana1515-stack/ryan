@@ -800,5 +800,5 @@ tags: [zaphiel, changelog]
     - Discovery Console → Atlas hand-off (`dsAtlasHandoff`);
     - WhatsApp duplicate guard (`waSeenBefore`, new data table `ceo_seen_messages` `kFY9ifNq10q7R1Xv`).
   - **Tests:** platform 358/358, ceo-brain 143/143.
-  - **Deploy status:** the n8n deploy is in progress (see Open loops).
+  - **Deploy status:** published in n8n (ATLAS `9XQWSgTBszRc0Jxj`, WhatsApp Inbound `3IhIJ5IYsB7wQQSg`, Discovery Console `9TnzsgPGRatMaQI3`). Each was tested in n8n with every outside action pinned, so nothing was sent.
 - 2026-10-10 — **Ryan's zero-cost rule recorded** ([[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]]). The Xero sign-up request is withdrawn.

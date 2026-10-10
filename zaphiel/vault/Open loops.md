@@ -307,6 +307,11 @@ tags: [zaphiel, open-loops]
     2. vouchers and packages;
     3. a simple money book;
     4. a payroll export.
-  - **Phase A2 n8n switch-on, in progress:**
-    - ATLAS update rounds are saved in n8n as a draft. The live version is unchanged until it is published.
-    - Still to deploy: the WhatsApp duplicate guard and the Discovery Console → Atlas hand-off.
+  - ~~Phase A2 n8n switch-on~~ **done 2026-10-10, all published:**
+    - ATLAS update rounds and the pasted-brief filter (tested in n8n: executions 1717 and 1718);
+    - the WhatsApp duplicate guard (executions 1719 and 1720: the same message twice, the second was ignored);
+    - Discovery Console → Atlas.
+  - **Still to deploy (small):**
+    - Lead Intake's "Finalize & Validate Result" node uses the longer "already answered" list from `atlas.js`.
+    - Until it is redeployed, John's own question filter is the older one.
+    - ATLAS's questions are already filtered at the source.

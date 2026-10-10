@@ -1691,7 +1691,7 @@ test('Discovery Console joined to ATLAS: a complete Company Map is handed over i
   assert.ok(!at.atQuestions(input).some((q) => /accounting/i.test(q)), 'what the map answers is not asked again');
   assert.strictEqual(at.atDemoMessage(input, { status: 'built', demo_url: 'https://fusion-edg-core-api.vercel.app/d/' + 'a'.repeat(43) }).send, false, 'console: no automatic message to anyone');
   const sdk = fs.readFileSync(path.join(ROOT, 'workflows/discovery-console/dist/discovery-console.sdk.ts'), 'utf8');
-  assert.ok(/proposalTask\.to\(emailOwner\)\.to\(atlasReady\.onTrue\(toAtlas\.to\(reply\)\)\.onFalse\(reply\)\)/.test(sdk) && sdk.includes('"9XQWSgTBszRc0Jxj"') && /waitForSubWorkflow: false/.test(sdk));
+  assert.ok(/proposalTask\.to\(emailOwner\)\.to\(prepHandoff\)\.to\(atlasReady\.onTrue\(toAtlas\.to\(reply\)\)\.onFalse\(reply\)\)/.test(sdk) && sdk.includes('"9XQWSgTBszRc0Jxj"') && /waitForSubWorkflow: false/.test(sdk));
 });
 test('the Discovery Console step code (as deployed) adds the ATLAS hand-off when a discovery completes', () => {
 const ds=require('../agents/company-discovery/discovery.js');
@@ -1700,7 +1700,12 @@ const full = ds.dsCoerceMap({ company_profile:{company_name:'Goh Pest Control',i
 const store={'Build Discovery Context':[{map_id:'map_t1',session_id:'test_1',text:'that is all',test_mode:true,tenant_id:'fusiontech',started_at:new Date().toISOString()}],'Compose Discovery Prompt':[{map:full,conversation:[{role:'owner',content:'brief'}],turns:6,contact_name:'Goh',company_name:'Goh Pest Control',config:{model:'m'},brain_source:'vault',row_exists:true,created_at:'x'}]};
 const ctx={$:(n)=>({first:()=>({json:store[n][0]})}),$input:{first:()=>({json:{error:{message:'Payment required'}}})},$execution:{id:'5'},Buffer,Date,JSON,Math,String,Object,Array,RegExp,parseInt,isNaN,Number};
 const out=vm.runInNewContext('(function(){'+src+'})()',ctx)[0].json;
-assert.strictEqual(out.discovery_complete, true); assert.strictEqual(out.atlas_handoff.lead_id, 'disc_map_t1'); assert.strictEqual(out.atlas_handoff.test_mode, true); assert.strictEqual(out.atlas_handoff.source_execution_id, '5');
+assert.strictEqual(out.discovery_complete, true);
+store['Finalize Discovery Turn'] = [out];
+const hsrc = fs.readFileSync(ROOT + '/workflows/discovery-console/dist/code-nodes/prepare-atlas-hand-off.js', 'utf8');
+const h = vm.runInNewContext('(function(){' + hsrc + '})()', ctx)[0].json;
+assert.strictEqual(h.ready, true); assert.strictEqual(h.handoff.lead_id, 'disc_map_t1'); assert.strictEqual(h.handoff.test_mode, true); assert.strictEqual(h.handoff.source_execution_id, '5');
+assert.ok(!/dsAtlasHandoff/.test(src), 'the big turn node stays exactly as deployed before');
 });
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
