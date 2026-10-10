@@ -1,0 +1,172 @@
+{
+  "schema": "edg.spec.v2",
+  "generated_by": "zaphiel-demo-2026-10-10",
+  "generated_at": "2026-10-10T00:00:00Z",
+  "company": {
+    "name": "Demo Retail Shop (FAKE)",
+    "slug": "demo-retail-shop",
+    "industry": "Small retailer (online and shop)",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": false,
+    "invoices": false,
+    "appointments": false,
+    "accounting": "quickbooks",
+    "calendar": "none",
+    "ceo_brief": true,
+    "stock": true,
+    "hr": false
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 2
+    },
+    {
+      "key": "answered",
+      "name": "Answered",
+      "sla_hours": 48
+    },
+    {
+      "key": "bought",
+      "name": "Bought",
+      "sla_hours": 720
+    }
+  ],
+  "team": {
+    "sales": 2,
+    "managers": 1,
+    "support": 1,
+    "label": "Sales",
+    "visibility": "all"
+  },
+  "services": [],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "10:00",
+    "end": "19:00"
+  },
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Demo Shop Assistant",
+      "purpose": "Answer product questions on WhatsApp from the approved product facts, and hand over orders and payments to a person.",
+      "persona": "warm, short and professional; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "orders, payments and refunds",
+        "complaints"
+      ],
+      "rules": [
+        "Ask one question at a time.",
+        "Never invent prices or promise dates."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    }
+  ],
+  "stock": {
+    "places": [
+      {
+        "name": "Shop"
+      },
+      {
+        "name": "Warehouse"
+      }
+    ],
+    "suppliers": [],
+    "items": [
+      {
+        "sku": "TSHIRT-M",
+        "name": "T-shirt (M)",
+        "unit": "pcs"
+      },
+      {
+        "sku": "TSHIRT-L",
+        "name": "T-shirt (L)",
+        "unit": "pcs"
+      }
+    ]
+  },
+  "to_confirm": [
+    "Shopify: no connector yet (CUSTOM CONNECTOR REQUIRED); product list exported as CSV until then",
+    "QuickBooks: no connector yet; Intuit must confirm a Singapore company can join its partner programme",
+    "Reorder levels and suppliers",
+    "Their WhatsApp Business number and Meta business verification (for the live system)"
+  ],
+  "problems": [
+    {
+      "problem": "Stock runs out online and in the shop",
+      "solution": "One stock count for shop and warehouse with low-stock alerts (Shopify sync after its connector is built)"
+    },
+    {
+      "problem": "WhatsApp product questions take staff time",
+      "solution": "The AI answers from approved product facts and hands orders to a person"
+    }
+  ],
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "knowledge": [],
+  "source": {
+    "lead_id": "demo_demo-retail-shop",
+    "design_path": "zaphiel/vault/80_Clients/_Test/demo-retail-shop/edg/",
+    "test_mode": true
+  }
+}

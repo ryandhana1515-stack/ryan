@@ -1,0 +1,232 @@
+{
+  "schema": "edg.spec.v2",
+  "generated_by": "zaphiel-demo-2026-10-10",
+  "generated_at": "2026-10-10T00:00:00Z",
+  "company": {
+    "name": "Demo Renovation Co (FAKE)",
+    "slug": "demo-renovation",
+    "industry": "Home renovation",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": true,
+    "invoices": true,
+    "appointments": true,
+    "accounting": "xero",
+    "calendar": "google",
+    "ceo_brief": true,
+    "stock": false,
+    "hr": false
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 2
+    },
+    {
+      "key": "contacted",
+      "name": "Contacted",
+      "sla_hours": 24
+    },
+    {
+      "key": "site_visit",
+      "name": "Site visit booked",
+      "sla_hours": 72
+    },
+    {
+      "key": "quotation",
+      "name": "Quotation sent",
+      "sla_hours": 120
+    },
+    {
+      "key": "won",
+      "name": "Project confirmed",
+      "sla_hours": 720
+    }
+  ],
+  "team": {
+    "sales": 3,
+    "managers": 1,
+    "support": 1,
+    "label": "Designer",
+    "visibility": "all"
+  },
+  "services": [
+    {
+      "name": "Site measurement visit",
+      "duration_minutes": 60,
+      "buffer_minutes": 30,
+      "location": "At the customer's home"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "09:00",
+    "end": "18:00"
+  },
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Demo Renovation Assistant",
+      "purpose": "Answer homeowners on WhatsApp: understand the renovation (property type, rooms, budget range the customer gives, timeline), book a site measurement visit, and hand quotations to a designer.",
+      "persona": "warm, short and professional; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "find_free_times",
+        "book_job",
+        "prepare_quote",
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "complaints",
+        "refund or warranty questions",
+        "anything about prices not in the approved price list"
+      ],
+      "rules": [
+        "Ask one question at a time.",
+        "Never invent prices or promise dates."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    },
+    {
+      "key": "quote_follow_up",
+      "name": "Follow up quotations",
+      "trigger": {
+        "event": "quote.sent",
+        "after_hours": 48
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "quote_still_open"
+      ],
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "Politely check whether the customer has questions about quotation {quote_number}; offer to book the next step. No pressure, no new prices.",
+          "fallback_text": "Hi {first_name}, just checking if you have any questions about quotation {quote_number} from {business}?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "Quotation {quote_number} has had no answer for 2 days. The AI assistant followed up."
+        }
+      ]
+    },
+    {
+      "key": "overdue_invoice_owner",
+      "name": "Tell the owner about overdue invoices",
+      "trigger": {
+        "event": "invoice.overdue",
+        "after_hours": 0
+      },
+      "actions": [
+        {
+          "do": "notify_owner",
+          "text": "Invoice {invoice_number} is overdue. A reminder draft is ready for you to send."
+        }
+      ]
+    },
+    {
+      "key": "no_show_rebook",
+      "name": "Rebook customers who missed their appointment",
+      "trigger": {
+        "event": "appointment.no_show",
+        "after_hours": 1
+      },
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "The customer missed their {service} today. Kindly offer to book a new time.",
+          "fallback_text": "Hi {first_name}, we missed you today. Would you like to book a new time?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "{first_name} missed their {service}. The AI assistant offered a new time."
+        }
+      ]
+    }
+  ],
+  "to_confirm": [
+    "Staff names, roles and emails",
+    "Price list (the AI only quotes approved prices)",
+    "GST registration and rate",
+    "Their WhatsApp Business number and Meta business verification (for the live system)",
+    "Excel files of past customers to import (column check)",
+    "Xero: an admin connects it once"
+  ],
+  "problems": [
+    {
+      "problem": "WhatsApp enquiries are answered late and forgotten",
+      "solution": "The AI assistant answers in seconds and every enquiry gets an owner and a reminder"
+    },
+    {
+      "problem": "Quotations go quiet",
+      "solution": "Automatic follow-up after 2 days, owner told"
+    },
+    {
+      "problem": "Invoices typed twice (Excel and Xero)",
+      "solution": "Invoices from accepted quotations, sent into Xero"
+    }
+  ],
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "knowledge": [],
+  "source": {
+    "lead_id": "demo_demo-renovation",
+    "design_path": "zaphiel/vault/80_Clients/_Test/demo-renovation/edg/",
+    "test_mode": true
+  }
+}
