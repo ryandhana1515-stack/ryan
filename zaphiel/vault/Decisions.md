@@ -506,3 +506,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-10-10 — **Ryan: "do it" = approval of HR Part 2 (leave + Approval Center + bookings).** Zaphiel read it that way because it was the only item on the list that needed only Ryan's yes. The others (Xero signup, prices, Metricool) need his own logins or decisions.
   - Decided while building: other statutory leave types (childcare, maternity, paternity, etc.) are not loaded until each figure is verified on MOM or gov.sg. Companies add them as their own types until then.
   - Decided while building: leave days count the company's working days. The first client's HR adviser confirms this for sick leave.
+- 2026-10-10 — **Ryan: "go" to HR Part 3 (attendance).** How Zaphiel built it:
+  - It is off by default for every company, and no location is recorded (plan §14.5).
+  - It flags problems for people to act on. It never deducts pay automatically.
+  - One working day per company for now (no per-person shift rosters yet).
