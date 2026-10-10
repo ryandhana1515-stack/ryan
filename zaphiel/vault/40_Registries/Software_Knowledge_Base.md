@@ -24,6 +24,8 @@
 | **ABSS Accounting** | 📄 Files only | — | — | — | Singapore's former MYOB line; on the IMDA InvoiceNow-Ready list. | 2026-10-09 |
 | **Sage Accounting** | 🛠️ Connector to build | — | — | — | Not offered in Singapore (Sage sells Intacct, X3 and Sage 300 here). | 2026-10-09 |
 | **Sage 300 / Sage Intacct** | 🛠️ Connector to build | — | — | Sage Intacct Web Services licence / partner programme | Mid-market products; Sage 300 / Intacct are on the IMDA InvoiceNow-Ready list. | 2026-10-09 |
+| **FreshBooks** | 🛠️ Connector to build | — | — | FreshBooks Developer Portal app (fee not found) | — | 2026-10-10 |
+| **Wave Accounting** | ⛔ Not possible | — | a Wave Pro subscription (API and webhooks) | — | Not available: Wave discontinued product support outside the US and Canada. | 2026-10-10 |
 
 ## HR & payroll
 
@@ -33,6 +35,9 @@
 | **JustLogin** | ◐ Partly possible | — | — | API access only after JustLogin approves our use case (by email to support) | Singapore-based HR and payroll. | 2026-10-09 |
 | **Employment Hero** | 🛠️ Connector to build | planned: with HR Part 2 | an Employment Hero Platinum plan or above (API access) | — | Has Singapore fields. | 2026-10-09 |
 | **Swingvy** | 📄 Files only | — | — | — | — | 2026-10-09 |
+| **HReasily** | 📄 Files only | — | — | — | Singapore HR and payroll; listed in the Xero Malaysia app store. | 2026-10-10 |
+| **Payboy** | 📄 Files only | — | — | — | Singapore HR and payroll. | 2026-10-10 |
+| **Deel** | 🛠️ Connector to build | — | an Org Admin or IT Developer Admin approves the connection | Deel approves OAuth apps before they work outside our own organisation | — | 2026-10-10 |
 
 ## CRM
 
@@ -42,6 +47,8 @@
 | **Salesforce** | 🛠️ Connector to build | — | the client's Salesforce admin installs or approves our app | — | — | 2026-10-09 |
 | **Zoho CRM** | 🛠️ Connector to build | — | — | — | — | 2026-10-09 |
 | **Pipedrive** | 🛠️ Connector to build | — | — | a private app can be shared by link without review; the Marketplace needs approval | — | 2026-10-09 |
+| **monday CRM** | 🛠️ Connector to build | — | — | — | — | 2026-10-10 |
+| **GoHighLevel** | 🛠️ Connector to build | — | Agency Pro plan for OAuth / advanced API (Starter/Unlimited: basic API) | — | — | 2026-10-10 |
 
 ## Communications
 
@@ -53,6 +60,9 @@
 | **Gmail** | ◐ Partly possible | reads enquiries forwarded to the business's Atlas email address (tested against a stand-in) | forwards enquiry emails to its Atlas address (works today) | reading mail is a restricted scope: Google verification (about 6 weeks) + a yearly paid security assessment (CASA); assessor fee, roughly US$500–4,500 a year (indicative) | — | 2026-10-09 |
 | **Microsoft 365 (Outlook, OneDrive, Excel online, Teams)** | 🛠️ Connector to build | planned: after Google (Phase D) | — | Microsoft Entra app + Microsoft AI Cloud Partner Program (free); publisher verification so staff can consent; admin consent for application permissions; standard Graph calls free | — | 2026-10-09 |
 | **Any app that sends or receives webhooks** | ◐ Partly possible | incoming webhook creates customers; workflow action "send to another app" (signed) (tested against a stand-in) | the other app can send or receive webhooks; the client pastes Atlas's address into it | — | — | 2026-10-09 |
+| **Wati** | 🛠️ Connector to build | — | a Wati Growth plan or above (pay-as-you-go has no API) | — | — | 2026-10-10 |
+| **Twilio (SMS, WhatsApp)** | 🛠️ Connector to build | — | Singapore SMS sender IDs registered with SGNIC first (about 5 business days) | WhatsApp: US$0.005 per message plus Meta's fee; SMS to Singapore US$0.0591 per message | — | 2026-10-10 |
+| **Telegram (bots)** | 🛠️ Connector to build | — | — | free (paid broadcasts above 30/s) | — | 2026-10-10 |
 
 ## Marketing
 
@@ -72,13 +82,42 @@
 | **Google Sheets** | 🛠️ Connector to build | planned: column matching + sync (Phase B) | — | Sheets scopes are sensitive: Google app verification (about 10 business days) | — | 2026-10-09 |
 | **Google Drive** | 🛠️ Connector to build | planned: files the user picks only (non-sensitive drive.file scope) | — | — | — | 2026-10-09 |
 | **Excel spreadsheets** | 📄 Files only | planned: import screen with column matching (Phase B) | — | — | — | 2026-10-09 |
+| **Dropbox** | 🛠️ Connector to build | — | — | production approval before 50 linked users (2-week deadline) | — | 2026-10-10 |
+| **DocuSign** | 🛠️ Connector to build | — | a paid DocuSign plan (envelope caps apply) | free go-live review (24–48 h) | — | 2026-10-10 |
 
-## E-commerce
+## E-commerce, marketplaces & POS
 
 | Software | Status | Atlas today | The client needs | FusionTech needs | Singapore | Checked |
 |---|---|---|---|---|---|---|
 | **Shopify** | 🛠️ Connector to build | planned: Phase D (retail clients) | — | Shopify Partners (free); public-app review + protected customer data approval; US$19 one-off; 0% revenue share up to US$1M | — | 2026-10-09 |
 | **WooCommerce** | 🛠️ Connector to build | — | the store owner approves the key once | — | — | 2026-10-09 |
+| **Lazada** | 🛠️ Connector to build | — | — | Lazada Open Platform developer (profile review ~3 business days, then app review); royalty-free licence; no API fee found | Singapore, Malaysia and other SEA markets (tokens are per country). Not in Australia. | 2026-10-10 |
+| **Shopee** | 🛠️ Connector to build | — | — | Shopee Open Platform ISV partner (registered business; ~10 working days; go-live review ~24 h) | Singapore and Malaysia (one app can serve several markets). Not in Australia. | 2026-10-10 |
+| **StoreHub** | ◐ Partly possible | — | StoreHub Enterprise plan ("Dedicated API access") | StoreHub partner programme (apply) | Malaysian POS, also in the Philippines; Singapore availability unconfirmed. | 2026-10-10 |
+| **Square** | 🛠️ Connector to build | — | — | — | Square processes payments only in AU, CA, FR, IE, JP, ES, UK and US: usable for Australian clients, not Singapore or Malaysia. | 2026-10-10 |
+| **Lightspeed (Retail X-Series, Restaurant K-Series)** | 🛠️ Connector to build | — | — | Lightspeed developer (an unapproved app may connect up to 30 stores); approval for public apps; K-Series partner programme | Australia yes; Singapore / Malaysia unconfirmed. | 2026-10-10 |
+| **Zoho Inventory** | 🛠️ Connector to build | — | — | — | No Singapore data centre (US, EU, IN, AU, JP, CA, CN, SA). | 2026-10-10 |
+
+## Payments
+
+| Software | Status | Atlas today | The client needs | FusionTech needs | Singapore | Checked |
+|---|---|---|---|---|---|---|
+| **Stripe** | 🛠️ Connector to build | — | — | Connect: none if Stripe handles pricing; otherwise US$2 per active account per month + 0.25% + US$0.50 per payout (SG page) | Singapore, Malaysia, Australia. PayNow: Singapore accounts, SGD, 1.3% per transaction. New platforms must not use the legacy Standard/Express/Custom types. | 2026-10-10 |
+| **PayPal** | 🛠️ Connector to build | — | — | onboarding other merchants (Partner Referrals) needs PayPal partner approval | Singapore and Malaysia merchant fees: 3.90% + fixed fee domestically. | 2026-10-10 |
+| **HitPay** | 🛠️ Connector to build | — | — | no platform licence fee; the platform may take a commission | Singapore, Malaysia, Australia and other APAC markets. PayNow QR codes last 5 minutes. Merchant fees from 0.65% + S$0.30 (PayNow online, ≥S$100; recheck). | 2026-10-10 |
+| **PayNow (bank transfers by QR / UEN)** | 🛠️ Connector to build | — | — | — | — | 2026-10-10 |
+
+## Booking (salons, clinics, appointments)
+
+| Software | Status | Atlas today | The client needs | FusionTech needs | Singapore | Checked |
+|---|---|---|---|---|---|---|
+| **Calendly** | 🛠️ Connector to build | — | a paid Calendly plan for webhooks and the Scheduling API | — | — | 2026-10-10 |
+| **Fresha** | 📄 Files only | — | — | — | — | 2026-10-10 |
+| **Vagaro** | 🛠️ Connector to build | — | Vagaro card processing (not a free trial) and US$10/month for webhooks (+US$0.002 per call above 5,000) | — | US-focused; Singapore / Australia availability unconfirmed. | 2026-10-10 |
+| **Mindbody** | 🛠️ Connector to build | — | — | Mindbody approves the app, then each business activates it; free under 5,000 calls per cycle, then US$0.002 per call (charged to the developer) | — | 2026-10-10 |
+| **Zenoti** | 🛠️ Connector to build | — | the client's Zenoti admin creates the backend app and key | — | — | 2026-10-10 |
+| **SimplyBook.me** | 🛠️ Connector to build | — | turns on the "API" custom feature (plan slots: Free 1, Basic 3, Standard 8, Premium unlimited) | — | — | 2026-10-10 |
+| **Setmore** | 🛠️ Connector to build | — | a Setmore Pro account; API access requested by email (api@setmore.com) | — | — | 2026-10-10 |
 
 ## Projects
 
@@ -94,7 +133,14 @@
 
 | Software | Status | Atlas today | The client needs | FusionTech needs | Singapore | Checked |
 |---|---|---|---|---|---|---|
-| **Singapore property portals (PropertyGuru, 99.co, SRX)** | ◐ Partly possible | reads the enquirer from forwarded portal emails; unreadable ones go to a person (tested against a stand-in) | forwards portal enquiry emails to its Atlas address | — | — | 2026-10-01 |
+| **Singapore property portals (PropertyGuru, 99.co, SRX)** | ◐ Partly possible | reads the enquirer from forwarded portal emails; unreadable ones go to a person (tested against a stand-in) | forwards portal enquiry emails to its Atlas address | — | — | 2026-10-10 |
+
+## Industry systems
+
+| Software | Status | Atlas today | The client needs | FusionTech needs | Singapore | Checked |
+|---|---|---|---|---|---|---|
+| **Plato Medical** | ◐ Partly possible | — | — | commercial apps serving more than one clinic must join Plato's Developer Partner Programme | Singapore clinic system. Medical data needs extra care (PDPA). | 2026-10-10 |
+| **ClinicAssist** | ⛔ Not possible | — | — | — | Widely used Singapore primary-care clinic system. | 2026-10-10 |
 
 ## FusionTech developer accounts (made once, free ones first)
 
