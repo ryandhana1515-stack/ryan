@@ -168,5 +168,10 @@
     "lead_id": "demo_demo-retail-shop",
     "design_path": "zaphiel/vault/80_Clients/_Test/demo-retail-shop/edg/",
     "test_mode": true
-  }
+  },
+  "software": [
+    "Shopify",
+    "QuickBooks",
+    "WhatsApp"
+  ]
 }

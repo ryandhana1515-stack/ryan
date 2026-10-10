@@ -200,5 +200,11 @@
     "lead_id": "demo_demo-property-team",
     "design_path": "zaphiel/vault/80_Clients/_Test/demo-property-team/edg/",
     "test_mode": true
-  }
+  },
+  "software": [
+    "WhatsApp",
+    "Google Sheets",
+    "Calendly",
+    "PropertyGuru"
+  ]
 }
