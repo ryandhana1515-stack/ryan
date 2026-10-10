@@ -730,3 +730,9 @@ tags: [zaphiel, changelog]
     - the demo clients appear on the pipeline page, with quote status;
     - the secure form page opens correctly (the test link was stopped afterwards);
     - both keys load automatically.
+- 2026-10-10 — **Atlas P6 saved (Ryan: "OK").** `.claude/agents/atlas.md` gained three rules, placed after D6:
+  - **D6a SOFTWARE CHECK:** check the Software Knowledge Base before promising any connection.
+  - **D6b "Can we do it?":** the order is connect → card answer → configure → build reusable → say no clearly. Never say yes just to please.
+  - **D6c PLAYBOOKS:** use the 11 playbooks and the status ladder.
+  - Zaphiel rebuilt the wording from the agreed outline because the earlier chat text could not be recovered word for word. The saved text was shown to Ryan.
+  - The live n8n ATLAS reads this file, so it uses the rules from now on.
