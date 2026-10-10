@@ -270,6 +270,14 @@ tags: [zaphiel, open-loops]
   - ~~**Ryan, OK needed — P6**~~ done 2026-10-10 (Ryan "OK"; saved in atlas.md D6a–D6c).
   - **Ryan, when ready — prices:** Master Control → Quotes. Fill in FusionTech's fees. Until then every draft says "price needed", and Atlas never guesses a price.
   - **Ryan, now — Xero developer account step 1** (still open). This unlocks P7b, the Xero Demo Company proof.
-  - **Ryan — still open from before:** HR Part 2 approval; the Metricool Meta ad account step.
+  - **Ryan — still open from before:** ~~HR Part 2 approval~~ built 2026-10-10; the Metricool Meta ad account step.
   - **Zaphiel, next build:** Phase A step 2 — the Client Discovery and Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
   - **Housekeeping:** two leftover branches in fusion-edg-core (`atlas-p7-import`, `atlas-p7-customer-import`, superseded by PR #48) could not be deleted from this session. Delete them on GitHub; they are harmless.
+- 2026-10-10 — **HR: Part 2 (leave) is done.**
+  - **Ryan's OK needed:** Part 3, attendance: clock in / out or from job cards; late, absent or missing clock-out; corrections approved by a manager; timesheets.
+  - **Still to do from Part 2:**
+    - carry-over and expiry of unused leave;
+    - a warning in the booking screen for leave not yet approved;
+    - part-time pro-rating by hours;
+    - leave in the Atlas build self-test.
+  - **To confirm with the first client's HR adviser:** whether sick leave counts working days or calendar days, and the default leave policy.
