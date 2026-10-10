@@ -317,46 +317,6 @@ function dsRenderMapNote(ctx) {
   if (ctx.proposal_md) lines.push('## Proposal draft (automatic; no pricing — Ryan approves before anything is sent)\n\n' + ctx.proposal_md);
   return lines.join('\n\n') + '\n';
 }
-/** The Discovery Console joined to ATLAS (Atlas Phase A step 2, Ryan "go" 2026-10-10). When a discovery is complete
- *  (Ryan or an owner talked it through, or pasted a brief), the Company Map is handed to ATLAS in the same shape John uses,
- *  so ATLAS designs and builds the client's test system. One schema: ATLAS reads the map's facts, nothing is re-asked.
- *  Returns null when there is no company name (ATLAS needs one). Channel 'console': nobody is messaged automatically. */
-function dsAtlasHandoff(map, conversation, ctx) {
-  map = dsCoerceMap(map); ctx = ctx || {};
-  var cp = map.company_profile, fi = map.finance_process, sp = map.sales_process;
-  var company = cp.company_name || cp.brand_name;
-  if (!company) return null;
-  var owner = (Array.isArray(conversation) ? conversation : []).filter(function (m) { return m && m.role !== 'agent'; });
-  var sw = map.current_software.map(function (x) { return x.name; });
-  var acc = map.current_software.filter(function (x) { return x.category === 'accounting' || x.category === 'erp'; }).map(function (x) { return x.name; });
-  if (fi.accounting_software && acc.indexOf(fi.accounting_software) === -1) acc.push(fi.accounting_software);
-  var wants = map.automation.wish_automatic.concat(map.automation_opportunities).slice(0, 15);
-  var facts = [
-    'Company: ' + company + (cp.industry ? ' (' + cp.industry + ')' : ''),
-    cp.employees ? 'Team: ' + cp.employees + ' people' + (map.people_roles.roles.length ? ' (' + map.people_roles.roles.join(', ') + ')' : '') : '',
-    sw.length ? 'Software today: ' + sw.join(', ') : '',
-    map.communication_channels.length ? 'Customers reach them on: ' + map.communication_channels.join(', ') : '',
-    sp.lead_sources.length ? 'Leads come from: ' + sp.lead_sources.join(', ') : '',
-    sp.quotation_process ? 'Quotations: ' + sp.quotation_process : '',
-    map.operations_process.work_intake ? 'How work comes in: ' + map.operations_process.work_intake : '',
-    map.pain_points.length ? 'Problems: ' + map.pain_points.join('; ') : '',
-    wants.length ? 'They want automated: ' + wants.join('; ') : '',
-    cp.services.length ? 'Services: ' + cp.services.join(', ') : ''
-  ].filter(Boolean).join('\n');
-  var extracted = {
-    company_name: company, industry: cp.industry, company_size: cp.employees, current_tools: sw, accounting_or_erp: acc, lead_sources: sp.lead_sources,
-    problem: map.pain_points.join('; ') || null, current_follow_up_process: [sp.follow_up_owner, sp.follow_up_count].filter(Boolean).join(', ') || null,
-    desired_automation: wants, uses_whatsapp: map.communication_channels.some(function (c) { return /^whatsapp/.test(c); }) ? true : null
-  };
-  return {
-    tenant_id: ctx.tenant_id || 'fusiontech', lead_id: 'disc_' + String(ctx.map_id || '').replace(/[^a-z0-9_]/gi, '').slice(0, 60), contact_name: ctx.contact_name || '',
-    company_name: company, industry: cp.industry || '', email: '', phone: '', channel: 'console',
-    message: facts.slice(0, 4000),
-    conversation_json: JSON.stringify(owner.slice(-30).map(function (m) { return { role: 'customer', content: String(m.content || '').slice(0, 2000) }; })),
-    sales_summary: 'From the Discovery Console (Company Map ' + (ctx.map_id || '') + ', ' + Math.round((ctx.coverage || 0) * 100) + '% mapped).',
-    extracted_json: JSON.stringify(extracted), test_mode: !!ctx.test_mode, notify_email: ctx.notify_email || '', source_execution_id: String(ctx.execution_id || '')
-  };
-}
 var PR_VERSION = 'proposal-draft-1.0.0';
 var PR_MODULE_LABELS = { ceo_dashboard: 'CEO Dashboard', sales_brain: 'Sales Brain', marketing_brain: 'Marketing Brain', customer_service_brain: 'Customer Service Brain', operations_brain: 'Operations Brain', project_brain: 'Project Brain', finance_information_brain: 'Finance Information Brain', admin_brain: 'Admin Brain', knowledge_brain: 'Knowledge Brain', reporting_brain: 'Reporting Brain' };
 var PR_AGENT_LABELS = { company_discovery: 'Company Discovery Agent', sales: 'Sales Agent (John)', solution_architect: 'Solution Architect Agent', website_architect: 'Website Architect Agent', sme_website_builder: 'SME Website Builder Agent', medical_website_builder: 'Medical / Doctor Website Builder Agent', customer_service: 'Customer Service Agent', email_admin: 'Email / Admin Agent', marketing: 'Marketing Agent', operations: 'Operations Agent', finance_assistant: 'Finance Assistant', ceo_intelligence: 'CEO Intelligence Agent' };
@@ -444,8 +404,6 @@ return [{ json: {
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, guardrails: fin.guardrails, brain_source: pre.brain_source,
   row_exists: pre.row_exists, created_at: pre.created_at, updated_at: now, discovery_complete: fin.discovery_complete,
   reply: fin.turn.reply, output: fin.turn.reply + '\n\n— discovery' + meta,
-  // Joined to ATLAS (Phase A step 2, 2026-10-10): a complete discovery is handed to ATLAS, which designs and builds the test system.
-  atlas_handoff: fin.discovery_complete ? dsAtlasHandoff(fin.map, conversation, { tenant_id: ctx.tenant_id, map_id: ctx.map_id, contact_name: pre.contact_name, coverage: fin.coverage, test_mode: ctx.test_mode, notify_email: "ryandhana1515@gmail.com", execution_id: $execution.id }) : null,
   task: fin.discovery_complete ? { task_id: 'task_proposal_' + ctx.map_id.replace(/[^a-z0-9_]/gi, '').slice(0, 60), title: 'REVIEW: proposal draft for ' + (companyName || ctx.map_id), description: 'Discovery complete (' + Math.round(fin.coverage * 100) + '%). Company Map + proposal draft (no pricing) in ' + vaultPath + '. Review, price and approve before anything is sent.' } : null,
   run_id: 'run_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36), started_at: ctx.started_at, finished_at: now, latency_ms: Math.max(0, new Date(now).getTime() - new Date(ctx.started_at).getTime())
 } }];
