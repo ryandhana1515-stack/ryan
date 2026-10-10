@@ -707,3 +707,26 @@ tags: [zaphiel, changelog]
   - **4 FAKE demo clients built on the test system** (renovation, property team, salon, retailer): 26 steps work, 12 wait for client details, 0 fail.
   - **Forge** = the automatic builder plus Claude Code sessions. No new agent.
   - **Also written:** 11 playbooks and a white-label readiness assessment, in docs/atlas-os 03–07.
+- 2026-10-10 — **Atlas plan P5 → P7 built** (Ryan "go"; Fusion EDG Core PRs #43–#48; migrations 034–039 on the test system; tests 334/334).
+  - **P5 knowledge base v2:** every software card now shows Singapore / Malaysia / Australia, whether n8n has it, unified-API options, "watch out" notes and typical uses. Cards older than 90 days are queued for re-research automatically. See [[40_Registries/Software_Knowledge_Base]] (regenerated).
+  - **P1 client record:** every automatic build writes the client's record with three parts:
+    - the **"What I Need" card**: what we can and cannot do, what the customer must do, what Ryan must do, the estimate and the next step. It never shows prices and never asks for passwords;
+    - **Build Tickets**, each with the status ladder;
+    - the client's **pipeline stage**.
+  - **P2 Ryan's pipeline page:** one private link, phone-first, read-only. It shows every client with these sections: Needs you, Needs the customer, Atlas completed, Doing now, and Next. Ryan gets one email when a client needs his approval or a fix. The link was sent to Ryan in chat; it is not stored in the vault.
+  - **P3 secure credential form:** for software with no "Connect" button, such as Talenox, WooCommerce, Twilio or a Telegram bot.
+    - FusionTech makes a one-time link in Master Control (Software → Secure forms), and the customer pastes the token there.
+    - The token is encrypted on arrival and never shown again.
+    - The key is made automatically from the same two halves as the HR key, under its own label. Nothing manual is needed; `/health` shows `credential_key: automatic`.
+  - **P4 quotation drafts:** Ryan's price list lives in Master Control → Quotes and **starts empty**.
+    - Every client gets a draft. Missing prices show as "price needed" and block approval.
+    - The customer's own software and WhatsApp charges are listed as "paid by the customer", never priced.
+    - Only Ryan approves. **Nothing is ever sent from there.**
+    - The 4 demo clients have drafts waiting for prices.
+  - **P7 import customers:** in the team app, Team & Settings → Import customers, from Excel (.xlsx) or CSV.
+    - A preview shows each row as New, Already a customer, Repeated or Problem. Nothing is saved until the owner presses Import.
+    - No messages are sent and no follow-ups start. Existing customers only get their empty details filled in.
+  - **Checked live on the test system:**
+    - the demo clients appear on the pipeline page, with quote status;
+    - the secure form page opens correctly (the test link was stopped afterwards);
+    - both keys load automatically.

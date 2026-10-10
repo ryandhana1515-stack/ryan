@@ -253,7 +253,7 @@ tags: [zaphiel, open-loops]
   - **Ryan, OK needed:** the small `atlas.md` addition "SOFTWARE CHECK", so ATLAS uses the Software Knowledge Base before promising any connection. Shown to Ryan 2026-10-10.
   - **Next build:** Phase A step 2, the Client Discovery + Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
   - **Developer accounts after Xero:** Meta (verification) → Google Cloud → Microsoft Entra → Shopify Partners → Intuit (ask about Singapore first) → Zoho → HubSpot → Employment Hero → TikTok. The status of each is kept in `app.developer_accounts` (Master Control → Software).
-- 2026-10-10 — **Atlas Execution & Knowledge Upgrade: waiting for Ryan's approval** (report page sent).
+- 2026-10-10 — **Atlas Execution & Knowledge Upgrade** — ~~waiting for Ryan's approval~~ approved ("go") and built the same day: see the next entry.
   - **Plan items (docs/atlas-os/05):**
     - **P1** client implementation record: "What I Need" card, Build Ticket, pipeline stage;
     - **P2** owner pipeline page with alerts to Ryan;
@@ -266,3 +266,10 @@ tags: [zaphiel, open-loops]
   - **Recommended order:** P5+P6 → P1 → P2 → P3 → P4 → P7.
   - **White-label rules** (one FusionTech app per provider, no per-agency clones for Xero/Shopify/HubSpot, n8n hidden) are recorded in docs/atlas-os/06. A lawyer should review the reseller agreement.
   - **Still waiting:** Xero developer account step 1 (Ryan).
+- 2026-10-10 — **Atlas plan: P5, P1, P2, P3, P4 and P7 are done. What is left:**
+  - **Ryan, OK needed — P6:** the exact atlas.md text (SOFTWARE CHECK, the "Can we do it?" order, playbooks) was shown in chat. Reply "OK" and Zaphiel saves it.
+  - **Ryan, when ready — prices:** Master Control → Quotes. Fill in FusionTech's fees. Until then every draft says "price needed", and Atlas never guesses a price.
+  - **Ryan, now — Xero developer account step 1** (still open). This unlocks P7b, the Xero Demo Company proof.
+  - **Ryan — still open from before:** HR Part 2 approval; the Metricool Meta ad account step.
+  - **Zaphiel, next build:** Phase A step 2 — the Client Discovery and Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
+  - **Housekeeping:** two leftover branches in fusion-edg-core (`atlas-p7-import`, `atlas-p7-customer-import`, superseded by PR #48) could not be deleted from this session. Delete them on GitHub; they are harmless.
