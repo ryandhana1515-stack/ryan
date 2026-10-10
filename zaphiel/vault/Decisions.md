@@ -498,3 +498,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   7. A lawyer prepares the PDPA data-processing agreement before the first real client. Zaphiel drafts the technical annex.
   8. Client workflows stay in the platform engine, not n8n Cloud. Zaphiel asks n8n in writing before any client workflow runs there.
   9. WhatsApp Embedded Signup (v4) after Meta verification. Start the Meta verification right after Xero.
+- 2026-10-10 — **Ryan: "go" to the Atlas plan, in the order P5 → P6 → P1 → P2 → P3 → P4 → P7.** P6, the atlas.md text, waits for Ryan's "OK" on the exact wording.
+  How Zaphiel built it, following Ryan's standing rules:
+  - Customer tokens go only through the one-time secure form, encrypted, with an automatic key; never by chat or email.
+  - FusionTech's prices come only from Ryan's price list. A quote is never sent automatically; Ryan's approval only records his decision.
+  - Imported customers are records only: no message, no follow-up, and no WhatsApp consent assumed.
