@@ -689,3 +689,15 @@ tags: [zaphiel, changelog]
     - The Discovery Console is not connected to John → ATLAS.
     - John's flow has no WhatsApp message-id dedupe.
   - **Research:** about 30 providers checked against official docs, written up as provider cards.
+- 2026-10-10 — **Atlas Phase A1: Software Knowledge Base and compatibility checker** (Fusion EDG Core PR #41; migration 033 on the test system).
+  - **What it does:** when a client names its software ("Xero, Excel, WhatsApp, Talenox"), Atlas answers each one honestly:
+    - Supported / Connector, needs setup / Connector to build / Partly possible / Files only / Not possible.
+    - Unknown software is saved for research.
+    - A company name alone, such as "Google", gets a question back: which product?
+  - **The list:** 39 programs, checked against official sources on 2026-10-09. Readable here: [[40_Registries/Software_Knowledge_Base]] (generated; never edit it by hand).
+  - **Honesty:** nothing is "Supported" until it is proven live with a real account. Today Xero, WhatsApp and lead forms are "Connector, needs setup".
+  - **Also built:**
+    - Master Control has a **Software** page.
+    - An API for ATLAS.
+    - A checklist of FusionTech's developer accounts.
+  - **Tests:** 304/304 (12 new).
