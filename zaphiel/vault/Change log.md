@@ -736,3 +736,22 @@ tags: [zaphiel, changelog]
   - **D6c PLAYBOOKS:** use the 11 playbooks and the status ladder.
   - Zaphiel rebuilt the wording from the agreed outline because the earlier chat text could not be recovered word for word. The saved text was shown to Ryan.
   - The live n8n ATLAS reads this file, so it uses the rules from now on.
+- 2026-10-10 — **HR Part 2: leave and bookings built** (Ryan "do it"; Fusion EDG Core PR #49; migration 040 on the test system; tests 343/343).
+  - **Singapore rules, re-checked on MOM today:**
+    - Annual leave: 7 days in year 1, rising to 14 from year 8; pro-rated in the first year; available after 3 months of service.
+    - Sick leave: 5/15 at 3 months up to 14/60 from 6 months (outpatient / hospitalisation); counted per calendar year.
+  - A company can give more days than the law, never fewer.
+  - **Asking for leave:** staff ask in My HR → Leave.
+  - **Who decides:** the person's line manager, HR, an admin or the owner, in Approvals or HR → Leave. They see:
+    - the person's balance;
+    - who else is off at the same time, warned if over the team limit;
+    - the bookings in that period;
+    - whether an MC was provided.
+  - **Rules for deciding:**
+    - Nobody approves their own leave.
+    - Sick leave needs an MC.
+    - Turning a request down needs a note.
+  - **After approval:** the person can't be booked by anyone, including the website and the AI. Their existing bookings go to the work queue for someone to move. The customer is never messaged automatically.
+  - **Cancelling** removes the block.
+  - **HR settings:** days per type, the company's own leave types, working days, the team clash limit, and public holidays (entered by the company, never guessed).
+  - **The tests found and fixed two bugs:** a possible database freeze when approving, and a balance shown wrong on the approval screen.

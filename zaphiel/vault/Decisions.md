@@ -503,3 +503,6 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Customer tokens go only through the one-time secure form, encrypted, with an automatic key; never by chat or email.
   - FusionTech's prices come only from Ryan's price list. A quote is never sent automatically; Ryan's approval only records his decision.
   - Imported customers are records only: no message, no follow-up, and no WhatsApp consent assumed.
+- 2026-10-10 — **Ryan: "do it" = approval of HR Part 2 (leave + Approval Center + bookings).** Zaphiel read it that way because it was the only item on the list that needed only Ryan's yes. The others (Xero signup, prices, Metricool) need his own logins or decisions.
+  - Decided while building: other statutory leave types (childcare, maternity, paternity, etc.) are not loaded until each figure is verified on MOM or gov.sg. Companies add them as their own types until then.
+  - Decided while building: leave days count the company's working days. The first client's HR adviser confirms this for sick leave.
