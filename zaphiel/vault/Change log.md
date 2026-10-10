@@ -755,3 +755,14 @@ tags: [zaphiel, changelog]
   - **Cancelling** removes the block.
   - **HR settings:** days per type, the company's own leave types, working days, the team clash limit, and public holidays (entered by the company, never guessed).
   - **The tests found and fixed two bugs:** a possible database freeze when approving, and a balance shown wrong on the approval screen.
+- 2026-10-10 — **HR Part 3: attendance built** (Ryan "go"; Fusion EDG Core PR #50; migration 041 on the test system; tests 347/347).
+  - **Off until a company's HR switches it on.** No location is recorded.
+  - **Clocking in and out:** staff use their phone (My HR → Attendance). Arriving after the start time plus the grace minutes is flagged late.
+  - **Every day, Atlas flags:**
+    - anyone who forgot to clock out;
+    - yesterday's absences: a working day with no leave, no holiday, no clock-in and no job card.
+  - HR and each manager get one message. Nobody is flagged twice for the same thing.
+  - **Fixing a day:** staff send the right times and a reason. Their manager or HR approves it in Approvals, and the approved times replace that day.
+  - **Timesheets:** on screen, or as a download for payroll or the accountant.
+  - **Job cards:** optionally, job cards count as attendance on days without a clock-in.
+  - **Never changed:** clock records can't be edited, and nothing is deducted from pay.

@@ -274,10 +274,22 @@ tags: [zaphiel, open-loops]
   - **Zaphiel, next build:** Phase A step 2 — the Client Discovery and Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
   - **Housekeeping:** two leftover branches in fusion-edg-core (`atlas-p7-import`, `atlas-p7-customer-import`, superseded by PR #48) could not be deleted from this session. Delete them on GitHub; they are harmless.
 - 2026-10-10 — **HR: Part 2 (leave) is done.**
-  - **Ryan's OK needed:** Part 3, attendance: clock in / out or from job cards; late, absent or missing clock-out; corrections approved by a manager; timesheets.
+  - ~~**Ryan's OK needed:** Part 3, attendance~~ built 2026-10-10 (PR #50).
   - **Still to do from Part 2:**
     - carry-over and expiry of unused leave;
     - a warning in the booking screen for leave not yet approved;
     - part-time pro-rating by hours;
     - leave in the Atlas build self-test.
   - **To confirm with the first client's HR adviser:** whether sick leave counts working days or calendar days, and the default leave policy.
+- 2026-10-10 — **HR: Parts 1–3 are done (people, leave, attendance).** What's left:
+  - **Ryan's OK needed:** Part 4, the CEO HR dashboard and people care:
+    - an HR card on Home;
+    - HR lines in the morning brief;
+    - onboarding checklists;
+    - training records;
+    - the read-only HR Assistant.
+  - **Still to come:** Part 5, payroll exports and reports, once a payroll provider is chosen. The timesheet CSV already exists.
+  - **Gaps in Part 3:**
+    - per-person shift rosters;
+    - overtime rules (handled by the payroll provider);
+    - an optional location setting with the employee's consent.
