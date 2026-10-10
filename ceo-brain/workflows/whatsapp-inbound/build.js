@@ -5,7 +5,8 @@
 //                                                 └ no → Is a Voice Message? → Get Voice Note Link → Download Voice Note →
 //                                                        Name Voice File → Transcribe Voice Note (OpenAI, language "en":
 //                                                        auto-detect turned English voice notes into Malay, 2026-09-29) → Prepare Message
-//   Prepare Message → Find Lead by Phone (newest row first) → Check New Chat →
+//   Prepare Message → Find Seen Message → Check Seen Message → Seen Before? (yes → Ignore Duplicate) → Remember Message →
+//   Find Lead by Phone (newest row first) → Check New Chat →
 //   New Chat? ─ yes → Save New Chat Lead (ceo_leads insert) → Confirm New Chat (Outbound Sender)
 //             └ no  → Get Recent Conversation → Build Lead Payload → POST to Lead Intake
 //
@@ -48,6 +49,15 @@ const newChat = waIsNewChat(wa.text);
 return [{ json: { new_chat: newChat, phone: wa.phone, new_lead: newChat ? waNewChatLead({ tenant_id: leadRow.tenant_id, phone: wa.phone, name: wa.name }) : null, reply: WA_NEW_CHAT_REPLY } }];
 `;
 
+// Duplicate guard (2026-10-10): Prepare Message → Find Seen Message (ceo_seen_messages) → Check Seen Message →
+// Seen Before? ─ yes → Ignore Duplicate · no → Remember Message → Find Lead by Phone.
+const codeCheckSeen = `${src}
+// ---- n8n glue ----
+const wa = $('Prepare Message').first().json;
+const rows = $input.all().map((i) => i.json);
+return [{ json: { seen: waSeenBefore(wa.wa_message_id, rows), wa_message_id: wa.wa_message_id || '', phone: wa.phone || '', ts: new Date().toISOString() } }];
+`;
+
 const codeBuildPayload = `${src}
 // ---- n8n glue ----
 const wa = $('Prepare Message').first().json;
@@ -61,4 +71,5 @@ fs.writeFileSync(path.join(DIST, 'code-nodes', 'prepare-message.js'), codePrepar
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'name-voice-file.js'), codeNameVoice);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'check-new-chat.js'), codeCheckNewChat);
 fs.writeFileSync(path.join(DIST, 'code-nodes', 'build-lead-payload.js'), codeBuildPayload);
-console.log('whatsapp-inbound: 4 code nodes written to ' + path.relative(ROOT, DIST));
+fs.writeFileSync(path.join(DIST, 'code-nodes', 'check-seen-message.js'), codeCheckSeen);
+console.log('whatsapp-inbound: 5 code nodes written to ' + path.relative(ROOT, DIST));

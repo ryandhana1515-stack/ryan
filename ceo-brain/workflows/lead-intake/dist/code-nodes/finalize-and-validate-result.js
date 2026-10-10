@@ -490,16 +490,20 @@ function atIsAtlasQuestion(q, rows) {
 }
 /** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
 var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
+/** True when an earlier agent message already asked nearly the same question (Ryan, 2026-09-29: no repeated questions). */
 var AT_ANSWERED = [
   [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
-  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us)\b/i],
+  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us|technicians?|techs|sales\s*(people|staff|team|reps|guys)?|salespeople|agents|consultants|designers|installers|cleaners|therapists|stylists|tutors|teachers)\b/i],
+  [/\baccounting\b|\binvoicing software\b/i, /\b(xero|quickbooks|myob|sage|zoho books|autocount|sql account|wave accounting|freshbooks)\b|\bno accounting (software|system)\b/i],
+  [/\bkeep track of customers\b|\bwhich system do you use\b/i, /\b(excel|google sheets?|spreadsheets?|hubspot|salesforce|zoho crm|pipedrive|notion|monday\.com|airtable|odoo|a notebook|pen and paper)\b|\bcrm\b/i],
+  [/\bwhatsapp business\b|\bnormal whatsapp\b/i, /\bwhatsapp business\b|\brespond\.io\b|\bwati\b|\bwhatsapp api\b|\bnormal whatsapp\b|\bpersonal whatsapp\b/i],
   [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
 ];
 function atAlreadyAnswered(q, history) {
   var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
   return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
 }
-/** True when an earlier agent message already asked nearly the same question (Ryan, 2026-09-29: no repeated questions). */
+/** Everything the customer said (their messages, their latest message or pasted brief), as a history for atAlreadyAnswered. */
 function atAskedBefore(q, history) {
   var words = function (t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 3; }); };
   var Q = words(q); if (!Q.length) return false;

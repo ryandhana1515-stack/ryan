@@ -298,3 +298,15 @@ tags: [zaphiel, open-loops]
     - Talenox is already on our software list.
     - Others, like Payboy and HReasily, are on the list too, but their APIs are not verified.
   - **Until a provider is chosen:** Atlas exports the timesheet CSV, and a payroll export CSV can be built.
+- 2026-10-10 — **Zero-cost rule (Ryan): no software sign-ups until a real client needs them.** See [[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]].
+  - ~~Ryan, now — Xero developer account step 1~~ **withdrawn** (Ryan, 2026-10-10). P7b, the Xero Demo Company proof, waits for the first client who uses Xero. The connector stays at CODE IMPLEMENTED / MOCK TESTED.
+  - ~~Payroll provider choice before HR Part 5~~ no longer blocking: a generic payroll export comes first.
+  - **Ryan, when easy (optional):** screenshots of every screen of the CRM his friend built (sales, vouchers, invoices, reports), plus an Excel/CSV export of his own customers and sales from it. Zaphiel builds Ryan's own version in Atlas (same jobs, our own code) and imports his data. He doesn't need the friend's API key for this. Exporting his data is enough.
+  - **Next build (free):**
+    1. Sales team performance: targets, daily and monthly sales, KPI, ROI;
+    2. vouchers and packages;
+    3. a simple money book;
+    4. a payroll export.
+  - **Phase A2 n8n switch-on, in progress:**
+    - ATLAS update rounds are saved in n8n as a draft. The live version is unchanged until it is published.
+    - Still to deploy: the WhatsApp duplicate guard and the Discovery Console → Atlas hand-off.

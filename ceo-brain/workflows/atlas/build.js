@@ -24,6 +24,7 @@ const runtime = read('prompts/atlas.runtime.md');
 const userPrompt = read('prompts/atlas.user.md');
 const EVENT_URL = 'https://ryan1515.app.n8n.cloud/webhook/ceo-brain/event';
 const AT_AUTO_URL = 'https://fusion-edg-core-api.vercel.app/atlas/auto-build';
+const AT_UPDATE_URL = 'https://fusion-edg-core-api.vercel.app/atlas/update';
 
 function inline(file) {
   return read(file).replace(/\/\/ ---- Node module wrapper[\s\S]*$/m, '').split('\n').filter((l) => !/^\s*module\.exports\s*=/.test(l) && !/^\s*\/\//.test(l) && l.trim() !== '').join('\n');
@@ -38,7 +39,7 @@ function pick(file, names) {
   }
   return names.map((n) => { if (!blocks[n]) throw new Error('pick: ' + n + ' not found in ' + file); return blocks[n].join('\n'); }).join('\n');
 }
-const atlasSrc = inline('agents/atlas/atlas.js').split('var AT_UNSAFE_Q')[0].replace(/\/\*\* John asks ATLAS's questions[\s\S]*$/, '').trimEnd();   // John-side helpers stay out
+const atlasSrc = inline('agents/atlas/atlas.js').split('var AT_UNSAFE_Q')[0].replace(/\/\*\* John asks ATLAS's questions[\s\S]*$/, '').split('var AT_BOOL_MODULES')[0].trimEnd();   // John-side helpers and update rounds stay out
 const atlasPrepSrc = pick('agents/atlas/atlas.js', ['atStr', 'atSlug', 'atParse', 'atInput']);   // the setup step only normalises the hand-off
 
 const codePrepare = `${atlasPrepSrc}
@@ -47,10 +48,25 @@ const input = atInput(($input.first() && $input.first().json) || {});
 return [{ json: { input, started_at: new Date().toISOString() } }];
 `;
 
-const codeCheck = `// Once per lead: if ATLAS already opened a checkpoint for this lead, stop here.
+const codeCheck = `// Once per lead: if ATLAS already designed for this lead, the run becomes an update round (no new design).
 const prep = $('Prepare ATLAS Input').first().json;
 const rows = $input.all().map((i) => i.json).filter((r) => r && r.task_type === 'edg_design' && r.lead_id === prep.input.lead_id);
-return [{ json: Object.assign({}, prep, { already: rows.length > 0, existing_status: rows.length ? rows[0].status : null }) }];
+let basePath = null;
+try { basePath = rows.length ? (JSON.parse(rows[0].payload_json || '{}').base_path || null) : null; } catch (e) { basePath = null; }
+return [{ json: Object.assign({}, prep, { already: rows.length > 0, existing_status: rows.length ? rows[0].status : null, existing_base_path: basePath || prep.input.base_path }) }];
+`;
+
+// Update round (Atlas Phase A step 2, Ryan "go" 2026-10-10): the customer's newest facts refresh the saved build plan.
+const atlasUpdateSrc = pick('agents/atlas/atlas.js', ['AT_VERSION', 'atStr', 'atArr', 'AT_EDG_URL', 'AT_INDUSTRY', 'AT_PIPELINES', 'AT_SERVICES', 'atCustomerText', 'atIndustryKey', 'atEdgSpec',
+  'AT_AGENT_PURPOSE', 'AT_HANDOVER', 'AT_PROBLEMS', 'atAiTeam', 'AT_BOOL_MODULES', 'atSpecKey', 'atUnionBy', 'atMergeSpec', 'atUpdateRound', 'atUpdateUrl']);   // only what an update round needs
+const codeUpdate = `${atlasUpdateSrc}
+// ---- n8n glue: saved plan (GitHub) + John's latest facts → save a new plan only when something changed ----
+const prep = $('Check Existing Design').first().json;
+const g = ($input.first() && $input.first().json) || {};
+let prevText = null;
+try { if (g.content && !g.error) prevText = Buffer.from(String(g.content).replace(/\\n/g, ''), 'base64').toString('utf8'); } catch (e) { prevText = null; }
+const u = atUpdateRound({ input: prep.input, prev_text: prevText, base_path: prep.existing_base_path });
+return [{ json: Object.assign({ tenant_id: prep.input.tenant_id, lead_id: prep.input.lead_id, test_mode: prep.input.test_mode, file_exists: !!prevText, update_url: atUpdateUrl(), ts: new Date().toISOString() }, u) }];
 `;
 
 const codeCompose = `// System prompt = Ryan's ATLAS agent file (live from GitHub, frontmatter stripped) + the n8n runtime addendum.
@@ -366,14 +382,75 @@ const sendDemo = node({
   output: [{ sent: true }]
 });
 
-const note = sticky(${j('## CEO Brain — ATLAS (EDG & CRM Systems Architect)\nCalled by Lead Intake when John has learned that a named company needs CRM / automation / integrations (not only a website). Once per lead. Never talks to the customer.\n\nFlow: normalise the hand-off → skip if ATLAS already opened a checkpoint for this lead → Ryan\'s agent file .claude/agents/atlas.md live from GitHub + n8n runtime addendum → Claude (DESIGN mode, CHECKPOINT 1; deterministic fallback from John\'s facts when the model is unavailable) → approval task for Ryan (Approval Inbox) → run + audit → email Ryan → event edg.checkpoint_1 → the five checkpoint-1 files in 80_Clients/<slug>/edg/ (test leads under 80_Clients/_Test/).\n\nCheckpoint 2+ (architecture, build spec), BUILD and AUDIT modes run in Claude Code with the same agent file and all tools, after Ryan confirms. Source of truth: ryan/ceo-brain/workflows/atlas/build.js — do not hand-edit Code nodes.')}, [whenCalled, prepare, loadTasks, check], { color: 4 });
+const U = "$('Update the Plan').first().json";
+const loadPlan = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: { name: 'Load Saved Plan', alwaysOutputData: true, onError: 'continueRegularOutput', parameters: { authentication: 'oAuth2', resource: 'file', operation: 'get', owner: OWNER_RL, repository: REPO_RL, filePath: expr("{{ $json.existing_base_path + '16_edg_spec.json' }}"), asBinaryProperty: false, additionalParameters: {} }, credentials: GH_CRED, position: [1100, 700] },
+  output: [{ content: 'e30=', sha: 'x' }]
+});
+
+const updatePlan = ${code('Update the Plan', codeUpdate, [1320, 700], [{ tenant_id: 'fusiontech', lead_id: 'lead_x', test_mode: true, file_exists: true, update_url: 'https://fusion-edg-core-api.vercel.app/atlas/update', changed: true, reason: 'new facts from the customer', path: sample.base_path + '16_edg_spec.json', content: '{}', base_path: sample.base_path, commit: 'vault: ATLAS updated the plan', company_name: 'x', slug: 'x', modules: {}, team: {}, to_confirm: [], ts: '2026-01-01T00:00:00.000Z' }])};
+
+const planChanged = ifElse({
+  version: 2.3,
+  config: { name: 'Plan Changed?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'chg', leftValue: expr('{{ $json.changed }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [1540, 700] }
+});
+
+const planExists = ifElse({
+  version: 2.3,
+  config: { name: 'Saved Plan Exists?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'ex', leftValue: expr('{{ $json.file_exists }}'), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [1760, 700] }
+});
+
+const savePlan = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: { name: 'Save Updated Plan', onError: 'continueRegularOutput', parameters: { authentication: 'oAuth2', resource: 'file', operation: 'edit', owner: OWNER_RL, repository: REPO_RL, filePath: expr('{{ $json.path }}'), binaryData: false, fileContent: expr('{{ $json.content }}'), commitMessage: expr('{{ $json.commit }}'), additionalParameters: COMMITTER_P }, credentials: GH_CRED, position: [1980, 620] },
+  output: [{ commit: { sha: 'a'.repeat(40) } }]
+});
+
+const createPlan = node({
+  type: 'n8n-nodes-base.github',
+  version: 1.1,
+  config: { name: 'Create Plan File', onError: 'continueRegularOutput', parameters: { authentication: 'oAuth2', resource: 'file', operation: 'create', owner: OWNER_RL, repository: REPO_RL, filePath: expr('{{ $json.path }}'), binaryData: false, fileContent: expr('{{ $json.content }}'), commitMessage: expr('{{ $json.commit }}'), additionalParameters: COMMITTER_P }, credentials: GH_CRED, position: [1980, 780] },
+  output: [{ commit: { sha: 'a'.repeat(40) } }]
+});
+
+// The EDG platform reads the plan at the exact commit just made and adds what changed to the client's test system.
+const applyUpdate = node({
+  type: 'n8n-nodes-base.httpRequest',
+  version: 4.5,
+  config: { name: 'Update on EDG (automatic)', executeOnce: true, retryOnFail: true, maxTries: 4, waitBetweenTries: 5000, onError: 'continueRegularOutput',
+    parameters: { method: 'POST', url: ${j(AT_UPDATE_URL)}, sendBody: true, contentType: 'json', specifyBody: 'json',
+      jsonBody: expr("{{ JSON.stringify({ path: " + U + ".path, ref: ($json.commit && $json.commit.sha) ? $json.commit.sha : '' }) }}"), options: { timeout: 60000 } }, position: [2200, 700] },
+  output: [{ ok: true, status: 'updated', changes: ['Switched on quotations'], notes: [] }]
+});
+
+const logUpdate = node({
+  type: 'n8n-nodes-base.dataTable',
+  version: 1.1,
+  config: {
+    name: 'Log Plan Update',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: { resource: 'row', operation: 'insert', dataTableId: ${j(table('ceo_audit_logs'))}, columns: { mappingMode: 'defineBelow', value: {
+      tenant_id: expr("{{ " + U + ".tenant_id }}"), entity_type: 'lead', entity_id: expr("{{ " + U + ".lead_id }}"), action: 'atlas_plan_updated', old_value: '', new_value: expr("{{ " + U + ".path }}"), actor: 'agent:atlas@rules', execution_id: expr('{{ $execution.id }}'),
+      reason: expr("{{ ($json.ok ? ($json.status + ': ' + [].concat($json.changes || [], $json.notes || []).join('; ')) : ('EDG update failed: ' + String(($json.error && ($json.error.message || $json.error)) || 'no answer'))).slice(0, 900) }}"), ts: expr("{{ " + U + ".ts }}")
+    }, schema: ${j(schemaFor(auditCols))} } },
+    position: [2420, 700]
+  },
+  output: [{ id: 1 }]
+});
+
+const note = sticky(${j('## CEO Brain — ATLAS (EDG & CRM Systems Architect)\nCalled by Lead Intake when John has learned that a named company needs CRM / automation / integrations (not only a website). One design per lead; every later call is an UPDATE ROUND (Phase A step 2): the customer\'s newest facts refresh the saved plan (16_edg_spec.json, merged, rules only, no AI) and, only if it changed, it is saved and POSTed to /atlas/update, which adds the safe part to the client\'s test system. Never talks to the customer.\n\nFlow: normalise the hand-off → skip if ATLAS already opened a checkpoint for this lead → Ryan\'s agent file .claude/agents/atlas.md live from GitHub + n8n runtime addendum → Claude (DESIGN mode, CHECKPOINT 1; deterministic fallback from John\'s facts when the model is unavailable) → approval task for Ryan (Approval Inbox) → run + audit → email Ryan → event edg.checkpoint_1 → the five checkpoint-1 files in 80_Clients/<slug>/edg/ (test leads under 80_Clients/_Test/).\n\nCheckpoint 2+ (architecture, build spec), BUILD and AUDIT modes run in Claude Code with the same agent file and all tools, after Ryan confirms. Source of truth: ryan/ceo-brain/workflows/atlas/build.js — do not hand-edit Code nodes.')}, [whenCalled, prepare, loadTasks, check], { color: 4 });
 
 export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Systems Architect)')
   .add(whenCalled)
   .to(prepare)
   .to(loadTasks)
   .to(check)
-  .to(newDesign.onTrue(loadAgent.to(compose).to(claude.to(finalize))))
+  .to(newDesign.onTrue(loadAgent.to(compose).to(claude.to(finalize))).onFalse(loadPlan.to(updatePlan).to(planChanged.onTrue(planExists.onTrue(savePlan.to(applyUpdate)).onFalse(createPlan.to(applyUpdate))))))
+  .add(applyUpdate)
+  .to(logUpdate)
   .add(claude.onError(finalize))
   .add(finalize)
   .to(upsertTask)
@@ -396,5 +473,5 @@ export default workflow('ceo-brain-atlas', 'CEO Brain — ATLAS (EDG & CRM Syste
 
 fs.mkdirSync(path.join(DIST, 'code-nodes'), { recursive: true });
 fs.writeFileSync(path.join(DIST, 'atlas.sdk.ts'), sdk);
-[['prepare-atlas-input.js', codePrepare], ['check-existing-design.js', codeCheck], ['compose-atlas-prompt.js', codeCompose], ['finalize-atlas.js', codeFinalize], ['files-to-write.js', codeFiles], ['create-or-edit.js', codePair], ['john-writes-the-demo-message.js', codeDemo]].forEach(([f, c]) => fs.writeFileSync(path.join(DIST, 'code-nodes', f), c));
+[['prepare-atlas-input.js', codePrepare], ['check-existing-design.js', codeCheck], ['compose-atlas-prompt.js', codeCompose], ['finalize-atlas.js', codeFinalize], ['files-to-write.js', codeFiles], ['create-or-edit.js', codePair], ['john-writes-the-demo-message.js', codeDemo], ['update-the-plan.js', codeUpdate]].forEach(([f, c]) => fs.writeFileSync(path.join(DIST, 'code-nodes', f), c));
 console.log('built', path.relative(ROOT, path.join(DIST, 'atlas.sdk.ts')), sdk.length, 'chars');

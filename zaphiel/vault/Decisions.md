@@ -514,3 +514,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - The HR assistant only gets facts about the person asking, and its only action is to prepare a leave request.
   - Lateness alerts give the count only, with no judgement.
   - The default onboarding checklist has generic steps and no legal claims.
+- 2026-10-10 — **Ryan: Atlas zero-cost rule. "Build Atlas to be ready for customers, but do not make me pay for software that no customer currently needs."** Full plan and his words: [[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]].
+  - Nobody asks Ryan to sign up for Xero, QuickBooks, payroll, Shopify, an outside CRM or other tools to test. Free developer accounts are allowed only when a real client needs them, and Zaphiel says first whether a card or a paid plan is involved.
+  - **This replaces decision 6 of 2026-10-10** (Ryan opens free developer accounts one at a time, starting with Xero). The Xero step is withdrawn. The Meta verification "right after Xero" waits for a real client too.
+  - Connectors are built from official documentation plus mock tests and labelled DOCUMENTED / CODE IMPLEMENTED / MOCK TESTED / SANDBOX TESTED / REAL ACCOUNT TESTED / PRODUCTION READY. Mock tests are never "production ready".
+  - The client connects their own accounts and pays their own subscriptions. FusionTech's own costs appear only when the first client goes live, and Ryan sees the figure before anything is bought.
+  - Atlas's own CRM must cover a small company without Xero: sales per salesperson, targets, KPI, ROI, vouchers and packages, daily sales, and a simple money book.
+  - HR Part 5 no longer waits for a payroll provider. A generic payroll export (spreadsheet) comes first.

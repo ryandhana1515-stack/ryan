@@ -115,11 +115,17 @@ return [{ json: {
   provider: fin.provider, model, fallback_used: fin.fallback_used, fallback_reason: fin.fallback_reason, guardrails: fin.guardrails, brain_source: pre.brain_source,
   row_exists: pre.row_exists, created_at: pre.created_at, updated_at: now, discovery_complete: fin.discovery_complete,
   reply: fin.turn.reply, output: fin.turn.reply + '\\n\\n— discovery' + meta,
+  // Joined to ATLAS (Phase A step 2, 2026-10-10): a complete discovery is handed to ATLAS, which designs and builds the test system.
+  atlas_handoff: fin.discovery_complete ? dsAtlasHandoff(fin.map, conversation, { tenant_id: ctx.tenant_id, map_id: ctx.map_id, contact_name: pre.contact_name, coverage: fin.coverage, test_mode: ctx.test_mode, notify_email: ${j(NOTIFY)}, execution_id: $execution.id }) : null,
   task: fin.discovery_complete ? { task_id: 'task_proposal_' + ctx.map_id.replace(/[^a-z0-9_]/gi, '').slice(0, 60), title: 'REVIEW: proposal draft for ' + (companyName || ctx.map_id), description: 'Discovery complete (' + Math.round(fin.coverage * 100) + '%). Company Map + proposal draft (no pricing) in ' + vaultPath + '. Review, price and approve before anything is sent.' } : null,
   run_id: 'run_' + Date.now().toString(36) + Math.floor(Math.random() * 0xffffff).toString(36), started_at: ctx.started_at, finished_at: now, latency_ms: Math.max(0, new Date(now).getTime() - new Date(ctx.started_at).getTime())
 } }];
 `;
 
+const ATLAS_ID = (TABLES_JSON.workflows || {}).atlas || 'REPLACE_ME';
+const H = "$('Finalize Discovery Turn').first().json.atlas_handoff";
+const atlasCols = [['tenant_id','string'],['lead_id','string'],['contact_name','string'],['company_name','string'],['industry','string'],['email','string'],['phone','string'],['channel','string'],['message','string'],['conversation_json','string'],['sales_summary','string'],['extracted_json','string'],['test_mode','boolean'],['notify_email','string'],['source_execution_id','string']];
+const atlasValues = '{ ' + atlasCols.map(([k]) => k + ': expr(' + j('{{ ' + H + '.' + k + ' }}') + ')').join(', ') + ' }';
 const col = (id, type) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, type, canBeUsedToMatch: true });
 const schemaFor = (cols) => cols.map(([id, type]) => col(id, type));
 const table = (name) => ({ __rl: true, mode: 'id', value: TABLES[name].id, cachedResultName: name });
@@ -297,6 +303,26 @@ const emailOwner = node({
   output: [{ id: 'gmail_x' }]
 });
 
+const toAtlas = node({
+  type: 'n8n-nodes-base.executeWorkflow',
+  version: 1.3,
+  config: {
+    name: 'Hand Off to ATLAS',
+    executeOnce: true, onError: 'continueRegularOutput',
+    parameters: {
+      mode: 'once', source: 'database',
+      workflowId: { __rl: true, mode: 'id', value: ${j(ATLAS_ID)}, cachedResultName: 'CEO Brain — ATLAS (EDG & CRM Systems Architect)' },
+      workflowInputs: { mappingMode: 'defineBelow', value: ${atlasValues},
+        matchingColumns: [], schema: ${j(atlasCols.map(([id, type]) => ({ id, displayName: id, required: false, defaultMatch: false, display: true, canBeUsedToMatch: true, type })))}, attemptToConvertTypes: false, convertFieldsToString: true },
+      options: { waitForSubWorkflow: false }
+    },
+    position: [3360, 140]
+  },
+  output: [{}]
+});
+
+const atlasReady = ifElse({ version: 2.3, config: { name: 'Company Named for ATLAS?', parameters: { conditions: { options: { caseSensitive: true, leftValue: '', typeValidation: 'loose', version: 2 }, conditions: [{ id: 'h', leftValue: expr(${j('{{ !!' + H + ' }}')}), rightValue: true, operator: { type: 'boolean', operation: 'true', singleValue: true } }], combinator: 'and' } }, position: [3360, 300] } });
+
 const reply = node({
   type: 'n8n-nodes-base.code',
   version: 2,
@@ -304,7 +330,7 @@ const reply = node({
   output: [{ output: 'Thanks…' }]
 });
 
-const note = sticky(${j('## CEO Brain — Discovery Console (Company Discovery & Onboarding Agent)\nHosted chat where a business owner talks to the discovery consultant. Every turn: load the Company Map so far (ceo_company_maps) → brain + discovery playbook live from the vault → Claude → validate, merge, guardrails, rules fallback → save map + agent run → write the Client Digital Company Map note into the vault (Discovery/; tests under Discovery/Test) → when complete: proposal DRAFT (no pricing) + review task + email Ryan → reply.\n\nSource of truth: ryan/ceo-brain/workflows/discovery-console/build.js. Do not hand-edit Code nodes.')}, [chat, context, loadMap, loadBrain, loadPlaybook], { color: 4 });
+const note = sticky(${j('## CEO Brain — Discovery Console (Company Discovery & Onboarding Agent)\nHosted chat where a business owner talks to the discovery consultant. Every turn: load the Company Map so far (ceo_company_maps) → brain + discovery playbook live from the vault → Claude → validate, merge, guardrails, rules fallback → save map + agent run → write the Client Digital Company Map note into the vault (Discovery/; tests under Discovery/Test) → when complete: proposal DRAFT (no pricing) + review task + email Ryan → the Company Map goes to ATLAS (design + automatic test build, Phase A step 2) → reply. Paste a client\'s brief here to start a client without WhatsApp.\n\nSource of truth: ryan/ceo-brain/workflows/discovery-console/build.js. Do not hand-edit Code nodes.')}, [chat, context, loadMap, loadBrain, loadPlaybook], { color: 4 });
 
 export default workflow('ceo-brain-discovery-console', 'CEO Brain — Discovery Console')
   .add(chat)
@@ -323,7 +349,7 @@ export default workflow('ceo-brain-discovery-console', 'CEO Brain — Discovery 
     .onTrue(editNote.to(isComplete))
     .onFalse(createNote.to(isComplete)))
   .add(isComplete
-    .onTrue(proposalTask.to(emailOwner).to(reply))
+    .onTrue(proposalTask.to(emailOwner).to(atlasReady.onTrue(toAtlas.to(reply)).onFalse(reply)))
     .onFalse(reply))
   .add(note);
 `;

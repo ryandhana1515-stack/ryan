@@ -111,7 +111,29 @@ function atQuestions(input) {
     uses_whatsapp: ex.uses_whatsapp !== true && ex.uses_whatsapp !== false, sales: true, company_size: ex.company_size === null || ex.company_size === undefined,
     accounting_or_erp: !atArr(ex.accounting_or_erp).length, reporting: true, problem: !atStr(ex.problem)
   };
-  return AT_QUESTION_BANK.filter(function (q) { return missing[q[0]]; }).map(function (q) { return q[1]; }).slice(0, 8);
+  var said = atSaid(input);
+  return AT_QUESTION_BANK.filter(function (q) { return missing[q[0]]; }).map(function (q) { return q[1]; })
+    .filter(function (q) { return !atAlreadyAnswered(q, said); }).slice(0, 8);
+}
+// Never ask what the customer already told us (Ryan, 2026-09-29: "they asked me for the website link, I already gave
+// them"): a question is skipped when the customer's messages already answer its topic.
+var AT_ANSWERED = [
+  [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
+  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us|technicians?|techs|sales\s*(people|staff|team|reps|guys)?|salespeople|agents|consultants|designers|installers|cleaners|therapists|stylists|tutors|teachers)\b/i],
+  // Phase A step 2 (2026-10-10): a pasted brief often answers several of ATLAS's questions at once.
+  [/\baccounting\b|\binvoicing software\b/i, /\b(xero|quickbooks|myob|sage|zoho books|autocount|sql account|wave accounting|freshbooks)\b|\bno accounting (software|system)\b/i],
+  [/\bkeep track of customers\b|\bwhich system do you use\b/i, /\b(excel|google sheets?|spreadsheets?|hubspot|salesforce|zoho crm|pipedrive|notion|monday\.com|airtable|odoo|a notebook|pen and paper)\b|\bcrm\b/i],
+  [/\bwhatsapp business\b|\bnormal whatsapp\b/i, /\bwhatsapp business\b|\brespond\.io\b|\bwati\b|\bwhatsapp api\b|\bnormal whatsapp\b|\bpersonal whatsapp\b/i],
+  [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
+];
+function atAlreadyAnswered(q, history) {
+  var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
+  return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
+}
+/** Everything the customer said (their messages, their latest message or pasted brief), as a history for atAlreadyAnswered. */
+function atSaid(input) {
+  var conv = (Array.isArray(input.conversation) ? input.conversation : []).filter(function (m) { return m && m.role !== 'agent'; });
+  return conv.concat(input.message ? [{ role: 'customer', content: input.message }] : []);
 }
 
 function atMermaidLabel(s) { return String(s || '').replace(/["[\]{}()<>|]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60) || 'UNKNOWN'; }
@@ -173,6 +195,8 @@ function atCoerce(o, input) {
   o = (o && typeof o === 'object') ? o : {};
   var md = function (v, d) { return typeof v === 'string' && v.trim().length > 20 ? v.trim().slice(0, 20000) : d; };
   var qs = Array.isArray(o.questions_open) ? o.questions_open.map(function (q) { return atStr(q, 300); }).filter(Boolean).slice(0, 10) : [];
+  var said = atSaid(input);
+  qs = qs.filter(function (q) { return !atAlreadyAnswered(q, said); });
   if (!qs.length) qs = fb.questions_open;
   return {
     company_model: (o.company_model && typeof o.company_model === 'object') ? o.company_model : fb.company_model,
@@ -390,6 +414,68 @@ function atFinalize(opts) {
   };
 }
 
+// ---- Update rounds (Atlas Phase A step 2, Ryan "go" 2026-10-10) ----
+// After the first design, every new customer message (an answer to ATLAS's questions, or a pasted brief) refreshes the
+// build plan from John's facts. The new plan is merged with the saved one so nothing the customer said earlier is lost
+// when it drops out of the recent conversation; if the plan changed, it is saved in the vault and the EDG platform
+// applies the safe part to the client's test system (it only ever adds). No AI call: the plan is built by rules.
+var AT_BOOL_MODULES = ['lead_capture', 'follow_ups', 'whatsapp', 'quotes', 'invoices', 'appointments', 'ceo_brief', 'stock', 'hr'];
+function atSpecKey(spec) {
+  if (!spec || typeof spec !== 'object') return '';
+  var c = JSON.parse(JSON.stringify(spec)); delete c.generated_at; delete c.generated_by;
+  return JSON.stringify(c);
+}
+function atUnionBy(a, b, key) {
+  var out = (Array.isArray(a) ? a : []).slice(); var seen = {};
+  out.forEach(function (x) { seen[String(key(x)).toLowerCase()] = true; });
+  (Array.isArray(b) ? b : []).forEach(function (x) { var k = String(key(x)).toLowerCase(); if (!seen[k]) { seen[k] = true; out.push(x); } });
+  return out;
+}
+/** New plan + saved plan: modules stay on, a known accounting/calendar system is kept, the customer's own team size wins
+ *  over a placeholder, services/products/AI team are unions. The company (name, slug) never changes after the first design. */
+function atMergeSpec(prev, next) {
+  if (!prev || typeof prev !== 'object' || !prev.modules || !prev.company) return next;
+  var out = JSON.parse(JSON.stringify(next));
+  out.company = prev.company;
+  out.source = Object.assign({}, next.source || {}, { design_path: (prev.source && prev.source.design_path) || (next.source && next.source.design_path) });
+  var pm = prev.modules, nm = next.modules || {};
+  AT_BOOL_MODULES.forEach(function (k) { if (pm[k] === true) out.modules[k] = true; });
+  ['accounting', 'calendar'].forEach(function (k) { if ((!nm[k] || nm[k] === 'unknown') && pm[k] && pm[k] !== 'unknown') out.modules[k] = pm[k]; });
+  out.why = Object.assign({}, prev.why || {}, next.why || {});
+  Object.keys(prev.why || {}).forEach(function (k) { if (out.why[k] === 'not mentioned' && prev.why[k] !== 'not mentioned') out.why[k] = prev.why[k]; });
+  var nTeam = String((next.why || {}).team || ''), pTeam = String((prev.why || {}).team || '');
+  if (!/^CLIENT-PROVIDED/.test(nTeam) && /^CLIENT-PROVIDED/.test(pTeam)) { out.team = prev.team; out.why.team = pTeam; }
+  if (out.modules.appointments) out.services = atUnionBy(next.services, prev.services, function (x) { return x && x.name; }).slice(0, 20);
+  out.catalog = atUnionBy(next.catalog, prev.catalog, function (x) { return x && x.sku; }).slice(0, 100);
+  out.agents = atUnionBy(next.agents, prev.agents, function (x) { return x && x.key; }).slice(0, 5);
+  out.automations = atUnionBy(next.automations, prev.automations, function (x) { return x && x.key; }).slice(0, 30);
+  out.knowledge = atUnionBy(next.knowledge, prev.knowledge, function (x) { return x && x.title; }).slice(0, 50);
+  out.problems = atUnionBy(next.problems, prev.problems, function (x) { return x && x.problem; }).slice(0, 15);
+  // Still to get from the client: the new list plus older items that still apply (an answered accounting question drops out).
+  var known = out.modules.accounting && out.modules.accounting !== 'unknown';
+  out.to_confirm = atUnionBy(next.to_confirm, prev.to_confirm, function (x) { return x; }).filter(function (t) { return !(known && /accounting software/i.test(t)); }).slice(0, 30);
+  return out;
+}
+/** One update round: the saved plan (raw JSON text from the vault) + John's latest facts → whether to save a new plan. */
+function atUpdateRound(opts) {
+  opts = opts || {};
+  var input = opts.input || {};
+  var prev = null;
+  try { prev = opts.prev_text ? JSON.parse(opts.prev_text) : null; } catch (e) { prev = null; }
+  var basePath = atStr(opts.base_path, 300) || input.base_path;
+  var useInput = Object.assign({}, input, { base_path: basePath });
+  var merged = atMergeSpec(prev, atEdgSpec(useInput));
+  var changed = !prev || atSpecKey(merged) !== atSpecKey(prev);
+  var name = (merged.company && merged.company.name) || input.company_name || input.lead_id;
+  return {
+    changed: changed, reason: !prev ? 'no saved plan could be read' : changed ? 'new facts from the customer' : 'nothing new',
+    path: basePath + '16_edg_spec.json', content: JSON.stringify(merged, null, 2) + '\n', base_path: basePath,
+    commit: 'vault: ATLAS updated the plan for ' + name + ' (customer answers)', company_name: name, slug: merged.company && merged.company.slug,
+    modules: merged.modules, team: merged.team, to_confirm: merged.to_confirm
+  };
+}
+function atUpdateUrl() { return AT_EDG_URL + '/atlas/update'; }
+
 // ---- John-side helpers (inlined into Lead Intake only, not into the ATLAS workflow) ----
 /** John asks ATLAS's questions himself (Ryan, 2026-09-26). Reads the questions from ATLAS's edg_design task rows and
  *  returns the first one John has not asked yet in this conversation, skipping anything a reply guardrail would block. */
@@ -419,17 +505,6 @@ function atIsAtlasQuestion(q, rows) {
 }
 /** How John hands the chat to ATLAS for one question (Ryan, 2026-09-27: "Atlas can talk and then John also can talk"). */
 var AT_VOICE = 'ATLAS, our systems architect, would like to know: ';
-// Never ask what the customer already told us (Ryan, 2026-09-29: "they asked me for the website link, I already gave
-// them"): a question is skipped when the customer's messages already answer its topic.
-var AT_ANSWERED = [
-  [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
-  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us)\b/i],
-  [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
-];
-function atAlreadyAnswered(q, history) {
-  var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
-  return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
-}
 /** True when an earlier agent message already asked nearly the same question (Ryan, 2026-09-29: no repeated questions). */
 function atAskedBefore(q, history) {
   var words = function (t) { return String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 3; }); };
@@ -488,4 +563,4 @@ function atDemoMessage(input, build) {
 
 // ---- Node module wrapper (stripped when inlined into n8n) ----
 
-if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atSystemsWanted: atSystemsWanted, atDeclinedSystems: atDeclinedSystems, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atAskedBefore: atAskedBefore, atOneQuestion: atOneQuestion, atEdgSpec: atEdgSpec, atAiTeam: atAiTeam, atBuildUrl: atBuildUrl, atAutoBuildUrl: atAutoBuildUrl, atDemoMessage: atDemoMessage, atIndustryKey: atIndustryKey, AT_EDG_URL: AT_EDG_URL };
+if (typeof module !== 'undefined') module.exports = { AT_VERSION: AT_VERSION, AT_LABELS: AT_LABELS, atSlug: atSlug, atNeeded: atNeeded, atSystemsWanted: atSystemsWanted, atDeclinedSystems: atDeclinedSystems, atInput: atInput, atCompanyModel: atCompanyModel, atQuestions: atQuestions, atFallbackPack: atFallbackPack, atParseJson: atParseJson, atCoerce: atCoerce, atFiles: atFiles, atFinalize: atFinalize, atQuestionsFromRows: atQuestionsFromRows, atNextQuestion, atIsAtlasQuestion, AT_VOICE: AT_VOICE, atAlreadyAnswered: atAlreadyAnswered, atAskedBefore: atAskedBefore, atOneQuestion: atOneQuestion, atEdgSpec: atEdgSpec, atAiTeam: atAiTeam, atBuildUrl: atBuildUrl, atAutoBuildUrl: atAutoBuildUrl, atDemoMessage: atDemoMessage, atIndustryKey: atIndustryKey, AT_EDG_URL: AT_EDG_URL, atMergeSpec: atMergeSpec, atUpdateRound: atUpdateRound, atSpecKey: atSpecKey, atUpdateUrl: atUpdateUrl };

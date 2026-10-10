@@ -97,7 +97,26 @@ function atQuestions(input) {
     uses_whatsapp: ex.uses_whatsapp !== true && ex.uses_whatsapp !== false, sales: true, company_size: ex.company_size === null || ex.company_size === undefined,
     accounting_or_erp: !atArr(ex.accounting_or_erp).length, reporting: true, problem: !atStr(ex.problem)
   };
-  return AT_QUESTION_BANK.filter(function (q) { return missing[q[0]]; }).map(function (q) { return q[1]; }).slice(0, 8);
+  var said = atSaid(input);
+  return AT_QUESTION_BANK.filter(function (q) { return missing[q[0]]; }).map(function (q) { return q[1]; })
+    .filter(function (q) { return !atAlreadyAnswered(q, said); }).slice(0, 8);
+}
+var AT_ANSWERED = [
+  [/\b(web ?site|url|link|domain)\b/i, /(https?:\/\/|www\.|\b[a-z0-9][a-z0-9-]*\.(com|sg|net|org|co|biz|info|io|my)\b)/i],
+  [/\bhow many (staff|people|employees)|\bteam size|\bstaff\b/i, /\b\d+\s*(staff|people|employees|workers|of us|technicians?|techs|sales\s*(people|staff|team|reps|guys)?|salespeople|agents|consultants|designers|installers|cleaners|therapists|stylists|tutors|teachers)\b/i],
+  [/\baccounting\b|\binvoicing software\b/i, /\b(xero|quickbooks|myob|sage|zoho books|autocount|sql account|wave accounting|freshbooks)\b|\bno accounting (software|system)\b/i],
+  [/\bkeep track of customers\b|\bwhich system do you use\b/i, /\b(excel|google sheets?|spreadsheets?|hubspot|salesforce|zoho crm|pipedrive|notion|monday\.com|airtable|odoo|a notebook|pen and paper)\b|\bcrm\b/i],
+  [/\bwhatsapp business\b|\bnormal whatsapp\b/i, /\bwhatsapp business\b|\brespond\.io\b|\bwati\b|\bwhatsapp api\b|\bnormal whatsapp\b|\bpersonal whatsapp\b/i],
+  [/\b(branch|branches|outlets?|locations?)\b/i, /\b(\d+|two|three|four|five)\s+(branch|branches|outlets?|locations?|clinics?|shops?|stores?)\b|\bbranch(es)?\b.*\band\b/i]
+];
+function atAlreadyAnswered(q, history) {
+  var said = (Array.isArray(history) ? history : []).filter(function (m) { return m && m.role !== 'agent'; }).map(function (m) { return String(m.content || ''); }).join('\n');
+  return AT_ANSWERED.some(function (p) { return p[0].test(q) && p[1].test(said); });
+}
+/** Everything the customer said (their messages, their latest message or pasted brief), as a history for atAlreadyAnswered. */
+function atSaid(input) {
+  var conv = (Array.isArray(input.conversation) ? input.conversation : []).filter(function (m) { return m && m.role !== 'agent'; });
+  return conv.concat(input.message ? [{ role: 'customer', content: input.message }] : []);
 }
 function atMermaidLabel(s) { return String(s || '').replace(/["[\]{}()<>|]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60) || 'UNKNOWN'; }
 function atCurrentStateMd(input) {
@@ -155,6 +174,8 @@ function atCoerce(o, input) {
   o = (o && typeof o === 'object') ? o : {};
   var md = function (v, d) { return typeof v === 'string' && v.trim().length > 20 ? v.trim().slice(0, 20000) : d; };
   var qs = Array.isArray(o.questions_open) ? o.questions_open.map(function (q) { return atStr(q, 300); }).filter(Boolean).slice(0, 10) : [];
+  var said = atSaid(input);
+  qs = qs.filter(function (q) { return !atAlreadyAnswered(q, said); });
   if (!qs.length) qs = fb.questions_open;
   return {
     company_model: (o.company_model && typeof o.company_model === 'object') ? o.company_model : fb.company_model,
