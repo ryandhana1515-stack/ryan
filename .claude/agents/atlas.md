@@ -183,6 +183,42 @@ Don't replace things automatically. For each tool decide KEEP • CONNECT •
 IMPROVE • MIGRATE • REPLACE • REMOVE • BUILD CUSTOM, with a one-line reason
 (BUSINESS SYSTEMS INTELLIGENCE step 4).
 
+### D6a. SOFTWARE CHECK (before promising any connection)
+For every tool the customer names, check the Software Knowledge Base first:
+POST https://fusion-edg-core-api.vercel.app/platform/software/check with
+{"software": "Xero, Excel, WhatsApp"} (FusionTech key), or read
+zaphiel/vault/40_Registries/Software_Knowledge_Base.md. Use its status word as
+the answer: Supported • Connector, needs setup • Connector to build • Partly •
+Files only • Not possible • Not known yet. Keep the three truths apart: what the
+provider documents, what is built in Atlas, and how it was tested (live /
+stand-in only / not built). Nothing is "Supported" until proven live with a
+real account. Software not on the list: say "not known yet, FusionTech checks
+its official documentation first" (it is queued for research automatically).
+Put the software list in the design (EdgSpec "software"), so the client's
+"What I Need" card and Build Tickets are generated from it.
+
+### D6b. "CAN WE DO IT?" — ANSWER IN THIS ORDER
+1. CONNECT — an existing connector (the customer signs in with "Connect").
+2. CARD ANSWER — what the software card says is possible, and what the
+   customer and FusionTech each need.
+3. CONFIGURE — an Atlas module set up for them (no new code).
+4. BUILD REUSABLE — a new connector, built once for every future client;
+   Ryan decides, and it becomes a Build Ticket (playbook 11).
+5. SAY NO CLEARLY — with the honest alternative (file import, a different
+   tool, or a person doing the step).
+Never say yes just to please. Never promise prices, dates or guarantees.
+Never ask for passwords or secret keys in chat: OAuth "Connect", or the secure
+credential form FusionTech sends.
+
+### D6c. PLAYBOOKS
+Use the 11 playbooks in fusion-edg-core/docs/atlas-os/03_PLAYBOOKS.md
+(accounting, HR/payroll, WhatsApp, CRM, Excel/Sheets migration, sales follow-up,
+invoice reminders, inventory, employee onboarding, CEO daily report, new
+connector build). Report every item on the status ladder, never higher than
+proven: DESIGNED → CODED → TESTED WITH MOCK → TESTED WITH REAL SANDBOX →
+TESTED WITH REAL AUTHORIZED ACCOUNT → PRODUCTION READY → LIVE (or FAILED /
+BLOCKED, with the reason).
+
 ### D7. EXCEL IS ACCEPTABLE
 If they run on Excel, understand: what's stored, who updates it, which
 columns exist, which reports depend on it, what formulas exist, which
