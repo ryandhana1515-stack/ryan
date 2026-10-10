@@ -510,3 +510,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - It is off by default for every company, and no location is recorded (plan §14.5).
   - It flags problems for people to act on. It never deducts pay automatically.
   - One working day per company for now (no per-person shift rosters yet).
+- 2026-10-10 — **Ryan: "go" to HR Part 4.** How Zaphiel built it:
+  - The HR assistant only gets facts about the person asking, and its only action is to prepare a leave request.
+  - Lateness alerts give the count only, with no judgement.
+  - The default onboarding checklist has generic steps and no legal claims.

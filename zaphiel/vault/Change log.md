@@ -766,3 +766,24 @@ tags: [zaphiel, changelog]
   - **Timesheets:** on screen, or as a download for payroll or the accountant.
   - **Job cards:** optionally, job cards count as attendance on days without a clock-in.
   - **Never changed:** clock records can't be edited, and nothing is deducted from pay.
+- 2026-10-10 — **HR Part 4: the owner's HR view and people care built** (Ryan "go"; Fusion EDG Core PR #51; migration 042 on the test system; tests 352/352).
+  - **"People today" card** on Home (owner) and the HR page. It shows:
+    - headcount;
+    - who is in, late or not in yet;
+    - who is on leave;
+    - decisions waiting;
+    - expiries;
+    - overdue onboarding;
+    - understaffed days ahead;
+    - repeated lateness (the count only).
+  - **Morning brief:** a new PEOPLE section, taken from the data only: who is off, what expires this week, yesterday's attendance problems.
+  - **Onboarding checklists:** HR starts one for each new joiner from a standard list (editable). Each step is ticked by its owner: the employee, their manager or HR.
+  - **Training records:** with expiry reminders at 60, 30 and 7 days, like documents and passes.
+  - **Alerts, each sent once:**
+    - repeated lateness;
+    - a booking during approved leave;
+    - overdue onboarding steps.
+  - **HR assistant** in My HR:
+    - It answers each person about their own leave, the rules, their expiry dates and their attendance only.
+    - It can prepare a leave request; the person presses Send themselves.
+    - It never sees pay, identity numbers, medical details or anyone else.
