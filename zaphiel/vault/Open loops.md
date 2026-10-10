@@ -253,3 +253,16 @@ tags: [zaphiel, open-loops]
   - **Ryan, OK needed:** the small `atlas.md` addition "SOFTWARE CHECK", so ATLAS uses the Software Knowledge Base before promising any connection. Shown to Ryan 2026-10-10.
   - **Next build:** Phase A step 2, the Client Discovery + Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
   - **Developer accounts after Xero:** Meta (verification) → Google Cloud → Microsoft Entra → Shopify Partners → Intuit (ask about Singapore first) → Zoho → HubSpot → Employment Hero → TikTok. The status of each is kept in `app.developer_accounts` (Master Control → Software).
+- 2026-10-10 — **Atlas Execution & Knowledge Upgrade: waiting for Ryan's approval** (report page sent).
+  - **Plan items (docs/atlas-os/05):**
+    - **P1** client implementation record: "What I Need" card, Build Ticket, pipeline stage;
+    - **P2** owner pipeline page with alerts to Ryan;
+    - **P3** secure credential form;
+    - **P4** quotation drafts from Ryan's price list;
+    - **P5** card fields v2 (regions, n8n, unified API, gotchas);
+    - **P6** atlas.md rules (SOFTWARE CHECK + "Can we do it?" order + playbooks; Ryan sees the text first);
+    - **P7** Excel import + Xero Demo Company proof;
+    - **P8** white-label design only.
+  - **Recommended order:** P5+P6 → P1 → P2 → P3 → P4 → P7.
+  - **White-label rules** (one FusionTech app per provider, no per-agency clones for Xero/Shopify/HubSpot, n8n hidden) are recorded in docs/atlas-os/06. A lawyer should review the reseller agreement.
+  - **Still waiting:** Xero developer account step 1 (Ryan).

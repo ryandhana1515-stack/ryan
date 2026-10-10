@@ -701,3 +701,9 @@ tags: [zaphiel, changelog]
     - An API for ATLAS.
     - A checklist of FusionTech's developer accounts.
   - **Tests:** 304/304 (12 new).
+- 2026-10-10 — **Atlas Execution & Knowledge Upgrade, safe part** (Fusion EDG Core PR #42; nothing architectural changed).
+  - **Knowledge base:** 70 programs, up from 39. 45 are fully verified; 34 items are marked unconfirmed. See [[40_Registries/Software_Knowledge_Base]].
+  - **New areas:** marketplaces (Lazada, Shopee), POS, payments (Stripe, HitPay, PayNow), booking (Calendly, Fresha, Vagaro, Mindbody, Zenoti…), clinics (Plato, ClinicAssist), Singapore HR (HReasily, Payboy), Deel, GoHighLevel, monday CRM, Wati, Twilio, Telegram.
+  - **4 FAKE demo clients built on the test system** (renovation, property team, salon, retailer): 26 steps work, 12 wait for client details, 0 fail.
+  - **Forge** = the automatic builder plus Claude Code sessions. No new agent.
+  - **Also written:** 11 playbooks and a white-label readiness assessment, in docs/atlas-os 03–07.
