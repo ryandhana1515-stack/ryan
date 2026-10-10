@@ -14,6 +14,14 @@ function waMessageFrom(wa, transcript) {
   };
 }
 function waIsNewChat(text) { return WA_NEW_CHAT_RE.test(String(text || '')); }
+/** Meta can deliver the same WhatsApp message twice (a retry, a slow answer). True when this message id was already
+ *  handled, so John never answers one message twice (Atlas Phase A step 2, 2026-10-10). A message without an id is never
+ *  treated as seen: it is answered rather than dropped. `rows` are the ceo_seen_messages rows found for that id. */
+function waSeenBefore(waMessageId, rows) {
+  var id = String(waMessageId || '').trim();
+  if (!id) return false;
+  return (rows || []).some(function (r) { return r && String(r.wa_message_id || '') === id; });
+}
 /** The ceo_leads row that starts a fresh conversation on this number: new lead_key and lead_id, status NEW. */
 function waNewChatLead(o) {
   o = o || {};

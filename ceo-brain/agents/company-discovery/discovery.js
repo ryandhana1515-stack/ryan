@@ -345,4 +345,45 @@ function dsRenderMapNote(ctx) {
   return lines.join('\n\n') + '\n';
 }
 
-module.exports = { DS_VERSION, DS_TOPICS, DS_QUESTIONS, DS_MODULES, DS_AGENTS, DS_COMPLETE_AT, DS_MIN_TURNS, dsRecordAnswer, dsEmptyMap, dsCoerceMap, dsMergeMap, dsTopicStatus, dsNextTopics, dsExtractPatch, dsFallbackTurn, dsCoerceTurn, dsValidateTurn, dsParseJson, finalizeDiscoveryTurn, dsRenderMapNote };
+/** The Discovery Console joined to ATLAS (Atlas Phase A step 2, Ryan "go" 2026-10-10). When a discovery is complete
+ *  (Ryan or an owner talked it through, or pasted a brief), the Company Map is handed to ATLAS in the same shape John uses,
+ *  so ATLAS designs and builds the client's test system. One schema: ATLAS reads the map's facts, nothing is re-asked.
+ *  Returns null when there is no company name (ATLAS needs one). Channel 'console': nobody is messaged automatically. */
+function dsAtlasHandoff(map, conversation, ctx) {
+  map = dsCoerceMap(map); ctx = ctx || {};
+  var cp = map.company_profile, fi = map.finance_process, sp = map.sales_process;
+  var company = cp.company_name || cp.brand_name;
+  if (!company) return null;
+  var owner = (Array.isArray(conversation) ? conversation : []).filter(function (m) { return m && m.role !== 'agent'; });
+  var sw = map.current_software.map(function (x) { return x.name; });
+  var acc = map.current_software.filter(function (x) { return x.category === 'accounting' || x.category === 'erp'; }).map(function (x) { return x.name; });
+  if (fi.accounting_software && acc.indexOf(fi.accounting_software) === -1) acc.push(fi.accounting_software);
+  var wants = map.automation.wish_automatic.concat(map.automation_opportunities).slice(0, 15);
+  var facts = [
+    'Company: ' + company + (cp.industry ? ' (' + cp.industry + ')' : ''),
+    cp.employees ? 'Team: ' + cp.employees + ' people' + (map.people_roles.roles.length ? ' (' + map.people_roles.roles.join(', ') + ')' : '') : '',
+    sw.length ? 'Software today: ' + sw.join(', ') : '',
+    map.communication_channels.length ? 'Customers reach them on: ' + map.communication_channels.join(', ') : '',
+    sp.lead_sources.length ? 'Leads come from: ' + sp.lead_sources.join(', ') : '',
+    sp.quotation_process ? 'Quotations: ' + sp.quotation_process : '',
+    map.operations_process.work_intake ? 'How work comes in: ' + map.operations_process.work_intake : '',
+    map.pain_points.length ? 'Problems: ' + map.pain_points.join('; ') : '',
+    wants.length ? 'They want automated: ' + wants.join('; ') : '',
+    cp.services.length ? 'Services: ' + cp.services.join(', ') : ''
+  ].filter(Boolean).join('\n');
+  var extracted = {
+    company_name: company, industry: cp.industry, company_size: cp.employees, current_tools: sw, accounting_or_erp: acc, lead_sources: sp.lead_sources,
+    problem: map.pain_points.join('; ') || null, current_follow_up_process: [sp.follow_up_owner, sp.follow_up_count].filter(Boolean).join(', ') || null,
+    desired_automation: wants, uses_whatsapp: map.communication_channels.some(function (c) { return /^whatsapp/.test(c); }) ? true : null
+  };
+  return {
+    tenant_id: ctx.tenant_id || 'fusiontech', lead_id: 'disc_' + String(ctx.map_id || '').replace(/[^a-z0-9_]/gi, '').slice(0, 60), contact_name: ctx.contact_name || '',
+    company_name: company, industry: cp.industry || '', email: '', phone: '', channel: 'console',
+    message: facts.slice(0, 4000),
+    conversation_json: JSON.stringify(owner.slice(-30).map(function (m) { return { role: 'customer', content: String(m.content || '').slice(0, 2000) }; })),
+    sales_summary: 'From the Discovery Console (Company Map ' + (ctx.map_id || '') + ', ' + Math.round((ctx.coverage || 0) * 100) + '% mapped).',
+    extracted_json: JSON.stringify(extracted), test_mode: !!ctx.test_mode, notify_email: ctx.notify_email || '', source_execution_id: String(ctx.execution_id || '')
+  };
+}
+
+module.exports = { DS_VERSION, DS_TOPICS, DS_QUESTIONS, DS_MODULES, DS_AGENTS, DS_COMPLETE_AT, DS_MIN_TURNS, dsRecordAnswer, dsEmptyMap, dsCoerceMap, dsMergeMap, dsTopicStatus, dsNextTopics, dsExtractPatch, dsFallbackTurn, dsCoerceTurn, dsValidateTurn, dsParseJson, finalizeDiscoveryTurn, dsRenderMapNote, dsAtlasHandoff };

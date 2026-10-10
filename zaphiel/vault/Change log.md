@@ -787,3 +787,18 @@ tags: [zaphiel, changelog]
     - It answers each person about their own leave, the rules, their expiry dates and their attendance only.
     - It can prepare a leave request; the person presses Send themselves.
     - It never sees pay, identity numbers, medical details or anyone else.
+- 2026-10-10 — **Atlas Phase A2 (John → Atlas joined), platform part live on the test system.** Fusion EDG Core PR #52 is merged and migration 043 is applied on staging.
+  - **What changed:** after the first design, the customer's later answers (through John, or a brief in the Discovery Console) update the plan, and `POST /atlas/update` applies the safe part to the client's test system.
+    - It switches modules on.
+    - It adds and renames team placeholders.
+    - It adds services, products (names only), stock, AI assistants, workflows and facts.
+    - It replaces "still to get from the client".
+    - It never removes anything; removals become notes for Ryan.
+  - **ryan repo:**
+    - ATLAS update rounds (rules only, merged plan, saved only when it changed);
+    - pasted-brief question filter;
+    - Discovery Console → Atlas hand-off (`dsAtlasHandoff`);
+    - WhatsApp duplicate guard (`waSeenBefore`, new data table `ceo_seen_messages` `kFY9ifNq10q7R1Xv`).
+  - **Tests:** platform 358/358, ceo-brain 143/143.
+  - **Deploy status:** the n8n deploy is in progress (see Open loops).
+- 2026-10-10 — **Ryan's zero-cost rule recorded** ([[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]]). The Xero sign-up request is withdrawn.

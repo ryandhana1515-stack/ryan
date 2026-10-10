@@ -1,62 +1,66 @@
 {
-  "$comment": "Interim data layer: n8n Data Tables (no credentials needed). Created 2026-09-24 in project uFcEmgtYEFyGauyy on https://ryan1515.app.n8n.cloud. The Postgres/Supabase migration in database/migrations is the long-term target; column names match. Phase 2 (2026-09-25) added the workflow id map below.",
-  "project_id": "uFcEmgtYEFyGauyy",
-  "tables": {
-    "ceo_leads": {
-      "id": "R78LlzNLIpVoy802",
-      "purpose": "One row per lead (contact + company + current status). Dedupe key = lead_key."
-    },
-    "ceo_messages": {
-      "id": "eImH5AdVZEOW0t31",
-      "purpose": "Every inbound message and every AI draft reply (direction inbound/outbound, status received/draft/draft_pending_approval/withheld/sent)."
-    },
-    "ceo_agent_runs": {
-      "id": "zoxuUjbgzs6iLIaU",
-      "purpose": "Observability: one row per agent invocation (agent, model, provider, input ref, output JSON, success, latency, execution id)."
-    },
-    "ceo_tasks": {
-      "id": "sPnRGXe4VYDJLJHr",
-      "purpose": "Follow-ups and approval requests for humans (requires_approval flag)."
-    },
-    "ceo_audit_logs": {
-      "id": "zjeuGe9AEgJS5MKg",
-      "purpose": "Status transitions and other state changes with actor + reason."
-    },
-    "ceo_company_maps": {
-      "id": "l02tcAaRNNYzCwBP",
-      "purpose": "One row per discovery conversation: the Client Digital Company Map (map_json), the conversation, coverage, status, proposal draft and the vault note path. Key = map_id (chat session)."
-    }
+ "$comment": "Interim data layer: n8n Data Tables (no credentials needed). Created 2026-09-24 in project uFcEmgtYEFyGauyy on https://ryan1515.app.n8n.cloud. The Postgres/Supabase migration in database/migrations is the long-term target; column names match. Phase 2 (2026-09-25) added the workflow id map below.",
+ "project_id": "uFcEmgtYEFyGauyy",
+ "tables": {
+  "ceo_leads": {
+   "id": "R78LlzNLIpVoy802",
+   "purpose": "One row per lead (contact + company + current status). Dedupe key = lead_key."
   },
-  "workflows": {
-    "lead_intake": "b7kbJpnKLN2uQxyn",
-    "outbound_sender": "SAcnNxG1GWPwn3N7",
-    "whatsapp_inbound": "3IhIJ5IYsB7wQQSg",
-    "approve_reply": "uQxHTTdEkazgKpRT",
-    "daily_brief": "Pew2PX1IcgdXqXr7",
-    "website_builder": "hSTRGnHVsu6tMOmH",
-    "john_chat_console": "ny60ozvH8B4uNpcb",
-    "website_build_record": "RVPBGpBzj2SUQlgX",
-    "vault_writer": "tVvSWjOubwBNLi88",
-    "trainer_api": "zKqlk05WShUOrojw",
-    "training_dashboard": "AM59goLdbt0clv8q",
-    "discovery_console": "9TnzsgPGRatMaQI3",
-    "website_chat": "FngKsJ2x0AaWOdJl",
-    "website_build_runner": "7sEuGyU6IjJsSaKL",
-    "ceo_orchestrator": "8Ix4yc223sxrSu5h",
-    "approval_inbox": "r4ynzcSqRy8zHoFl",
-    "website_intelligence": "5VWP3tMK3MZysi7w",
-    "atlas": "9XQWSgTBszRc0Jxj"
+  "ceo_messages": {
+   "id": "eImH5AdVZEOW0t31",
+   "purpose": "Every inbound message and every AI draft reply (direction inbound/outbound, status received/draft/draft_pending_approval/withheld/sent)."
   },
-  "github": {
-    "owner": "ryandhana1515-stack",
-    "repo": "ryan",
-    "credential_id": "lZqYskCh7zVfXsc7",
-    "credential_name": "GitHub account",
-    "$comment": "n8n GitHub OAuth credential used to read the Obsidian vault at run time and to write lead/company notes into it"
+  "ceo_seen_messages": {
+   "id": "kFY9ifNq10q7R1Xv",
+   "purpose": "WhatsApp message ids already handled (Meta can deliver the same message twice). WhatsApp Inbound stops at a seen id, so John never answers one message twice. Created 2026-10-10."
   },
-  "lovable": {
-    "workspace_id": "zjVuSnHzhPWFroVpa2KX",
-    "mcp_endpoint": "https://mcp.lovable.dev",
-    "$comment": "Ryan's Lovable workspace id (an identifier, not a secret). The OAuth credential lives only in n8n."
+  "ceo_agent_runs": {
+   "id": "zoxuUjbgzs6iLIaU",
+   "purpose": "Observability: one row per agent invocation (agent, model, provider, input ref, output JSON, success, latency, execution id)."
+  },
+  "ceo_tasks": {
+   "id": "sPnRGXe4VYDJLJHr",
+   "purpose": "Follow-ups and approval requests for humans (requires_approval flag)."
+  },
+  "ceo_audit_logs": {
+   "id": "zjeuGe9AEgJS5MKg",
+   "purpose": "Status transitions and other state changes with actor + reason."
+  },
+  "ceo_company_maps": {
+   "id": "l02tcAaRNNYzCwBP",
+   "purpose": "One row per discovery conversation: the Client Digital Company Map (map_json), the conversation, coverage, status, proposal draft and the vault note path. Key = map_id (chat session)."
   }
+ },
+ "workflows": {
+  "lead_intake": "b7kbJpnKLN2uQxyn",
+  "outbound_sender": "SAcnNxG1GWPwn3N7",
+  "whatsapp_inbound": "3IhIJ5IYsB7wQQSg",
+  "approve_reply": "uQxHTTdEkazgKpRT",
+  "daily_brief": "Pew2PX1IcgdXqXr7",
+  "website_builder": "hSTRGnHVsu6tMOmH",
+  "john_chat_console": "ny60ozvH8B4uNpcb",
+  "website_build_record": "RVPBGpBzj2SUQlgX",
+  "vault_writer": "tVvSWjOubwBNLi88",
+  "trainer_api": "zKqlk05WShUOrojw",
+  "training_dashboard": "AM59goLdbt0clv8q",
+  "discovery_console": "9TnzsgPGRatMaQI3",
+  "website_chat": "FngKsJ2x0AaWOdJl",
+  "website_build_runner": "7sEuGyU6IjJsSaKL",
+  "ceo_orchestrator": "8Ix4yc223sxrSu5h",
+  "approval_inbox": "r4ynzcSqRy8zHoFl",
+  "website_intelligence": "5VWP3tMK3MZysi7w",
+  "atlas": "9XQWSgTBszRc0Jxj"
+ },
+ "github": {
+  "owner": "ryandhana1515-stack",
+  "repo": "ryan",
+  "credential_id": "lZqYskCh7zVfXsc7",
+  "credential_name": "GitHub account",
+  "$comment": "n8n GitHub OAuth credential used to read the Obsidian vault at run time and to write lead/company notes into it"
+ },
+ "lovable": {
+  "workspace_id": "zjVuSnHzhPWFroVpa2KX",
+  "mcp_endpoint": "https://mcp.lovable.dev",
+  "$comment": "Ryan's Lovable workspace id (an identifier, not a secret). The OAuth credential lives only in n8n."
+ }
 }

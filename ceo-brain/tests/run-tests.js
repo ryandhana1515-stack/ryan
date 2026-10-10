@@ -1602,6 +1602,106 @@ test('ATLAS never tells an AI assistant something is free (it caused "a free plu
     assert.ok(!/\b(free|complimentary|no charge|discount)\b/i.test(JSON.stringify(spec.agents.concat(spec.automations))), key);
   }
 });
+console.log('\n[37] ATLAS update rounds: the customer\'s later answers reach the plan and the test system (Phase A step 2, 2026-10-10)');
+test('atMergeSpec: modules stay on, a known accounting system and the customer\'s team size survive, the company never changes', () => {
+  const first = at.atEdgSpec(at.atInput({ lead_id: 'lu1', company_name: 'Teo Aircon', test_mode: true, industry: 'aircon servicing',
+    message: 'We have 5 technicians and use Xero. Customers book on WhatsApp and we keep stock of spare parts in the vans.', extracted_json: '{}', conversation_json: '[]' }));
+  assert.strictEqual(first.team.sales, 5); assert.strictEqual(first.modules.accounting, 'xero'); assert.strictEqual(first.modules.stock, true);
+  // A later message (the early facts have dropped out of the recent conversation) under a slightly different company name.
+  const later = at.atEdgSpec(at.atInput({ lead_id: 'lu1', company_name: 'Teo Aircon Pte Ltd', test_mode: true, industry: 'aircon servicing', message: 'Can you also send quotations?', extracted_json: '{}', conversation_json: '[]' }));
+  const m = at.atMergeSpec(first, later);
+  assert.strictEqual(m.company.slug, first.company.slug, 'same client system, never a second one');
+  assert.strictEqual(m.team.sales, 5, 'the customer\'s own number beats a placeholder');
+  assert.strictEqual(m.modules.accounting, 'xero'); assert.strictEqual(m.modules.stock, true); assert.strictEqual(m.modules.quotes, true);
+  assert.ok(!m.to_confirm.some((t) => /accounting software/i.test(t)), 'answered: no longer asked');
+  assert.ok(m.to_confirm.some((t) => /Price list/.test(t)), 'new needs are added');
+});
+test('atUpdateRound: nothing new → no save; new facts → the merged plan is saved at the ORIGINAL design path', () => {
+  const input = at.atInput({ lead_id: 'lu2', company_name: 'Lim Cleaning', test_mode: true, message: 'We need a CRM. We use Excel and forget to follow up.', extracted_json: '{}', conversation_json: '[]' });
+  const saved = JSON.stringify(at.atEdgSpec(input));
+  const same = at.atUpdateRound({ input, prev_text: saved, base_path: input.base_path });
+  assert.strictEqual(same.changed, false, 'the same facts never rewrite the vault');
+  const answer = at.atInput({ lead_id: 'lu2', company_name: 'Lim Cleaning Services', test_mode: true, message: 'We have 8 cleaners and customers book appointments by WhatsApp. We use QuickBooks.', extracted_json: '{}',
+    conversation_json: JSON.stringify([{ role: 'agent', content: at.AT_VOICE + 'Which accounting or invoicing software do you use (for example Xero or QuickBooks)?' }]) });
+  const u = at.atUpdateRound({ input: answer, prev_text: saved, base_path: input.base_path });
+  assert.strictEqual(u.changed, true);
+  assert.strictEqual(u.path, 'zaphiel/vault/80_Clients/_Test/lim-cleaning/edg/16_edg_spec.json', 'the first design\'s folder, even if the name grew');
+  const plan = JSON.parse(u.content);
+  assert.strictEqual(plan.team.sales, 8); assert.strictEqual(plan.team.label, 'Cleaner'); assert.strictEqual(plan.modules.appointments, true); assert.strictEqual(plan.modules.accounting, 'quickbooks');
+  assert.ok(/customer answers/.test(u.commit));
+  const broken = at.atUpdateRound({ input: answer, prev_text: 'not json', base_path: input.base_path });
+  assert.strictEqual(broken.changed, true, 'an unreadable saved plan is replaced');
+  assert.strictEqual(at.atUpdateUrl(), 'https://fusion-edg-core-api.vercel.app/atlas/update');
+});
+test('a pasted brief answers ATLAS\'s questions at once: they are not asked again', () => {
+  const brief = 'Company: Koh Renovation. 6 designers. We use Xero for invoices and track leads in Google Sheets. Customers message us on WhatsApp Business. Problem: quotations are slow and nobody follows up.';
+  const qs = at.atQuestions(at.atInput({ lead_id: 'lb1', company_name: 'Koh Renovation', message: brief, extracted_json: '{}', conversation_json: '[]' }));
+  assert.ok(!qs.some((q) => /accounting/i.test(q)), 'accounting answered'); assert.ok(!qs.some((q) => /keep track of customers/i.test(q)), 'tracking answered');
+  assert.ok(!qs.some((q) => /How many people/i.test(q)), 'team size answered'); assert.ok(!qs.some((q) => /WhatsApp Business/i.test(q)), 'WhatsApp set-up answered');
+  const fin = at.atFinalize({ raw_text: JSON.stringify({ questions_open: ['Which accounting or invoicing software do you use?', 'What happens between the first message and a paying customer?'] }), input: at.atInput({ lead_id: 'lb1', company_name: 'Koh Renovation', message: brief }) });
+  assert.deepStrictEqual(fin.pack.questions_open, ['What happens between the first message and a paying customer?'], 'the model\'s questions are filtered too');
+});
+test('ATLAS workflow: an existing design → update round (load plan → update → save only if changed → POST /atlas/update with the commit → audit)', () => {
+  require('child_process').execSync('node ' + path.join(ROOT, 'workflows/atlas/build.js'));
+  const sdk = fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/atlas.sdk.ts'), 'utf8');
+  assert.ok(/\.onFalse\(loadPlan\.to\(updatePlan\)\.to\(planChanged\.onTrue\(planExists\.onTrue\(savePlan\.to\(applyUpdate\)\)\.onFalse\(createPlan\.to\(applyUpdate\)\)\)\)\)/.test(sdk), 'wired on the "already designed" branch');
+  assert.ok(sdk.includes('https://fusion-edg-core-api.vercel.app/atlas/update') && /\.add\(applyUpdate\)\s*\.to\(logUpdate\)/.test(sdk));
+  const src = fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/code-nodes/update-the-plan.js'), 'utf8');
+  const chk = fs.readFileSync(path.join(ROOT, 'workflows/atlas/dist/code-nodes/check-existing-design.js'), 'utf8');
+  const prepIn = at.atInput({ lead_id: 'lu3', company_name: 'Ng Plumbing Pte Ltd', test_mode: true, message: 'We have 4 technicians and use Xero, please add quotations', extracted_json: '{}', conversation_json: '[]' });
+  const store = { 'Prepare ATLAS Input': [{ input: prepIn, started_at: 'x' }] };
+  const mk = (input) => ({ $: (n) => ({ first: () => ({ json: store[n][0] }), all: () => store[n].map((json) => ({ json })) }), $input: { first: () => input[0], all: () => input }, Buffer, Date, JSON, Math });
+  store['Check Existing Design'] = vm.runInNewContext('(function(){' + chk + '})()', mk([{ json: { task_type: 'edg_design', lead_id: 'lu3', status: 'open', payload_json: JSON.stringify({ base_path: 'zaphiel/vault/80_Clients/_Test/ng-plumbing/edg/' }) } }])).map((i) => i.json);
+  assert.strictEqual(store['Check Existing Design'][0].already, true);
+  assert.strictEqual(store['Check Existing Design'][0].existing_base_path, 'zaphiel/vault/80_Clients/_Test/ng-plumbing/edg/');
+  const old = at.atEdgSpec(at.atInput({ lead_id: 'lu3', company_name: 'Ng Plumbing', test_mode: true, message: 'We need a CRM, we use Excel', extracted_json: '{}', conversation_json: '[]' }));
+  const out = vm.runInNewContext('(function(){' + src + '})()', mk([{ json: { content: Buffer.from(JSON.stringify(old)).toString('base64'), sha: 'x' } }])).map((i) => i.json)[0];
+  assert.strictEqual(out.changed, true); assert.strictEqual(out.file_exists, true);
+  assert.strictEqual(out.path, 'zaphiel/vault/80_Clients/_Test/ng-plumbing/edg/16_edg_spec.json');
+  const plan = JSON.parse(out.content);
+  assert.strictEqual(plan.company.slug, old.company.slug); assert.strictEqual(plan.modules.accounting, 'xero'); assert.strictEqual(plan.modules.quotes, true); assert.strictEqual(plan.team.sales, 4);
+  const missing = vm.runInNewContext('(function(){' + src + '})()', mk([{ json: { error: 'Not Found' } }])).map((i) => i.json)[0];
+  assert.strictEqual(missing.file_exists, false); assert.strictEqual(missing.changed, true, 'no saved plan → it is created');
+});
+test('WhatsApp duplicate guard: a message id already handled stops before John; no id is never dropped (2026-10-10)', () => {
+  assert.strictEqual(wi.waSeenBefore('wamid.A', []), false);
+  assert.strictEqual(wi.waSeenBefore('wamid.A', [{ wa_message_id: 'wamid.A' }]), true);
+  assert.strictEqual(wi.waSeenBefore('wamid.A', [{ wa_message_id: 'wamid.B' }, {}]), false);
+  assert.strictEqual(wi.waSeenBefore('', [{ wa_message_id: '' }]), false, 'a message without an id is answered, never dropped');
+  const code = fs.readFileSync(path.join(ROOT, 'workflows/whatsapp-inbound/dist/code-nodes/check-seen-message.js'), 'utf8');
+  const runIt = (rows) => vm.runInNewContext('(function(){' + code + '})()', { $: () => ({ first: () => ({ json: { wa_message_id: 'wamid.X', phone: '+6590000000' } }) }), $input: { all: () => rows.map((json) => ({ json })) }, Date, String })[0].json;
+  assert.strictEqual(runIt([]).seen, false); assert.strictEqual(runIt([{ wa_message_id: 'wamid.X' }]).seen, true);
+  assert.strictEqual(runIt([]).phone, '+6590000000');
+});
+test('Discovery Console joined to ATLAS: a complete Company Map is handed over in John\'s shape; ATLAS reads it without re-asking', () => {
+  const ds = require('../agents/company-discovery/discovery.js');
+  assert.strictEqual(ds.dsAtlasHandoff(ds.dsEmptyMap(), [], { map_id: 'map_x' }), null, 'no company name → no hand-off');
+  const map = ds.dsCoerceMap({ company_profile: { company_name: 'Goh Pest Control', industry: 'pest control', employees: 7, services: ['Termite treatment'] },
+    current_software: [{ name: 'Xero', category: 'accounting' }, { name: 'Google Sheets', category: 'spreadsheets' }], communication_channels: ['whatsapp_business'],
+    sales_process: { lead_sources: ['google', 'referrals'], quotation_process: 'quotes typed in Word after a site visit' }, pain_points: ['follow-ups are forgotten'], automation: { wish_automatic: ['appointment reminders'] } });
+  const h = ds.dsAtlasHandoff(map, [{ role: 'owner', content: 'Here is our brief…' }, { role: 'agent', content: 'Thanks' }], { map_id: 'map_ab12', coverage: 0.8, test_mode: true, notify_email: 'owner@example.com' });
+  assert.strictEqual(h.lead_id, 'disc_map_ab12'); assert.strictEqual(h.channel, 'console', 'nobody is messaged automatically'); assert.strictEqual(h.test_mode, true);
+  assert.deepStrictEqual(JSON.parse(h.conversation_json), [{ role: 'customer', content: 'Here is our brief…' }]);
+  const ex = JSON.parse(h.extracted_json);
+  assert.deepStrictEqual(ex.accounting_or_erp, ['Xero']); assert.strictEqual(ex.uses_whatsapp, true); assert.strictEqual(ex.company_size, 7);
+  const input = at.atInput(h);
+  assert.strictEqual(input.base_path, 'zaphiel/vault/80_Clients/_Test/goh-pest-control/edg/');
+  const spec = at.atEdgSpec(input);
+  assert.strictEqual(spec.modules.accounting, 'xero'); assert.strictEqual(spec.modules.quotes, true); assert.strictEqual(spec.modules.appointments, true);
+  assert.ok(!at.atQuestions(input).some((q) => /accounting/i.test(q)), 'what the map answers is not asked again');
+  assert.strictEqual(at.atDemoMessage(input, { status: 'built', demo_url: 'https://fusion-edg-core-api.vercel.app/d/' + 'a'.repeat(43) }).send, false, 'console: no automatic message to anyone');
+  const sdk = fs.readFileSync(path.join(ROOT, 'workflows/discovery-console/dist/discovery-console.sdk.ts'), 'utf8');
+  assert.ok(/proposalTask\.to\(emailOwner\)\.to\(atlasReady\.onTrue\(toAtlas\.to\(reply\)\)\.onFalse\(reply\)\)/.test(sdk) && sdk.includes('"9XQWSgTBszRc0Jxj"') && /waitForSubWorkflow: false/.test(sdk));
+});
+test('the Discovery Console step code (as deployed) adds the ATLAS hand-off when a discovery completes', () => {
+const ds=require('../agents/company-discovery/discovery.js');
+const src=fs.readFileSync(ROOT+'/workflows/discovery-console/dist/code-nodes/finalize-discovery-turn.js','utf8');
+const full = ds.dsCoerceMap({ company_profile:{company_name:'Goh Pest Control',industry:'pest control',employees:7,services:['Termite'],locations:['SG'],products:['x'],departments:['ops']}, customers:{who_buys:'homes',business_model:'B2C',typical_customer:'x',journey:'x'}, sales_process:{lead_sources:['google'],lead_receiver:'me',response_time:'1h',follow_up_owner:'me',quotation_process:'word',deal_tracking:'sheets',where_leads_lost:'x'}, marketing:{channels:['google'],agencies:'none'}, communication_channels:['whatsapp'], current_software:[{name:'Xero',category:'accounting'}], operations_process:{work_intake:'calls',who_performs:'techs',task_assignment:'me'}, customer_service:{channels:['whatsapp'],responder:'me',common_questions:['price']}, finance_process:{accounting_software:'Xero',invoicing:'xero',payment_collection:'paynow'}, people_roles:{roles:['tech'],approval_hierarchy:'me'}, management:{daily_checks:['jobs'],reports_received:['none']}, automation:{repeated_daily:['reminders'],wish_automatic:['reminders']}, data_sources:[{category:'customer_records',availability:'AVAILABLE'}], pain_points:['forgotten follow-ups'] });
+const store={'Build Discovery Context':[{map_id:'map_t1',session_id:'test_1',text:'that is all',test_mode:true,tenant_id:'fusiontech',started_at:new Date().toISOString()}],'Compose Discovery Prompt':[{map:full,conversation:[{role:'owner',content:'brief'}],turns:6,contact_name:'Goh',company_name:'Goh Pest Control',config:{model:'m'},brain_source:'vault',row_exists:true,created_at:'x'}]};
+const ctx={$:(n)=>({first:()=>({json:store[n][0]})}),$input:{first:()=>({json:{error:{message:'Payment required'}}})},$execution:{id:'5'},Buffer,Date,JSON,Math,String,Object,Array,RegExp,parseInt,isNaN,Number};
+const out=vm.runInNewContext('(function(){'+src+'})()',ctx)[0].json;
+assert.strictEqual(out.discovery_complete, true); assert.strictEqual(out.atlas_handoff.lead_id, 'disc_map_t1'); assert.strictEqual(out.atlas_handoff.test_mode, true); assert.strictEqual(out.atlas_handoff.source_execution_id, '5');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
