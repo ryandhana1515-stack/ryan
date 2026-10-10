@@ -1,0 +1,204 @@
+{
+  "schema": "edg.spec.v2",
+  "generated_by": "zaphiel-demo-2026-10-10",
+  "generated_at": "2026-10-10T00:00:00Z",
+  "company": {
+    "name": "Demo Property Team (FAKE)",
+    "slug": "demo-property-team",
+    "industry": "Property agency team",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": false,
+    "invoices": false,
+    "appointments": true,
+    "accounting": "none",
+    "calendar": "unknown",
+    "ceo_brief": true,
+    "stock": false,
+    "hr": false
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New lead",
+      "sla_hours": 1
+    },
+    {
+      "key": "contacted",
+      "name": "Contacted",
+      "sla_hours": 24
+    },
+    {
+      "key": "viewing",
+      "name": "Viewing booked",
+      "sla_hours": 72
+    },
+    {
+      "key": "offer",
+      "name": "Offer / negotiation",
+      "sla_hours": 168
+    },
+    {
+      "key": "closed",
+      "name": "Closed",
+      "sla_hours": 720
+    }
+  ],
+  "team": {
+    "sales": 8,
+    "managers": 1,
+    "support": 0,
+    "label": "Agent",
+    "visibility": "own"
+  },
+  "services": [
+    {
+      "name": "Property viewing",
+      "duration_minutes": 45,
+      "buffer_minutes": 15,
+      "location": "At the property"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "09:00",
+    "end": "21:00"
+  },
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Demo Property Assistant",
+      "purpose": "Answer property enquiries on WhatsApp: which listing, buy or rent, budget and timing the customer gives, and book a viewing with the listing agent.",
+      "persona": "warm, short and professional; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "find_free_times",
+        "book_job",
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "price negotiation",
+        "legal or financing questions",
+        "complaints"
+      ],
+      "rules": [
+        "Ask one question at a time.",
+        "Never invent prices or promise dates."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    },
+    {
+      "key": "no_show_rebook",
+      "name": "Rebook customers who missed their appointment",
+      "trigger": {
+        "event": "appointment.no_show",
+        "after_hours": 1
+      },
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "The customer missed their {service} today. Kindly offer to book a new time.",
+          "fallback_text": "Hi {first_name}, we missed you today. Would you like to book a new time?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "{first_name} missed their {service}. The AI assistant offered a new time."
+        }
+      ]
+    },
+    {
+      "key": "thank_after_visit",
+      "name": "Thank the customer after the visit",
+      "trigger": {
+        "event": "appointment.completed",
+        "after_hours": 2
+      },
+      "actions": [
+        {
+          "do": "message_customer",
+          "text": "Hi {first_name}, thank you for visiting {business} today. If anything is not right, just reply here."
+        }
+      ]
+    }
+  ],
+  "to_confirm": [
+    "Agent names and emails (each sees only their own leads)",
+    "Google Sheet of current leads to import (column check)",
+    "Calendly links in use (Atlas books viewings itself; Calendly has no connector yet)",
+    "Portal enquiry emails to forward to the Atlas address",
+    "Their WhatsApp Business number and Meta business verification (for the live system)"
+  ],
+  "problems": [
+    {
+      "problem": "Portal and WhatsApp leads land in different places",
+      "solution": "One lead list: portal emails forwarded, WhatsApp answered, each lead to one agent"
+    },
+    {
+      "problem": "Agents forget to follow up",
+      "solution": "Reminders when a lead goes quiet; manager sees every agent's pipeline"
+    }
+  ],
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "knowledge": [],
+  "source": {
+    "lead_id": "demo_demo-property-team",
+    "design_path": "zaphiel/vault/80_Clients/_Test/demo-property-team/edg/",
+    "test_mode": true
+  }
+}

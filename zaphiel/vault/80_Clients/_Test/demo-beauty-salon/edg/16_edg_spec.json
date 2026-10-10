@@ -1,0 +1,220 @@
+{
+  "schema": "edg.spec.v2",
+  "generated_by": "zaphiel-demo-2026-10-10",
+  "generated_at": "2026-10-10T00:00:00Z",
+  "company": {
+    "name": "Demo Beauty Salon (FAKE)",
+    "slug": "demo-beauty-salon",
+    "industry": "Beauty salon",
+    "timezone": "Asia/Singapore",
+    "currency": "SGD"
+  },
+  "modules": {
+    "lead_capture": true,
+    "follow_ups": true,
+    "whatsapp": true,
+    "quotes": false,
+    "invoices": false,
+    "appointments": true,
+    "accounting": "unknown",
+    "calendar": "none",
+    "ceo_brief": true,
+    "stock": true,
+    "hr": true
+  },
+  "pipeline": [
+    {
+      "key": "new",
+      "name": "New enquiry",
+      "sla_hours": 1
+    },
+    {
+      "key": "booked",
+      "name": "Booked",
+      "sla_hours": 48
+    },
+    {
+      "key": "regular",
+      "name": "Regular customer",
+      "sla_hours": 720
+    }
+  ],
+  "team": {
+    "sales": 4,
+    "managers": 1,
+    "support": 0,
+    "label": "Therapist",
+    "visibility": "all"
+  },
+  "services": [
+    {
+      "name": "Facial treatment",
+      "duration_minutes": 60,
+      "buffer_minutes": 15,
+      "location": "At the salon"
+    },
+    {
+      "name": "Manicure",
+      "duration_minutes": 45,
+      "buffer_minutes": 10,
+      "location": "At the salon"
+    }
+  ],
+  "working_hours": {
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "10:00",
+    "end": "20:00"
+  },
+  "agents": [
+    {
+      "key": "front_desk",
+      "name": "Demo Salon Assistant",
+      "purpose": "Answer customers on WhatsApp, find a free time with a therapist and book the treatment; remind customers the day before.",
+      "persona": "warm, short and professional; Singapore customers",
+      "channels": [
+        "whatsapp"
+      ],
+      "tools": [
+        "find_free_times",
+        "book_job",
+        "save_customer_details",
+        "add_note",
+        "hand_over_to_person"
+      ],
+      "handover_when": [
+        "skin reactions or complaints",
+        "refund questions"
+      ],
+      "rules": [
+        "Ask one question at a time.",
+        "Never invent prices or promise dates."
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "key": "quiet_new_enquiry",
+      "name": "Call new enquiries that went quiet",
+      "trigger": {
+        "event": "lead.created",
+        "after_hours": 4
+      },
+      "conditions": [
+        "customer_has_not_replied",
+        "lead_still_open"
+      ],
+      "actions": [
+        {
+          "do": "create_task",
+          "title": "Call {first_name}: no reply since the first message",
+          "due_in_hours": 2
+        }
+      ]
+    },
+    {
+      "key": "morning_numbers",
+      "name": "Morning numbers for the owner",
+      "trigger": {
+        "schedule": {
+          "every": "day",
+          "time": "08:00"
+        }
+      },
+      "actions": [
+        {
+          "do": "owner_summary"
+        }
+      ]
+    },
+    {
+      "key": "no_show_rebook",
+      "name": "Rebook customers who missed their appointment",
+      "trigger": {
+        "event": "appointment.no_show",
+        "after_hours": 1
+      },
+      "actions": [
+        {
+          "do": "ai_follow_up",
+          "instruction": "The customer missed their {service} today. Kindly offer to book a new time.",
+          "fallback_text": "Hi {first_name}, we missed you today. Would you like to book a new time?"
+        },
+        {
+          "do": "notify_owner",
+          "text": "{first_name} missed their {service}. The AI assistant offered a new time."
+        }
+      ]
+    },
+    {
+      "key": "thank_after_visit",
+      "name": "Thank the customer after the visit",
+      "trigger": {
+        "event": "appointment.completed",
+        "after_hours": 2
+      },
+      "actions": [
+        {
+          "do": "message_customer",
+          "text": "Hi {first_name}, thank you for visiting {business} today. If anything is not right, just reply here."
+        }
+      ]
+    }
+  ],
+  "stock": {
+    "places": [
+      {
+        "name": "Salon store room"
+      }
+    ],
+    "suppliers": [],
+    "items": [
+      {
+        "sku": "FACIAL-MASK",
+        "name": "Facial mask",
+        "unit": "pcs"
+      },
+      {
+        "sku": "NAIL-POLISH",
+        "name": "Nail polish",
+        "unit": "bottle"
+      }
+    ]
+  },
+  "to_confirm": [
+    "Staff names, roles and emails",
+    "Price list (the AI only quotes approved prices)",
+    "GST registration and rate",
+    "Their WhatsApp Business number and Meta business verification (for the live system)",
+    "Current booking system (if Fresha/Vagaro: export customers; no connector yet)",
+    "Reorder levels and suppliers for each product",
+    "Therapists' leave dates (HR leave is HR Part 2, waiting for approval)"
+  ],
+  "problems": [
+    {
+      "problem": "Bookings by WhatsApp and phone get double-booked",
+      "solution": "One booking calendar per therapist; the AI books only free times"
+    },
+    {
+      "problem": "Products run out without warning",
+      "solution": "Stock levels with low-stock alerts once reorder levels are given"
+    }
+  ],
+  "catalog": [],
+  "reviewer": {
+    "name": "Ryan",
+    "email": "ryandhana1515@gmail.com"
+  },
+  "knowledge": [],
+  "source": {
+    "lead_id": "demo_demo-beauty-salon",
+    "design_path": "zaphiel/vault/80_Clients/_Test/demo-beauty-salon/edg/",
+    "test_mode": true
+  }
+}
