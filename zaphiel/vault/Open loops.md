@@ -282,7 +282,7 @@ tags: [zaphiel, open-loops]
     - leave in the Atlas build self-test.
   - **To confirm with the first client's HR adviser:** whether sick leave counts working days or calendar days, and the default leave policy.
 - 2026-10-10 — **HR: Parts 1–3 are done (people, leave, attendance).** What's left:
-  - **Ryan's OK needed:** Part 4, the CEO HR dashboard and people care:
+  - ~~**Ryan's OK needed:** Part 4~~ built 2026-10-10 (PR #51). It covered:
     - an HR card on Home;
     - HR lines in the morning brief;
     - onboarding checklists;
@@ -293,3 +293,8 @@ tags: [zaphiel, open-loops]
     - per-person shift rosters;
     - overtime rules (handled by the payroll provider);
     - an optional location setting with the employee's consent.
+- 2026-10-10 — **HR Parts 1–4 are done.** Only Part 5, payroll exports and reports, is left.
+  - **It needs a decision first:** which payroll provider FusionTech's clients will use.
+    - Talenox is already on our software list.
+    - Others, like Payboy and HReasily, are on the list too, but their APIs are not verified.
+  - **Until a provider is chosen:** Atlas exports the timesheet CSV, and a payroll export CSV can be built.
