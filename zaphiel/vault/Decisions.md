@@ -488,3 +488,13 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
     - objects are created PAUSED and activated only after every step succeeded.
   - **Gate:** Zaphiel produced the pre-implementation report (Fusion EDG Core PR #33, docs only). No architecture change and no money-spending code before Ryan approves it.
 - 2026-10-09 — **HR employee-data key is automatic (split key), not created by hand.** Ryan: "Is there any easier way? I don't want to do this." The key is derived from a Supabase Vault half plus `EDG_WEBHOOK_SECRET`. As a consequence, `EDG_WEBHOOK_SECRET` must never be rotated once staff details are saved (it would lock them). If it ever has to be rotated, first plan a re-encryption step.
+- 2026-10-10 — **Atlas Universal Business OS: Ryan said "Go" to all 9 recommendations of the pre-development report** (Fusion EDG Core PR #40).
+  1. Test builds stay automatic. Ryan approves going live and connecting a client's real accounts.
+  2. No unified API (Apideck / Merge / Codat) for now. Look again at 10+ clients.
+  3. Ask Intuit about Singapore eligibility before building QuickBooks.
+  4. Gmail later. Start with forwarding plus Calendar and Sheets.
+  5. Next build: the Software Knowledge Base and compatibility checker (Phase A1). **Done the same day: PR #41.**
+  6. Zaphiel guides Ryan through the free developer accounts one at a time, starting with Xero.
+  7. A lawyer prepares the PDPA data-processing agreement before the first real client. Zaphiel drafts the technical annex.
+  8. Client workflows stay in the platform engine, not n8n Cloud. Zaphiel asks n8n in writing before any client workflow runs there.
+  9. WhatsApp Embedded Signup (v4) after Meta verification. Start the Meta verification right after Xero.

@@ -238,7 +238,7 @@ tags: [zaphiel, open-loops]
     7. A lawyer prepares the PDPA data-processing agreement.
     8. Client workflows stay in the platform engine, not n8n Cloud (licence).
     9. WhatsApp Embedded Signup v4 after Meta verification.
-  - **Do not build anything from that report before Ryan says go.**
+  - ~~Do not build anything from that report before Ryan says go.~~ Ryan said **go** on 2026-10-10 (see Decisions). Phase A1 is done (PR #41).
   - **Facts to remember** (read on 2026-10-09; sources are in the provider cards):
     - **Xero:** Starter is 5 connections free; Core AUD 35 up to 50; certification needed beyond 50.
     - **QuickBooks:** the partner programme names US/UK/AU/CA companies.
@@ -247,3 +247,9 @@ tags: [zaphiel, open-loops]
     - **Google Ads** developer tokens were retired on 9 Sept 2026.
     - **Metricool:** "standard use" is about 500 calls per brand per month.
     - **InvoiceNow:** phased in until 2031.
+- 2026-10-10 — **Atlas Universal Business OS: next steps**
+  - **Ryan, now — Xero developer account, step 1:** open developer.xero.com, sign up free with his Gmail, and reply "done".
+    - Step 2 (Zaphiel guides): create the app, with redirect `https://fusion-edg-core-api.vercel.app/oauth/callback/xero`. Ryan puts the client id/secret into Vercel himself, never in chat. Then prove Xero on the Demo Company.
+  - **Ryan, OK needed:** the small `atlas.md` addition "SOFTWARE CHECK", so ATLAS uses the Software Knowledge Base before promising any connection. Shown to Ryan 2026-10-10.
+  - **Next build:** Phase A step 2, the Client Discovery + Blueprint record, the pasted-brief intake, the Discovery Console joined to John → ATLAS, and John's WhatsApp message-id dedupe.
+  - **Developer accounts after Xero:** Meta (verification) → Google Cloud → Microsoft Entra → Shopify Partners → Intuit (ask about Singapore first) → Zoho → HubSpot → Employment Hero → TikTok. The status of each is kept in `app.developer_accounts` (Master Control → Software).
