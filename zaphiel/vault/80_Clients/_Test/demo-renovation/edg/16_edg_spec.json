@@ -228,5 +228,11 @@
     "lead_id": "demo_demo-renovation",
     "design_path": "zaphiel/vault/80_Clients/_Test/demo-renovation/edg/",
     "test_mode": true
-  }
+  },
+  "software": [
+    "Xero",
+    "Excel",
+    "WhatsApp",
+    "Google Calendar"
+  ]
 }

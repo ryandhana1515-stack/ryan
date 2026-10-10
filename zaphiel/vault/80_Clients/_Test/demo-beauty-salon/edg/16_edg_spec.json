@@ -216,5 +216,10 @@
     "lead_id": "demo_demo-beauty-salon",
     "design_path": "zaphiel/vault/80_Clients/_Test/demo-beauty-salon/edg/",
     "test_mode": true
-  }
+  },
+  "software": [
+    "WhatsApp",
+    "Fresha",
+    "Excel"
+  ]
 }
