@@ -563,3 +563,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   itself for the artery heart thing, everything"). Master prompt [[60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt]];
   Kling/Higgsfield films become optional for medical. Products stay on Kling/Higgsfield + the site kit. From the rules
   research: never an AI person as a doctor; no testimonials, superlatives, comparisons or before/after on clinic sites.
+- 2026-10-12 — **Doctors' websites, final direction** (Ryan: "I don't want them to build cinematic scroll parallax websites. I
+  want like real photos … then there's a video section … a narrator explaining all the artery stuff and the brains,
+  organs … it needs to depend on their website … if it's based on teeth … every section of the teeth, there'll be a
+  video explaining what is there, and then why you need to go to their dental clinic"). Real clinic site with the
+  clinic's own photos, built on Lovable; a video section with one narrated explainer per topic, matched to the
+  specialty by Website Intelligence ([[60_Skill_Packs/TITAN/14_Clinic_Video_Explainers]]). Replaces the scroll body
+  journey for doctors. "Why visit" uses facts only (Singapore rules).

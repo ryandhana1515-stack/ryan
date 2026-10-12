@@ -23,7 +23,7 @@ John stays the only contact with the client.
 | Note | What it covers |
 |---|---|
 | [[01_Build_Router]] | Which tool for which job, live connection status, costs |
-| [[02_Tiers_and_3D_Pipeline]] | Tier 1/2/3; Ryan's 3D decision (films, not code-drawn); doctor body journeys on Lovable; product scroll films on the site kit |
+| [[02_Tiers_and_3D_Pipeline]] | Tier 1/2/3; Ryan's 3D decision (films, not code-drawn); doctors = real photos + video section on Lovable; product scroll films on the site kit |
 | [[03_Medical_Supplement_Rules]] | Doctors, clinics, supplements: claims, presenter rules, clinician review, Singapore rules |
 | [[04_Luxury_Ecommerce]] | Watches, fashion, cars, motorbikes, drinks, jewellery; stores and catalogue feeds |
 | [[05_Funnels_and_CRO]] | Page anatomy, funnel types, tracking pack, speed-to-lead, A/B plan |
@@ -34,12 +34,13 @@ John stays the only contact with the client.
 | [[10_QA_Gates]] | titan-qa's gates and how to run them here |
 | [[11_Handoff_Contracts]] | WEB_BUILD_REQUEST, INTEGRATION_SPEC, CAMPAIGN_PAGE_REQUEST, WEB_STATUS |
 | [[12_SG_Rules_Research]] | Singapore rules with sources: clinics (HCSA, SMC), supplements (HSA), crypto (MAS), property (CEA), PDPA, ASAS/CPFTA |
-| [[13_Lovable_Medical_Prompt]] | The master Lovable prompt for doctors' sites (anatomy built by Lovable), rules block, iteration prompts |
+| [[13_Lovable_Medical_Prompt]] | The master Lovable prompt for clinic sites (real photos + video section), rules block, iteration prompts |
+| [[14_Clinic_Video_Explainers]] | One narrated video per topic, matched to the clinic's specialty; topic library; the four-beat script |
 
 **Ryan's decisions (2026-10-12):**
-- **Doctors:** a super-real journey inside the body (arteries, blood vessels, lungs, stomach, organs) with a video
-  section for the explainer, **built on Lovable, which also builds the anatomy itself** ([[13_Lovable_Medical_Prompt]]);
-  Kling/Higgsfield optional.
+- **Doctors (final):** a real clinic website with the clinic's **own photos** (no cinematic scroll), plus a **video
+  section** of narrated explainers matched to the specialty, one video per topic ([[14_Clinic_Video_Explainers]]),
+  built on Lovable ([[13_Lovable_Medical_Prompt]]).
 - **Cinematic products** (watches, clothing, cars, motorbikes, drinks…): TITAN decides the story; 3D-feel scroll and
   parallax from Kling/Higgsfield films (e.g. the watch splitting and reassembling), built with the site kit.
 - **No code-drawn 3D shapes.**
