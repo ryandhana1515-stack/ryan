@@ -70,3 +70,7 @@ Brief with the last good data, marked as such.
 
 ## 18. Open questions for Ryan
 Which 5 numbers matter most to you every morning?
+
+
+## Marketing Team v4 (2026-10-12)
+See [[60_Skill_Packs/Marketing_Team/00_Index]]: Marketing Director, Ads Intelligence, Market Research and Creative Producer ([[10_Agents/Marketing/_index]]).

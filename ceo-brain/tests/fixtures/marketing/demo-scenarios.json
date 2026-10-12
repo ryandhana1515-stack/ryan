@@ -1,0 +1,630 @@
+{
+ "creative_fatigue": {
+  "currency": "SGD",
+  "demo": true,
+  "data_as_of": "2026-10-11T23:59:00+08:00",
+  "period": {
+   "from": "2026-10-01",
+   "to": "2026-10-07"
+  },
+  "targets": {
+   "cpl": 15,
+   "cpql": 40,
+   "ctr_link": 0.01,
+   "cpm": 12,
+   "freq_cap": 3,
+   "hook_rate": 0.25,
+   "hold_rate": 0.25,
+   "first_reply_minutes": 15,
+   "qualified_rate": 0.4
+  },
+  "brand": "DEMO Brow Studio",
+  "crm": {
+   "connected": false
+  },
+  "ads": [
+   {
+    "id": "ad_fat",
+    "name": "Brow reel — \"Wake up with perfect brows\"",
+    "platform": "meta",
+    "days": [
+     {
+      "date": "2026-10-01",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 3571,
+      "link_clicks": 80,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 5
+     },
+     {
+      "date": "2026-10-02",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 2857,
+      "link_clicks": 73,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 5
+     },
+     {
+      "date": "2026-10-03",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 2381,
+      "link_clicks": 66,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-04",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 2041,
+      "link_clicks": 59,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-05",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 1786,
+      "link_clicks": 52,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 3
+     },
+     {
+      "date": "2026-10-06",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 1587,
+      "link_clicks": 45,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 3
+     },
+     {
+      "date": "2026-10-07",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 1429,
+      "link_clicks": 38,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 2
+     },
+     {
+      "date": "2026-10-08",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 1299,
+      "link_clicks": 31,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 2
+     },
+     {
+      "date": "2026-10-09",
+      "spend": 50,
+      "impressions": 5000,
+      "reach": 1190,
+      "link_clicks": 24,
+      "video_3s": 1600,
+      "thruplays": 500,
+      "leads": 1
+     }
+    ]
+   }
+  ]
+ },
+ "broken_tracking": {
+  "currency": "SGD",
+  "demo": true,
+  "data_as_of": "2026-10-11T23:59:00+08:00",
+  "period": {
+   "from": "2026-10-01",
+   "to": "2026-10-07"
+  },
+  "targets": {
+   "cpl": 15,
+   "cpql": 40,
+   "ctr_link": 0.01,
+   "cpm": 12,
+   "freq_cap": 3,
+   "hook_rate": 0.25,
+   "hold_rate": 0.25,
+   "first_reply_minutes": 15,
+   "qualified_rate": 0.4
+  },
+  "brand": "DEMO Brow Studio",
+  "crm": {
+   "connected": false
+  },
+  "ads": [
+   {
+    "id": "ad_trk",
+    "name": "WhatsApp offer — \"Free brow consult\"",
+    "platform": "meta",
+    "days": [
+     {
+      "date": "2026-10-01",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-02",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-03",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-04",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-05",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 4
+     },
+     {
+      "date": "2026-10-06",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 0
+     },
+     {
+      "date": "2026-10-07",
+      "spend": 50,
+      "impressions": 4500,
+      "reach": 3000,
+      "link_clicks": 70,
+      "video_3s": 1300,
+      "thruplays": 400,
+      "leads": 0
+     }
+    ]
+   }
+  ]
+ },
+ "cheap_low_quality": {
+  "currency": "SGD",
+  "demo": true,
+  "data_as_of": "2026-10-11T23:59:00+08:00",
+  "period": {
+   "from": "2026-10-01",
+   "to": "2026-10-07"
+  },
+  "targets": {
+   "cpl": 15,
+   "cpql": 40,
+   "ctr_link": 0.01,
+   "cpm": 12,
+   "freq_cap": 3,
+   "hook_rate": 0.25,
+   "hold_rate": 0.25,
+   "first_reply_minutes": 15,
+   "qualified_rate": 0.4
+  },
+  "brand": "DEMO Brow Studio",
+  "crm": {
+   "connected": true,
+   "first_reply_minutes_median": 8,
+   "followups_due": 40,
+   "followups_on_time": 36
+  },
+  "ads": [
+   {
+    "id": "ad_cheap",
+    "name": "Instant form — \"Win free brows\"",
+    "platform": "meta",
+    "days": [
+     {
+      "date": "2026-10-01",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-02",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-03",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-04",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-05",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-06",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-07",
+      "spend": 50,
+      "impressions": 6000,
+      "reach": 4000,
+      "link_clicks": 90,
+      "video_3s": 1900,
+      "thruplays": 600,
+      "leads": 8,
+      "qualified": 1,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     }
+    ]
+   }
+  ]
+ },
+ "slow_follow_up": {
+  "currency": "SGD",
+  "demo": true,
+  "data_as_of": "2026-10-11T23:59:00+08:00",
+  "period": {
+   "from": "2026-10-01",
+   "to": "2026-10-07"
+  },
+  "targets": {
+   "cpl": 15,
+   "cpql": 40,
+   "ctr_link": 0.01,
+   "cpm": 12,
+   "freq_cap": 3,
+   "hook_rate": 0.25,
+   "hold_rate": 0.25,
+   "first_reply_minutes": 15,
+   "qualified_rate": 0.4
+  },
+  "brand": "DEMO Brow Studio",
+  "crm": {
+   "connected": true,
+   "first_reply_minutes_median": 190,
+   "followups_due": 30,
+   "followups_on_time": 12
+  },
+  "ads": [
+   {
+    "id": "ad_good",
+    "name": "Before/after process video (real client, consented)",
+    "platform": "meta",
+    "days": [
+     {
+      "date": "2026-10-01",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-02",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-03",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-04",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-05",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-06",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     },
+     {
+      "date": "2026-10-07",
+      "spend": 50,
+      "impressions": 4000,
+      "reach": 2800,
+      "link_clicks": 60,
+      "video_3s": 1400,
+      "thruplays": 500,
+      "leads": 4,
+      "qualified": 3,
+      "appointments": 1,
+      "sales": 0,
+      "revenue": 0
+     }
+    ]
+   }
+  ]
+ },
+ "winner_scale": {
+  "currency": "SGD",
+  "demo": true,
+  "data_as_of": "2026-10-11T23:59:00+08:00",
+  "period": {
+   "from": "2026-10-01",
+   "to": "2026-10-07"
+  },
+  "targets": {
+   "cpl": 15,
+   "cpql": 40,
+   "ctr_link": 0.01,
+   "cpm": 12,
+   "freq_cap": 3,
+   "hook_rate": 0.25,
+   "hold_rate": 0.25,
+   "first_reply_minutes": 15,
+   "qualified_rate": 0.4
+  },
+  "brand": "DEMO Brow Studio",
+  "crm": {
+   "connected": true,
+   "first_reply_minutes_median": 6,
+   "followups_due": 20,
+   "followups_on_time": 19
+  },
+  "ads": [
+   {
+    "id": "ad_win",
+    "name": "Founder story — \"Why I only do natural brows\"",
+    "platform": "meta",
+    "days": [
+     {
+      "date": "2026-10-01",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-02",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-03",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-04",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-05",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-06",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     },
+     {
+      "date": "2026-10-07",
+      "spend": 50,
+      "impressions": 5200,
+      "reach": 3900,
+      "link_clicks": 85,
+      "video_3s": 1800,
+      "thruplays": 650,
+      "leads": 5,
+      "qualified": 3,
+      "appointments": 2,
+      "sales": 1,
+      "revenue": 388
+     }
+    ]
+   }
+  ]
+ }
+}

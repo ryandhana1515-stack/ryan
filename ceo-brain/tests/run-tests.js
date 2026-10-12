@@ -1707,6 +1707,36 @@ const h = vm.runInNewContext('(function(){' + hsrc + '})()', ctx)[0].json;
 assert.strictEqual(h.ready, true); assert.strictEqual(h.handoff.lead_id, 'disc_map_t1'); assert.strictEqual(h.handoff.test_mode, true); assert.strictEqual(h.handoff.source_execution_id, '5');
 assert.ok(!/dsAtlasHandoff/.test(src), 'the big turn node stays exactly as deployed before');
 });
+console.log('\n[38] Marketing Team v4: the diagnosis engine (numbers and verdicts from code, 2026-10-12)');
+const mk = require('../agents/marketing/diagnose.js');
+test('ratios come from summed totals, never averaged; dividing by zero or missing data gives "—" (null), never 0', () => {
+  const r = mk.mkMetrics([{ spend: 10, impressions: 1000, link_clicks: 10, leads: 0 }, { spend: 30, impressions: 1000, link_clicks: 30, leads: 2 }]);
+  assert.strictEqual(r.metrics.ctr_link, 0.02, '40 ÷ 2000, not the average of 1% and 3%');
+  assert.strictEqual(r.metrics.cpl, 20); assert.strictEqual(r.metrics.cpm, 20);
+  assert.strictEqual(r.metrics.hook_rate, null, 'no video data → "—"'); assert.strictEqual(r.metrics.roas, null, 'no revenue → "—"');
+  assert.strictEqual(mk.mkDiv(5, 0), null);
+});
+test('T2: the 5 DEMO scenarios are each diagnosed correctly', () => {
+  const sc = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests/fixtures/marketing/demo-scenarios.json'), 'utf8'));
+  const want = { creative_fatigue: ['creative_fatigue', 'ITERATE'], broken_tracking: ['tracking_break', 'FIX TRACKING'], cheap_low_quality: ['cheap_low_quality', 'ITERATE'],
+    slow_follow_up: ['slow_follow_up', 'KEEP + IMPROVE FOLLOW-UP'], winner_scale: [null, 'SCALE'] };
+  for (const [k, [finding, decision]] of Object.entries(want)) {
+    const r = mk.mkDiagnose(sc[k]); const ad = r.ads[0];
+    assert.strictEqual(r.demo, true, k + ' is labelled DEMO');
+    assert.strictEqual(ad.decision, decision, k + ' decision');
+    if (finding) assert.ok(ad.findings.some((f) => f.key === finding), k + ' finding ' + finding);
+    else assert.strictEqual(ad.findings.length, 0, k + ' has no problems');
+    ad.findings.forEach((f) => { assert.ok(f.observation && f.hypotheses.length && f.verify.length && f.action, 'observation + hypotheses + how to verify + action'); });
+  }
+});
+test('not enough data is said plainly; spend with zero leads is a KILL that needs approval; no CRM → stages 6–7 "not connected"', () => {
+  const t = { cpl: 20 };
+  const tiny = mk.mkDiagnoseAd({ name: 'new', days: [{ date: '2026-10-01', spend: 5, impressions: 300, link_clicks: 3, leads: 0 }] }, t);
+  assert.strictEqual(tiny.decision, 'NOT ENOUGH DATA YET');
+  const dead = mk.mkDiagnoseAd({ name: 'dead', days: [1, 2, 3].map((i) => ({ date: '2026-10-0' + i, spend: 20, impressions: 2000, link_clicks: 25, leads: 0 })) }, t);
+  assert.strictEqual(dead.decision, 'KILL'); assert.strictEqual(dead.approval_needed, 'yes');
+  assert.strictEqual(dead.scorecard[6].note, 'CRM not connected'); assert.strictEqual(dead.scorecard[7].note, 'CRM not connected');
+});
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);

@@ -1,0 +1,9 @@
+{
+ "source": "Metricool MCP (read-only), brand 6656122 FusionTech.AI, read 2026-10-12",
+ "window": "2026-09-28..2026-10-11 (Asia/Singapore, complete days)",
+ "brand_settings": { "networks": { "facebook": "1237077816163178", "instagram": "fusiontech.ai", "tiktok": "Fusiontech.AI" }, "ad_accounts": "none connected (no metaAds/tiktokAds/googleAds in networksData)", "other_brand": "BROWREVOLUTION (id 7332947, joined 2026-10-09, no networks connected)" },
+ "instagram": { "fields": ["IGEV01 followers LAST","IGEV05 views","IGEV06 reach","IGEV37 posts","IGEV38 interactions","IGEV43 gained","IGEV44 lost","date"],
+  "rows": [[null,null,"0.0",null,null,null,null,"20261001"],[null,null,"0.0",null,null,null,null,"20261002"],["1.0",null,"0.0",null,null,null,null,"20261010"],["1.0",null,"0.0",null,null,null,null,"20261009"],[null,"0.0","0.0","0.0","0.0","0.0","0.0","20261011"],["1.0",null,"0.0",null,null,null,null,"20261003"],["1.0",null,"0.0",null,null,null,null,"20261004"],["1.0",null,"0.0",null,null,null,null,"20261007"],["1.0",null,"0.0",null,null,null,null,"20261008"],["1.0",null,"0.0",null,null,null,null,"20261005"],[null,null,"0.0",null,null,null,null,"20260930"],["1.0",null,"0.0",null,null,null,null,"20261006"]] },
+ "tiktok": { "fields": ["TKEV01 videos","TKEV07 followers LAST","TKEV11 reach","TKEV12 views","TKEV06 interactions","TKEV09 profile views","date"],
+  "rows": [[null,"0.0",null,null,null,null,"20261010"],["0.0","0.0","0.0","0.0","0.0","0.0","20261011"],[null,"0.0",null,null,null,null,"20261005"],[null,"0.0",null,null,null,null,"20261006"],[null,"0.0",null,null,null,null,"20261007"],[null,"0.0",null,null,null,null,"20261009"],[null,"0.0",null,null,null,null,"20261008"],[null,"0.0",null,null,null,null,"20261003"],[null,"0.0",null,null,null,null,"20261004"]] }
+}

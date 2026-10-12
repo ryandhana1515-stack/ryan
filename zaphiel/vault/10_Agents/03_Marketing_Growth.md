@@ -72,3 +72,7 @@ No publishing without a connector; drafts only.
 
 ## 18. Open questions for Ryan
 Which channels first? Budget approval limits?
+
+
+## Marketing Team v4 (2026-10-12)
+See [[60_Skill_Packs/Marketing_Team/00_Index]]: Marketing Director, Ads Intelligence, Market Research and Creative Producer ([[10_Agents/Marketing/_index]]).
