@@ -315,3 +315,9 @@ tags: [zaphiel, open-loops]
     - Lead Intake's "Finalize & Validate Result" node uses the longer "already answered" list from `atlas.js`.
     - Until it is redeployed, John's own question filter is the older one.
     - ATLAS's questions are already filtered at the source.
+- 2026-10-12 — **Marketing Team v4 Layer 1 done, waiting for Ryan** ([[80_Clients/_Test/marketing-team-v4/T_Results]]):
+  - Ryan: which brand first (FusionTech AI or BROWREVOLUTION)? Is BROWREVOLUTION the business at browrevolution.sg?
+  - Ryan: connect that brand's Instagram, Facebook and TikTok in Metricool (free); fill in its Brand Brain and targets.
+  - Ryan: OK to retire `marketing-brain` (merged into `ads-intelligence`)?
+  - Later: Layer 2 (platform marketing module) after Ryan approves Layer 1.
+  - Firecrawl credits are low (only matters for the next deep research job).

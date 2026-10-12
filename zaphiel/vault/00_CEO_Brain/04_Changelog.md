@@ -87,3 +87,13 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   Core PR #18, test system). Migration 017 on staging; 161/161 tests. Real Page and real portal emails NEEDS VERIFICATION.
 - 2026-10-01 — **Stock and purchasing** (Ryan: "stock and purchasing"; Fusion EDG Core PR #19, test system; ATLAS n8n
   Finalize ATLAS republished). Migration 018 on staging; 174/174 EDG tests, 136/136 ceo-brain tests.
+- 2026-10-12 — **Marketing Team v4, Layer 1 built** (Ryan's master prompt "FUSION AI COMPLETE AI MARKETING TEAM (v4)").
+  - **Knowledge pack:** `60_Skill_Packs/Marketing_Team/` (00 Index, 01 Tool Library + Tool Router, 02 Diagnosis, 03 Angles,
+    04 Platforms, 05 Research, 06 Metrics, 07 Reports, 08 Approval Rules; brands FusionTech_AI and BROWREVOLUTION).
+  - **4 agents:** `.claude/agents/marketing-director.md` (entry point), `ads-intelligence.md`, `market-research.md`,
+    `creative-producer.md`. The older `marketing-brain.md` is untouched; retiring it waits for Ryan's OK.
+  - **Diagnosis engine:** `ceo-brain/agents/marketing/diagnose.js` (numbers from code) + DEMO fixtures; tests §38, 146/146.
+  - **Tests T1–T5:** [[80_Clients/_Test/marketing-team-v4/T_Results]].
+  - **Appended to (no rewrite):** `10_Agents/Marketing/_index.md`, `10_Agents/03_Marketing_Growth.md`,
+    `04_Creative_Studio.md`, `14_Data_BI_KPI.md`; new `10_Agents/Marketing/Marketing_Director.md`, `Market_Research.md`.
+  - Nothing paid, generated, published or signed up.

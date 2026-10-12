@@ -802,3 +802,13 @@ tags: [zaphiel, changelog]
   - **Tests:** platform 358/358, ceo-brain 143/143.
   - **Deploy status:** published in n8n (ATLAS `9XQWSgTBszRc0Jxj`, WhatsApp Inbound `3IhIJ5IYsB7wQQSg`, Discovery Console `9TnzsgPGRatMaQI3`). Each was tested in n8n with every outside action pinned, so nothing was sent.
 - 2026-10-10 — **Ryan's zero-cost rule recorded** ([[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]]). The Xero sign-up request is withdrawn.
+- 2026-10-12 — **Marketing Team v4, Layer 1 built** (Ryan's master prompt "FUSION AI COMPLETE AI MARKETING TEAM (v4)").
+  - **Knowledge pack:** `60_Skill_Packs/Marketing_Team/` (00 Index, 01 Tool Library + Tool Router, 02 Diagnosis, 03 Angles,
+    04 Platforms, 05 Research, 06 Metrics, 07 Reports, 08 Approval Rules; brands FusionTech_AI and BROWREVOLUTION).
+  - **4 agents:** `.claude/agents/marketing-director.md` (entry point), `ads-intelligence.md`, `market-research.md`,
+    `creative-producer.md`. The older `marketing-brain.md` is untouched; retiring it waits for Ryan's OK.
+  - **Diagnosis engine:** `ceo-brain/agents/marketing/diagnose.js` (numbers from code) + DEMO fixtures; tests §38, 146/146.
+  - **Tests T1–T5:** [[80_Clients/_Test/marketing-team-v4/T_Results]].
+  - **Appended to (no rewrite):** `10_Agents/Marketing/_index.md`, `10_Agents/03_Marketing_Growth.md`,
+    `04_Creative_Studio.md`, `14_Data_BI_KPI.md`; new `10_Agents/Marketing/Marketing_Director.md`, `Market_Research.md`.
+  - Nothing paid, generated, published or signed up.

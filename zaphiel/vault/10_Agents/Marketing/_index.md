@@ -26,3 +26,20 @@ Boundaries:
   section L.
 
 Targets: [[60_Skill_Packs/Marketing/targets]] (waiting for Ryan's numbers).
+
+## v4 team (2026-10-12): 1 manager + 3 specialists
+Ryan's "FUSION AI COMPLETE AI MARKETING TEAM (v4)" replaces the earlier marketing prompts. The knowledge pack is
+[[60_Skill_Packs/Marketing_Team/00_Index]].
+
+| v4 role | Claude Code subagent | Note | Was |
+|---|---|---|---|
+| Marketing Director (entry point) | `marketing-director` | [[10_Agents/Marketing/Marketing_Director]] | Marketing Brain (quick win) |
+| Ads Intelligence & Diagnosis | `ads-intelligence` | [[10_Agents/Marketing/Ads_Data_Diagnosis]] | `marketing-brain` subagent (its Metricool rules moved here) |
+| Market Research & Competitor Intelligence | `market-research` | [[10_Agents/Marketing/Market_Research]] | new |
+| Creative Producer | `creative-producer` | [[10_Agents/Marketing/Creative_Branding]] | Creative & Branding Agent |
+
+The Execution layer is code (Fusion EDG Core), never an AI agent. [[10_Agents/07_CRM_Architect|ATLAS]] stays the business
+operations manager, and [[10_Agents/02_Sales_CRM|John]] stays the customer-facing sales agent.
+
+Merge plan, waiting for Ryan's OK: retire `.claude/agents/marketing-brain.md`, because `marketing-director` and
+`ads-intelligence` now cover it. It is left in place until he says yes.

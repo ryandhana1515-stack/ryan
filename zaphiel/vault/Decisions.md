@@ -538,3 +538,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - **Knowledge base:** `60_Skill_Packs/ATLAS_Integrations/`, one note per provider (16 priority providers first), each with "Last verified + source URL". `CONNECTOR_STATUS.md` holds the honesty ladder.
   - **Reference screens** in `80_Clients/_internal/crm_reference/` are a feature list only. We use our own design and code, and copy no logo or branding.
   - **Process:** plan first (`docs/ATLAS_ZERO_COST_PLAN.md`), stop and show Ryan, then build step 1 with fake data, then step by step with his approval.
+- 2026-10-12 — **Marketing Team v4 adopted** (Ryan's master prompt). One Marketing Director + 3 specialists (Ads
+  Intelligence, Market Research, Creative Producer); the Execution layer is code that runs only approved structured
+  actions. Numbers come from code (`diagnose.js`), never from the AI. Status labels everywhere (PLANNED / CODED / MOCK
+  TESTED / SANDBOX TESTED / PRODUCTION VERIFIED). No paid generation, publishing, ad launch, budget increase, pausing a
+  revenue campaign or deletion without Ryan's yes. No invented testimonials, results or prices; no fake before/after.
+  Marketing never reads HR, payroll or unrelated accounting data. Files are never overwritten without showing the diff.

@@ -70,3 +70,7 @@ Brand-tinted gradients and labelled image slots when generation fails.
 
 ## 18. Open questions for Ryan
 Brand kit for FusionTech itself? Licence policy for stock assets?
+
+
+## Marketing Team v4 (2026-10-12)
+See [[60_Skill_Packs/Marketing_Team/00_Index]]: Marketing Director, Ads Intelligence, Market Research and Creative Producer ([[10_Agents/Marketing/_index]]).
