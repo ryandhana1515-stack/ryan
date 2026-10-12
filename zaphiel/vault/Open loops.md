@@ -333,3 +333,6 @@ tags: [zaphiel, open-loops]
 - 2026-10-12 — **TITAN Task 4 (demos) waits for Ryan:** Demo A free landing page (site kit, Vercel preview) can start on "go";
   Demo B, the doctor body-journey on Lovable, needs a cost card yes (Kling/Higgsfield credits + Lovable credits).
   Singapore rule citations for 03_Medical_Supplement_Rules / 07 / 08 are being researched.
+- 2026-10-12 — **Website Build Worker routine** (`trig_01K4UinSX4tQWK537MeHQuuc`, hourly at :25) — last run (18:25 UTC) failed:
+  **Claude usage limit reached**. Builds from WhatsApp wait until the limit resets; check the next runs. Ryan is about to
+  test a dental clinic as a WhatsApp customer (real lead → uses Lovable credits).

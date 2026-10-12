@@ -840,3 +840,9 @@ tags: [zaphiel, changelog]
   photos, one narrated video per topic, Lovable voice "not robotic", no-blank rule, Singapore rules; no anatomy scroll film
   or Kling for clinics), ROUTINE.md clinic steps, system prompts; tests 151/151. n8n redeploy: Website Intelligence +
   Website Builder Code nodes.
+- 2026-10-12 — **Deployed to n8n:** Website Intelligence `5VWP3tMK3MZysi7w` (Compose Research Prompt, Finalize Brief; active version
+  73660a78-83e8-41c4-a704-ab1d233093a1) and Website Builder `hSTRGnHVsu6tMOmH` (Compose System Prompt, Finalize Website Brief; active
+  version f3c27d18-fd67-44da-8dbe-1a0b5a49162c). Deployed code matches `dist/` character for character (production had drifted
+  from the repo before; now aligned). Test execution 1796 (dental clinic, all side effects pinned): mode medical, variation
+  `clinic_real_photo_site`, video section "Inside your teeth" with 6 videos, prompt has the video section and the
+  natural-voice line, no scroll film/Kling for the clinic.
