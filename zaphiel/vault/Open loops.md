@@ -328,3 +328,5 @@ tags: [zaphiel, open-loops]
 - 2026-10-12 — **Cinematic Director: first real run waits for Ryan** — pick the first job (a watch demo or a doctor demo),
   then "APPROVED: up to N Kling credits". The first run measures real credit costs into
   [[60_Skill_Packs/Cinematic_Director/06_Prompt_Log]]. The agent is callable by name from the next Claude Code session.
+- 2026-10-12 — **TITAN checkpoint 1 waits for Ryan** ([[00_CEO_Brain/09_TITAN_Audit]] §5): Tier 3 3D only with a licensed real model
+  (OK?), Demo A subject (supplement brand or clinic), OK to add "reports to TITAN" sections and routing lines (diffs in the PR).

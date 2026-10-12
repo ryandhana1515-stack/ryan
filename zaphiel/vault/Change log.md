@@ -817,3 +817,6 @@ tags: [zaphiel, changelog]
   Kling first/tail film; reverse scroll = reassembly), photoreal medical anatomy recipes and facts table, production
   runbook with cost card and approval gate, QA, prompt log. Dry-run tests in `80_Clients/_Test/cinematic-director/`.
   Links appended to 05, 06, Knowledge/cinematic-website. Nothing generated, no credits spent.
+- 2026-10-12 — **TITAN Task 1 audit** written ([[00_CEO_Brain/09_TITAN_Audit]]): every web piece and tool connection checked live
+  (Vercel Hobby, Supabase, Lovable, Higgsfield, Kling, ElevenLabs partial, Figma view seat, Canva, Shopify = BioGreen,
+  n8n, GitHub, Metricool). Cinematic Director medical-rules note added as a placeholder (research running).
