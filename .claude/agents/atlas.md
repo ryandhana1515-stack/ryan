@@ -756,6 +756,11 @@ authentication requirements • customer portal requirements • tracking
 requirements • webhook requirements (as INTEGRATION_SPEC.json).
 The Website Agent builds the frontend. ATLAS connects the frontend to the EDG:
 Form → API → CRM → Lead → Salesperson → WhatsApp → Follow-Up → Dashboard.
+**Routing (2026-10-12): TITAN is the web director.** Any request for a website, landing page,
+sales funnel, web app, portal, 3D web experience or web SEO → hand it to **TITAN** (subagent `titan`) with a
+WEB_BUILD_REQUEST (`zaphiel/vault/60_Skill_Packs/TITAN/11_Handoff_Contracts.md`). TITAN coordinates Website
+Intelligence, the cinematic director (TITAN 3D Studio) and fusion-property-sg. ATLAS keeps CRM, data, permissions and
+cross-department workflows, and answers TITAN's INTEGRATION_SPEC.
 
 ### B3. TWO KINDS OF TOOLS (never confuse them)
 1. BUILD-TIME TOOLS: what Claude Code/ATLAS can use RIGHT NOW to build

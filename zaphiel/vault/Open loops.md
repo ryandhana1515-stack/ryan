@@ -330,3 +330,6 @@ tags: [zaphiel, open-loops]
   [[60_Skill_Packs/Cinematic_Director/06_Prompt_Log]]. The agent is callable by name from the next Claude Code session.
 - 2026-10-12 — **TITAN checkpoint 1 waits for Ryan** ([[00_CEO_Brain/09_TITAN_Audit]] §5): Tier 3 3D only with a licensed real model
   (OK?), Demo A subject (supplement brand or clinic), OK to add "reports to TITAN" sections and routing lines (diffs in the PR).
+- 2026-10-12 — **TITAN Task 4 (demos) waits for Ryan:** Demo A free landing page (site kit, Vercel preview) can start on "go";
+  Demo B, the doctor body-journey on Lovable, needs a cost card yes (Kling/Higgsfield credits + Lovable credits).
+  Singapore rule citations for 03_Medical_Supplement_Rules / 07 / 08 are being researched.

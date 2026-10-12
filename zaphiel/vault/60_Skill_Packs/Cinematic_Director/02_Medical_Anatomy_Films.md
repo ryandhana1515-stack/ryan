@@ -52,6 +52,9 @@ clinic's doctor; these facts are only for making the pictures correct.
 | **Tooth** | Enamel outside, dentin, the pulp chamber with nerve and fine vessels running down the root canals into the jawbone, held by the gum. Implant = a titanium post in the jawbone, an abutment, a crown on top. |
 | **Skin (aesthetics)** | Layers: epidermis on top, dermis with collagen and elastin fibres, small vessels, hair follicles and glands, then fat below. Ageing = thinner, looser collagen. |
 | **Lungs** | Windpipe → bronchi → branching bronchioles → grape-like air sacs (alveoli) wrapped in capillaries; breathing as gentle expansion. |
+| **Stomach & digestive tract** | Oesophagus down to the J-shaped stomach (upper left of the abdomen, under the diaphragm), folded inner lining (rugae), then the small intestine (long, coiled, with finger-like villi inside) and the large intestine framing it. Gentle wave-like movement (peristalsis). |
+| **Liver** | The largest internal organ, upper right under the diaphragm, reddish-brown, wedge-shaped; the gallbladder tucked beneath it. |
+| **Kidneys** | Two bean-shaped organs at the back of the abdomen either side of the spine, the right slightly lower; renal artery and vein at the inner notch; fine filtering units inside. |
 
 **Common mistakes to catch (test B, 2026-10-12):**
 - **Mirror image:** in a front view, the patient's left is on the viewer's **right**. The apex and the aortic arch
@@ -64,6 +67,35 @@ clinic's doctor; these facts are only for making the pictures correct.
 
 If a clinic's specialty is not in this table, the director researches it first (reputable medical sources only)
 and adds a row here.
+
+## The full body tour (Ryan, 2026-10-12: "they go inside the human body, the lungs, the stomach, the organs")
+For a clinic or medical centre that wants the whole-body wow, one chained film (each scene's tail still = the next
+scene's first still), 8–10 scenes, then the specialty in detail:
+1. A calm person in soft light; the camera moves in, the skin turns translucent (10 s).
+2. **Into an artery:** red blood cells flowing along the glistening wall; the camera rides the flow.
+3. **The heart:** out of the vessel to see the heart beating, coronary arteries on its surface.
+4. **The lungs:** the camera glides up through the chest; the lungs breathe, down to the branching airways and air
+   sacs wrapped in capillaries.
+5. **The stomach and digestive tract:** down past the diaphragm to the stomach's folded lining, then the coiled
+   small intestine and its villi, gentle peristalsis.
+6. **Liver and kidneys:** a slow pass past the liver (upper right) and the kidneys at the back, blood flowing
+   through them.
+7. **The clinic's specialty:** the organ the doctor treats, in detail (the recipes below).
+8. **Back out** to the calm person (the opening still, so the film loops).
+Each organ scene is 5 s (10 s for the threshold and the specialty). The camera never cuts: it travels through vessels
+or tissue from one organ to the next.
+
+## The presenter video section ("a director explaining it inside the website")
+A separate "How it works" video on the site, next to the body-journey film:
+- **Presenter:** the clinic's **real doctor filmed** (a phone on a tripod is fine) is the default. An **AI presenter**
+  is allowed only as an illustrative presenter, labelled "AI presenter" on screen and next to the player, never
+  claiming to be the doctor or a patient (Higgsfield/Kling presenter, voice from ElevenLabs with a commercial plan or
+  the doctor's own voice with consent).
+- **Picture-in-picture:** the presenter in a corner over the body-journey footage, so the explanation sits on top of
+  the visuals.
+- **Script:** written from the clinic's approved facts, 60–120 seconds, plain words, and **approved by the doctor**.
+  Captions on, a transcript below the player.
+- **Player:** a poster, a big play button, sound only after the visitor presses play, captions, full width.
 
 ## Recipes by specialty (5–7 scenes; prompts start with the look bible)
 **Cardiology / heart screening**

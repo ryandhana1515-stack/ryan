@@ -1,0 +1,3 @@
+{ "project_id": "", "forms": [{ "name": "", "fields": [], "pdpa_consent": true, "destination": "crm.lead" }],
+  "events": ["form_submit", "whatsapp_click"], "utm_capture": true, "click_ids": ["fbclid", "ttclid", "gclid"],
+  "webhooks": [], "crm_fields": [], "lead_owner_rule": "", "payments": null, "calendar": null, "status": "requested" }
