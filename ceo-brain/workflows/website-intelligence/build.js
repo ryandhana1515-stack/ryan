@@ -24,7 +24,7 @@ const NOTIFY = manifest.notify_email;
 const BUILDER_ID = WF.website_builder || 'REPLACE_ME';
 const SENDER_ID = WF.outbound_sender || 'REPLACE_ME';
 const EVENT_URL = 'https://ryan1515.app.n8n.cloud/webhook/ceo-brain/event';
-const systemAddendum = read('prompts/website-intelligence.system.md').replace('{{BRIEF_KEYS}}', JSON.stringify(Object.fromEntries(research.WR_BRIEF_KEYS.map((k) => [k, research.WR_LIST_KEYS.includes(k) ? [] : (k === 'identity_confidence' ? 'high | medium | low' : '')])), null, 0));
+const systemAddendum = read('prompts/website-intelligence.system.md').replace('{{BRIEF_KEYS}}', JSON.stringify(Object.fromEntries(research.WR_BRIEF_KEYS.map((k) => [k, research.WR_LIST_KEYS.includes(k) ? [] : (k === 'identity_confidence' ? 'high | medium | low' : (k === 'video_plan' ? { section_title: '', specialty: '', topics: [{ title: '', beats: { what_it_is: '', what_can_go_wrong: '', how_the_clinic_treats_it: '', visit_the_clinic: '' } }] } : ''))])), null, 0));
 const userPrompt = read('prompts/website-intelligence.user.md');
 
 function inline(file) {
@@ -110,7 +110,7 @@ const user_prompt = USER_PROMPT_TEMPLATE.replace(/\\{\\{(\\w+)\\}\\}/g, (_, k) =
 return [{ json: { system_prompt: system, user_prompt, role_source: role ? 'vault' : 'compiled_fallback', config: { model: ${j(manifest.model)}, agent: ${j(manifest.id)}, agent_version: ${j(manifest.version)} } } }];
 `;
 
-const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_PARALLAX', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'WR_ASK_MARK', 'WR_HOLD_MARK', 'WR_MAX_INFO_ROUNDS', 'WR_ROOMS_Q', 'WR_ROOMS_RE', 'wrRoomsKnown', 'WR_MAX_IMAGES', 'wrRealPhotos', 'WR_PUBLIC_Q', 'WR_WEBSITE_Q', 'WR_URL_RE', 'wrUrlGiven', 'wrDropPublicQuestions', 'WR_TOPICS', 'wrTopicsOf', 'wrAskedTopics', 'wrInfoRounds', 'wrEnoughFallback', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
+const codeFinalize = `${pick(HELPERS.concat(['WR_MED_SPECIALTY', 'wrSpecialty', 'wrIsMedical', 'WR_MOTION', 'WR_PARALLAX', 'WR_CLINIC_MOTION', 'wrMotionFor', 'wrFunnelFor', 'WR_CONVERSION_STRATEGY', 'WR_INSTRUCTION', 'WR_VARIATIONS', 'WR_CLINIC_VARIATION', 'WR_CLINIC_TOPICS', 'WR_CLINIC_TREATMENTS', 'WR_SUPERLATIVE', 'wrClinicKey', 'wrVideoBeats', 'wrVideoPlan', 'wrCleanLine', 'wrCoerceVideoPlan', 'wrVideoPlanLines', 'WR_CLINIC_CONVERSION', 'WR_BRIEF_KEYS', 'WR_LIST_KEYS', 'WR_ASK_MARK', 'WR_HOLD_MARK', 'WR_MAX_INFO_ROUNDS', 'WR_ROOMS_Q', 'WR_ROOMS_RE', 'wrRoomsKnown', 'WR_MAX_IMAGES', 'wrRealPhotos', 'WR_PUBLIC_Q', 'WR_WEBSITE_Q', 'WR_URL_RE', 'wrUrlGiven', 'wrDropPublicQuestions', 'WR_TOPICS', 'wrTopicsOf', 'wrAskedTopics', 'wrInfoRounds', 'wrEnoughFallback', 'wrConversionFor', 'wrFallbackBrief', 'wrCoerceBrief', 'wrParseJson', 'wrBriefText', 'wrFinalize', 'wrCustomerAsk']))}
 // ---- n8n glue ----
 const d = $('Digest Research').first().json;
 const pre = $('Compose Research Prompt').first().json;

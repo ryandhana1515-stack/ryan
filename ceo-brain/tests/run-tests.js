@@ -837,35 +837,36 @@ test('Lead Intake: an AI reply that says "I don\'t know" is replaced by John\'s 
   assert.ok(run.fin.audit.includes('reply_replaced:dont_know'));
 });
 console.log('\n[16] Website Intelligence plans the sale; the creator builds it (Ryan, 2026-09-26: funnels, high-converting 3D, realistic anatomy)');
-test('cardiology clinic: WI plans a funnel, conversion rules, a 3D parallax scroll film and a photoreal heart; the creator puts all of it in the Lovable prompt and the hero shot', () => {
+test('cardiology clinic: WI plans a funnel, clinic conversion rules and a video plan (no scroll film since 2026-10-12); the creator puts all of it in the Lovable prompt', () => {
   const H = { tenant_id: 'fusiontech', lead_id: 'lead_heart', contact_name: 'Dr Lim', company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: 'We are a heart specialist clinic. Can you build us a website and a funnel for ads?', conversation_json: '[]', extracted_json: '{}', test_mode: true };
   const input = wr.wrInput(H);
   const digest = wr.wrDigest({ input, identity: wr.wrIdentify(input, []), results: [], pages: [] });
   const plan = wr.wrFinalize({ error: 'x', input, digest }).brief;
-  assert.ok(/photoreal/i.test(plan.medical_visual_direction) && /heart/i.test(plan.medical_visual_direction) && /blood/i.test(plan.medical_visual_direction), plan.medical_visual_direction);
+  assert.ok(/^Specialty: cardiology/.test(plan.medical_visual_direction) && /own photos/.test(plan.medical_visual_direction) && /VIDEO SECTION/.test(plan.medical_visual_direction), plan.medical_visual_direction);
   assert.ok(plan.funnel_plan.length >= 5 && /main deliverable/.test(plan.funnel_plan[0]), 'the customer asked for a funnel');
-  assert.ok(plan.conversion_strategy.length >= 6 && /scroll film/.test(plan.motion_3d_direction) && /parallax/.test(plan.motion_3d_direction) && /heart/i.test(plan.motion_3d_direction), '3D parallax scroll film (Ryan, 2026-09-27): ' + plan.motion_3d_direction);
+  assert.ok(plan.conversion_strategy.length >= 6 && plan.motion_3d_direction === wr.WR_CLINIC_MOTION && plan.video_plan.topics.some((t) => t.title === 'The coronary arteries'), 'clinic site, no film (Ryan, 2026-10-12): ' + plan.motion_3d_direction);
   const research_json = JSON.stringify({ brief: plan });
   const out = wb.finalizeBrief({ error: 'model down', input: { company_name: 'Heartline Cardiology Clinic', industry: 'cardiology clinic', message: H.message, research_json } });
   assert.strictEqual(out.brief.mode, 'medical');
   const p = out.build_prompt;
-  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && /3D parallax scroll film/.test(p) && /ScrollTrigger/.test(p) && /Medical visual \(hero\)/.test(p) && /opening scene of the scroll film/.test(p) && /\[ANATOMY VIDEO\]/.test(p) && !/no scroll animation/.test(p), p.slice(-1500));
-  assert.ok(p.length <= wb.WB_MAX_PROMPT || p.length <= 9000);
-  assert.ok(/heart/i.test(out.image_shots[0].prompt) && /anatomically accurate/.test(out.image_shots[0].prompt) && /not cartoon/.test(out.image_shots[0].prompt));
+  assert.ok(p.indexOf(wb.WB_STRATEGY_MARK) !== -1 && /Funnel \(build these pages/.test(p) && /High-conversion rules/.test(p) && p.includes(wb.WB_CLINIC_MARK) && /VIDEO SECTION "How your heart works"/.test(p) && !/ScrollTrigger|\[ANATOMY VIDEO\]|opening scene of the scroll film/.test(p), p.slice(-1500));
+  assert.ok(p.length <= wb.WB_MAX_PROMPT);
+  assert.ok(/reception/i.test(out.image_shots[0].prompt) && out.image_shots[0].generate_with === 'lovable' && !/anatomically accurate/.test(out.image_shots[0].prompt));
   // A model-written prompt also gets the strategy, exactly once.
   const again = wb.wbWithStrategy(p, wb.wbResearchPlan({ research_json }));
   assert.strictEqual(again.split(wb.WB_STRATEGY_MARK).length, 2);
 });
-test('the scroll film opens on the clinic anatomy: heart beating, arteries, blood vessels (Ryan, 2026-09-27)', () => {
+test('clinics no longer open on an anatomy scroll film (Ryan, 2026-10-12); everyone else keeps the parallax film', () => {
   const wr = require('../agents/website-intelligence/research.js');
   const src = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-intelligence/research.js'), 'utf8');
-  assert.ok(/WR_PARALLAX/.test(src) && /heart beating with blood flowing through the arteries and vessels/.test(src), 'WI plans the anatomy film');
-  assert.ok(/heart beating in slow motion, coronary arteries and veins/.test(src), 'cardiology visual intact');
+  assert.ok(/WR_PARALLAX/.test(src) && /Doctors and clinics are the exception \(Ryan, 2026-10-12\): NO scroll film and NO parallax/.test(src), 'WI tells the creator: no film for clinics');
+  assert.ok(/heart beating in slow motion, coronary arteries and veins/.test(src), 'specialty detection intact');
+  assert.ok(/parallax/.test(wr.wrMotionFor('car dealership', '')) && wr.wrMotionFor('cardiology clinic', '') === wr.WR_CLINIC_MOTION);
   const plan = { brief: { primary_cta: 'Book a Heart Screening', medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: a photorealistic, medically accurate human heart beating in slow motion, coronary arteries and veins, blood flowing. Photorealistic and medically accurate.' } };
   const p = wb.wbWithStrategy('Build the site.', wb.wbResearchPlan({ research_json: JSON.stringify(plan) }));
-  assert.ok(/heart beating/.test(p) && /scrubbed by the scroll/.test(p) && /parallax/.test(p) && !/no scroll animation/.test(p), p.slice(-1200));
+  assert.ok(/Clinic site: the clinic's own photos/.test(p) && !/scrubbed by the scroll|heart beating|3D parallax scroll film/.test(p), p.slice(-1200));
   const routine = require('fs').readFileSync(require('path').join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/image_to_video/.test(routine) && /3D SCROLL FILM ON EVERY SCREEN SIZE, PHONES FIRST/.test(routine) && /NEVER turn the film off below a breakpoint/.test(routine) && /Scroll-film check/.test(routine) && /generate_3d/.test(routine) && /3D MODEL/.test(routine) && /Never for clinics/.test(routine) && !/Never use Higgsfield/.test(routine) && !/flat, high-converting website mock-up/.test(routine), 'build worker: Kling scroll film + Higgsfield 3D model (Ryan, 2026-09-28)');
+  assert.ok(/image_to_video/.test(routine) && /Clinic check \(Lovable builds; Ryan, 2026-10-12\)/.test(routine) && /generate_3d/.test(routine) && /Never for clinics/.test(routine) && !/Never use Higgsfield/.test(routine) && !/flat, high-converting website mock-up/.test(routine) && !/3D SCROLL FILM ON EVERY SCREEN SIZE/.test(routine), 'build worker: Kling film + Higgsfield 3D for others, a clinic check for clinics');
 });
 
 test('no research → the creator works as before; general practice gets no anatomy render', () => {
@@ -890,12 +891,16 @@ test('every agent parses a fenced JSON answer that itself contains a ``` block (
 test('a rich research plan never pushes the flat-page rule or the anatomy visual out of the Lovable prompt (execution 390)', () => {
   const long = (w, n) => Array.from({ length: n }, (_, i) => w + ' ' + i + ' ' + 'x'.repeat(300));
   const plan = { brief: { primary_cta: 'Book a Heart Screening Consultation', target_customers: long('buyer', 3), customer_objections: long('objection', 4), homepage_conversion_flow: long('section', 9), funnel_plan: long('step', 8), conversion_strategy: long('rule', 8), placeholders_required: long('ph', 8), motion_3d_direction: 'A photorealistic 3D human heart scrubbed by scroll. ' + 'm'.repeat(900), medical_visual_direction: 'Specialty: cardiology. Use photorealistic, medically accurate anatomy: a realistic beating human heart with blood flowing. ' + 'v'.repeat(900) } };
-  const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: JSON.stringify(plan) } });
+  const sme = Object.assign({}, plan.brief); delete sme.medical_visual_direction;
+  const out = wb.finalizeBrief({ error: 'x', input: { company_name: 'Prestige Motors', industry: 'BMW car dealership', message: 'car dealership website', research_json: JSON.stringify({ brief: sme }) } });
   const p = out.build_prompt;
   assert.ok(p.length <= wb.WB_MAX_PROMPT, p.length);
   const sec = p.slice(p.indexOf(wb.WB_STRATEGY_MARK));
-  for (const k of ['Primary CTA everywhere', '3D parallax scroll film', 'Medical visual (hero)', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
-  assert.ok(/Never a cartoon/.test(sec) && /Build a premium/.test(p), 'strategy complete and the base prompt still leads');
+  for (const k of ['Primary CTA everywhere', '3D parallax scroll film', 'Funnel (build these pages', 'Homepage section order', 'High-conversion rules', 'Answer these objections', 'Placeholders to label']) assert.ok(sec.includes(k), k);
+  assert.ok(/Build a premium/.test(p), 'strategy complete and the base prompt still leads');
+  // A clinic with the same rich plan keeps its clinic block under the cap (Ryan, 2026-10-12).
+  const clinic = wb.finalizeBrief({ error: 'x', input: { company_name: 'Asian Heart & Vascular Centre', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: JSON.stringify(plan) } }).build_prompt;
+  assert.ok(clinic.length <= wb.WB_MAX_PROMPT && clinic.includes(wb.WB_CLINIC_MARK) && /not robotic/.test(clinic) && /Clinic site: the clinic's own photos/.test(clinic), clinic.length);
 });
 test('John sends the mock-up link where the customer asked: a typed email beats the phone on file (execution 385)', () => {
   const wi = require('../agents/website-builder/intake.js');
@@ -1090,7 +1095,8 @@ test('every business gets its industry sitemap plus the offer and thank-you page
     const names = r.brief.pages.map((p) => p.name);
     assert.ok(names.length >= 8 && names.length <= 12 && names.includes(page) && names.includes('Offer Landing Page') && names.includes('Thank You'), c + ': ' + names.join(', '));
     const p = r.build_prompt;
-    assert.ok(p.includes(wb.WB_FULLSITE_MARK) && /Build EVERY page below completely/.test(p) && /Homepage, in this order: hero with an outcome headline/.test(p) && /sticky mobile CTA bar with WhatsApp/.test(p) && /Apple-grade/.test(p), c);
+    const clinic = r.brief.mode === 'medical'; // clinics: real-photo homepage, no Apple scroll effects (Ryan, 2026-10-12)
+    assert.ok(p.includes(wb.WB_FULLSITE_MARK) && /Build EVERY page below completely/.test(p) && (clinic ? /Homepage, in this order: hero with the clinic's own photo/.test(p) && !/Apple-grade/.test(p) : /Homepage, in this order: hero with an outcome headline/.test(p) && /Apple-grade/.test(p)) && /sticky mobile CTA bar with WhatsApp/.test(p), c);
     assert.ok(!/guarantee|\$\s?\d/i.test(p), c + ': no prices or guarantees');
     assert.ok(p.length <= wb.WB_MAX_PROMPT);
   });
@@ -1242,7 +1248,9 @@ console.log('\n[24] Smile Plus Dental test: no public-fact questions, no repeats
 }
 console.log('\n[25] Full Master Cinematic Website Agent 2026 governs every build (Ryan, 2026-09-29)');
 test('every build prompt carries the doctrine: industry chapter story, engine router, reversible timeline, storyboard first, QA torture test', () => {
-  const cases = [['Smile Plus Dental Surgery', 'dental clinic', 'anatomy outward to patient view'], ['Prestige Motors', 'BMW car dealership', 'test-drive CTA'], ['Skyline Realty', 'real estate agency', 'Reverse exits the property'], ['Ah Seng Kopi', 'coffee shop cafe', 'reservation/order'], ['Tan Renovation', 'home renovation contractor', 'finished → stages → plan → before']];
+  const dental = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'build me a website for dental clinic' } }).build_prompt;
+  assert.ok(dental.includes(wb.WB_CLINIC_MARK) && !dental.includes(wb.WB_DOCTRINE_MARK), 'clinics get the clinic block, not the cinematic doctrine (Ryan, 2026-10-12)');
+  const cases = [['Prestige Motors', 'BMW car dealership', 'test-drive CTA'], ['Skyline Realty', 'real estate agency', 'Reverse exits the property'], ['Ah Seng Kopi', 'coffee shop cafe', 'reservation/order'], ['Tan Renovation', 'home renovation contractor', 'finished → stages → plan → before']];
   cases.forEach(([c, m, story]) => {
     const r = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: 'build me a website for ' + m } });
     const p = r.build_prompt;
@@ -1263,7 +1271,7 @@ test('the doctrine is in the vault verbatim and in the live design standard the 
 test('the build worker: the film is made on Kling directly with matching first/tail frames, Higgsfield is the backup, and the check covers reverse scroll', () => {
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
   assert.ok(/made on Kling directly/.test(routine) && /`first_image`/.test(routine) && /`tail_image`/.test(routine) && /`enable_audio` false/.test(routine) && /`prefer_multi_shots` false/.test(routine), 'Kling direct (Ryan, 2026-09-29)');
-  assert.ok(/make it on\s+Higgsfield/.test(routine) && /non-Kling/.test(routine) && /docs\/storyboard\.md/.test(routine) && /no `once: true`/.test(routine));
+  assert.ok(/make it on\s+Higgsfield/.test(routine) && /non-Kling/.test(routine) && /docs\/storyboard\.md/.test(routine) && /reverse scroll included/.test(routine));
 });
 console.log('\n[26] Luxury retail at the S$10,000 standard (Ryan, 2026-09-29: "any retail luxury 10,000 website")');
 test('watches, jewellery, electronics, furniture, fashion and luxury goods are luxury retail; others are not', () => {
@@ -1291,7 +1299,7 @@ test('the shot package (Higgsfield Director role, made on Kling): every doctrine
   const plain = wb.finalizeBrief({ error: 'x', input: { company_name: 'Tan Plumbing', industry: 'plumber', message: 'need a website' } });
   plain.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.negative && sc.shot.end_frame));
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/`shot` package,\s+every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH is left open/.test(routine));
+  assert.ok(/`shot` package,\s+every field written out/.test(routine) && /luxury_chapters/.test(routine) && /docs\/qa-report\.md/.test(routine) && /no BLOCKER or HIGH open/.test(routine));
 });
 console.log('\n[27] Real photos first; research everything about the company (Ryan, 2026-09-29)');
 {
@@ -1330,7 +1338,7 @@ console.log('\n[27] Real photos first; research everything about the company (Ry
     assert.ok(/REAL PHOTOS of this business/.test(r.build_prompt) && r.build_prompt.includes('https://heure.sg/media/watch-macro.jpg') && /never labelled/.test(r.build_prompt));
     const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: cardiology. Hero and section visuals: photoreal beating heart with coronary arteries', real_photos: ['https://heart.sg/clinic.jpg | hero'] } });
     const m = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heart Clinic', industry: 'cardiology clinic', message: 'heart specialist clinic website', research_json: med } });
-    assert.ok(!m.image_shots[0].real_url && m.image_shots[1].real_url === 'https://heart.sg/clinic.jpg', 'the anatomy film keeps the clinic hero');
+    assert.ok(m.image_shots[0].real_url === 'https://heart.sg/clinic.jpg' && m.image_shots[1].generate_with === 'lovable', 'clinics: the real photo is the hero, Lovable generates only the rest (Ryan, 2026-10-12)');
     const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
     assert.ok(/`real_url`/.test(routine) && /do NOT generate it/.test(routine) && /the customer's own photo/.test(routine));
   });
@@ -1351,7 +1359,7 @@ test('John drops a repeated question and any look/style question; statements sta
   assert.ok(/NEVER ask how the website should look/.test(prompt) && /Ask at most ONE question/.test(prompt));
 });
 test('every build prompt is the master prompt: steps 1-10 in order, with the industry story, shots, assets and QA', () => {
-  [['Smile Plus Dental Surgery', 'dental clinic'], ['Heure Atelier', 'luxury watch boutique'], ['Skyline Realty', 'real estate agency'], ['Prestige Motors', 'BMW car dealership'], ['Tan Plumbing', 'plumber']].forEach(([c, m]) => {
+  [['Heure Atelier', 'luxury watch boutique'], ['Skyline Realty', 'real estate agency'], ['Prestige Motors', 'BMW car dealership'], ['Tan Plumbing', 'plumber']].forEach(([c, m]) => {
     const p = wb.finalizeBrief({ error: 'x', input: { company_name: c, industry: m, message: 'build me a website for my ' + m } }).build_prompt;
     const at = ['1 INTELLIGENCE', '2 CREATIVE', '3 STORY', '4 ANIMATION', '5 ENGINE', '6 ASSETS', '7 HIGGSFIELD', '8 LOVABLE', '9 CONVERSION', '10 QA'].map((k) => p.indexOf(k));
     assert.ok(at.every((x, i) => x > 0 && (i === 0 || x > at[i - 1])), c + ': ' + at.join(','));
@@ -1359,7 +1367,7 @@ test('every build prompt is the master prompt: steps 1-10 in order, with the ind
   });
   const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Hero and section visuals: photoreal jaw and teeth anatomy', real_photos: [] } });
   const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json: med } });
-  assert.ok(/educational anatomy/.test(r.film_brief.scenes[0].section) && /100mm macro/.test(r.film_brief.scenes[0].shot.lens) && /no gore/.test(r.film_brief.scenes[0].shot.negative));
+  assert.ok(r.film_brief.mode === 'clinic_video_section' && r.film_brief.scenes.length === 0 && r.film_brief.video_section.specialty === 'dental', 'clinics have no film (Ryan, 2026-10-12)');
   const prop = wb.finalizeBrief({ error: 'x', input: { company_name: 'Skyline Realty', industry: 'real estate agency', message: 'website' } });
   prop.film_brief.scenes.forEach((sc) => assert.ok(sc.shot && sc.shot.lens && sc.shot.negative, 'property shot'));
 });
@@ -1404,20 +1412,19 @@ test('the kit builds the film from media.json on Vercel, plays it backwards on s
   assert.ok(/class="film-sequence"/.test(kit('index.html')) && /SceneSequence/.test(kit('src/engine/index.js')) && /\.film-sequence--live > \.film/.test(kit('src/styles/engine.css')));
   assert.ok(/film-chapter--right/.test(kit('src/styles/engine.css')) && (kit('index.html').match(/data-film=/g) || []).length >= 5, 'the demo is a scene film');
 });
-console.log('\n[30] Clinics get a narrated explainer film inside the site (Ryan, 2026-09-29)');
-test('a clinic brief plans a 6-scene narrated film going inside the tooth or body; the Lovable prompt holds its player; the worker makes it', () => {
-  const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Hero and section visuals: photoreal teeth', real_photos: [] } });
+console.log('\n[30] Clinics get a video section of narrated explainers (Ryan, 2026-10-12; replaces the 2026-09-29 explainer film)');
+test('a clinic brief plans one narrated video per topic; the Lovable prompt holds the section; the worker makes no film', () => {
+  const med = JSON.stringify({ identity: { confidence: 'high' }, brief: { medical_visual_direction: 'Specialty: dental. Real clinic photos first.', real_photos: [] } });
   const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json: med } });
-  const ex = r.film_brief.explainer;
-  assert.ok(ex && ex.specialty === 'dental' && ex.scenes.length === 6, JSON.stringify(ex && ex.specialty));
-  assert.ok(/enamel into the dentin/.test(ex.scenes[1].visual) && /nerve and fine blood vessels/.test(ex.scenes[2].visual) && /non-gory/.test(ex.scenes[2].visual));
-  assert.ok(ex.rules.some((x) => /never medical advice/.test(x)) && ex.rules.some((x) => /clinic to verify/.test(x)));
-  assert.ok(/Clinic EXPLAINER FILM/.test(r.build_prompt) && /public\/explainer/.test(r.build_prompt));
+  const vs = r.film_brief.video_section;
+  assert.ok(vs && vs.specialty === 'dental' && vs.source === 'library' && vs.topics.length === 6 && vs.topics.every((t) => t.beats.what_it_is && t.beats.visit_the_clinic), JSON.stringify(vs && vs.specialty));
+  assert.deepStrictEqual(wb.wbExplainerBrief(r.brief, { research_json: med }).topics.map((t) => t.title), vs.topics.map((t) => t.title), 'old export name kept');
+  assert.ok(/VIDEO SECTION "Inside your teeth"/.test(r.build_prompt) && !/Clinic EXPLAINER FILM|public\/explainer/.test(r.build_prompt));
   const heart = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heart Clinic', industry: 'cardiology clinic', message: 'heart specialist clinic website' } });
-  assert.ok(/coronary artery/.test(heart.film_brief.explainer.scenes[2].visual));
-  assert.strictEqual(wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website' } }).film_brief.explainer, undefined);
+  assert.ok(heart.film_brief.video_section.topics.some((t) => t.title === 'The coronary arteries'));
+  assert.strictEqual(wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website' } }).film_brief.video_section, undefined);
   const routine = fs.readFileSync(path.join(__dirname, '../agents/website-build-worker/ROUTINE.md'), 'utf8');
-  assert.ok(/e4\. Clinic explainer film/.test(routine) && /`seed_audio`/.test(routine) && /burn subtitles/.test(routine) && /get_file_upload_url/.test(routine) && /verified by the clinic/.test(routine));
+  assert.ok(/e4\. Clinic video section/.test(routine) && !/`seed_audio`/.test(routine) && /verified by the clinic/.test(routine) && /Decision \(Ryan, 2026-10-12\)/.test(routine));
 });
 console.log('\n[31] One transformation film, a cinematic finish, never a grey 3D model (Ryan, 2026-09-29: the suit site felt too simple)');
 test('a suit brand gets one continuous fabric-to-suit transformation film; the worker adds the cinematic finish and skips untextured 3D', () => {
@@ -1737,6 +1744,80 @@ test('not enough data is said plainly; spend with zero leads is a KILL that need
   assert.strictEqual(dead.decision, 'KILL'); assert.strictEqual(dead.approval_needed, 'yes');
   assert.strictEqual(dead.scorecard[6].note, 'CRM not connected'); assert.strictEqual(dead.scorecard[7].note, 'CRM not connected');
 });
+console.log('\n[39] Doctors get a real-photo clinic site with a video section, no cinematic scroll (Ryan, 2026-10-12)');
+{
+  const wr39 = require('../agents/website-intelligence/research.js');
+  const plan39 = (company, industry, message, pages) => {
+    const input = wr39.wrInput({ tenant_id: 'fusiontech', lead_id: 'lead_39', company_name: company, industry, message, conversation_json: '[]', extracted_json: '{}', test_mode: true, website: pages ? 'https://' + company.toLowerCase().replace(/[^a-z]/g, '') + '.sg' : '' });
+    const identity = wr39.wrIdentify(input, []);
+    const digest = wr39.wrDigest({ input, identity, results: [], pages: pages ? [{ url: identity.website, ok: true, html: pages }] : [] });
+    return wr39.wrFinalize({ error: 'model down', input, digest });
+  };
+  const DENTAL_HTML = '<html><head><title>Smile Plus Dental Surgery</title></head><body><h1>Family dentistry in Bishan</h1><p>Our services: scaling and polishing, fillings, root canal treatment, dental implants and Invisalign clear aligners.</p></body></html>';
+  test('Website Intelligence plans the clinic video section: dental parts of the tooth plus the treatments its own pages list; cardiology includes the coronary arteries', () => {
+    const fin = plan39('Smile Plus Dental Surgery', 'dental clinic', 'Please build a website for our dental clinic', DENTAL_HTML);
+    const vp = fin.brief.video_plan;
+    assert.ok(vp && vp.section_title === 'Inside your teeth' && vp.specialty === 'dental', JSON.stringify(vp && vp.section_title));
+    const titles = vp.topics.map((t) => t.title).join(' | ');
+    ['Enamel', 'Dentin', 'Pulp', 'Root', 'Gums', 'Jawbone'].forEach((k) => assert.ok(titles.includes(k), k + ' in ' + titles));
+    ['Root canal treatment', 'Dental implants', 'Braces and aligners', 'Scaling and polishing', 'Fillings'].forEach((k) => assert.ok(vp.services.includes(k), k));
+    assert.ok(vp.topics.length <= 10 && vp.topics.every((t) => t.beats.what_it_is && t.beats.what_can_go_wrong && t.beats.how_the_clinic_treats_it && /\[VERIFY WITH CLINIC\]/.test(t.beats.visit_the_clinic)));
+    assert.ok(fin.brief.motion_3d_direction === wr39.WR_CLINIC_MOTION && /VIDEO_PLAN:\n- Section: Inside your teeth/.test(fin.brief_text) && !/Proof \[CLIENT TO PROVIDE\]/.test(fin.brief_text), 'brief text carries the plan');
+    assert.ok(!fin.brief.placeholders_required.some((x) => /^testimonials/.test(x)) && /no testimonials/.test(fin.brief.testimonial_requirements), 'no testimonials on clinic sites');
+    const heart = plan39('Heartline Cardiology Clinic', 'cardiology clinic', 'heart specialist clinic website').brief.video_plan;
+    assert.ok(heart.specialty === 'cardiology' && heart.topics.some((t) => t.title === 'The coronary arteries') && !heart.topics.some((t) => /stent/i.test(t.title)), 'stents only if offered');
+    assert.strictEqual(wr39.wrClinicKey('varicose vein clinic'), 'vascular'); assert.strictEqual(wr39.wrClinicKey('ENT specialist for sinus problems'), 'ent'); assert.strictEqual(wr39.wrClinicKey('IVF fertility centre'), 'womens'); assert.strictEqual(wr39.wrClinicKey('family GP clinic'), 'general'); assert.strictEqual(wr39.wrClinicKey('asthma and lung clinic'), 'respiratory');
+    const sme = plan39('Prestige Motors', 'car dealership', 'website for my BMW dealership');
+    assert.strictEqual(sme.brief.video_plan, null); assert.ok(/parallax/.test(sme.brief.motion_3d_direction) && !/VIDEO_PLAN:/.test(sme.brief_text), 'SME research unchanged');
+  });
+  test('a model-written video plan is sanitised (no superlatives, capped); a thin one falls back to the topic library', () => {
+    const input = wr39.wrInput({ company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website' });
+    const digest = wr39.wrDigest({ input, identity: wr39.wrIdentify(input, []), results: [], pages: [] });
+    const topics = Array.from({ length: 14 }, (_, i) => ({ title: 'The best topic ' + i, beats: { what_it_is: 'x'.repeat(500), visit_the_clinic: 'Visit the best, award-winning clinic' } }));
+    const vp = wr39.wrFinalize({ raw_text: JSON.stringify({ video_plan: { section_title: 'Best smiles', specialty: 'dental', topics } }), input, digest }).brief.video_plan;
+    assert.ok(vp.topics.length === 10 && !/\bbest\b|award/i.test(JSON.stringify(vp)) && vp.topics[0].beats.what_it_is.length <= 300 && vp.topics[0].beats.what_can_go_wrong, JSON.stringify(vp.topics[0]));
+    const thin = wr39.wrFinalize({ raw_text: JSON.stringify({ video_plan: { topics: [{ title: 'Smiles' }] } }), input, digest }).brief.video_plan;
+    assert.strictEqual(thin.topics[0].title, 'Enamel');
+  });
+  test('the medical build prompt: real photos, the video section, the not-robotic voice, the no-blank rule, Singapore rules; no scroll film, no Kling anatomy, no "best"', () => {
+    const fin = plan39('Smile Plus Dental Surgery', 'dental clinic', 'Please build a website for our dental clinic', DENTAL_HTML);
+    const research_json = JSON.stringify({ identity: { confidence: 'high' }, brief: fin.brief });
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'Please build a website for our dental clinic', research_json } });
+    const p = r.build_prompt;
+    assert.strictEqual(r.brief.mode, 'medical'); assert.ok(p.length <= wb.WB_MAX_PROMPT, p.length);
+    assert.ok(p.includes(wb.WB_CLINIC_MARK) && /VIDEO SECTION "Inside your teeth"/.test(p) && /1\) Enamel 2\) Dentin/.test(p) && /Jawbone/.test(p) && /Root canal treatment/.test(p), 'video section from the plan');
+    assert.ok(/create the narrator voice yourself: natural, warm, human, not robotic, a calm American English voice with natural pacing/.test(p) && /captions on/.test(p) && /transcript under each video/.test(p) && /Illustration for education only/.test(p));
+    assert.ok(/There must not be a blank thing/.test(p) && /no empty sections, no lorem ipsum/.test(p) && /neutral, general educational content/.test(p) && /NEVER invent clinic-specific facts/.test(p));
+    assert.ok(/no comparisons with other clinics/.test(p) && /no before\/after or after-only images/.test(p) && /no testimonials, review widgets or star ratings/.test(p) && /PDPA consent checkbox stating the purpose/.test(p) && /utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, fbclid and ttclid/.test(p));
+    assert.ok(!/\bbest\b/i.test(p) && !/guarantee|\$\s?\d/i.test(p), 'no superlatives or prices');
+    assert.ok(!/ScrollTrigger|Lenis|SCROLL_SCRUB_VIDEO|3D parallax scroll film|Kling film chapters|\[ANATOMY VIDEO\]|Clinic EXPLAINER FILM|MASTER ORCHESTRATOR|Apple-grade/.test(p), 'no scroll film or Kling anatomy for clinics');
+    assert.ok(/NO cinematic scroll film, NO parallax/.test(p) && /no Kling or Higgsfield/.test(p));
+    assert.ok(r.film_brief.mode === 'clinic_video_section' && r.film_brief.scenes.length === 0 && r.film_brief.video_section.source === 'website_intelligence' && r.variations[0].key === 'clinic_real_photo_site' && r.variations[0].tool === 'lovable');
+    assert.ok(r.image_shots.every((sh) => sh.real_url || (sh.generate_with === 'lovable' && sh.label === 'Illustrative' && /no people/.test(sh.prompt))), 'only calm interiors are generated, never people');
+    assert.deepStrictEqual(ppValidate(briefSchema, r.brief), []);
+    // A model's build prompt with a scroll film is never used for a clinic.
+    const modelMed = { schema_version: '2.0', mode: 'medical', industry_category: 'healthcare', site_type: 'business_website', business_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', audience: 'patients', primary_goal: 'bookings', design_direction: { brand_personality: 'calm' }, pages: [{ name: 'Home', purpose: 'x' }], features: [], integrations: [], style: {}, existing_assets: {}, questions_for_customer: [], missing_information: [], build_prompt: 'Build a 3D parallax scroll film with a Kling anatomy hero. Never use: gradients.', confidence: 0.8, reasoning: 'ok' };
+    const m = wb.finalizeBrief({ raw_text: JSON.stringify(modelMed), input: { company_name: 'Smile Plus Dental Surgery', industry: 'dental clinic', message: 'dental clinic website', research_json } });
+    assert.ok(!/Kling anatomy hero|3D parallax scroll film/.test(m.build_prompt) && m.build_prompt.includes(wb.WB_CLINIC_MARK));
+  });
+  test('SME and luxury briefs are unchanged: scroll film, doctrine, Kling film, no video section', () => {
+    const r = wb.finalizeBrief({ error: 'x', input: { company_name: 'Prestige Motors', industry: 'BMW car dealership', message: 'I want a website for my BMW dealership' } });
+    const p = r.build_prompt;
+    assert.strictEqual(r.brief.mode, 'sme');
+    assert.ok(/Apple-grade reversible 3D scroll film/.test(p) && p.includes(wb.WB_DOCTRINE_MARK) && !p.includes(wb.WB_CLINIC_MARK) && /Film-led/.test(p) && /Scroll effects: 1\) Pinned hero film/.test(p));
+    assert.ok(r.film_brief.scenes.length === 3 && r.film_brief.video_section === undefined && r.variations[0].key === 'parallax_film_site' && !r.image_shots.some((sh) => sh.generate_with));
+    const lux = wb.finalizeBrief({ error: 'x', input: { company_name: 'Heure Atelier', industry: 'luxury watch boutique', message: 'website' } });
+    assert.ok(lux.film_brief.mode === 'luxury_chapters' && lux.build_prompt.includes(wb.WB_DOCTRINE_MARK) && !lux.build_prompt.includes(wb.WB_CLINIC_MARK));
+  });
+  test('the deployed code nodes carry the clinic path (Website Intelligence plans it, the Website Builder builds it)', () => {
+    const wi = fs.readFileSync(path.join(__dirname, '../workflows/website-intelligence/dist/code-nodes/finalize-brief.js'), 'utf8');
+    const wbn = fs.readFileSync(path.join(__dirname, '../workflows/website-builder/dist/code-nodes/finalize-website-brief.js'), 'utf8');
+    assert.ok(/function wrVideoPlan/.test(wi) && /WR_CLINIC_TOPICS/.test(wi) && /function wrCoerceVideoPlan/.test(wi));
+    assert.ok(/function wbClinicSection/.test(wbn) && /function wbVideoPlanFrom/.test(wbn) && /not robotic/.test(wbn));
+    const addendum = fs.readFileSync(path.join(__dirname, '../workflows/website-intelligence/dist/system-addendum.compiled.md'), 'utf8');
+    assert.ok(/"video_plan":\{"section_title"/.test(addendum) && /`video_plan` \(clinics and doctors only/.test(addendum));
+  });
+}
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
