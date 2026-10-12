@@ -94,6 +94,11 @@ exists: `Knowledge/AI Workforce — roster`.
 - Enough details first (2026-09-28): Website Intelligence's `enough_to_build` = "no" holds the build and John asks
   the missing essentials; Lead Intake re-runs Website Intelligence on the customer's answer while a `website_info_needed`
   task is open and no `website_build` task exists; max 2 rounds, then build with placeholders.
+- Clinics and doctors (Ryan, 2026-10-12, replaces the anatomy scroll film for clinics): a real clinic site on Lovable
+  with the clinic's OWN photos (no cinematic scroll/parallax), plus a video section with ONE narrated explainer per
+  topic matched to the specialty (`video_plan`: dental = enamel, dentin, pulp, root, gums, jawbone…); Lovable renders
+  the anatomy and creates the narrator voice (natural, not robotic); no blank sections; no Kling for clinics.
+  Code: `research.js` (`wrVideoPlan`), `brief.js` (`wbVideoPlan`, `wbClinicSection`), ROUTINE.md clinic steps.
 - Website Intelligence → creator: WI's brief (funnel_plan, conversion_strategy, motion_3d_direction,
   medical_visual_direction) travels in `research_json`; `wbWithStrategy` always appends it to the
   Lovable prompt. Every mock-up is ONE 3D parallax scroll-film site (Ryan, 2026-09-27): the build worker makes

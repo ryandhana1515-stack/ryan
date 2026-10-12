@@ -835,3 +835,8 @@ tags: [zaphiel, changelog]
   clinic "real photos + video plan" stage.
 - 2026-10-12 — **Clinic explainers: Lovable creates the narrator voice** (prompt line + iteration prompt in TITAN/13; TITAN/14,
   01, 02 updated).
+- 2026-10-12 — **Live pipeline: clinic sites = real photos + video section** (code, so WhatsApp tests get it). `research.js`
+  (`wrVideoPlan`, clinic topic library, `video_plan` in the brief), `brief.js` v2.4.0 (`wbVideoPlan`, `wbClinicSection`: real
+  photos, one narrated video per topic, Lovable voice "not robotic", no-blank rule, Singapore rules; no anatomy scroll film
+  or Kling for clinics), ROUTINE.md clinic steps, system prompts; tests 151/151. n8n redeploy: Website Intelligence +
+  Website Builder Code nodes.

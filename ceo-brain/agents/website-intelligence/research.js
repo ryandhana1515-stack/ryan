@@ -10,7 +10,7 @@ var WR_MAX_PAGE_TEXT = 3500;
 var WR_SOCIAL_HOSTS = ['facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'youtube.com', 'x.com', 'twitter.com'];
 var WR_DIRECTORY_HOSTS = ['google.com', 'maps.google', 'yelp.com', 'tripadvisor', 'wikipedia.org', 'yellowpages', 'sgpbusiness', 'recordowl', 'streetdirectory', 'carousell', 'shopee', 'lazada', 'glassdoor', 'indeed', 'bing.com', 'duckduckgo', 'reddit.com', 'hardwarezone', 'mycareersfuture', 'acra.gov.sg', 'trustpilot', 'sgcarmart'];
 var WR_PAGE_RE = /(about|service|product|treatment|contact|faq|pricing|price|package|booking|book|project|portfolio|case|testimonial|review|menu|shop|gallery|location|collection|team|doctor|dentist|outlet|branch|clinic|our-work|showroom|store)/i;
-var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and build the 3D parallax scroll film the MOTION_3D_DIRECTION describes (a Kling film scrubbed by the scroll, layered depth parallax, sections and CTAs over the film) without weakening the sales structure. For medical clients follow the MEDICAL_VISUAL_DIRECTION exactly: photorealistic, medically accurate anatomy (for example the heart beating with blood flowing through the arteries and vessels), as the opening scene of the scroll film (a Kling video scrubbed by the scroll, the still photo as its poster); never cartoon.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
+var WR_INSTRUCTION = 'WEBSITE CREATOR INSTRUCTION\n\nUsing the verified business intelligence above, create a premium, modern, mobile-responsive, conversion-focused website mock-up specifically for this company.\n\nDo NOT create a generic informational website.\n\nThe design and copy structure must be based on:\n\n* the company\'s actual business\n* its target customers\n* its services/products\n* its conversion objective\n* customer buying motivations\n* trust requirements\n* customer objections\n* the company\'s brand\n* the research supplied in this brief\n\nThe website must make the visitor understand:\n\n1. What this company does.\n2. Who it helps.\n3. Why the visitor should care.\n4. Why the company can be trusted.\n5. What action the visitor should take next.\n\nBuild the FUNNEL_PLAN as well (landing page, qualifying form or quiz, thank-you or booking page, follow-up), follow the CONVERSION_STRATEGY section by section, and build the 3D parallax scroll film the MOTION_3D_DIRECTION describes (a Kling film scrubbed by the scroll, layered depth parallax, sections and CTAs over the film) without weakening the sales structure. Doctors and clinics are the exception (Ryan, 2026-10-12): NO scroll film and NO parallax; build a clean, real clinic site on Lovable with the clinic\'s own photos (REAL_PHOTOS) and the VIDEO SECTION the VIDEO_PLAN describes (one narrated explainer per topic, realistic animated anatomy rendered by Lovable), following the MEDICAL_VISUAL_DIRECTION exactly; never an empty section.\n\nCreate strong conversion paths through the appropriate combination of:\n\n* CTA buttons\n* WhatsApp\n* forms\n* appointments\n* quotations\n* consultation requests\n* calls\n* purchases\n\nDo not fabricate company facts.\n\nUse clearly marked placeholders for unavailable content.\n\nOnce the mock-up is completed, DO NOT send it to the customer.\n\nReturn the completed website/mock-up URL and a short internal summary to:\n\nJOHN — FUSION AI SALES AGENT';
 // ---- Sales strategy the creator must build (Ryan, 2026-09-26: funnels, the most high-converting sales sites, 3D, realistic anatomy for doctors) ----
 // Medical specialty -> photorealistic, medically accurate anatomy (educational, never cartoon or low-poly 3D).
 var WR_MED_SPECIALTY = [
@@ -41,10 +41,13 @@ var WR_MOTION = [
   [/retail|shop|store|brand|product|e-?commerce/i, 'the hero product rotating in 3D with exploded-view details revealing materials and features on scroll']
 ];
 var WR_PARALLAX = '3D parallax scroll film (Ryan, 2026-09-27): a Kling film of this business is pinned in the hero and scrubbed by the scroll (it plays forward as the visitor scrolls), with layered depth parallax (foreground, subject and background moving at different speeds) and the sections and CTAs revealed over the film; the sales structure stays (one offer, outcome headline, proof, objections answered, the CTA repeated); fast on mobile, with prefers-reduced-motion showing stills.';
+// Doctors and clinics (Ryan, 2026-10-12: "For doctors I don't want them to build cinematic scroll parallax websites. I want
+// real photos of their own websites."): a clean real clinic site, the motion lives in the VIDEO SECTION (VIDEO_PLAN).
+var WR_CLINIC_MOTION = 'Clinic site (Ryan, 2026-10-12): a clean, calm, real clinic website built on Lovable with the clinic\'s OWN photos (REAL_PHOTOS); no cinematic scroll film, no parallax, no scroll-scrubbed video, no Kling or Higgsfield; gentle fade-ins only. The movement lives in the VIDEO SECTION (VIDEO_PLAN): one narrated explainer per topic, realistic animated anatomy rendered by Lovable.';
 function wrMotionFor(industry, text) {
   var t = String(industry || '') + ' ' + String(text || '');
+  if (wrIsMedical(t)) return WR_CLINIC_MOTION;
   var concept;
-  if (wrIsMedical(t)) { var sp = wrSpecialty(t); concept = sp ? 'photorealistic 3D anatomy scroll film: ' + sp.visual + '; the film scrubs with the scroll and each section (the condition, the treatment, the doctor, book) appears inside it' : 'calm cinematic scroll film through the real clinic: reception, treatment room, the doctor at work (with consent), ending on the booking action'; }
   for (var i = 0; !concept && i < WR_MOTION.length; i++) if (WR_MOTION[i][0].test(t)) concept = WR_MOTION[i][1];
   if (!concept) concept = 'depth-parallax scroll film built from the business\'s own world: foreground, subject and background move at different speeds, sections revealed inside the film';
   return concept + '. ' + WR_PARALLAX;
@@ -71,6 +74,77 @@ var WR_CONVERSION_STRATEGY = [
   'Tracking: GA4 / Meta pixel events on cta_click, whatsapp_click, form_submit, booking_complete so the funnel can be optimised'
 ];
 var WR_VARIATIONS = 'ONE VERSION (Ryan, 2026-09-27): build ONE 3D parallax scroll-film website from this brief: the film and photography are generated by Kling, the site is built on Lovable and published to a public link. The high-converting sales structure stays. No prices anywhere; John sends the link.';
+var WR_CLINIC_VARIATION = 'Doctors and clinics (Ryan, 2026-10-12): no scroll film, no parallax, no Kling; ONE real-photo clinic site on Lovable with the VIDEO_PLAN section.';
+// Clinic video section (Ryan, 2026-10-12: "if it's teeth, then every section of the teeth, there'll be a video explaining
+// what is there, and then why you need to go to their dental clinic"): one narrated video per topic, topics by specialty.
+var WR_CLINIC_TOPICS = {
+  dental: ['Inside your teeth', ['Enamel', 'Dentin', 'Pulp, nerve and blood vessels', 'Root and periodontal ligament', 'Gums', 'Jawbone']],
+  cardiology: ['How your heart works', ['The heart\'s four chambers', 'The coronary arteries', 'Blood flow and blood cells', 'How arteries narrow (plaque)', 'Heart rhythm', 'Screening (ECG, echo, stress test)']],
+  vascular: ['Your blood vessels', ['Arteries vs veins', 'Vein valves', 'Varicose veins', 'Circulation in the legs']],
+  neurology: ['Your brain and nerves', ['The brain\'s regions', 'Neurons and signals', 'Blood supply to the brain', 'Headaches and migraine', 'Stroke warning signs']],
+  orthopaedic: ['Your joints and spine', ['The spine and discs', 'Nerve roots', 'The knee', 'The shoulder', 'Sports injuries']],
+  ophthalmology: ['Inside your eye', ['Cornea and lens', 'The retina', 'Cataract', 'Glaucoma', 'Refractive errors']],
+  ent: ['Ear, nose and throat', ['The inner ear and hearing', 'The sinuses', 'The throat and tonsils']],
+  gastro: ['Your digestive system', ['The stomach', 'The intestines', 'The liver', 'Endoscopy explained']],
+  dermatology: ['Your skin', ['Skin layers', 'Collagen', 'Acne', 'Pigmentation']],
+  respiratory: ['Your lungs and breathing', ['The lungs and airways', 'Asthma', 'Sleep apnoea']],
+  womens: ['Women\'s health', ['Anatomy overview', 'Screening explained']],
+  urology: ['Your kidneys and bladder', ['The kidneys', 'The bladder', 'The prostate', 'Kidney stones']],
+  oncology: ['Understanding your care', ['How healthy cells grow', 'Screening explained', 'Your care team and treatment journey']],
+  general: ['How your body works', ['Heart and blood pressure', 'Lungs and breathing', 'Digestion', 'Diabetes and blood sugar', 'Vaccinations', 'Health screening']]
+};
+// Treatments found on the clinic's own pages become extra videos (only when found; stents only if offered).
+var WR_CLINIC_TREATMENTS = [['dental', /\bfillings?\b/i, 'Fillings'], ['dental', /root canal/i, 'Root canal treatment'], ['dental', /\bimplants?\b/i, 'Dental implants'], ['dental', /\bbraces\b|aligners?|invisalign/i, 'Braces and aligners'], ['dental', /wisdom (tooth|teeth)/i, 'Wisdom teeth'], ['dental', /\bscaling\b|polishing/i, 'Scaling and polishing'], ['cardiology', /angioplast\w*|\bstents?\b/i, 'Angioplasty and stents'], ['womens', /obstetric\w*|pregnan\w*|antenatal|\bo&g\b/i, 'Pregnancy stages']];
+var WR_SUPERLATIVE = /\b(best|finest|no\.? ?1|number one|world[- ]class|most trusted|renowned|guarantee\w*|painless|cheapest|award[- ]winning)\b/gi;
+/** The video-plan topic set for a clinic: WR_MED_SPECIALTY mapped onto the topic library (+ vascular and ENT). */
+function wrClinicKey(text) {
+  var t = String(text || '');
+  if (/\b(vascular|varicose|veins?)\b/i.test(t) && !/\b(cardi\w*|heart)\b/i.test(t)) return 'vascular';
+  var sp = wrSpecialty(t);
+  if (sp) return sp.key === 'fertility' ? 'womens' : sp.key;
+  return /\b(ent|otolaryng\w*|ear,? nose|sinus\w*|tonsil\w*)\b/i.test(t) ? 'ent' : 'general';
+}
+function wrVideoBeats(title, clinic, offers, treatment) {
+  return {
+    what_it_is: treatment ? 'What ' + title + ' is and when it is needed, in plain words' : title + ': what it is and how it works, in plain words',
+    what_can_go_wrong: 'What can go wrong, explained calmly and educationally (no fear, no statistics)',
+    how_the_clinic_treats_it: treatment ? 'How ' + clinic + ' carries it out, step by step, as its own website describes it [VERIFY WITH CLINIC]' : 'How it is treated, naming only ' + clinic + '\'s own services (' + offers + ') [VERIFY WITH CLINIC]',
+    visit_the_clinic: 'Factual reasons to visit ' + clinic + ': its services, its doctors\' qualifications as published, location, opening hours, how to book [VERIFY WITH CLINIC]; no superlatives, comparisons or promised results'
+  };
+}
+/** VIDEO_PLAN for a clinic: { section_title, specialty, topics: [{ title, beats }] } from the specialty and the services its pages list. */
+function wrVideoPlan(text, name, pageText) {
+  var key = wrClinicKey(text), lib = WR_CLINIC_TOPICS[key], all = String(text || '') + ' ' + String(pageText || '');
+  var found = WR_CLINIC_TREATMENTS.filter(function (x) { return x[0] === key && x[1].test(all); }).map(function (x) { return x[2]; });
+  var clinic = wrStr(name, 80) || 'the clinic', offers = found.length ? found.join(', ') : 'the treatments listed on its website';
+  return { section_title: lib[0], specialty: key, services: found, topics: lib[1].concat(found).slice(0, 10).map(function (t) { return { title: t, beats: wrVideoBeats(t, clinic, offers, found.indexOf(t) !== -1) }; }) };
+}
+function wrCleanLine(s, n) { return wrStr(String(s || '').replace(WR_SUPERLATIVE, ''), n); }
+/** A model-written VIDEO_PLAN, sanitised and capped like the other fields; the deterministic plan when unusable; null for non-clinics. */
+function wrCoerceVideoPlan(v, fb) {
+  if (!fb) return null;
+  if (!v || typeof v !== 'object' || !Array.isArray(v.topics)) return fb;
+  var keys = ['what_it_is', 'what_can_go_wrong', 'how_the_clinic_treats_it', 'visit_the_clinic'];
+  var topics = v.topics.filter(function (t) { return t && typeof t === 'object' && wrCleanLine(t.title, 80); }).slice(0, 10).map(function (t) {
+    var b = t.beats && typeof t.beats === 'object' ? t.beats : {}, title = wrCleanLine(t.title, 80), d = wrVideoBeats(title, 'the clinic', 'the treatments listed on its website', false), o = {};
+    keys.forEach(function (k) { o[k] = wrCleanLine(b[k], 300) || d[k]; });
+    return { title: title, beats: o };
+  });
+  if (topics.length < 3) return fb;
+  return { section_title: wrCleanLine(v.section_title, 80) || fb.section_title, specialty: WR_CLINIC_TOPICS[v.specialty] ? v.specialty : fb.specialty, services: fb.services, topics: topics };
+}
+function wrVideoPlanLines(vp) {
+  return ['Section: ' + vp.section_title + ' (' + vp.specialty + '); one narrated video per topic, 4 beats each' + (vp.services && vp.services.length ? '; services found on its pages: ' + vp.services.join(', ') : '')].concat(vp.topics.map(function (t, i) { return (i + 1) + ') ' + t.title + ' — what it is: ' + t.beats.what_it_is + ' | what can go wrong: ' + t.beats.what_can_go_wrong + ' | treatment: ' + t.beats.how_the_clinic_treats_it + ' | visit: ' + t.beats.visit_the_clinic; }));
+}
+// Clinic conversion (Ryan, 2026-10-12, Singapore rules): facts as trust, never reviews or claims.
+var WR_CLINIC_CONVERSION = [
+  'Hero: the clinic\'s own photo, what the clinic treats and for whom, ONE primary CTA (book an appointment)',
+  'The primary CTA after every section and under every video; a sticky mobile bar with WhatsApp and Call',
+  'Trust from facts only: services, doctors\' qualifications as published, location, hours [VERIFY WITH CLINIC]; no testimonials, reviews, star ratings, before/after, superlatives, comparisons or urgency',
+  'Booking form: name, phone/WhatsApp, preferred time, short reason, PDPA consent checkbox stating the purpose; success state',
+  'FAQ from the clinic\'s own pages (first visit, what to bring, payment and insurance [VERIFY WITH CLINIC])',
+  'Tracking: utm_source/medium/campaign/content/term + gclid/fbclid/ttclid captured and posted with the lead; events cta_click, whatsapp_click, form_submit, booking_complete'
+];
 
 function wrStr(v, max) { if (v === undefined || v === null) return ''; var s = String(v).replace(/\s+/g, ' ').trim(); return max && s.length > max ? s.slice(0, max) : s; }
 function wrArr(v, max) { if (!v) return []; if (!Array.isArray(v)) v = [v]; return v.map(function (x) { return typeof x === 'string' ? wrStr(x, 300) : (x && typeof x === 'object' ? wrStr(x.fact || x.text || x.name || JSON.stringify(x), 300) : wrStr(x, 300)); }).filter(Boolean).slice(0, max || 20); }
@@ -370,7 +444,7 @@ function wrDigest(o) {
   return { version: WR_VERSION, identity: identity, facts: facts, site: site, competitors: competitors, reviews: reviews, market: market, unknown: unknown, digest_text: digestText.slice(0, WR_MAX_DIGEST) };
 }
 
-var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'real_photos', 'enough_to_build', 'questions_for_john', 'identity_confidence', 'reasoning'];
+var WR_BRIEF_KEYS = ['company_name', 'company_url', 'industry', 'location', 'business_summary', 'verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'website_objective', 'primary_conversion', 'secondary_conversions', 'primary_cta', 'secondary_cta', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'motion_3d_direction', 'medical_visual_direction', 'video_plan', 'page_requirements', 'copy_direction', 'brand_direction', 'visual_direction', 'media_requirements', 'trust_sections', 'testimonial_requirements', 'case_study_requirements', 'faq_direction', 'form_requirements', 'whatsapp_requirements', 'booking_requirements', 'ecommerce_requirements', 'crm_opportunities', 'automation_opportunities', 'seo_direction', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'real_photos', 'enough_to_build', 'questions_for_john', 'identity_confidence', 'reasoning'];
 var WR_LIST_KEYS = ['verified_facts', 'client_provided_facts', 'unverified_information', 'products', 'services', 'target_customers', 'customer_problems', 'customer_desires', 'customer_objections', 'company_differentiators', 'trust_signals', 'competitive_context', 'secondary_conversions', 'recommended_sitemap', 'homepage_conversion_flow', 'funnel_plan', 'conversion_strategy', 'page_requirements', 'media_requirements', 'trust_sections', 'form_requirements', 'crm_opportunities', 'automation_opportunities', 'analytics_requirements', 'mobile_requirements', 'accessibility_requirements', 'compliance_considerations', 'placeholders_required', 'do_not_invent', 'real_photos', 'questions_for_john'];
 
 function wrConversionFor(industry, signals) {
@@ -412,12 +486,16 @@ function wrFallbackBrief(input, digest) {
   var said2 = [input.message, input.sales_summary, JSON.stringify(input.extracted || {})].concat((input.conversation || []).map(function (m) { return m && m.content; })).join(' ');
   var funnel = wrFunnelFor(conv, input.industry, said2);
   var medText = String(input.industry || '') + ' ' + said2 + ' ' + (digest.site.title || '') + ' ' + (digest.site.description || '');
-  var spec = wrIsMedical(medText) ? wrSpecialty(medText) : null;
+  // Doctors and clinics (Ryan, 2026-10-12): real photos, a video section planned from the specialty and the services its own pages list.
+  var med = wrIsMedical(medText);
+  var pageText = digest.identity && digest.identity.confidence !== 'low' ? (String(digest.digest_text || '').split('PAGE TEXT:')[1] || '') + ' ' + (digest.site.h1s || []).join(' ') : '';
+  var vp = med ? wrVideoPlan(medText, input.company_name, pageText) : null;
   return {
-    funnel_plan: ['Funnel type: ' + funnel.type + ' — build it as ' + funnel.build_as, 'Offer: ' + funnel.offer].concat(funnel.steps),
-    conversion_strategy: WR_CONVERSION_STRATEGY.slice(),
-    motion_3d_direction: wrMotionFor(input.industry, said2),
-    medical_visual_direction: wrIsMedical(medText) ? ((spec ? 'Specialty: ' + spec.key + '. Hero and section visuals: ' + spec.visual + '. ' : 'Specialty: general practice. Use the real clinic and team (with consent), no anatomy renders. ') + 'Photorealistic and medically accurate, educational in tone, never cartoon or low-poly 3D. Specialist clinics: Kling makes it as a still photo plus a video from that photo, the opening scene of the scroll film (Ryan, 2026-09-27: the arteries, the heartbeat and the blood vessels). No gore, no before/after images, no outcome claims (MOH advertising rules).') : '',
+    funnel_plan: ['Funnel type: ' + funnel.type + ' — build it as ' + funnel.build_as, 'Offer: ' + funnel.offer].concat(med ? funnel.steps.map(function (x) { return x.replace('proof stack placeholders', 'facts as trust (services, doctors\' qualifications as published)'); }) : funnel.steps),
+    conversion_strategy: med ? WR_CLINIC_CONVERSION.slice() : WR_CONVERSION_STRATEGY.slice(),
+    motion_3d_direction: wrMotionFor(input.industry, med ? medText : said2),
+    medical_visual_direction: med ? 'Specialty: ' + (vp.specialty === 'general' ? 'general practice' : vp.specialty) + '. Real clinic photos first: the clinic\'s own photos (REAL_PHOTOS: premises, team, equipment) in the hero and every section; only where no real photo exists for a slot, a calm clinic-interior image labelled "Illustrative", never a person shown as a doctor or patient. Anatomy appears only inside the VIDEO SECTION: realistic animated anatomy rendered by Lovable itself, medically accurate, non-gory, never cartoon, labelled "Illustration for education only". No before/after, no testimonials, no outcome claims (MOH advertising rules).' : '',
+    video_plan: vp,
     company_name: name, company_url: digest.identity.confidence !== 'low' ? digest.identity.website : '', industry: input.industry || '[CLIENT TO PROVIDE]', location: input.location,
     business_summary: name + (input.industry ? ' is a ' + input.industry + ' business' : '') + ' in ' + input.location + '.' + (input.sales_summary ? ' John: ' + input.sales_summary : '') + (digest.site.description ? ' Site says: ' + digest.site.description : ''),
     verified_facts: verified, client_provided_facts: provided, unverified_information: third.concat(digest.unknown),
@@ -426,20 +504,20 @@ function wrFallbackBrief(input, digest) {
     company_differentiators: ['[CLIENT TO PROVIDE]'], trust_signals: ['[CLIENT TO PROVIDE] testimonials, certifications, project photos'],
     competitive_context: digest.competitors.map(function (c) { return c.name + ' (' + c.url + ')'; }),
     website_objective: 'Turn visitors into ' + conv.primary.toLowerCase() + ' requests', primary_conversion: conv.primary, secondary_conversions: conv.secondary, primary_cta: conv.cta, secondary_cta: conv.cta2,
-    recommended_sitemap: ['Home', 'Services', 'About', 'Projects / Proof [CLIENT TO PROVIDE]', 'FAQ', 'Contact'],
-    homepage_conversion_flow: ['Hero: what we do + for whom + primary CTA', 'Customer problem', 'Solution / services', 'Why choose us', 'Proof [CLIENT TO PROVIDE]', 'FAQ / objections', 'Final CTA + form / WhatsApp'],
+    recommended_sitemap: med ? ['Home', 'Our Doctors', 'Treatments & Services', 'Videos: ' + vp.section_title, 'Clinic & Locations', 'Book an Appointment', 'Patient Information & FAQ', 'Contact'] : ['Home', 'Services', 'About', 'Projects / Proof [CLIENT TO PROVIDE]', 'FAQ', 'Contact'],
+    homepage_conversion_flow: med ? ['Hero: the clinic\'s own photo + what it treats + Book an appointment', 'Services (real descriptions from the clinic\'s pages)', 'Video section: ' + vp.section_title, 'Doctors (qualifications as published)', 'The clinic: photos, location, hours', 'FAQ', 'Booking form + WhatsApp'] : ['Hero: what we do + for whom + primary CTA', 'Customer problem', 'Solution / services', 'Why choose us', 'Proof [CLIENT TO PROVIDE]', 'FAQ / objections', 'Final CTA + form / WhatsApp'],
     page_requirements: ['Every page: primary CTA above the fold, WhatsApp button, mobile-first'],
     copy_direction: 'Plain, specific, outcome-led; speak to ' + (input.industry || 'the customer') + ' buyers in ' + input.location + '; no hype, no invented claims.',
-    brand_direction: '[CLIENT TO PROVIDE brand colours/logo]' + (digest.site.title ? '; current site title: ' + digest.site.title : ''), visual_direction: 'Premium, film-led 3D scroll on every screen size, solid brand-colour panels, category-appropriate; no generic AI look.',
-    media_requirements: ['Hero photography of the real business [CLIENT TO PROVIDE or generated placeholders]'], trust_sections: ['Testimonials [CLIENT TO PROVIDE]', 'Credentials [CLIENT TO PROVIDE]'],
-    testimonial_requirements: '[CLIENT TESTIMONIALS TO BE ADDED]', case_study_requirements: '[PROJECT IMAGES TO BE PROVIDED]', faq_direction: 'Answer the top buying questions and objections for ' + (input.industry || 'this service'),
-    form_requirements: ['Qualifying fields for a ' + conv.primary.toLowerCase() + ' (name, preferred contact, what they need, when)', 'PDPA consent checkbox + privacy policy link'],
+    brand_direction: '[CLIENT TO PROVIDE brand colours/logo]' + (digest.site.title ? '; current site title: ' + digest.site.title : ''), visual_direction: med ? 'Clean, calm, real clinic site with the clinic\'s own photos; no scroll film, no parallax; the video section carries the anatomy; no generic AI look.' : 'Premium, film-led 3D scroll on every screen size, solid brand-colour panels, category-appropriate; no generic AI look.',
+    media_requirements: med ? ['The clinic\'s own photos (REAL_PHOTOS) for every image slot; a calm clinic-interior image labelled "Illustrative" only where none exists', 'Video section: one narrated explainer per VIDEO_PLAN topic, made by Lovable'] : ['Hero photography of the real business [CLIENT TO PROVIDE or generated placeholders]'], trust_sections: med ? ['Doctors\' qualifications as published [VERIFY WITH CLINIC]', 'Clinic location, hours and how to book'] : ['Testimonials [CLIENT TO PROVIDE]', 'Credentials [CLIENT TO PROVIDE]'],
+    testimonial_requirements: med ? 'None: no testimonials, reviews or star ratings on clinic sites (MOH advertising rules)' : '[CLIENT TESTIMONIALS TO BE ADDED]', case_study_requirements: '[PROJECT IMAGES TO BE PROVIDED]', faq_direction: 'Answer the top buying questions and objections for ' + (input.industry || 'this service'),
+    form_requirements: med ? ['Name, phone/WhatsApp, preferred time, short reason for the visit', 'PDPA consent checkbox stating the purpose + privacy policy link', 'Hidden fields utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, fbclid, ttclid posted with the lead to the lead endpoint placeholder'] : ['Qualifying fields for a ' + conv.primary.toLowerCase() + ' (name, preferred contact, what they need, when)', 'PDPA consent checkbox + privacy policy link'],
     whatsapp_requirements: 'Click-to-chat button on every page (number [CLIENT TO PROVIDE])', booking_requirements: conv.primary.indexOf('BOOK') === 0 ? 'Booking request form or calendar link' : 'not required for v1', ecommerce_requirements: conv.primary === 'BUY NOW' ? 'Product catalogue + checkout (Stripe/PayNow)' : 'not required',
     crm_opportunities: ['Every form/WhatsApp lead into the CRM with source'], automation_opportunities: ['Instant acknowledgement + follow-up task', 'Review request after the job'],
     seo_direction: (input.industry || 'service') + ' ' + input.location + ' — local intent pages; titles and H1s per page', analytics_requirements: ['GA4 events: cta_click, whatsapp_click, form_submit' + (conv.primary.indexOf('BOOK') === 0 ? ', booking_complete' : '')],
     mobile_requirements: ['Sticky CTA / WhatsApp on mobile', 'Thumb-friendly buttons', 'Fast images'], accessibility_requirements: ['Readable contrast, alt text, keyboard-friendly forms'],
-    compliance_considerations: /clinic|dental|aesthetic|medical|doctor/i.test(input.industry) ? ['Healthcare advertising rules (MOH) — flag claims for human review'] : (/property|real estate/i.test(input.industry) ? ['CEA advertising rules for property agents'] : (/insurance|financial|wealth/i.test(input.industry) ? ['MAS promotion rules'] : ['PDPA consent on forms'])),
-    real_photos: wrRealPhotos(digest), placeholders_required: digest.unknown, do_not_invent: ['testimonials', 'awards', 'certifications', 'customer counts', 'years operating', 'revenue', 'results', 'prices', 'addresses', 'team members'],
+    compliance_considerations: med || /clinic|dental|aesthetic|medical|doctor/i.test(input.industry) ? ['Healthcare advertising rules (MOH) — no superlatives, comparisons, testimonials, before/after, promised results or urgency; flag claims for human review', 'PDPA consent on forms'] : (/property|real estate/i.test(input.industry) ? ['CEA advertising rules for property agents'] : (/insurance|financial|wealth/i.test(input.industry) ? ['MAS promotion rules'] : ['PDPA consent on forms'])),
+    real_photos: wrRealPhotos(digest), placeholders_required: med ? digest.unknown.filter(function (x) { return !/^(testimonials|awards)/.test(x); }) : digest.unknown, do_not_invent: ['testimonials', 'awards', 'certifications', 'customer counts', 'years operating', 'revenue', 'results', 'prices', 'addresses', 'team members'],
     enough_to_build: wrEnoughFallback(input, digest), questions_for_john: questions.slice(0, 3), identity_confidence: digest.identity.confidence,
     reasoning: 'Deterministic brief (model unavailable): built from John\'s facts, ' + digest.site.pages_read.length + ' page(s) read, ' + digest.competitors.length + ' competitor(s) found.'
   };
@@ -450,6 +528,7 @@ function wrCoerceBrief(raw, fallback) {
   WR_BRIEF_KEYS.forEach(function (k) {
     var v = raw[k];
     if (WR_LIST_KEYS.indexOf(k) !== -1) { v = wrArr(v, 25); if (!v.length && fallback[k] && k !== 'questions_for_john') v = fallback[k]; b[k] = v; }
+    else if (k === 'video_plan') b[k] = wrCoerceVideoPlan(v, fallback.video_plan);
     else if (k === 'identity_confidence') b[k] = ['high', 'medium', 'low'].indexOf(v) !== -1 ? v : fallback.identity_confidence;
     else if (k === 'enough_to_build') { var e = String(v === true ? 'yes' : (v === false ? 'no' : (v || ''))).toLowerCase().trim(); b[k] = e === 'yes' || e === 'no' ? e : fallback.enough_to_build; }
     else b[k] = wrStr(v, k === 'business_summary' || k === 'reasoning' ? 1200 : 600) || fallback[k] || '';
@@ -469,8 +548,8 @@ function wrParseJson(text) {
 /** The WEBSITE_CREATOR_BRIEF as text, in Ryan's order, ending with the variations rule and the creator instruction. */
 function wrBriefText(brief, digest) {
   var line = function (k, v) { return k + ':\n' + (Array.isArray(v) ? (v.length ? v.map(function (x) { return '- ' + x; }).join('\n') : '- (none)') : (v || '(none)')) + '\n'; };
-  var order = WR_BRIEF_KEYS.filter(function (k) { return ['questions_for_john', 'identity_confidence', 'reasoning'].indexOf(k) === -1; });
-  return 'STATUS:\nREADY_FOR_WEBSITE_CREATOR\n\nWEBSITE_CREATOR_BRIEF\n\n' + order.map(function (k) { return line(k.toUpperCase(), brief[k]); }).join('\n') + '\nIDENTITY_CONFIDENCE: ' + brief.identity_confidence + ' (' + digest.identity.reason + ')\nSOURCES: ' + (digest.site.pages_read.concat(digest.reviews.map(function (r) { return r.source; })).join(', ') || 'John\'s hand-off only') + '\n\n' + WR_VARIATIONS + '\n\n' + WR_INSTRUCTION;
+  var order = WR_BRIEF_KEYS.filter(function (k) { return ['questions_for_john', 'identity_confidence', 'reasoning'].indexOf(k) === -1 && !(k === 'video_plan' && !brief.video_plan); });
+  return 'STATUS:\nREADY_FOR_WEBSITE_CREATOR\n\nWEBSITE_CREATOR_BRIEF\n\n' + order.map(function (k) { return line(k.toUpperCase(), k === 'video_plan' ? wrVideoPlanLines(brief[k]) : brief[k]); }).join('\n') + '\nIDENTITY_CONFIDENCE: ' + brief.identity_confidence + ' (' + digest.identity.reason + ')\nSOURCES: ' + (digest.site.pages_read.concat(digest.reviews.map(function (r) { return r.source; })).join(', ') || 'John\'s hand-off only') + '\n\n' + WR_VARIATIONS + (brief.video_plan ? ' ' + WR_CLINIC_VARIATION : '') + '\n\n' + WR_INSTRUCTION;
 }
 
 // Enough details before building (Ryan, 2026-09-28: "the website intelligence only asks the website creator to create
@@ -554,10 +633,10 @@ function wrFinalize(o) {
   var brief = wrCoerceBrief(parsed || fallback, fallback);
   if (!parsed) brief = fallback;
   // never present the site's facts as verified when identity is low
-  // Medical visuals always follow the realism + MOH rules; the conversion plan is never empty.
-  if (fallback.medical_visual_direction && !/photoreal/i.test(brief.medical_visual_direction || '')) brief.medical_visual_direction = fallback.medical_visual_direction;
-  // The 3D parallax scroll film is always planned (Ryan, 2026-09-27); a model plan without it gets the fallback concept.
-  if (!/scroll/i.test(brief.motion_3d_direction || '') || !/parallax/i.test(brief.motion_3d_direction || '')) brief.motion_3d_direction = fallback.motion_3d_direction;
+  // Clinics always get the real-photo site and the video section (Ryan, 2026-10-12), never a scroll film.
+  if (fallback.medical_visual_direction) { brief.medical_visual_direction = fallback.medical_visual_direction; brief.motion_3d_direction = fallback.motion_3d_direction; }
+  // The 3D parallax scroll film is always planned for everyone else (Ryan, 2026-09-27); a model plan without it gets the fallback concept.
+  else if (!/scroll/i.test(brief.motion_3d_direction || '') || !/parallax/i.test(brief.motion_3d_direction || '')) brief.motion_3d_direction = fallback.motion_3d_direction;
   if (digest.identity.confidence === 'low') { brief.company_url = ''; brief.identity_confidence = 'low'; if (!brief.questions_for_john.length) brief.questions_for_john = fallback.questions_for_john; }
   var status = input.company_name ? 'READY_FOR_WEBSITE_CREATOR' : 'MORE_INFORMATION_REQUIRED';
   var text = status === 'READY_FOR_WEBSITE_CREATOR' ? wrBriefText(brief, digest) : 'STATUS:\nMORE_INFORMATION_REQUIRED\n\nQUESTIONS_FOR_JOHN:\n- What is the company name?\n\nWHY_REQUIRED:\nNo company could be identified from the hand-off.';
@@ -622,4 +701,4 @@ function wrCustomerAsk(o) {
   return { send: send, channel: channel || '', to: to || '', text: text, questions: qs, message_id: 'msg_wi_' + String(input.lead_id || 'x').replace(/[^a-z0-9_]/gi, '').slice(0, 60) + '_' + Date.now().toString(36) };
 }
 // ---- Node module wrapper (stripped when inlined into n8n) ----
-if (typeof module !== 'undefined') module.exports = { WR_IMG_SKIP: WR_IMG_SKIP, wrAbsUrl: wrAbsUrl, wrImagesFromHtml: wrImagesFromHtml, wrJsonLd: wrJsonLd, wrStructured: wrStructured, wrRealPhotos: wrRealPhotos, WR_PUBLIC_Q: WR_PUBLIC_Q, wrUrlGiven: wrUrlGiven, wrDropPublicQuestions: wrDropPublicQuestions, wrTopicsOf: wrTopicsOf, wrAskedTopics: wrAskedTopics, wrCustomerAsk: wrCustomerAsk, WR_ASK_MARK: WR_ASK_MARK, WR_HOLD_MARK: WR_HOLD_MARK, WR_MAX_INFO_ROUNDS: WR_MAX_INFO_ROUNDS, wrInfoRounds: wrInfoRounds, WR_ROOMS_Q: WR_ROOMS_Q, wrRoomsKnown: wrRoomsKnown, wrEnoughFallback: wrEnoughFallback, WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };
+if (typeof module !== 'undefined') module.exports = { WR_CLINIC_TOPICS: WR_CLINIC_TOPICS, WR_CLINIC_MOTION: WR_CLINIC_MOTION, wrClinicKey: wrClinicKey, wrVideoPlan: wrVideoPlan, wrCoerceVideoPlan: wrCoerceVideoPlan, WR_IMG_SKIP: WR_IMG_SKIP, wrAbsUrl: wrAbsUrl, wrImagesFromHtml: wrImagesFromHtml, wrJsonLd: wrJsonLd, wrStructured: wrStructured, wrRealPhotos: wrRealPhotos, WR_PUBLIC_Q: WR_PUBLIC_Q, wrUrlGiven: wrUrlGiven, wrDropPublicQuestions: wrDropPublicQuestions, wrTopicsOf: wrTopicsOf, wrAskedTopics: wrAskedTopics, wrCustomerAsk: wrCustomerAsk, WR_ASK_MARK: WR_ASK_MARK, WR_HOLD_MARK: WR_HOLD_MARK, WR_MAX_INFO_ROUNDS: WR_MAX_INFO_ROUNDS, wrInfoRounds: wrInfoRounds, WR_ROOMS_Q: WR_ROOMS_Q, wrRoomsKnown: wrRoomsKnown, wrEnoughFallback: wrEnoughFallback, WR_VERSION: WR_VERSION, WR_BRIEF_KEYS: WR_BRIEF_KEYS, WR_LIST_KEYS: WR_LIST_KEYS, wrInput: wrInput, wrQueries: wrQueries, wrSearchItems: wrSearchItems, wrIdentify: wrIdentify, wrHtmlToText: wrHtmlToText, wrPickPages: wrPickPages, wrFetchedPage: wrFetchedPage, wrDigest: wrDigest, wrFallbackBrief: wrFallbackBrief, wrCoerceBrief: wrCoerceBrief, wrParseJson: wrParseJson, wrBriefText: wrBriefText, wrFinalize: wrFinalize, wrFindUrls: wrFindUrls, wrHost: wrHost, wrSpecialty: wrSpecialty, wrIsMedical: wrIsMedical, wrMotionFor: wrMotionFor, wrFunnelFor: wrFunnelFor, wrConversionFor: wrConversionFor, WR_CONVERSION_STRATEGY: WR_CONVERSION_STRATEGY };
