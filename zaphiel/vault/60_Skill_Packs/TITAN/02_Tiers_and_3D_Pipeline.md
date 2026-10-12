@@ -28,7 +28,8 @@ part of the body, what can go wrong, how the clinic's own services treat it, and
 - Topics and the four-beat script: [[14_Clinic_Video_Explainers]].
 - Build: Lovable, [[13_Lovable_Medical_Prompt]] (Lovable renders the anatomy in each video; Kling/Higgsfield clips
   optional).
-- Narration: the doctor's own voice (best) or a labelled AI voice; captions and transcripts always.
+- Narration: Lovable creates the voice (natural, not robotic, American English), or the doctor's own recording;
+  captions and transcripts always.
 - Gates: clinician review of every script and visual ([[03_Medical_Supplement_Rules]]); titan-qa.
 
 ## Cinematic products: TITAN decides (site kit on Vercel)

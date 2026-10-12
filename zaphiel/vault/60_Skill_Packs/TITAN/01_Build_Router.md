@@ -14,7 +14,7 @@ Re-check the connection and the price on the first use in every new project. Cos
 | Custom app / complex logic | **Claude Code** (React/Next + Tailwind) | Lovable | ✅ (this workspace) | Free |
 | Database, login, files | **Supabase** (RLS; a dev project first) | — | ✅ `fusion-edg-dev` only | Free-plan limits; a new project per client = check plan |
 | Films: split-and-reassemble, scroll chapters, optional photoreal medical clips | **Kling** (Pro, 1,508 credits) via TITAN 3D Studio | **Higgsfield** (Plus, 1,000 credits; Seedance, Kling 3.0 Omni, Cinema Studio) | ✅ both | Credits: cost card + Ryan's yes |
-| Presenter / explainer voice | Real doctor's own voice (free) | **ElevenLabs** (paid plan for commercial use) | ⚠️ ElevenLabs connected, one read got 403 | Paid plan needed for commercial voiceover |
+| Narrator / explainer voice | **Lovable creates it** (prompt: natural, warm, not robotic, American English; Ryan, 2026-10-12) | The doctor's own recorded voice; ElevenLabs only if ever needed | ✅ Lovable | Included in Lovable credits |
 | Talking presenter on screen | The clinic's **real doctor filmed** | No face: narration over the visuals (doctor's voice or a labelled AI voice). **Never an AI person as a doctor** | — (HeyGen not connected) | Free / ElevenLabs plan |
 | Design mock-ups, graphics | **Canva** | Figma (read; Ryan's seat is View) | ✅ Canva · ⚠️ Figma view seat | Brand templates need Canva Pro/Teams |
 | Store | Client's **Shopify** | Stripe / HitPay (custom) | ✅ Shopify = **Bio Elixirs** (separate business: never use for clients) | Client's subscription |
