@@ -71,3 +71,9 @@ Model down → deterministic brief; photography down → gradient treatment with
 
 ## 18. Open questions for Ryan
 Permission rule to deploy; the three credentials; should the customer also get the editor link?
+
+## Cinematic Director (2026-10-12)
+The realistic films for this agent's sites (products that split and reassemble; photoreal anatomy: heart, arteries,
+blood flow, veins, brain, spine, knee, eye, teeth, skin) are planned and produced by the Claude Code agent
+`cinematic-director` on Kling and Higgsfield (training pack: [[60_Skill_Packs/Cinematic_Director/00_Index]]). It hands
+the films to the builders; it never builds sites. Ryan (2026-10-12): films from Kling/Higgsfield, not code-drawn 3D.

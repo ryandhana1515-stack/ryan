@@ -325,3 +325,8 @@ tags: [zaphiel, open-loops]
   Facebook Page, Instagram, TikTok, the Meta ad account (+ Google Business Profile; TikTok/Google Ads if used). Plus the
   last 90 days of bookings/sales as a CSV, and confirming the draft facts in its Brand Brain. HeyGen is not visible in
   this Claude session (connect at claude.ai/customize/connectors, then a new session); Seedance is reachable through Higgsfield.
+- 2026-10-12 — **Cinematic Director: first real run waits for Ryan** — pick the first job (a watch demo or a doctor demo),
+  then "APPROVED: up to N Kling credits". The first run measures real credit costs into
+  [[60_Skill_Packs/Cinematic_Director/06_Prompt_Log]]. The agent is callable by name from the next Claude Code session.
+- 2026-10-12 — **TITAN checkpoint 1 waits for Ryan** ([[00_CEO_Brain/09_TITAN_Audit]] §5): Tier 3 3D only with a licensed real model
+  (OK?), Demo A subject (supplement brand or clinic), OK to add "reports to TITAN" sections and routing lines (diffs in the PR).

@@ -97,3 +97,6 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   - **Appended to (no rewrite):** `10_Agents/Marketing/_index.md`, `10_Agents/03_Marketing_Growth.md`,
     `04_Creative_Studio.md`, `14_Data_BI_KPI.md`; new `10_Agents/Marketing/Marketing_Director.md`, `Market_Research.md`.
   - Nothing paid, generated, published or signed up.
+- 2026-10-12 — **Cinematic Director agent trained** (see [[Change log]]): films on Kling/Higgsfield for split-and-reassemble
+  products and photoreal medical anatomy; never builds sites; generation only with Ryan's approved budget.
+- 2026-10-12 — **TITAN Task 1 audit** ([[00_CEO_Brain/09_TITAN_Audit]]); checkpoint for Ryan.

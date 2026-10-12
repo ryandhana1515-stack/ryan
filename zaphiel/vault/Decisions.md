@@ -546,3 +546,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   Marketing never reads HR, payroll or unrelated accounting data. Files are never overwritten without showing the diff.
 - 2026-10-12 — **Marketing starts with Brow Revolution** (Ryan: "using my current Brow Revolution business, which I have
   existing business running"). Data analysis first. Metricool brand BROWREVOLUTION (7332947) = his business.
+- 2026-10-12 — **Wow websites: films, not code-drawn 3D; a trained director, not a builder** (Ryan: "what I actually want is
+  those in Higgsfield and Kling … the watch to be split into pieces and then come back … I don't want you to actually build
+  the website. I just want you to train the agent … must be able to create real … artery stuff, the blood vessels").
+  The real-time 3D code experiment was removed unmerged. New agent `cinematic-director` + training pack
+  [[60_Skill_Packs/Cinematic_Director/00_Index]]. It generates only with Ryan's approved credit budget.
+- 2026-10-12 — **TITAN adopted as the web director** (Ryan's "CLAUDE CODE MASTER PROMPT — TITAN"): one director + titan-seo +
+  titan-qa, coordinating website-intelligence, cinematic-director ("TITAN 3D Studio") and fusion-property-sg. ATLAS keeps
+  integrations, John the client, Marketing the campaigns. Audit first, stop at each checkpoint. Task 1 audit:
+  [[00_CEO_Brain/09_TITAN_Audit]].
