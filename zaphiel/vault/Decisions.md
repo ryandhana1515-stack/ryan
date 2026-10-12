@@ -544,3 +544,5 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   TESTED / SANDBOX TESTED / PRODUCTION VERIFIED). No paid generation, publishing, ad launch, budget increase, pausing a
   revenue campaign or deletion without Ryan's yes. No invented testimonials, results or prices; no fake before/after.
   Marketing never reads HR, payroll or unrelated accounting data. Files are never overwritten without showing the diff.
+- 2026-10-12 — **Marketing starts with Brow Revolution** (Ryan: "using my current Brow Revolution business, which I have
+  existing business running"). Data analysis first. Metricool brand BROWREVOLUTION (7332947) = his business.

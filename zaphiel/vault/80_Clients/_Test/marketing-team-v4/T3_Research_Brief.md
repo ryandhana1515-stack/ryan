@@ -12,6 +12,9 @@ label: RESEARCH (public pages, not our performance data)
 > ⚠️ **ASK RYAN: is "Brow Revolution" (browrevolution.sg, row 10 below) the same business as the Metricool brand
 > BROWREVOLUTION?** If yes, row 10 is that brand's own public ads, not a competitor, and nothing in it is an approved fact
 > until Ryan or the owner confirms it ([[60_Skill_Packs/Marketing_Team/Brands/BROWREVOLUTION/Brand_Brain]]).
+>
+> **Update 2026-10-12:** Ryan confirmed Brow Revolution is his own running business. Treat row 10 as **our brand's own public
+> ads** (a baseline), not a competitor. The website (browrevolution.sg) is still to be confirmed.
 
 # T3: Competitor Ad Scan: Eyebrow Embroidery / Microblading / Brow Services, Singapore
 
