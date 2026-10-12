@@ -74,3 +74,8 @@ The realistic films for this agent's sites (products that split and reassemble; 
 blood flow, veins, brain, spine, knee, eye, teeth, skin) are planned and produced by the Claude Code agent
 `cinematic-director` on Kling and Higgsfield (training pack: [[60_Skill_Packs/Cinematic_Director/00_Index]]). It hands
 the films to the builders; it never builds sites. Ryan (2026-10-12): films from Kling/Higgsfield, not code-drawn 3D.
+
+## Final direction for doctors (Ryan, 2026-10-12)
+Real clinic website with the clinic's own photos (no cinematic scroll), built on Lovable, plus a video section of
+narrated anatomy explainers matched to the specialty, one video per topic: [[60_Skill_Packs/TITAN/14_Clinic_Video_Explainers]],
+prompt [[60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt]]. Website Intelligence writes the video plan.

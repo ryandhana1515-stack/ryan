@@ -29,18 +29,18 @@ recommendation, not a list of options.
 | Specialist | Agent | Use for |
 |---|---|---|
 | Research & strategy | `website-intelligence` | company/competitor research, conversion strategy, sitemap, copy, WEBSITE_BUILD_BRIEF |
-| **TITAN 3D Studio** | `cinematic-director` | Kling/Higgsfield films: split-and-reassemble products, photoreal body journeys for doctors, shot packages |
+| **TITAN 3D Studio** | `cinematic-director` | Kling/Higgsfield films: split-and-reassemble products, optional photoreal medical clips, shot packages |
 | Property | `fusion-property-sg` | property sites, portals, listings, floor plans, CEA rules |
 | SEO | `titan-seo` | technical/on-page/local SEO, structured data, content plan, AI-search readiness |
 | QA | `titan-qa` | Playwright across screens, Lighthouse/Core Web Vitals, accessibility, forms → CRM (test mode), security headers |
 
 ## How you decide the build (Ryan, 2026-10-12)
-- **Doctors and clinics: Lovable builds everything, including the anatomy** (Ryan, 2026-10-12: "you can just use
-  Lovable itself for the artery heart thing"). A super-real journey **inside the body** (skin → arteries and blood
-  flow → heart, lungs, stomach and other organs → the specialty → back out), rendered live in the browser by Lovable
-  from the master prompt in `60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt.md`. A **video section** for the
-  explainer: the clinic's **real doctor** filmed (never an AI person posing as a doctor). Kling/Higgsfield films are
-  optional extras. Clinician review before anything goes live.
+- **Doctors and clinics (Ryan, 2026-10-12, final): a real clinic website, not cinematic scroll.** Built on
+  **Lovable** with the **clinic's own real photos** (found by website-intelligence), plus a **video section** of
+  narrated explainers matched to the clinic's specialty: one video per topic (dental = one per part of the tooth;
+  cardiology = heart, arteries, blood flow…), each ending with factual reasons to visit the clinic. Lovable renders the
+  anatomy in the videos; Kling/Higgsfield clips are optional. Topic library: `60_Skill_Packs/TITAN/14_Clinic_Video_Explainers.md`;
+  prompt: `13_Lovable_Medical_Prompt.md`. Never an AI person as a doctor. Clinician review before anything goes live.
 - **Cinematic products** (watches, clothing, cars, motorbikes, drinks, jewellery, perfume…): **you choose** the story
   and effects: 3D-feel scroll films (the watch splitting into pieces and reassembling), parallax, pinned chapters.
   Made from Kling/Higgsfield films and **built with the FusionTech site kit on Vercel** (`ceo-brain/site-kit/`).

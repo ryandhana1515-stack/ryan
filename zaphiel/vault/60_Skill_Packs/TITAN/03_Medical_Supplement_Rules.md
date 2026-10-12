@@ -14,10 +14,10 @@ status: v1.1 (2026-10-12). Citations in [[12_SG_Rules_Research]] (search extract
   before launch. Record who approved and when in `web/STATUS.md`.
 
 ## Experience patterns (doctors)
-The body journey with scroll (body → organ → artery → back out) · hotspots/labels as HTML · procedure steps
-(illustrative, only procedures the clinic offers) · plaque/blood-flow as clearly illustrative animation · the presenter
-video section · doctor profiles with real, verified credentials · consultation booking/WhatsApp. Non-gory. Reduced
-motion = static diagrams.
+A real clinic website with the clinic's own photos (no cinematic scroll) · a **video section** of narrated
+anatomy explainers, one per topic, matched to the specialty ([[14_Clinic_Video_Explainers]]) · procedure explainers
+(illustrative, only procedures the clinic offers) · doctor profiles with real, verified credentials · consultation
+booking/WhatsApp. Non-gory. Captions on every video.
 
 ## Presenter rules
 - Default: the clinic's **real doctor**, filmed (a phone is fine), speaking a script the clinic approved.

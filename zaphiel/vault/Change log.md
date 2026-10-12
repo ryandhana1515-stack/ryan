@@ -829,3 +829,7 @@ tags: [zaphiel, changelog]
   prompt for the live 3D body journey, iteration prompts) and `TITAN/12_SG_Rules_Research.md` (clinics, supplements,
   crypto, property, PDPA, ASAS/CPFTA with sources). Updated titan.md, TITAN 00–03, Cinematic Director 02/04 and its
   TITAN section, 10_Agents/TITAN.
+- 2026-10-12 — **Doctors' sites: real photos + video section.** New `TITAN/14_Clinic_Video_Explainers.md` (topic library for 11
+  specialties, four-beat script, narration options); `TITAN/13_Lovable_Medical_Prompt.md` rewritten (v2.0); updated
+  titan.md, TITAN 00–03, 10_Agents/TITAN, 06_Medical_3D_Web, cinematic-director; website-intelligence.md gains the
+  clinic "real photos + video plan" stage.

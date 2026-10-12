@@ -10,39 +10,26 @@ version: 1.0 (2026-10-12)
 |---|---|---|---|
 | **1 Premium conversion site** | Strong design, CSS/GSAP motion, fast | Most SMEs, landing pages, funnels | Site kit or Lovable; no films needed |
 | **2 Cinematic scroll** | Pinned chapters, scroll-scrubbed films, parallax, colour changes | Brands that sell on feeling | Site kit + 1–3 Kling/Higgsfield films |
-| **3 Flagship film experience** | A full 3D-feel scene film (5–7 chained scenes) that builds/transforms with the scroll, plus video sections | Luxury products, doctors' body journeys, property journeys | TITAN 3D Studio (`cinematic-director`) films → site kit (products) or Lovable (doctors) |
+| **3 Flagship film experience** | A full 3D-feel scene film (5–7 chained scenes) that builds/transforms with the scroll, plus video sections | Luxury products, property journeys (not doctors) | TITAN 3D Studio (`cinematic-director`) films → site kit (products) or Lovable (doctors) |
 
 ## Ryan's 3D decision (2026-10-12)
 - 3D feel comes from **films made on Kling and Higgsfield**, not code-drawn shapes.
-- **Exception, doctors' sites:** Lovable builds live 3D anatomy itself from the master prompt (Ryan, 2026-10-12;
-  [[13_Lovable_Medical_Prompt]]).
+- **Doctors' sites** are not cinematic: real photos + a video section where Lovable renders the anatomy explainers
+  ([[14_Clinic_Video_Explainers]], [[13_Lovable_Medical_Prompt]]).
 - Real-time WebGL (Three.js) only if Ryan asks for it **and** an accurate, licensed model exists (client CAD or a
   licensed model). Then: model → clean-up → glTF/GLB → compress (Draco/Meshopt, KTX2/WebP) → HTML labels → poster
   first, lazy load, mobile pre-rendered fallback.
 
-## Doctors and clinics: the body journey (Lovable)
-**Update, Ryan 2026-10-12: Lovable builds the anatomy itself** with the right prompt
-([[13_Lovable_Medical_Prompt]]): live 3D vessels, blood cells, heart, lungs, stomach, scroll-driven. That is the
-default. The Kling/Higgsfield film steps below are an optional extra (e.g. for a photoreal explainer video), not
-required.
-
-1. **The film:** TITAN 3D Studio makes a super-real journey **inside the body** (the recipes in
-   [[60_Skill_Packs/Cinematic_Director/02_Medical_Anatomy_Films]]):
-   - the person → through the skin;
-   - **arteries and blood vessels**, blood cells flowing;
-   - the heart, **the lungs** breathing, **the stomach** and digestive tract, the liver and kidneys;
-   - the clinic's specialty in detail, then back out.
-   Each organ is a chained scene (last frame = next first frame).
-2. **The presenter video section:** a "How it works" player (poster, play button, captions, transcript). The
-   presenter is the clinic's **real doctor filmed**. Never an AI person as a doctor; if the doctor won't appear, use
-   narration over the visuals with no face (the doctor's voice or a labelled AI voice). The script comes from the
-   clinic and is reviewed by its doctor.
-3. **The site, built on Lovable:**
-   - the body-journey film scrubbed by the scroll (Lovable scrubs the video in the browser);
-   - specialty pages, doctor profiles (real, verified), the presenter video section;
-   - FAQ, booking/WhatsApp → CRM via ATLAS.
-   - Labels "Illustration for education only".
-4. **Gates:** clinician review of every film, caption and page ([[03_Medical_Supplement_Rules]]); titan-qa.
+## Doctors and clinics: real clinic site + video section (Lovable)
+**Ryan, 2026-10-12 (final): no cinematic scroll or parallax for doctors.** Tier 1 design with the clinic's **real
+photos**, plus a **video section** of narrated explainers matched to the clinic's specialty, one video per topic
+(dental: enamel, dentin, pulp, root, gums, jawbone; cardiology: heart, arteries, blood flow…). Each video explains the
+part of the body, what can go wrong, how the clinic's own services treat it, and factual reasons to visit.
+- Topics and the four-beat script: [[14_Clinic_Video_Explainers]].
+- Build: Lovable, [[13_Lovable_Medical_Prompt]] (Lovable renders the anatomy in each video; Kling/Higgsfield clips
+  optional).
+- Narration: the doctor's own voice (best) or a labelled AI voice; captions and transcripts always.
+- Gates: clinician review of every script and visual ([[03_Medical_Supplement_Rules]]); titan-qa.
 
 ## Cinematic products: TITAN decides (site kit on Vercel)
 TITAN picks the story from the product:

@@ -63,6 +63,6 @@ Web Director, scopes every web job, picks the tier and build path, and assigns y
 Keep `80_Clients/<client>/web/STATUS.md` up to date for your part. Integrations (CRM, WhatsApp, payments, calendars)
 go to ATLAS as an INTEGRATION_SPEC through TITAN. John stays the only contact with the client.
 Your role on the team: **TITAN 3D Studio**. TITAN decides the story for cinematic products (watches, clothing,
-cars, motorbikes, drinks…); you make the films and hand them over for the site kit. For doctors, Lovable builds the
-anatomy visuals on the site itself (Ryan, 2026-10-12; `60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt.md`); you make
-medical films only when TITAN asks for an optional extra (a photoreal explainer video, social clips).
+cars, motorbikes, drinks…); you make the films and hand them over for the site kit. Doctors' sites are real clinic
+websites with a video section of narrated explainers (Ryan, 2026-10-12; `60_Skill_Packs/TITAN/14_Clinic_Video_Explainers.md`);
+Lovable renders the anatomy by default. You make photoreal medical clips only when TITAN asks for them as an option.

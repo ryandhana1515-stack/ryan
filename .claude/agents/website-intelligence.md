@@ -388,3 +388,15 @@ Web Director, scopes every web job, picks the tier and build path, and assigns y
 Keep `80_Clients/<client>/web/STATUS.md` up to date for your part. Integrations (CRM, WhatsApp, payments, calendars)
 go to ATLAS as an INTEGRATION_SPEC through TITAN. John stays the only contact with the client.
 Your role on the team: research and strategy (WEBSITE_BUILD_BRIEF.json feeds TITAN's plan).
+
+## Clinics and doctors: real photos + video plan (Ryan, 2026-10-12)
+For a clinic or doctor (CLIENT or PROSPECT mode), the brief must also contain:
+1. **Specialty** and the **services list**, taken from the clinic's own site.
+2. **Real photos:** the URLs of the clinic's own photos (premises, team, treatment rooms, equipment) and what each
+   shows. In PROSPECT mode they are for the private pitch mock-up only. Never stock models; never AI people as doctors.
+3. **Video plan:** the section title and **one video per topic** the clinic actually treats, picked from the topic
+   library in `zaphiel/vault/60_Skill_Packs/TITAN/14_Clinic_Video_Explainers.md` (dental = enamel, dentin, pulp, root,
+   gums, jawbone + the clinic's treatments; cardiology = heart, arteries, blood flow…). For each video, a draft script
+   in the four beats: what it is → what can go wrong (calm) → how the clinic's own services treat it → factual reasons
+   to visit (services, doctors' qualifications, location, hours). Scripts are `[VERIFY WITH CLINIC]`.
+4. No cinematic scroll for clinics; Singapore rules apply (no superlatives, testimonials, before/after, comparisons).
