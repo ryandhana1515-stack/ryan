@@ -33,10 +33,13 @@ John stays the only contact with the client.
 | [[09_Security_Compliance_Checklists]] | Web app security, PDPA, accessibility, per-industry lists |
 | [[10_QA_Gates]] | titan-qa's gates and how to run them here |
 | [[11_Handoff_Contracts]] | WEB_BUILD_REQUEST, INTEGRATION_SPEC, CAMPAIGN_PAGE_REQUEST, WEB_STATUS |
+| [[12_SG_Rules_Research]] | Singapore rules with sources: clinics (HCSA, SMC), supplements (HSA), crypto (MAS), property (CEA), PDPA, ASAS/CPFTA |
+| [[13_Lovable_Medical_Prompt]] | The master Lovable prompt for doctors' sites (anatomy built by Lovable), rules block, iteration prompts |
 
 **Ryan's decisions (2026-10-12):**
-- **Doctors:** a super-real journey inside the body (arteries, blood vessels, lungs, stomach, organs), made on
-  Kling/Higgsfield, with a video section where a presenter explains it, **built on Lovable**.
+- **Doctors:** a super-real journey inside the body (arteries, blood vessels, lungs, stomach, organs) with a video
+  section for the explainer, **built on Lovable, which also builds the anatomy itself** ([[13_Lovable_Medical_Prompt]]);
+  Kling/Higgsfield optional.
 - **Cinematic products** (watches, clothing, cars, motorbikes, drinks…): TITAN decides the story; 3D-feel scroll and
   parallax from Kling/Higgsfield films (e.g. the watch splitting and reassembling), built with the site kit.
 - **No code-drawn 3D shapes.**

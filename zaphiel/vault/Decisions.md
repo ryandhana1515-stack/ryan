@@ -559,3 +559,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   vessels, lungs, stomach, organs) on Kling/Higgsfield with a presenter video section, built on **Lovable**; cinematic
   products (watches, clothing, cars, motorbikes, drinks) — **TITAN decides**, 3D-feel scroll/parallax from Kling/Higgsfield
   films on the site kit; **no code-drawn 3D**. Routing lines added to ATLAS and the Marketing Director (diffs in the PR).
+- 2026-10-12 — **Doctors' anatomy is built by Lovable itself** (Ryan: "you just need the right prompt … you can just use Lovable
+  itself for the artery heart thing, everything"). Master prompt [[60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt]];
+  Kling/Higgsfield films become optional for medical. Products stay on Kling/Higgsfield + the site kit. From the rules
+  research: never an AI person as a doctor; no testimonials, superlatives, comparisons or before/after on clinic sites.

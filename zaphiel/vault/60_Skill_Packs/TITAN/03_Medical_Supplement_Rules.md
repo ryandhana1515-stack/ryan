@@ -1,6 +1,6 @@
 ---
 tags: [zaphiel, skill-pack, titan, medical, supplements, rules]
-status: v1.0 (2026-10-12). Singapore rule citations being researched; until filled, every rule below is UNVERIFIED and goes to the client's expert
+status: v1.1 (2026-10-12). Citations in [[12_SG_Rules_Research]] (search extracts of official pages; check the law text with the client before going live)
 ---
 # Medical & supplement experiences: built for trust
 
@@ -20,10 +20,21 @@ video section · doctor profiles with real, verified credentials · consultation
 motion = static diagrams.
 
 ## Presenter rules
-- Best: the clinic's real doctor, filmed (phone is fine), speaking a script the clinic approved.
-- An AI presenter is allowed only as an **illustrative presenter**, labelled "AI presenter" on screen and near the
-  player. It never claims to be the doctor or a patient.
+- Default: the clinic's **real doctor**, filmed (a phone is fine), speaking a script the clinic approved.
+- **Never an AI-generated person as a doctor or a patient** (the research found no AI-specific rule, but it would
+  mislead about who the doctor is: [[12_SG_Rules_Research]] §A3). If the doctor won't appear, use a narrated
+  explainer over the anatomy visuals: the doctor's own voice, or a clearly labelled AI narration voice, with no face.
 - Voice cloning only of the doctor's own voice, with recorded consent.
+
+## Key Singapore points (details and sources: [[12_SG_Rules_Research]] §A, §B)
+- The clinic (the HCSA licensee) must **authorise** FusionTech's work in writing; the licensee is responsible for
+  the ads.
+- Banned even if true: praise/superlatives; comparisons with other clinics; promised results; before/after or
+  "after only" images.
+- Testimonials: HCSA allows a narrow exception, but the SMC bars doctors from testimonials on media they control.
+  **Default: none on clinic sites.**
+- Influencers and non-licensees may not advertise healthcare services.
+- Supplements: no claims to treat or prevent disease (including implied ones); evidence for every claim.
 
 ## Never
 - Invent clinical outcomes, efficacy, success rates, diagnostic claims, before/after evidence or supplement

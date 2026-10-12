@@ -34,8 +34,9 @@ cinematic 3D scroll, web SEO and conversion (Ryan's master prompt, 2026-10-12).
   and tracks the pages.
 
 ## Ryan's build decisions (2026-10-12)
-- **Doctors:** super-real journey inside the body (arteries, blood vessels, heart, lungs, stomach, organs) on
-  Kling/Higgsfield, plus a presenter video section; **built on Lovable**.
+- **Doctors:** super-real journey inside the body (arteries, blood vessels, heart, lungs, stomach, organs) plus a
+  video section for the doctor's explainer; **built on Lovable, which builds the anatomy itself**
+  ([[60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt]]). Kling/Higgsfield optional.
 - **Cinematic products:** TITAN decides the story (watch splits and reassembles, car, motorbike, clothing, drinks);
   3D-feel scroll and parallax from the films; built with the site kit.
 - **No code-drawn 3D shapes.**
@@ -45,4 +46,4 @@ cinematic 3D scroll, web SEO and conversion (Ryan's master prompt, 2026-10-12).
 |---|---|
 | Agent files + knowledge pack + routing lines + templates | CODED (2026-10-12) |
 | Demo A (landing page + lead form → mock CRM + QA) | PLANNED (Task 4) |
-| Demo B (body-journey / cinematic demo) | PLANNED (Task 4); needs a cost card for Kling/Higgsfield credits |
+| Demo B (doctor body-journey site on Lovable) | PLANNED (Task 4); needs a cost card for Lovable credits (Pro plan) |
