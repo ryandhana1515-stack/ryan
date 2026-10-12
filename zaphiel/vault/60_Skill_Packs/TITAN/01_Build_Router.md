@@ -15,7 +15,7 @@ Re-check the connection and the price on the first use in every new project. Cos
 | Database, login, files | **Supabase** (RLS; a dev project first) | — | ✅ `fusion-edg-dev` only | Free-plan limits; a new project per client = check plan |
 | Films: split-and-reassemble, body journeys, scroll chapters | **Kling** (Pro, 1,508 credits) via TITAN 3D Studio | **Higgsfield** (Plus, 1,000 credits; Seedance, Kling 3.0 Omni, Cinema Studio) | ✅ both | Credits: cost card + Ryan's yes |
 | Presenter / explainer voice | Real doctor's own voice (free) | **ElevenLabs** (paid plan for commercial use) | ⚠️ ElevenLabs connected, one read got 403 | Paid plan needed for commercial voiceover |
-| Talking presenter on screen | The clinic's **real doctor filmed** | AI presenter (Higgsfield / Kling with voice), **labelled** | — (HeyGen not connected) | Credits |
+| Talking presenter on screen | The clinic's **real doctor filmed** | No face: narration over the visuals (doctor's voice or a labelled AI voice). **Never an AI person as a doctor** | — (HeyGen not connected) | Free / ElevenLabs plan |
 | Design mock-ups, graphics | **Canva** | Figma (read; Ryan's seat is View) | ✅ Canva · ⚠️ Figma view seat | Brand templates need Canva Pro/Teams |
 | Store | Client's **Shopify** | Stripe / HitPay (custom) | ✅ Shopify = **Bio Elixirs** (separate business: never use for clients) | Client's subscription |
 | Lead routing, notifications, CRM writes | **n8n / EDG via ATLAS** | — | ✅ n8n | ATLAS owns it |

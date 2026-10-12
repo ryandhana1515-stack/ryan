@@ -14,6 +14,8 @@ version: 1.0 (2026-10-12)
 
 ## Ryan's 3D decision (2026-10-12)
 - 3D feel comes from **films made on Kling and Higgsfield**, not code-drawn shapes.
+- **Exception, doctors' sites:** Lovable builds live 3D anatomy itself from the master prompt (Ryan, 2026-10-12;
+  [[13_Lovable_Medical_Prompt]]).
 - Real-time WebGL (Three.js) only if Ryan asks for it **and** an accurate, licensed model exists (client CAD or a
   licensed model). Then: model → clean-up → glTF/GLB → compress (Draco/Meshopt, KTX2/WebP) → HTML labels → poster
   first, lazy load, mobile pre-rendered fallback.
@@ -32,9 +34,9 @@ required.
    - the clinic's specialty in detail, then back out.
    Each organ is a chained scene (last frame = next first frame).
 2. **The presenter video section:** a "How it works" player (poster, play button, captions, transcript). The
-   presenter is the clinic's **real doctor filmed** (best), or an **AI presenter clearly labelled** "AI presenter".
-   The voice is the doctor's own, or a licensed ElevenLabs voice. The script comes from the clinic and is reviewed by
-   its doctor.
+   presenter is the clinic's **real doctor filmed**. Never an AI person as a doctor; if the doctor won't appear, use
+   narration over the visuals with no face (the doctor's voice or a labelled AI voice). The script comes from the
+   clinic and is reviewed by its doctor.
 3. **The site, built on Lovable:**
    - the body-journey film scrubbed by the scroll (Lovable scrubs the video in the browser);
    - specialty pages, doctor profiles (real, verified), the presenter video section;
