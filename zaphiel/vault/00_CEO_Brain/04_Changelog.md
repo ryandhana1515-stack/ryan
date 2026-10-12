@@ -101,3 +101,4 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   products and photoreal medical anatomy; never builds sites; generation only with Ryan's approved budget.
 - 2026-10-12 — **TITAN Task 1 audit** ([[00_CEO_Brain/09_TITAN_Audit]]); checkpoint for Ryan.
 - 2026-10-12 — **TITAN built (Tasks 2–3)**, see [[Change log]] and [[10_Agents/TITAN]].
+- 2026-10-12 — **TITAN: Lovable builds doctors' anatomy; Singapore rules research saved** (see [[Change log]]).

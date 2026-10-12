@@ -19,6 +19,11 @@ version: 1.0 (2026-10-12)
   first, lazy load, mobile pre-rendered fallback.
 
 ## Doctors and clinics: the body journey (Lovable)
+**Update, Ryan 2026-10-12: Lovable builds the anatomy itself** with the right prompt
+([[13_Lovable_Medical_Prompt]]): live 3D vessels, blood cells, heart, lungs, stomach, scroll-driven. That is the
+default. The Kling/Higgsfield film steps below are an optional extra (e.g. for a photoreal explainer video), not
+required.
+
 1. **The film:** TITAN 3D Studio makes a super-real journey **inside the body** (the recipes in
    [[60_Skill_Packs/Cinematic_Director/02_Medical_Anatomy_Films]]):
    - the person → through the skin;

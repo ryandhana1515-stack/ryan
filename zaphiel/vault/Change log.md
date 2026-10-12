@@ -825,3 +825,7 @@ tags: [zaphiel, changelog]
   checklist, QA report). "Reports to TITAN" appended to website-intelligence, cinematic-director (= TITAN 3D Studio),
   fusion-property-sg; routing lines added to atlas.md (§B2) and marketing-director.md. Medical films: full body tour
   (arteries, heart, lungs, stomach, liver, kidneys) and the presenter video section added.
+- 2026-10-12 — **TITAN: Lovable-first medical + Singapore rules.** New `TITAN/13_Lovable_Medical_Prompt.md` (rules block, master
+  prompt for the live 3D body journey, iteration prompts) and `TITAN/12_SG_Rules_Research.md` (clinics, supplements,
+  crypto, property, PDPA, ASAS/CPFTA with sources). Updated titan.md, TITAN 00–03, Cinematic Director 02/04 and its
+  TITAN section, 10_Agents/TITAN.

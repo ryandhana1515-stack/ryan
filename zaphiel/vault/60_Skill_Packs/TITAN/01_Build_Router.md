@@ -9,7 +9,7 @@ Re-check the connection and the price on the first use in every new project. Cos
 | Need | First choice | Fallback | Connected? (2026-10-12) | Cost / approval |
 |---|---|---|---|---|
 | Cinematic product site (watch, fashion, car, drinks…), 3D-feel scroll | **Site kit** (`ceo-brain/site-kit`: Vite + GSAP + Lenis scroll films) built in Claude Code, hosted on **Vercel** | React/Next + GSAP for complex apps | ✅ Vercel (Hobby plan) | Free for previews. Hobby is **non-commercial**: a paying client's live site needs a plan decision (cost card) |
-| Doctor / clinic site with the body-journey film | **Lovable** (Ryan, 2026-09-29 and 2026-10-12) | Site kit | ✅ Lovable, workspace "Ryan's Lovable" | Every Lovable message uses credits: cost card first |
+| Doctor / clinic site with the body journey (anatomy built **by Lovable itself**, [[13_Lovable_Medical_Prompt]]) | **Lovable** (Ryan, 2026-09-29 and 2026-10-12; workspace on the **Pro** plan) | Site kit; Kling films only as an optional extra | ✅ Lovable, workspace "Ryan's Lovable" | Every Lovable message uses credits: cost card first |
 | App the client edits visually, simple CRUD apps, portals | **Lovable** (React + Supabase) | Claude Code + Supabase | ✅ | Credits |
 | Custom app / complex logic | **Claude Code** (React/Next + Tailwind) | Lovable | ✅ (this workspace) | Free |
 | Database, login, files | **Supabase** (RLS; a dev project first) | — | ✅ `fusion-edg-dev` only | Free-plan limits; a new project per client = check plan |

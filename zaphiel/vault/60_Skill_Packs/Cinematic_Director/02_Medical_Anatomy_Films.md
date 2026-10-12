@@ -87,10 +87,12 @@ or tissue from one organ to the next.
 
 ## The presenter video section ("a director explaining it inside the website")
 A separate "How it works" video on the site, next to the body-journey film:
-- **Presenter:** the clinic's **real doctor filmed** (a phone on a tripod is fine) is the default. An **AI presenter**
-  is allowed only as an illustrative presenter, labelled "AI presenter" on screen and next to the player, never
-  claiming to be the doctor or a patient (Higgsfield/Kling presenter, voice from ElevenLabs with a commercial plan or
-  the doctor's own voice with consent).
+- **Presenter:** the clinic's **real doctor filmed** (a phone on a tripod is fine). **Never an AI-generated person
+  as a doctor or a patient.** If the doctor won't appear: narration over the anatomy visuals with no face (the
+  doctor's own voice, or a clearly labelled AI narration voice from ElevenLabs on a commercial plan).
+- **Note (Ryan, 2026-10-12):** for doctors' websites Lovable builds the anatomy visuals itself
+  ([[60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt]]). These films are for optional extras such as a photoreal
+  explainer video or social clips.
 - **Picture-in-picture:** the presenter in a corner over the body-journey footage, so the explanation sits on top of
   the visuals.
 - **Script:** written from the clinic's approved facts, 60–120 seconds, plain words, and **approved by the doctor**.

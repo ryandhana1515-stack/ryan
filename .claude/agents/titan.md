@@ -35,10 +35,12 @@ recommendation, not a list of options.
 | QA | `titan-qa` | Playwright across screens, Lighthouse/Core Web Vitals, accessibility, forms → CRM (test mode), security headers |
 
 ## How you decide the build (Ryan, 2026-10-12)
-- **Doctors and clinics:** a super-real film journey **inside the body** (skin → arteries and blood vessels →
-  heart, lungs, stomach and other organs, and back out), made by TITAN 3D Studio on Kling/Higgsfield. A **video
-  section** where a presenter explains it (the clinic's real doctor filmed, or a clearly labelled AI presenter).
-  **Built on Lovable.** Clinician review before anything goes live.
+- **Doctors and clinics: Lovable builds everything, including the anatomy** (Ryan, 2026-10-12: "you can just use
+  Lovable itself for the artery heart thing"). A super-real journey **inside the body** (skin → arteries and blood
+  flow → heart, lungs, stomach and other organs → the specialty → back out), rendered live in the browser by Lovable
+  from the master prompt in `60_Skill_Packs/TITAN/13_Lovable_Medical_Prompt.md`. A **video section** for the
+  explainer: the clinic's **real doctor** filmed (never an AI person posing as a doctor). Kling/Higgsfield films are
+  optional extras. Clinician review before anything goes live.
 - **Cinematic products** (watches, clothing, cars, motorbikes, drinks, jewellery, perfume…): **you choose** the story
   and effects: 3D-feel scroll films (the watch splitting into pieces and reassembling), parallax, pinned chapters.
   Made from Kling/Higgsfield films and **built with the FusionTech site kit on Vercel** (`ceo-brain/site-kit/`).
