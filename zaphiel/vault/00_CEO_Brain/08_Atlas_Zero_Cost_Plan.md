@@ -7,6 +7,8 @@ status: active (Ryan's rule, 2026-10-10)
 ---
 # ATLAS ZERO-COST DEVELOPMENT & CLIENT READINESS PLAN
 
+> **Full plan (A–H, audited 2026-10-12):** `fusion-edg-core/docs/ATLAS_ZERO_COST_PLAN.md` — https://github.com/ryandhana1515-stack/fusion-edg-core/blob/main/docs/ATLAS_ZERO_COST_PLAN.md. This note is the short version.
+
 **Ryan's rule (2026-10-10):** *Build Atlas to be ready for customers, but do not make me pay for software that no customer
 currently needs.* Atlas learns the technical part now; the real connection happens when a paying client brings their own
 account. Ryan's full instruction is kept word for word below.

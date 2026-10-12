@@ -521,3 +521,20 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - The client connects their own accounts and pays their own subscriptions. FusionTech's own costs appear only when the first client goes live, and Ryan sees the figure before anything is bought.
   - Atlas's own CRM must cover a small company without Xero: sales per salesperson, targets, KPI, ROI, vouchers and packages, daily sales, and a simple money book.
   - HR Part 5 no longer waits for a payroll provider. A generic payroll export (spreadsheet) comes first.
+- 2026-10-12 — **Ryan's master instruction: "Atlas Zero-Cost Development Policy + Fusion CRM Lite".** It overrides any earlier instruction to register for or connect third-party software.
+  - **Cost gate:**
+    - The default answer to any sign-up is no.
+    - "Free" counts only when there is no card, no automatic upgrade to a paid plan, no chargeable API, and it is needed now.
+    - Before any registration, Ryan sees a card (TOOL / WHY NOW / COST / CARD REQUIRED / AUTO-UPGRADES / WHAT IF WE SKIP IT) and says yes.
+    - When unsure, treat it as paid.
+  - **Fusion CRM Lite** extends the existing CRM; no second CRM is built. Its scope:
+    - vouchers and packages, targets, commission;
+    - role dashboards;
+    - KPIs computed by code, with their period and "as of" time;
+    - expenses, simple profit and marketing ROI;
+    - CSV exports;
+    - import wizard with dry run and reconciliation.
+    It is honest that it is bookkeeping, not tax accounting. Corrections are credit notes and voids, never deletions.
+  - **Knowledge base:** `60_Skill_Packs/ATLAS_Integrations/`, one note per provider (16 priority providers first), each with "Last verified + source URL". `CONNECTOR_STATUS.md` holds the honesty ladder.
+  - **Reference screens** in `80_Clients/_internal/crm_reference/` are a feature list only. We use our own design and code, and copy no logo or branding.
+  - **Process:** plan first (`docs/ATLAS_ZERO_COST_PLAN.md`), stop and show Ryan, then build step 1 with fake data, then step by step with his approval.
