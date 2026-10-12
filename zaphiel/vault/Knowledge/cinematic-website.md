@@ -18,3 +18,7 @@ The "cinematic-website agent" that Ryan's agent files name (for example [[10_Age
 - **Research first:** [[10_Agents/05a_Website_Intelligence]].
 
 "The cinematic-website agent's PROPERTY module" means the property journey in these three places.
+
+- **Cinematic Director (2026-10-12):** the Claude Code agent `cinematic-director` now owns the film assets for this
+  capability (split-and-reassemble products, photoreal medical anatomy), with its training pack
+  [[60_Skill_Packs/Cinematic_Director/00_Index]]. The builders above still build the sites.

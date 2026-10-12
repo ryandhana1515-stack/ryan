@@ -812,3 +812,8 @@ tags: [zaphiel, changelog]
   - **Appended to (no rewrite):** `10_Agents/Marketing/_index.md`, `10_Agents/03_Marketing_Growth.md`,
     `04_Creative_Studio.md`, `14_Data_BI_KPI.md`; new `10_Agents/Marketing/Marketing_Director.md`, `Market_Research.md`.
   - Nothing paid, generated, published or signed up.
+- 2026-10-12 — **Cinematic Director agent trained** (`.claude/agents/cinematic-director.md`, pack
+  `60_Skill_Packs/Cinematic_Director/` 00–06): split-and-reassemble method (hero still → exploded still made from it →
+  Kling first/tail film; reverse scroll = reassembly), photoreal medical anatomy recipes and facts table, production
+  runbook with cost card and approval gate, QA, prompt log. Dry-run tests in `80_Clients/_Test/cinematic-director/`.
+  Links appended to 05, 06, Knowledge/cinematic-website. Nothing generated, no credits spent.
