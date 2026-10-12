@@ -321,3 +321,7 @@ tags: [zaphiel, open-loops]
   - Ryan: OK to retire `marketing-brain` (merged into `ads-intelligence`)?
   - Later: Layer 2 (platform marketing module) after Ryan approves Layer 1.
   - Firecrawl credits are low (only matters for the next deep research job).
+- 2026-10-12 — **Brow Revolution marketing data: waiting for Ryan to connect** in Metricool (brand BROWREVOLUTION):
+  Facebook Page, Instagram, TikTok, the Meta ad account (+ Google Business Profile; TikTok/Google Ads if used). Plus the
+  last 90 days of bookings/sales as a CSV, and confirming the draft facts in its Brand Brain. HeyGen is not visible in
+  this Claude session (connect at claude.ai/customize/connectors, then a new session); Seedance is reachable through Higgsfield.

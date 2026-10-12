@@ -24,3 +24,18 @@ known. Every field is **ASK RYAN** until he confirms it. The team never invents 
 | Lead handling (who replies, how fast), what counts as qualified / appointment / sale | ASK RYAN |
 
 Targets: [[Brands/BROWREVOLUTION/targets]]
+
+## Update 2026-10-12: Ryan's own running business
+Ryan (2026-10-12): Brow Revolution is **his existing, running business**, and the marketing team starts here (data analysis
+first). Still to confirm: that its website is browrevolution.sg.
+
+**Draft facts seen on public pages** (RESEARCH, from [[80_Clients/_Test/marketing-team-v4/T3_Research_Brief]]). These are
+**not approved** until Ryan confirms each one. Agents must not use them in ads before then.
+
+| Field | Seen publicly (2026-10-12) | Ryan confirms? |
+|---|---|---|
+| Website / promo page | browrevolution.sg/promotion (the link in its Meta ad) | ☐ |
+| Prices in the live Meta ad | "$298 for a senior artist or $398 for a master artist" (GST wording not shown) | ☐ |
+| Claims in the ad | "Five star reviews (800)", "Singapore's leading eyebrow embroidery", "We Don't Upsell", "800+ positive reviews on Facebook" | ☐ ("Singapore's leading" needs proof under the ASAS code, or it must be removed) |
+| Ad running since | 15 Sep 2026 (Meta Ad Library id 1811673423323145); click-to-WhatsApp + promo page | ☐ |
+| Location | "not in a high-rent area like Orchard" (address not seen) | ☐ |
