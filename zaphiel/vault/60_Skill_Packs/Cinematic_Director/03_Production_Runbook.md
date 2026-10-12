@@ -59,9 +59,10 @@ credits. Kling has no price check, so use the prompt log or the measurement run 
 | Item | Tool / model | How many | Credits (estimate) | Why | If we skip it |
 |---|---|---|---|---|---|
 
-- **The first time a model is used,** estimate from [[06_Prompt_Log]]. If it has no figure yet, make **one** still
-  and **one** 5-second film, read the balance before and after, write the real cost in the log, and quote the
-  rest from that.
+- **The first time a model is used,** estimate from [[06_Prompt_Log]]. If it has no figure yet, propose a
+  **measurement run** that is also part of the final film: the hero still, one edit made from it, and one
+  5-second first/tail film between them. Read the balance before and after each step and write the real costs in
+  the log. Then quote the rest from those figures.
 - Zero-cost rule: generation spends credits, so it needs **Ryan's yes** with a budget. The director only
   generates when the task it was given says **"APPROVED by Ryan: up to N Kling credits / M Higgsfield credits"**,
   and it stops before the budget runs out.
@@ -90,6 +91,9 @@ credits. Kling has no price check, so use the prompt log or the measurement run 
 Save to `zaphiel/vault/80_Clients/<slug>/cinematic/` (tests: `80_Clients/_Test/cinematic-director/<name>/`):
 - `asset_pack.md`: look bible, storyboard table, every prompt, every task id, the permanent URLs, QA results, the
   credits used.
+- Site-kit pitfalls: always write `"crop": "none"` for clean clips (a missing `crop` is treated as `"kling"` and
+  cuts the picture). The kit's poster is each film's **first frame**, so if the film opens from darkness, give the
+  builder a separate poster still for reduced-motion visitors.
 - `media.json` for the site kit: `{"films": [{"id": "scene1", "src": "<permanent URL>", "crop": "none", "frames":
   96}, …]}`. Use `"crop": "kling"` only for a watermarked Kling URL, and 96 frames per 5 s scene or 120 per 10 s.
 - For Lovable (clinics): the film URLs (pieces in order), the poster stills, the scroll section each one belongs

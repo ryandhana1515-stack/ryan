@@ -33,11 +33,11 @@ travel between them.
 ### Which model for which step (checked on Ryan's accounts, 2026-10-12)
 | Step | First choice | Fallback | Notes |
 |---|---|---|---|
-| Hero still | Kling `text_to_image`, `kling-image-v3_0_omni` (2K/4K), or `gemini-3-pro-image` (Nano Banana Pro) for exact materials | Higgsfield `generate_image` | 16:9 master + a 9:16 version for phones |
-| Exploded still | Kling `image_to_image`, `kling-image-v3_0_omni` (prompt says "图片1 …") or `gemini-3-pro-image` | `gpt-image-2` edit | Edit of the hero still, never fresh |
-| Split film | Kling `image_to_video` **`kling-video-v3_0`** with `first_image` + `tail_image`, 5 s, 1080p, `prefer_multi_shots: false`, `enable_audio: false` | `kling-video-v2_6` (tail needs 1080p, no audio) · Higgsfield `kling_o3_flf` / `cinematic_studio_3_0` / `seedance_2_0` (start_image + end_image, up to 4K) | Ryan: "go to the actual Kling" first (2026-09-29) |
+| Hero still | Kling `text_to_image`, `kling-image-v3_0_omni` (`img_resolution: 2k`, `aspect_ratio: 16:9`), or `gemini-3-pro-image` (Nano Banana Pro: `img_resolution` is required, count is `image_count`) for exact materials | Higgsfield `generate_image` | One 16:9 master with the subject in the centre column (phones crop it) |
+| Exploded still | Kling `image_to_image`, `kling-image-v3_0_omni` (prompt says "图片1 …"; set `2k` and `16:9`, the defaults are 4k and 3:4) or `gemini-3-pro-image` | `gpt-image2` edit (the image_to_image name; text_to_image calls it `gpt-image-2`) | Edit of the hero still, never fresh |
+| Split film | Kling `image_to_video` **`kling-video-v3_0`** with `first_image` + `tail_image`, 5 s, 1080p, `prefer_multi_shots: false`, `enable_audio: false` (audio on costs about 50% more). Kling's catalogue suggests `kling-video-v3_0_omni` for first/last frames: compare both on the measurement run and record the winner in [[06_Prompt_Log]] | `kling-video-v2_6` (tail needs 1080p, no audio) · Higgsfield `kling_o3_flf` / `cinematic_studio_3_0` / `seedance_2_0` (start_image + end_image, up to 4K) | Ryan: "go to the actual Kling" first (2026-09-29) |
 | Several keyframes in one film | Kling `kling-video-v3_0_omni` (up to 7 reference images) | Higgsfield `kling_o3_image_reference` | Only when one move needs 3+ states |
-| Same product in every scene | Kling Elements (`element_create` from the hero still, then `<<<id>>>` in prompts) | Always use the same hero still as the reference | Stops the product drifting between scenes |
+| Same product in every scene | The same hero still as the reference for every edit; Kling image Elements (`element_create`) work in `image_to_image` | — | Films stay consistent because their first and tail stills are consistent. Video Elements need a video subject, so don't rely on them for films |
 | Real 3D model (only if asked) | Higgsfield `generate_3d` (image → GLB) | — | Not the default (Ryan, 2026-10-12: films, not code-drawn 3D) |
 | Clean-up | Higgsfield `video_deflicker`, `topaz_video` / `bytedance_video_upscale`, `reframe` (9:16) | — | After the film is approved |
 
@@ -50,9 +50,17 @@ travel between them.
   as a group (all 12 hour markers together).
 - **Slow, weighted, mechanical.** "Glides apart smoothly, each part floating on its own layer, perfectly aligned,
   no rotation of the parts, a slow camera orbit of 20°". Never "explodes" (gives fire and debris).
-- **The camera moves a little, the parts move a lot.** A slight orbit or push-in, never both a big orbit and a
-  big separation at once.
+- **Locked-off camera during the split.** The tail still fixes the final framing, so the camera cannot orbit while
+  the parts separate (test A, 2026-10-12). Change the angle in a **separate** move: a film from the exploded still
+  to an exploded still at the new angle, or the reassembly into an alternate hero at the new angle.
 - **5 seconds per move.** 10 s only for a full journey. On the site, a 5-second film ≈ 240vh of scrolling.
+- **Visible parts only, by default.** Without the brand's real internal photos (the calibre, the engine, the
+  board), separate only what is visible from outside, and keep the dial on the case as the anchor so no empty case
+  interior is shown.
+- **Order:** doctrine §8 has macro and rotation before the split. Doing the macro and the turn **while the parts
+  float apart** is allowed and often better. Either order works as long as the chain holds.
+- **Scroll-up with a second beat:** if the product reassembles at a new angle for the CTA, scrolling back up first
+  takes it apart again at that angle, then reassembles it at the original angle. Tell Ryan this when you pitch it.
 - **Accuracy (doctrine §8):** never invent parts. Only parts that really exist in that product, from the
   customer's photos or spec. Without real internals, separate only the visible parts (strap, case, crystal,
   bezel, dial) and say so.
@@ -60,17 +68,19 @@ travel between them.
 ## Recipes (start here, then adapt to the real product)
 Each recipe = hero still · exploded still edit · split-film move. Put the look bible at the start of every prompt.
 
-**Watch** (look: black stone plinth, one hard strip light, warm rim, 100mm macro)
+**Watch** (look: black stone plinth, one hard strip light from camera-left, deep shadow, 100mm macro)
 - Hero: "A luxury steel wristwatch at a three-quarter angle on black stone, dark studio, one strip light sweeping
   across the polished case and sapphire crystal, deep blacks, champagne highlights, photoreal product photography."
-- Exploded edit: "图片1: the same watch, same angle and light, its parts separated along the axis facing the
-  camera, evenly spaced and perfectly aligned: sapphire crystal in front, then the bezel, the hands, the dial with
-  its markers, the movement with gears and jewels, the case back at the rear; strap halves drawn apart up and down;
-  every part identical to the original, floating in the dark, no extra parts."
-- Move: "The watch comes apart in a slow, precise sequence: the crystal lifts away first, then the bezel, the
-  hands, the dial and the movement glide out along one axis, each on its own layer, perfectly aligned, the strap
-  halves part up and down; the camera orbits 20 degrees; smooth, weighted, mechanical; no rotation of the parts, no
-  sparks, no debris."
+- Exploded edit (visible parts): "图片1: the same watch, same angle and light, its visible parts separated along
+  the axis facing the camera, evenly spaced and perfectly aligned: sapphire crystal in front, then the bezel, then
+  the three hands, the crown drawn out to the side, the case with its dial stays in place, the strap halves drawn
+  apart up and down; every part identical to the original, floating in the dark. No extra parts, no movement, no
+  gears."
+- With the brand's real calibre photos only: add the movement and the case back behind the case.
+- Move: "The watch comes apart in a slow, precise sequence: the crystal lifts away first, then the bezel and the
+  hands glide out along one axis, each on its own layer, perfectly aligned, the crown slides out, the strap halves
+  part up and down; locked-off camera; smooth, weighted, mechanical. Avoid: rotation of the parts, sparks, debris,
+  new parts."
 
 **Car** (studio black, light blades, wet floor)
 - Exploded: body panels lift straight up off the chassis (bonnet, doors, roof), wheels slide outward, the cabin
