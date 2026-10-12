@@ -25,8 +25,10 @@ Ryan (2026-10-12), replacing the earlier scroll-journey idea for doctors:
    - Optional: photoreal clips from Kling/Higgsfield when the clinic wants film-real footage (cost card;
      [[60_Skill_Packs/Cinematic_Director/02_Medical_Anatomy_Films]]).
 4. **Narration** is written from the clinic's approved facts:
-   - **Voice**, in order of preference: the doctor's own recorded voice (free, best); a labelled AI narration voice
-     (ElevenLabs, needs a commercial plan); the browser's built-in voice only for a demo.
+   - **Voice (Ryan, 2026-10-12):** **Lovable creates the narrator voice itself**. Tell it "natural, warm, not
+     robotic, a calm American English voice"; Ryan did this and got a natural American voice. No ElevenLabs needed.
+     If the clinic's doctor records the narration, use their own voice instead.
+     titan-qa listens on a phone and a laptop to check it stays natural on both.
    - **Captions** always; a transcript under each video.
 5. **Clinician review** of every script and visual before going live.
 

@@ -50,8 +50,10 @@ PAGES / SECTIONS
    animation where 3D is not needed), synced to a narration audio track and captions. Each video follows four beats:
    (1) what this part of the body is, (2) what can go wrong, explained calmly, (3) how it is treated, describing only
    the clinic's own services, (4) a closing card: "<Clinic name> · <services> · <address> · Book a consultation".
-   Narration scripts: <scripts from the brief, marked [VERIFY WITH CLINIC]>. Narration audio: <doctor's recorded
-   files, or a placeholder audio slot for now>. Label each video "Illustration for education only".
+   Narration scripts: <scripts from the brief, marked [VERIFY WITH CLINIC]>. Narration voice: create the narrator
+   voice yourself. It must sound natural, warm and human, NOT robotic: a calm, clear American English voice with
+   natural pacing and pauses between sentences. (If the clinic supplies the doctor's own recorded narration, use those
+   files instead.) Label each video "Illustration for education only".
    Under every video: "Book a consultation" and "WhatsApp us".
 4. Doctors: <names and SMC-registered qualifications exactly as given>, with the clinic's real photos.
 5. The clinic: real photos of the premises, address, opening hours, a map link, contact details.
@@ -72,6 +74,8 @@ Follow the project knowledge rules (no superlatives, no testimonials, no before/
 ## Iteration prompts (one per message)
 - "Make the anatomy in the <topic> video more realistic: glossier, wetter tissue with soft subsurface warmth and a
   slower camera; keep the captions in sync."
+- "The narrator sounds robotic: make the voice natural, warm and human, a calm American English voice with natural
+  pacing and pauses."
 - "The narration and captions drift: sync captions to the audio timestamps."
 - "Replace the placeholder photos with the clinic's photos: <URLs>. Crop the hero to keep the reception desk in view."
 - "On phones, make the video cards one column and the player full width, captions larger."

@@ -570,3 +570,5 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   clinic's own photos, built on Lovable; a video section with one narrated explainer per topic, matched to the
   specialty by Website Intelligence ([[60_Skill_Packs/TITAN/14_Clinic_Video_Explainers]]). Replaces the scroll body
   journey for doctors. "Why visit" uses facts only (Singapore rules).
+- 2026-10-12 — **Narrator voice: Lovable makes it** (Ryan: "it could create its own voice. You just have to tell it, don't make
+  the voice so robotic … it turned into a nice American voice"). No ElevenLabs needed for clinic explainers.

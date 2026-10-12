@@ -833,3 +833,5 @@ tags: [zaphiel, changelog]
   specialties, four-beat script, narration options); `TITAN/13_Lovable_Medical_Prompt.md` rewritten (v2.0); updated
   titan.md, TITAN 00–03, 10_Agents/TITAN, 06_Medical_3D_Web, cinematic-director; website-intelligence.md gains the
   clinic "real photos + video plan" stage.
+- 2026-10-12 — **Clinic explainers: Lovable creates the narrator voice** (prompt line + iteration prompt in TITAN/13; TITAN/14,
+  01, 02 updated).
