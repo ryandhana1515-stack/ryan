@@ -42,7 +42,7 @@ clinic's doctor; these facts are only for making the pictures correct.
 | **Heart** | Four chambers. Apex points down and to the left. The aorta arches up and over to the left. The coronary arteries run on the **surface** of the heart: the left anterior descending artery down the front groove between the ventricles, the circumflex around the left side, the right coronary artery around the right side, with coronary veins alongside. |
 | **Artery (inside)** | A round tube with a smooth glistening inner lining (endothelium) and a muscular wall. Red blood cells are **biconcave discs** tumbling in pale plasma, a few white cells and small platelets. Flow pulses with the heartbeat. |
 | **Narrowed artery (plaque)** | A yellowish fatty build-up **inside the wall, under the lining**, bulging into the channel and narrowing it; blood squeezes past. Not a blockage drawn as rubbish in the tube. |
-| **Stent / balloon (if the clinic does it)** | A fine metal mesh tube expanded by a balloon on a thin catheter, pressing the plaque against the wall and reopening the channel. Generic mesh, no brand. |
+| **Stent / balloon (if the clinic does it)** | A thin guide wire crosses the narrowing first; the crimped mesh tube rides over it on a balloon catheter. The balloon inflates, the mesh expands and presses the plaque against the wall; then the balloon **deflates and is withdrawn** and the stent **stays** in the wall. Generic mesh, no brand. Make it two films (plaque → device in place → open). |
 | **Veins / varicose veins** | Thinner walls than arteries, one-way valves inside (cup-like flaps). Varicose: valves that don't close, blood pooling, a vein bulging under the skin. |
 | **Capillaries** | So narrow that red cells pass in single file, a fine network around tissue. |
 | **Brain** | Folded cortex. The arteries at the base form a ring (the Circle of Willis). Neurons: cell body, branching dendrites, one long axon with a myelin sheath; signals as soft light pulses across synapses. |
@@ -52,6 +52,15 @@ clinic's doctor; these facts are only for making the pictures correct.
 | **Tooth** | Enamel outside, dentin, the pulp chamber with nerve and fine vessels running down the root canals into the jawbone, held by the gum. Implant = a titanium post in the jawbone, an abutment, a crown on top. |
 | **Skin (aesthetics)** | Layers: epidermis on top, dermis with collagen and elastin fibres, small vessels, hair follicles and glands, then fat below. Ageing = thinner, looser collagen. |
 | **Lungs** | Windpipe → bronchi → branching bronchioles → grape-like air sacs (alveoli) wrapped in capillaries; breathing as gentle expansion. |
+
+**Common mistakes to catch (test B, 2026-10-12):**
+- **Mirror image:** in a front view, the patient's left is on the viewer's **right**. The apex and the aortic arch
+  point to the patient's left.
+- **Fat is not plaque:** normal yellow fat on the heart's surface is not disease. Plaque sits **inside** an
+  artery's wall.
+- **Red cells:** biconcave discs, never balls. Drawing them bigger than true scale is fine, but keep the same scale
+  in every scene.
+- **Never show a blood clot, a rupture or bleeding,** even in the "concern" scene.
 
 If a clinic's specialty is not in this table, the director researches it first (reputable medical sources only)
 and adds a row here.
@@ -93,7 +102,8 @@ and its vessels → what blurs vision (illustrative) → back out to a clear cit
 dermis → (only approved, non-invasive) → back out. No needles, no injection points (doctrine §11).
 
 ## Medical rules (always)
-- Every generated anatomy film carries the label **"Illustration for education only"** on the website.
+- Every generated anatomy film carries the label **"Illustration for education only"** on the website. (Other
+  businesses' generated visuals use "Illustrative" as in `brief.js`; for medical, use the longer label.)
 - **Doctor review before anything goes live:** the clinic's doctor approves every film and every caption. Until
   then, captions are `[VERIFY WITH CLINIC]`.
 - Never show outcomes, before/after results, patient testimonials, success rates, "best", "painless", "guaranteed",

@@ -24,7 +24,11 @@ Lovable (clinics) build from its hand-off.
 | [[05_QA]] | Checks on stills (before paying for video), on films, before hand-off |
 | [[06_Prompt_Log]] | What worked, what failed, real credit costs. The agent appends here every project |
 
-**Accounts (checked 2026-10-12):** Kling Pro, 1,508 credits · Higgsfield Plus, 1,000 credits.
+**Accounts (checked 2026-10-12):** Kling Pro, 1,508 credits · Higgsfield Plus, 1,000 credits. Kling MCP version
+1.3.3 on that date. If `who_am_i` reports a newer version, Ryan reconnects Kling and starts a new session.
+
+**Tests:** dry runs in `80_Clients/_Test/cinematic-director/` (watch, cardiology). Their findings were folded into
+these notes on 2026-10-12.
 
 **Builds on:** [[Knowledge/Full Master Cinematic Website Agent 2026]] (doctrine), [[Knowledge/Wow website playbook]],
 `ceo-brain/agents/website-builder/brief.js` (`WB_TRANSFORM`, `WB_EXPLAINER`), `ceo-brain/agents/website-build-worker/ROUTINE.md`,
