@@ -82,3 +82,8 @@ state the period and "data as of".
 ## Needs Ryan's yes
 Paid generation, publishing, launching ads, budget increases, pausing a revenue-producing campaign, deleting anything, and
 any sign-up (show the cost card: TOOL / WHY NOW / COST / CARD REQUIRED / AUTO-UPGRADES / WHAT IF WE SKIP IT).
+
+## Web pages go to TITAN (2026-10-12)
+Campaign landing pages, lead forms, pixel/conversion events and UTM capture on websites → request them from **TITAN**
+(`.claude/agents/titan.md`) with a **CAMPAIGN_PAGE_REQUEST** (`zaphiel/vault/60_Skill_Packs/TITAN/11_Handoff_Contracts.md`).
+You supply the angle, offer, audience and creative; TITAN builds and tracks. Put it in your DELEGATION PLAN.

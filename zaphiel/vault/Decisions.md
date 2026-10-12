@@ -555,3 +555,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   titan-qa, coordinating website-intelligence, cinematic-director ("TITAN 3D Studio") and fusion-property-sg. ATLAS keeps
   integrations, John the client, Marketing the campaigns. Audit first, stop at each checkpoint. Task 1 audit:
   [[00_CEO_Brain/09_TITAN_Audit]].
+- 2026-10-12 — **TITAN checkpoint 1 answered** (Ryan): doctors get a super-real journey inside the body (arteries, blood
+  vessels, lungs, stomach, organs) on Kling/Higgsfield with a presenter video section, built on **Lovable**; cinematic
+  products (watches, clothing, cars, motorbikes, drinks) — **TITAN decides**, 3D-feel scroll/parallax from Kling/Higgsfield
+  films on the site kit; **no code-drawn 3D**. Routing lines added to ATLAS and the Marketing Director (diffs in the PR).
