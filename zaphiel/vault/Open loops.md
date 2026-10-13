@@ -336,3 +336,14 @@ tags: [zaphiel, open-loops]
 - 2026-10-12 — **Website Build Worker routine** (`trig_01K4UinSX4tQWK537MeHQuuc`, hourly at :25) — last run (18:25 UTC) failed:
   **Claude usage limit reached**. Builds from WhatsApp wait until the limit resets; check the next runs. Ryan is about to
   test a dental clinic as a WhatsApp customer (real lead → uses Lovable credits).
+- 2026-10-13 — **Marketing Autopilot: what only Ryan can do** (everything else is built and tested):
+  1. **Turn on the daily schedule.** Creating the routine "Zaphiel — Marketing Autopilot" (08:46 SGT daily; connectors
+     Metricool, n8n, Gmail, Kling, Higgsfield; prompt in `ceo-brain/agents/marketing/ROUTINE.md`) was blocked by Claude
+     Code's safety check for Zaphiel. Ryan says yes in chat (Zaphiel retries) or creates it in claude.ai/code → Routines.
+  2. **Caps** in each `Brands/<brand>/autopilot.md`: `max_daily_spend` (SGD) and monthly Kling / Higgsfield credits.
+     Until set, ads and generation stay off (posts still run where facts are approved).
+  3. **Meta token**: a System User token with `ads_management` on the ad account, added in n8n as a Facebook Graph API
+     credential; Zaphiel attaches it to the 5 Meta nodes of Ad Actions `oMMIvt8PZOmUp24K` and fills `ad_account_id`.
+  4. **Brow Revolution facts** confirmed → copied into its autopilot note (`approved`), then its posts can start.
+  - Known limits: caps arrive from the routine (20% ceiling is hard-coded in the workflow); lifetime budgets ignored;
+    first real Meta write is the true test (a rejection is logged as failed).

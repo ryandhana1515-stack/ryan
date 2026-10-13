@@ -104,3 +104,4 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 - 2026-10-12 — **TITAN: Lovable builds doctors' anatomy; Singapore rules research saved** (see [[Change log]]).
 - 2026-10-12 — **Doctors' sites: real photos + a video section of narrated explainers per topic** (see [[Change log]]).
 - 2026-10-12 — **Live pipeline updated for clinic sites (real photos + video section)**; tests 151/151 (see [[Change log]]).
+- 2026-10-13 — **Marketing Autopilot** (engine, daily routine, per-brand limits, ledger, n8n Ad Actions) — see [[Change log]].
