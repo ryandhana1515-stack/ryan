@@ -572,3 +572,6 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   journey for doctors. "Why visit" uses facts only (Singapore rules).
 - 2026-10-12 — **Narrator voice: Lovable makes it** (Ryan: "it could create its own voice. You just have to tell it, don't make
   the voice so robotic … it turned into a nice American voice"). No ElevenLabs needed for clinic explainers.
+- 2026-10-13 — **The website agent is called TITAN** (Ryan: "Btw is called TITAN"). Always say TITAN for the website side,
+  never "the website agent". Website Intelligence (research) and the Website Builder are TITAN's team; John stays the
+  sales/WhatsApp agent in front of the client.
