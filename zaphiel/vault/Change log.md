@@ -846,3 +846,20 @@ tags: [zaphiel, changelog]
   from the repo before; now aligned). Test execution 1796 (dental clinic, all side effects pinned): mode medical, variation
   `clinic_real_photo_site`, video section "Inside your teeth" with 6 videos, prompt has the video section and the
   natural-voice line, no scroll film/Kling for the clinic.
+- 2026-10-13 — **Marketing Autopilot built** (Ryan: "I want our agents to be doing all these … the best marketing team of AI
+  agents"). Posts automatic, ad changes automatic within caps, generation within a monthly credit budget.
+  - Guardrail engine `ceo-brain/agents/marketing/autopilot.js` (tests §40): settings per brand (missing cap = off), ad
+    plan from the diagnosis (HIGH confidence only; pause losers but never the last active ad unless it spends with zero
+    leads; raise winners ≤20%/day, 3-day cool-down, never past `max_daily_spend`), final live guard, credit guard (price
+    check first, monthly budget per tool), post guard (approved facts/prices only; blocks superlatives, guarantees,
+    before/after, comparisons, testimonials, unapproved numbers, AI-made people; media where needed; limit per network).
+  - Daily routine `ceo-brain/agents/marketing/ROUTINE.md`: Metricool → diagnose → engine → act → one email to Ryan.
+  - Settings notes `Marketing_Team/Brands/FusionTech_AI/autopilot.md` and `Brands/BROWREVOLUTION/autopilot.md`.
+  - n8n data table `mk_autopilot_ledger` `TTIYHbyVfOphSZ0X` (memory: nothing done twice, budgets hold).
+  - n8n **Marketing — Ad Actions** `oMMIvt8PZOmUp24K` (16 nodes, unpublished on purpose, run via MCP): the only door to
+    Meta. Read-only state mode (campaign budgets + daily total); action mode re-reads live, runs the guard, applies pause
+    or daily budget, reads back, writes the ledger. Pinned tests 1847 (allowed raise), 1848 (refused: budget changed),
+    1849 (state). Source `ceo-brain/workflows/marketing-ad-actions/build.js` + `agents/marketing/meta-live.js` (tests §41).
+  - Dry run on FusionTech's real settings: a proper Facebook post passed; a post with "best", "guaranteed" and invented
+    numbers was blocked; Instagram without media blocked; credits refused (no budget yet). Tests 163/163.
+  - Agent files (marketing-director, creative-producer, ads-intelligence) and `08_Approval_Rules` updated.

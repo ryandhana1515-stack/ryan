@@ -575,3 +575,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-10-13 — **The website agent is called TITAN** (Ryan: "Btw is called TITAN"). Always say TITAN for the website side,
   never "the website agent". Website Intelligence (research) and the Website Builder are TITAN's team; John stays the
   sales/WhatsApp agent in front of the client.
+- 2026-10-13 — **Marketing team runs on autopilot, within limits set once** (Ryan: "I want our agents to be doing all these
+  before connecting anything … I want it to be the best marketing team of AI agents"). Ryan chose: **posts fully
+  automatic**, **ad changes automatic within his caps** (pause losers, raise winners at most 20% a day, never past his
+  maximum daily spend), **video/image generation automatic within a monthly credit budget**. This replaces "Ryan's yes for
+  every post, ad change and credit job" for the brands' daily routine only. A missing cap switches that part off. Still
+  never automatic: new campaigns, sign-ups, deleting, budgets above the cap, client brands without the owner's written
+  OK. Rules: [[60_Skill_Packs/Marketing_Team/08_Approval_Rules]]; settings: `Brands/<brand>/autopilot.md`.

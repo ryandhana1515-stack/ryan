@@ -1818,6 +1818,194 @@ console.log('\n[39] Doctors get a real-photo clinic site with a video section, n
     assert.ok(/"video_plan":\{"section_title"/.test(addendum) && /`video_plan` \(clinics and doctors only/.test(addendum));
   });
 }
+console.log('\n[40] Marketing autopilot: guardrails decide what the team may do by itself (Ryan, 2026-10-13)');
+{
+  const ap = require('../agents/marketing/autopilot.js');
+  const mk40 = require('../agents/marketing/diagnose.js');
+  const sc40 = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests/fixtures/marketing/demo-scenarios.json'), 'utf8'));
+  const base = { brand: 'DEMO', mode: 'live', currency: 'SGD', posts: { auto: true, max_per_day: 1, networks: ['facebook', 'instagram'] },
+    ads: { auto: true, max_daily_spend: 100, max_raise_pct: 20 }, credits: { auto: true, monthly: { kling: 200, higgsfield: 0 } },
+    approved: { claims: ['800+ positive reviews on Facebook', 'Senior artist and master artist options'], prices: ['$298', '$398'] } };
+  const T = '2026-10-13';
+  test('a missing cap switches that part off (never "unlimited"); raises are capped at 20% whatever the note says', () => {
+    const s = ap.apSettings({ brand: 'X', mode: 'live', posts: { auto: true, networks: ['facebook'] }, ads: { auto: true, max_raise_pct: 80 }, credits: { auto: true, monthly: {} } });
+    assert.deepStrictEqual(s.enabled, { posts: false, ads: false, credits: false });
+    assert.ok(s.off_reasons.some((r) => /no approved facts/.test(r)) && s.off_reasons.some((r) => /no maximum daily spend/.test(r)) && s.off_reasons.some((r) => /no monthly kling budget/.test(r)));
+    assert.strictEqual(s.ads.max_raise_pct, 20);
+    assert.strictEqual(ap.apSettings({}).mode, 'dry_run', 'unknown mode → dry run, never live');
+    assert.deepStrictEqual(ap.apSettings(base).enabled, { posts: true, ads: true, credits: true });
+  });
+  test('the winner from the DEMO scenario is raised by at most 20% and never past the daily maximum', () => {
+    const rep = mk40.mkDiagnose(sc40.winner_scale);
+    const live = { account_daily_total: 90, ads: { ad_win: { status: 'ACTIVE', budget_id: 'as_1', daily_budget: 30 } } };
+    const plan = ap.apAdPlan(rep, live, ap.apSettings(base), [], T);
+    assert.strictEqual(plan.actions.length, 1);
+    assert.deepStrictEqual([plan.actions[0].type, plan.actions[0].from, plan.actions[0].budget_id], ['set_daily_budget', 30, 'as_1']);
+    assert.strictEqual(plan.actions[0].to, 36, '90 + 6 = 96 ≤ 100');
+    const tight = ap.apAdPlan(rep, { account_daily_total: 97, ads: live.ads }, ap.apSettings(base), [], T);
+    assert.strictEqual(tight.actions[0].to, 33, 'only the 3 left under the cap');
+    const full = ap.apAdPlan(rep, { account_daily_total: 100, ads: live.ads }, ap.apSettings(base), [], T);
+    assert.ok(full.actions.length === 0 && /already at your maximum/.test(full.blocked[0].reason));
+    const cooled = ap.apAdPlan(rep, live, ap.apSettings(base), [{ key: 'DEMO|2026-10-11|set_daily_budget|as_1', kind: 'ad', object_id: 'as_1', date: '2026-10-11', status: 'done' }], T);
+    assert.ok(cooled.actions.length === 0 && /less than 3 days/.test(cooled.blocked[0].reason), 'no raise twice inside the cool-down');
+  });
+  test('kill pauses only with HIGH confidence, never the last active ad (unless it spends with zero leads); broken tracking only alerts', () => {
+    const kill = (id, conf, zero) => ({ id, name: id, decision: 'KILL', confidence: conf, why: 'x', findings: zero ? [{ key: 'spend_no_leads' }] : [] });
+    const two = { account_daily_total: 50, ads: { a: { status: 'ACTIVE', daily_budget: 25 }, b: { status: 'ACTIVE', daily_budget: 25 } } };
+    let p = ap.apAdPlan({ ads: [kill('a', 'HIGH'), kill('b', 'HIGH')] }, two, ap.apSettings(base), [], T);
+    assert.strictEqual(p.actions.length, 1, 'second pause refused: it would stop all ads');
+    assert.ok(/last active ad/.test(p.blocked[0].reason));
+    p = ap.apAdPlan({ ads: [kill('a', 'MEDIUM')] }, two, ap.apSettings(base), [], T);
+    assert.ok(p.actions.length === 0 && /below HIGH/.test(p.blocked[0].reason));
+    p = ap.apAdPlan({ ads: [kill('a', 'HIGH', true)] }, { account_daily_total: 25, ads: { a: { status: 'ACTIVE', daily_budget: 25 } } }, ap.apSettings(base), [], T);
+    assert.strictEqual(p.actions[0].type, 'pause_ad', 'money with zero leads is stopped even if it is the only ad');
+    p = ap.apAdPlan({ ads: [kill('a', 'HIGH', true)] }, two, ap.apSettings(base), [{ key: 'DEMO|' + T + '|pause_ad|a', status: 'done' }], T);
+    assert.strictEqual(p.actions.length, 0, 'same key twice → done once (idempotent)');
+    const trk = ap.apAdPlan(mk40.mkDiagnose(sc40.broken_tracking), { account_daily_total: 20, ads: { ad_trk: { status: 'ACTIVE', daily_budget: 20 } } }, ap.apSettings(base), [], T);
+    assert.ok(trk.actions.length === 0 && trk.alerts[0].type === 'tracking');
+    const off = ap.apAdPlan({ ads: [kill('a', 'HIGH', true)] }, two, ap.apSettings(Object.assign({}, base, { ads: { auto: true } })), [], T);
+    assert.ok(off.actions.length === 0 && /no maximum daily spend/.test(off.blocked[0].reason));
+  });
+  test('the final guard re-checks the live budget before Meta is called', () => {
+    const s = ap.apSettings(base);
+    const act = { key: 'k1', type: 'set_daily_budget', budget_id: 'as_1', from: 30, to: 36 };
+    assert.strictEqual(ap.apGuardAdAction(act, { daily_budget: 30, account_daily_total: 90 }, s, []).ok, true);
+    assert.ok(/changed since the plan/.test(ap.apGuardAdAction(act, { daily_budget: 40, account_daily_total: 90 }, s, []).reason));
+    assert.ok(/exceed the maximum/.test(ap.apGuardAdAction(act, { daily_budget: 30, account_daily_total: 99 }, s, []).reason));
+    assert.ok(/above 20%/.test(ap.apGuardAdAction(Object.assign({}, act, { to: 40 }), { daily_budget: 30, account_daily_total: 50 }, s, []).reason));
+    assert.ok(/already done/.test(ap.apGuardAdAction(act, { daily_budget: 30, account_daily_total: 90 }, s, [{ key: 'k1', status: 'done' }]).reason));
+    assert.ok(/mode is dry_run/.test(ap.apGuardAdAction(act, { daily_budget: 30, account_daily_total: 90 }, ap.apSettings(Object.assign({}, base, { mode: 'dry_run' })), []).reason));
+    assert.ok(/not allowed/.test(ap.apGuardAdAction({ key: 'k2', type: 'create_campaign' }, {}, s, []).reason), 'only pause and budget changes exist');
+  });
+  test('credits need a price check first and stop at the monthly budget', () => {
+    const s = ap.apSettings(base);
+    const led = [{ kind: 'credits', tool: 'kling', credits: 150, date: '2026-10-02', status: 'done' }, { kind: 'credits', tool: 'kling', credits: 999, date: '2026-09-30', status: 'done' }];
+    assert.strictEqual(ap.apCreditGuard({ tool: 'kling', est_credits: 40 }, led, s, T).ok, true, 'last month does not count');
+    assert.ok(/needs 60/.test(ap.apCreditGuard({ tool: 'kling', est_credits: 60 }, led, s, T).reason));
+    assert.ok(/no price check/.test(ap.apCreditGuard({ tool: 'kling' }, [], s, T).reason));
+    assert.ok(/no monthly higgsfield budget/.test(ap.apCreditGuard({ tool: 'higgsfield', est_credits: 5 }, [], s, T).reason));
+    const plan = ap.apPlan({ today: T, settings: base, ledger: led, jobs: [{ tool: 'kling', est_credits: 30 }, { tool: 'kling', est_credits: 30 }] });
+    assert.deepStrictEqual(plan.jobs.map((j) => j.ok), [true, false], 'jobs in one run add up');
+  });
+  test('posts: approved facts and prices only, no superlatives/guarantees/before-after/testimonials/AI people, media where needed, daily limit', () => {
+    const s = ap.apSettings(base);
+    const good = { network: 'facebook', text: 'Natural-looking brows by our senior artists. 800+ positive reviews on Facebook. Senior artist $298, master artist $398. WhatsApp us to book.' };
+    assert.deepStrictEqual(ap.apPostGuard(good, s, [], T), { ok: true, problems: [] });
+    const bad = (text, extra) => ap.apPostGuard(Object.assign({ network: 'facebook', text }, extra || {}), s, [], T).problems.join(' | ');
+    assert.ok(/superlative/.test(bad("Singapore's leading eyebrow embroidery studio, come visit us today")));
+    assert.ok(/guarantee/.test(bad('Guaranteed perfect brows that last forever, book a slot with us now')));
+    assert.ok(/before\/after/.test(bad('See our before and after gallery of brows from this month here')));
+    assert.ok(/testimonial/.test(bad('★★★★★ "Love my brows" — a happy customer says it all, book now')));
+    assert.ok(/\$250 is not on the approved price list/.test(bad('Brow embroidery now only $250 with our senior artist, WhatsApp us')));
+    assert.ok(/"2000\+ reviews" is not in the approved facts/.test(bad('Join the people behind our 2000+ reviews on Facebook this month')));
+    assert.ok(/instagram needs a photo/.test(ap.apPostGuard({ network: 'instagram', text: good.text }, s, [], T).problems.join()));
+    assert.ok(/AI-made people/.test(bad(good.text, { media_ai_people: true })));
+    assert.ok(/not switched on/.test(ap.apPostGuard({ network: 'tiktok', text: good.text, media_urls: ['x'] }, s, [], T).problems.join()));
+    assert.ok(/daily post limit reached on facebook/.test(ap.apPostGuard(good, s, [{ kind: 'post', date: T, object_id: 'facebook', status: 'done' }], T).problems.join()));
+    assert.ok(ap.apPostGuard(good, s, [{ kind: 'post', date: T, object_id: 'instagram', status: 'done' }], T).ok, 'the limit is per network');
+    const two = ap.apPlan({ today: T, settings: base, ledger: [], posts: [good, good, Object.assign({}, good, { network: 'instagram', media_urls: ['https://x/y.jpg'] })] });
+    assert.deepStrictEqual(two.posts.map((p) => p.ok), [true, false, true], 'second Facebook post refused, Instagram allowed');
+  });
+  test('the settings block is read from the vault notes; both brands start safe', () => {
+    assert.deepStrictEqual(ap.apParseNote('x\n```json\n{"brand":"B","mode":"live"}\n```\n'), { brand: 'B', mode: 'live' });
+    assert.strictEqual(ap.apParseNote('no block'), null);
+    const dir = path.join(ROOT, '../zaphiel/vault/60_Skill_Packs/Marketing_Team/Brands');
+    for (const b of ['BROWREVOLUTION', 'FusionTech_AI']) {
+      const s = ap.apSettings(ap.apParseNote(fs.readFileSync(path.join(dir, b, 'autopilot.md'), 'utf8')));
+      assert.ok(s.brand && s.metricool_brand_id, b + ' note parses');
+      assert.strictEqual(s.enabled.ads, s.ads.max_daily_spend > 0, b + ': ads only with a cap');
+    }
+    const brow = ap.apSettings(ap.apParseNote(fs.readFileSync(path.join(dir, 'BROWREVOLUTION', 'autopilot.md'), 'utf8')));
+    assert.strictEqual(brow.enabled.posts, brow.approved.claims.length > 0, 'Brow posts wait for Ryan-confirmed facts');
+  });
+}
+console.log('\n[41] Marketing — Ad Actions workflow: the only door to Meta re-checks every action live (2026-10-13)');
+{
+  const D41 = path.join(ROOT, 'workflows/marketing-ad-actions/dist/code-nodes/');
+  const ml = require('../agents/marketing/meta-live.js');
+  const run41 = (file, store, input) => vm.runInNewContext('(function(){' + fs.readFileSync(D41 + file, 'utf8') + '})()', {
+    $: (n) => ({ first: () => (store[n] || [{ json: {} }])[0], all: () => store[n] || [], isExecuted: !!store[n] }),
+    $input: { first: () => input[0], all: () => input }, Date, JSON, Math, String, Number, Object, Array, isNaN
+  }).map((i) => JSON.parse(JSON.stringify(i.json)));
+  const settings41 = { brand: 'DEMO', mode: 'live', ads: { auto: true, max_daily_spend: 101, max_raise_pct: 20 } };
+  const camps41 = { data: [{ id: '111', name: 'Leads', effective_status: 'ACTIVE' }, { id: '222', name: 'CBO', effective_status: 'ACTIVE', daily_budget: '6000' }, { id: '333', name: 'Old', effective_status: 'PAUSED', daily_budget: '9900' }, { id: '444', name: 'Two sets', effective_status: 'ACTIVE' }] };
+  const sets41 = { data: [{ id: '1111', campaign_id: '111', effective_status: 'ACTIVE', daily_budget: '3000' }, { id: '2221', campaign_id: '222', effective_status: 'ACTIVE' }, { id: '4441', campaign_id: '444', effective_status: 'ACTIVE', daily_budget: '500' }, { id: '4442', campaign_id: '444', effective_status: 'PAUSED', daily_budget: '700' }] };
+  // Runs the generated nodes in workflow order with fake Meta/ledger answers; returns the Guard output and the final Result.
+  const flow41 = (body, live, ledger, readBack) => {
+    const s = { 'Ad Action In': [{ json: { body } }] };
+    s['Read Request'] = run41('read-request.js', s, s['Ad Action In']).map((json) => ({ json }));
+    s['Read Campaigns (Meta)'] = [{ json: camps41 }]; s['Read Ad Sets (Meta)'] = [{ json: sets41 }];
+    if (body.mode === 'state') return run41('build-state.js', s, [{ json: {} }])[0];
+    s['Read Ledger'] = (ledger && ledger.length ? ledger : [{}]).map((json) => ({ json }));
+    s['Read Live (Meta)'] = [{ json: live }];
+    s['Guard'] = run41('guard.js', s, s['Read Live (Meta)']).map((json) => ({ json }));
+    if (s['Guard'][0].json.ok) {
+      s['Apply (Meta)'] = [{ json: { success: true } }]; s['Read Back (Meta)'] = [{ json: readBack }];
+      s['Confirm'] = run41('confirm.js', s, s['Read Back (Meta)']).map((json) => ({ json }));
+    }
+    return { guard: s['Guard'][0].json, confirm: s['Confirm'] && s['Confirm'][0].json, result: run41('result.js', s, [{ json: { id: 1 } }])[0] };
+  };
+  const raise = (to) => ({ settings: settings41, ad_account_id: 'act_123', currency_offset: 100, action: { key: 'DEMO|2026-10-13|set_daily_budget|1111', type: 'set_daily_budget', ad_id: '111', budget_id: '1111', from: 30, to, why: 'winner' } });
+  const live30 = { id: '1111', account_id: '123', daily_budget: '3000', effective_status: 'ACTIVE' };
+  test('the generated guard node exists, is built from autopilot.js and carries apGuardAdAction', () => {
+    const g = fs.readFileSync(D41 + 'guard.js', 'utf8');
+    assert.ok(/function apGuardAdAction/.test(g) && /function apSettings/.test(g) && /function mlLiveNow/.test(g) && !/module\.exports/.test(g));
+    ['read-request.js', 'build-state.js', 'confirm.js', 'result.js'].forEach((f) => assert.ok(fs.existsSync(D41 + f), f));
+    const sdk = fs.readFileSync(path.join(ROOT, 'workflows/marketing-ad-actions/dist/marketing-ad-actions.sdk.ts'), 'utf8');
+    assert.ok(/path: 'marketing\/ad-action'/.test(sdk) && /TTIYHbyVfOphSZ0X/.test(sdk) && !/accessToken"\s*:/.test(sdk), 'webhook path + ledger table, no token in the source');
+    assert.strictEqual(JSON.parse(fs.readFileSync(path.join(ROOT, 'database/n8n-data-tables.json'), 'utf8')).workflows.marketing_ad_actions, 'oMMIvt8PZOmUp24K');
+  });
+  test('a valid raise passes the live re-check, writes minor units to Meta and is confirmed by the read-back', () => {
+    const r = flow41(raise(36), live30, [], { id: '1111', account_id: '123', daily_budget: '3600', effective_status: 'ACTIVE' });
+    assert.strictEqual(r.guard.ok, true, r.guard.reason);
+    assert.strictEqual(r.guard.live.account_daily_total, 95, '30 (ad set) + 60 (CBO) + 5 (one active ad set); paused budgets do not count');
+    assert.deepStrictEqual(r.guard.apply, { id: '1111', param: 'daily_budget', value: '3600' });
+    assert.deepStrictEqual([r.result.ok, r.result.status, r.result.key], [true, 'done', 'DEMO|2026-10-13|set_daily_budget|1111']);
+    assert.strictEqual(r.confirm.ledger_row.kind, 'ad');
+    const off = flow41(raise(36), live30, [], { id: '1111', account_id: '123', daily_budget: '3000', effective_status: 'ACTIVE' });
+    assert.deepStrictEqual([off.result.ok, off.result.status], [false, 'failed'], 'Meta did not take it → failed (a later retry stays possible)');
+  });
+  test('over-cap, changed-since-plan, wrong account, duplicates and dry run are refused before Meta is called', () => {
+    const over = flow41(raise(40), Object.assign({}, live30), [], null);
+    assert.ok(!over.guard.ok && /raise above 20%/.test(over.guard.reason) && !over.confirm, 'more than +20% never reaches Meta');
+    const cap = flow41(raise(36), live30, [], null);
+    camps41.data[1].daily_budget = '6600';
+    const capped = flow41(raise(36), live30, [], null);
+    camps41.data[1].daily_budget = '6000';
+    assert.ok(cap.guard.ok && !capped.guard.ok && /exceed the maximum daily spend of 101/.test(capped.guard.reason), '95 + 6 = 101 fits; 101 + 6 = 107 > 101 → refused');
+    assert.ok(/budget changed since the plan/.test(flow41(raise(36), Object.assign({}, live30, { daily_budget: '4000' }), [], null).guard.reason));
+    assert.ok(/not in ad account/.test(flow41(raise(36), Object.assign({}, live30, { account_id: '999' }), [], null).guard.reason));
+    assert.ok(/already done/.test(flow41(raise(36), live30, [{ key: 'DEMO|2026-10-13|set_daily_budget|1111', status: 'done' }], null).guard.reason));
+    assert.strictEqual(flow41(raise(36), live30, [{ key: 'DEMO|2026-10-13|set_daily_budget|1111', status: 'failed' }], { id: '1111', account_id: '123', daily_budget: '3600' }).result.status, 'done', 'a failed row allows the retry');
+    assert.ok(/mode is dry_run/.test(flow41(Object.assign(raise(36), { settings: Object.assign({}, settings41, { mode: 'dry_run' }) }), live30, [], null).guard.reason));
+    assert.ok(/brand settings/.test(flow41(Object.assign(raise(36), { settings: Object.assign({}, settings41, { ads: Object.assign({ ad_account_id: 'act_555' }, settings41.ads) }) }), live30, [], null).guard.reason));
+    assert.ok(/bad request/.test(flow41(Object.assign(raise(36), { action: { key: 'k', type: 'create_campaign' } }), live30, [], null).guard.reason));
+  });
+  test('a refusal is logged under its own key and kind, so it never blocks or cools down a later valid action', () => {
+    const ref = flow41(raise(40), live30, [], null);
+    const row = ref.guard.ledger_row;
+    assert.ok(row.key.startsWith('DEMO|2026-10-13|set_daily_budget|1111|refused|') && row.kind === 'ad_refused' && row.status === 'refused');
+    assert.deepStrictEqual([ref.result.ok, ref.result.status, ref.result.read_back], [false, 'refused', null]);
+    const ap = require('../agents/marketing/autopilot.js');
+    assert.strictEqual(ap.apGuardAdAction(raise(36).action, { daily_budget: 30, account_daily_total: 90 }, ap.apSettings(settings41), [row]).ok, true, 'refused row ≠ same key');
+    const rep = { ads: [{ id: '111', name: 'Leads', decision: 'SCALE', confidence: 'HIGH', why: 'x' }] };
+    const plan = ap.apAdPlan(rep, { account_daily_total: 90, ads: { 111: { status: 'ACTIVE', budget_id: '1111', daily_budget: 30 } } }, ap.apSettings(settings41), [Object.assign({}, row, { date: '2026-10-12' })], '2026-10-13');
+    assert.strictEqual(plan.actions.length, 1, 'no cool-down from a refusal');
+  });
+  test('state mode is read-only and campaign-level: CBO → campaign id, one active ad set → that ad set, otherwise null', () => {
+    const st = flow41({ mode: 'state', ad_account_id: '123', currency_offset: 100 });
+    assert.strictEqual(st.ok, true, st.reason);
+    assert.strictEqual(st.ad_account_id, 'act_123', 'a bare number becomes act_123');
+    assert.strictEqual(st.account_daily_total, 95);
+    assert.deepStrictEqual(st.ads['111'], { name: 'Leads', status: 'ACTIVE', budget_id: '1111', daily_budget: 30 });
+    assert.deepStrictEqual(st.ads['222'], { name: 'CBO', status: 'ACTIVE', budget_id: '222', daily_budget: 60 });
+    assert.strictEqual(st.ads['333'].status, 'PAUSED');
+    assert.deepStrictEqual([st.ads['444'].budget_id, st.ads['444'].daily_budget], ['4441', 5], 'only one of its ad sets is active');
+    assert.strictEqual(ml.mlState({ data: [{ id: '9', effective_status: 'ACTIVE' }] }, { data: [{ id: 'a', campaign_id: '9', effective_status: 'ACTIVE', daily_budget: '100' }, { id: 'b', campaign_id: '9', effective_status: 'ACTIVE', daily_budget: '100' }] }, 100).ads['9'].budget_id, null);
+    assert.ok(/incomplete/.test(ml.mlState({ data: [], paging: { next: 'x' } }, { data: [] }, 100).reason), 'a second page is never ignored silently');
+    assert.ok(/campaigns could not be read: no token/.test(ml.mlState({ error: { message: 'no token' } }, { data: [] }, 100).reason), 'no credential yet → refused, never guessed');
+  });
+}
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (process.env.SHOW_RESULT && mockRun) console.log('\nFINAL STRUCTURED RESULT (mock mode, John Tan):\n' + JSON.stringify(mockRun.fin.response, null, 2));
 process.exit(failed ? 1 : 0);
