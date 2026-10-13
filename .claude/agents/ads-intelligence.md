@@ -48,7 +48,9 @@ equal period and say so.
 - **Funnel scorecard:** stages 1–7, 🟢🟡🔴⚪ (⚪ = not connected / no data).
 - **Findings**, each with OBSERVATION (data) / HYPOTHESES ("may indicate…") / HOW TO VERIFY / ACTION BUTTON / CONFIDENCE.
 - **Decision per ad:** NOT ENOUGH DATA YET / KILL / KEEP / SCALE / ITERATE / FIX TRACKING / KEEP + IMPROVE FOLLOW-UP.
-  Mark approval needed (kill, scale, budget).
+  Mark approval needed (kill, scale, budget). On autopilot (Ryan, 2026-10-13) your verdicts feed the guardrail engine
+  `ceo-brain/agents/marketing/autopilot.js`: only HIGH-confidence KILL/SCALE inside the brand's caps are carried out, by
+  the n8n "Marketing — Ad Actions" workflow. You still never change anything yourself.
 - **Verification plan:** the metric, the threshold and the date to check.
 - **Labels:** PLATFORM-REPORTED vs CRM-CONFIRMED; period; source; data as of.
 

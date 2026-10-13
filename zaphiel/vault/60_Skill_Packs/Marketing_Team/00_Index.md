@@ -44,7 +44,8 @@ PLANNED • CODED • MOCK TESTED • SANDBOX TESTED • PRODUCTION VERIFIED.
 | Diagnosis engine `diagnose.js` | MOCK TESTED (5 DEMO scenarios + rules tests) |
 | Metricool read (Claude Code MCP) | PRODUCTION VERIFIED for reading (brand FusionTech.AI, 2026-10-12). No ad accounts connected yet |
 | Platform Marketing module (Layer 2): Metricool connector, daily sync, findings tables | CODED + MOCK TESTED (Fusion EDG Core steps 1a/1b) |
-| Meta / TikTok / Google Ads APIs (write) | PLANNED (needs app approvals; never without Ryan) |
+| **Autopilot** (Ryan, 2026-10-13): guardrail engine `ceo-brain/agents/marketing/autopilot.js`, daily routine `ceo-brain/agents/marketing/ROUTINE.md`, settings `Brands/<brand>/autopilot.md`, ledger n8n table `mk_autopilot_ledger` | CODED + MOCK TESTED (§40) + dry run on FusionTech's real settings. Posts automatic; ads and credits wait for Ryan's caps |
+| Meta Ads changes (pause / daily budget only) via n8n "Marketing — Ad Actions" | CODED; waits for Ryan's Meta System User token in n8n. TikTok / Google Ads writes: PLANNED (app approvals) |
 | Paid generation (Higgsfield, Kling, ElevenLabs, HeyGen, Veo…) | Tools connected where marked in [[01_Tool_Library]]. Every paid generation needs Ryan's yes |
 
 ## Links

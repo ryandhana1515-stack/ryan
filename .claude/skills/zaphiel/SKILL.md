@@ -59,6 +59,12 @@ exists: `Knowledge/AI Workforce — roster`.
   (PIN in the "Trainer Config" node of **Trainer API** `zKqlk05WShUOrojw`, POST
   /webhook/ceo-brain/trainer {pin, action list|playbook|train|chat, agent, text, session}). Agents
   come from `Knowledge/agents.json`; any entry with a `chat_url` is chattable from the dashboard.
+- **Marketing Autopilot** (Ryan, 2026-10-13): posts automatic, ad changes automatic within caps, generation within a
+  monthly credit budget. Engine `agents/marketing/autopilot.js` (tests §40) decides what is allowed; daily routine
+  `agents/marketing/ROUTINE.md` (Metricool + n8n + Gmail + Kling + Higgsfield) runs the team and emails Ryan; settings
+  per brand in the vault `Marketing_Team/Brands/<brand>/autopilot.md` (missing cap = off); memory in n8n table
+  `mk_autopilot_ledger` `TTIYHbyVfOphSZ0X`; Meta pause/budget only through n8n "Marketing — Ad Actions" (unpublished,
+  run via MCP manual execution; build `workflows/marketing-ad-actions/build.js`).
 - **WhatsApp "new chat"** (2026-09-27): a message that is only "new chat" / "reset" makes WhatsApp Inbound insert a
   fresh `ceo_leads` row (new `lead_key` + `lead_id`, status NEW) and confirm on WhatsApp; the number's newest lead row
   is its current conversation and its `lead_key` is passed to Lead Intake. Code: `agents/whatsapp-inbound/inbound.js`,

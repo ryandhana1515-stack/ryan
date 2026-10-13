@@ -14,6 +14,10 @@
    "id": "kFY9ifNq10q7R1Xv",
    "purpose": "WhatsApp message ids already handled (Meta can deliver the same message twice). WhatsApp Inbound stops at a seen id, so John never answers one message twice. Created 2026-10-10."
   },
+  "mk_autopilot_ledger": {
+   "id": "TTIYHbyVfOphSZ0X",
+   "purpose": "Marketing autopilot memory (2026-10-13): one row per post, ad change, credit job or alert, keyed brand|date|type|object. The guardrail engine (agents/marketing/autopilot.js) reads it so nothing is done twice and the monthly credit budget, daily post limit and budget cool-down hold across runs."
+  },
   "ceo_agent_runs": {
    "id": "zoxuUjbgzs6iLIaU",
    "purpose": "Observability: one row per agent invocation (agent, model, provider, input ref, output JSON, success, latency, execution id)."
