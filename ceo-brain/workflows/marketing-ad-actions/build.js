@@ -32,7 +32,7 @@ function pick(names) {
   return chunks.filter((c) => names.includes(c.name)).map((c) => c.lines.join('\n')).join('\n');
 }
 const ML = ['ML_VERSION', 'ML_ACTIONS', 'ML_FIELDS', 'mlNum', 'mlStr', 'mlR2', 'mlErr'];
-const AP = ['AP_VERSION', 'AP_MAX_RAISE_PCT', 'AP_CONF_RANK', 'AP_NETWORKS', 'apNum', 'apStr', 'apR2', 'apArr', 'apSettings', 'apKey', 'apHasKey', 'apGuardAdAction'];
+const AP = ['AP_VERSION', 'AP_MAX_RAISE_PCT', 'AP_CONF_RANK', 'AP_NETWORKS', 'AP_LEVELS', 'AP_CATEGORIES', 'AP_AUTO_ALLOWED', 'AP_POLICY_KEYS', 'apNum', 'apStr', 'apR2', 'apArr', 'apOpen', 'apSettings', 'apCanon', 'apHash', 'apProposalHash', 'apApprovalValid', 'apKey', 'apHasKey', 'apGuardAdAction'];
 
 const codeRequest = `${pick(ML.concat(['mlRequest']))}
 // ---- n8n glue: normalise the webhook body once; every later node reads this ----
@@ -65,7 +65,7 @@ if (!req.valid) g = { ok: false, reason: 'bad request: ' + req.problems.join('; 
 else if (ledgerError) g = { ok: false, reason: 'the ledger could not be read, so a duplicate cannot be ruled out' };
 else if (live.error) g = { ok: false, reason: live.error };
 else if (settingsAccount && settingsAccount !== req.ad_account_id) g = { ok: false, reason: 'ad account ' + req.ad_account_id + ' is not the one in the brand settings (' + settingsAccount + ')' };
-else g = apGuardAdAction(req.action, live.now, settings, ledger);
+else g = apGuardAdAction(req.action, live.now, settings, ledger, now);
 const out = { ok: g.ok === true, status: g.ok === true ? 'allowed' : 'refused', reason: g.reason, action: req.action, live: live.now || null, checked_at: now };
 if (out.ok) out.apply = mlApply(req);
 else { out.read_back = null; out.ledger_row = mlLedgerRow(req, 'refused', g.reason, now); }

@@ -14,6 +14,10 @@
    "id": "kFY9ifNq10q7R1Xv",
    "purpose": "WhatsApp message ids already handled (Meta can deliver the same message twice). WhatsApp Inbound stops at a seen id, so John never answers one message twice. Created 2026-10-10."
   },
+  "mk_proposals": {
+   "id": "LVWgKR8P8XoYGh8C",
+   "purpose": "Marketing OS v5 (2026-10-14): one row per proposal waiting for Ryan (code, tenant, brand, action, full proposal JSON, payload hash, idempotency key, status AWAITING_APPROVAL/QUEUED/RUNNING/VERIFIED/FAILED/PARTIAL/REJECTED/EXPIRED, expiry, approver, result). \"APPROVE <code>\" is checked against this row with coApprove/coPreExecute (agents/marketing/campaign-order.js)."
+  },
   "mk_autopilot_ledger": {
    "id": "TTIYHbyVfOphSZ0X",
    "purpose": "Marketing autopilot memory (2026-10-13): one row per post, ad change, credit job or alert, keyed brand|date|type|object. The guardrail engine (agents/marketing/autopilot.js) reads it so nothing is done twice and the monthly credit budget, daily post limit and budget cool-down hold across runs."

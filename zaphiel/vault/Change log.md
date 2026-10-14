@@ -863,3 +863,24 @@ tags: [zaphiel, changelog]
   - Dry run on FusionTech's real settings: a proper Facebook post passed; a post with "best", "guaranteed" and invented
     numbers was blocked; Instagram without media blocked; credits refused (no budget yet). Tests 163/163.
   - Agent files (marketing-director, creative-producer, ads-intelligence) and `08_Approval_Rules` updated.
+- 2026-10-14 — **Marketing OS v5, Layer 1 steps 2–3 + T1–T6** (Ryan's master prompt). Audit and answers:
+  [[00_CEO_Brain/10_Marketing_OS_v5_Audit]]; tests: [[80_Clients/_Test/marketing-team-v5/T_Results]]; diffs:
+  [[80_Clients/_Test/marketing-team-v5/v5_DIFFS]].
+  - Agents: `marketing-director` (voice command mode, CAMPAIGN_ORDER, one approval code, safety words, permissions,
+    providers, task fields, cross-department hand-offs), `ads-intelligence` (Reporting + Tracking & CRM Attribution
+    workers, §8.5 fields), `market-research` (Competitor Research + Audience & Offer Planning, injection safety),
+    `creative-brain` (renamed from `creative-producer`; Copy & Script, Image & Video Production, Campaign Preparation;
+    personal-attributes rule, copy check in code). `marketing-brain.md` retired.
+  - Code: new `ceo-brain/agents/marketing/campaign-order.js` (orders, honest budget maths, consolidation, preview card,
+    proposals bound by hash, APPROVE/REJECT/CHANGES, pre-execute re-check incl. expired token and stale tracking, job
+    states, safety words, no code while facts are [ASK RYAN]); `autopilot.js` v2 (permission levels, auto-pause policy,
+    proposals instead of automatic raises/posts/generation, tracking suspension, approval-bound guard, Meta
+    personal-attributes copy check); `meta-live.js` passes proposals. Tests §40 rewritten, §41 updated, §42 new: 169/169.
+  - n8n: "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` Read Request + Guard redeployed (match dist byte for byte, still
+    unpublished); new data table `mk_proposals` `LVWgKR8P8XoYGh8C`.
+  - Knowledge pack: new 09_Ad_Formats, 10_Budget_Structure_Rules, 11_Capability_Register, 12_Voice_Commands,
+    13_Provider_Evaluation; v5 sections appended to 01–07 and both Brand Brains; 08_Approval_Rules permission levels;
+    brand autopilot notes now hold permissions (all APPROVAL_REQUIRED, empty pause policy).
+  - Routine renamed "Marketing Daily" (`ROUTINE.md`): report + proposals with codes; "APPROVE <code>" path; not scheduled.
+  - Finding: Supermetrics (already connected) can manage Meta/TikTok/Google campaigns (created PAUSED); Omneky's standard
+    terms forbid third-party benefit; which Omneky plan includes MCP is not published.

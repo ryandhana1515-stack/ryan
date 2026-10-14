@@ -49,7 +49,11 @@ exists: `Knowledge/AI Workforce — roster`.
   per business, new-client wizard. Every-minute timer = Supabase pg_cron job `atlas-platform-timer` → `/cron/tick`
   (token in Supabase Vault; `scripts/supabase-timer.sql`). Function region hnd1 (next to the Tokyo database).
   Phase records: `docs/platform-v4/`.
-- **Marketing Brain (quick win, read-only)**: Claude Code subagent `.claude/agents/marketing-brain.md`. It reads Metricool
+- **Marketing team (Marketing OS v5, 2026-10-14)**: one agent per role: `marketing-director` ("Marketing Brain", entry
+  point, voice commands, approvals), `ads-intelligence`, `market-research`, `creative-brain` (was `creative-producer`).
+  `marketing-brain.md` was retired into `ads-intelligence` + `marketing-director` (Ryan's merge rule). Orders, budget maths
+  and approval codes: `agents/marketing/campaign-order.js` (tests §42); permissions: `agents/marketing/autopilot.js`.
+- **Marketing Brain (retired 2026-10-14; history)**: was the Claude Code subagent `.claude/agents/marketing-brain.md`. It read Metricool
   through the MCP (`getBrandSettings`, `getAnalyticsAvailableMetrics`, `getAnalyticsDataByMetrics`). It does every number
   in python from base metrics (sums first, then ratios) and judges against `zaphiel/vault/60_Skill_Packs/Marketing/targets.md`.
   It has no posting, scheduling or boosting tools. It reads only FusionTech's own brands (BioGreen is a separate business; Ryan, 2026-10-03).

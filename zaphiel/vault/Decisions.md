@@ -582,3 +582,12 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   every post, ad change and credit job" for the brands' daily routine only. A missing cap switches that part off. Still
   never automatic: new campaigns, sign-ups, deleting, budgets above the cap, client brands without the owner's written
   OK. Rules: [[60_Skill_Packs/Marketing_Team/08_Approval_Rules]]; settings: `Brands/<brand>/autopilot.md`.
+- 2026-10-14 — **Marketing OS v5: approval first (replaces 2026-10-13 autopilot)** (Ryan's "COMPLETE CLAUDE CODE MASTER
+  PROMPT"). One Marketing Director ("Marketing Brain") + Ads Intelligence + Market Research + Creative Brain; workers are
+  task templates; the Execution Engine is code. Permission levels per brand and action: OFF / READ-ONLY /
+  APPROVAL-REQUIRED (default) / LIMITED-AUTOMATION. Launches, resumes that spend, scale-ups, budget moves,
+  audience/destination changes, paid generation and anything public always need "APPROVE <code>"; automation may only
+  reduce spend (auto-pause under a complete owner-approved policy). Owner speaks → CAMPAIGN_ORDER with honest budget maths
+  → ONE preview card + ONE approval code. Omneky is the preferred pilot but not bought; Metricool kept until a same-period
+  comparison; ONE optimiser per ad account. Merges: Marketing Brain = Marketing Director; Creative Brain = Creative
+  Producer (`creative-brain.md`); `marketing-brain.md` retired. Audit: [[00_CEO_Brain/10_Marketing_OS_v5_Audit]].

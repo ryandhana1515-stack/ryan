@@ -42,3 +42,38 @@ version: v4 (2026-10-12)
 ## Testing order
 ANGLE → HOOK → FORMAT → OFFER → AUDIENCE ([[02_Diagnosis_Playbook]] section 4). Three angles × three hooks = nine
 variants is the usual first test.
+
+## v5 additions (2026-10-14)
+From Ryan's **Marketing OS v5** (2026-10-14). Additions only.
+
+### The v5 angle list
+Same as the table above: pain, desired outcome, social proof (**REAL only**), authority, demonstration,
+objection-busting, truthful offer/urgency, comparison, founder story, local relevance (for example "busy Singapore
+professionals"), transformation (**only real, consented and compliant**). v5 adds no new angle; it makes the truth rules
+stricter. If an angle needs a fact the Brand Brain has not approved, that angle waits.
+
+### Script order (v5)
+**HOOK (0–3 s) → PROBLEM / DESIRE → PROOF / DEMO → OFFER → CTA.** Same as the script structure above.
+- **Sound off:** captions for every spoken line, and the key message as on-screen text.
+- **9:16 safe areas:** keep text, faces and the CTA away from the top and bottom edges and the right-hand side, where the
+  app's buttons and captions sit. Exact pixel margins change: **recheck** the platform's current safe-zone template
+  before export.
+- **Language:** natural **Singaporean English**. Local words only where they fit. **Do not force Singlish.**
+- **Long ads (30–40 s):** need several scenes and real editing (cuts every few seconds, B-roll, text changes). One
+  static shot for 40 seconds loses people.
+
+### Meta personal-attributes policy (copy rule)
+- Meta: ads must not **assert or imply** a person's personal attributes. The list includes race, ethnicity, religion,
+  beliefs, age, sexual orientation, gender identity, disability, **physical or mental health (including medical
+  conditions)**, vulnerable financial status, voting status, trade union membership, criminal record and name. Ads also
+  must not imply the advertiser knows these things. Meta's examples of breaking copy: "Are you Christian?", "Find black
+  singles today". Focus on the product's benefit instead.
+  Source: transparency.meta.com/policies/ad-standards/objectionable-content/privacy-violations-personal-attributes/ ·
+  transparency.meta.com/policies/ad-standards/objectionable-content/personal-attributes (seen in search 2026-10-14; the
+  page could not be opened directly, so **recheck the exact wording** before quoting it to a client).
+- Third-party guides add that second-person lines about a condition or struggle ("Are you overweight…?", "Do you
+  struggle with…?") are routinely rejected, and that Meta also reviews the landing page (⚠️ auditsocials.com,
+  accelerateddigitalmedia.com, 2026-10-14).
+- **Example for brows:** "Are you insecure about your thin brows?" is **risky** (implies a feeling about the viewer's
+  body). Use **"Brows that suit your face shape"** instead.
+- Rule of thumb: talk about the **service and the result**, not about what is wrong with the viewer.

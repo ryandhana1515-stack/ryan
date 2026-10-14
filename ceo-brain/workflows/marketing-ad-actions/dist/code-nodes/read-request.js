@@ -16,7 +16,8 @@ function mlRequest(raw) {
   if (off === null) off = 100;
   if (!(off > 0)) problems.push('currency_offset must be a positive number');
   var a = b.action && typeof b.action === 'object' ? b.action : {};
-  var action = { key: mlStr(a.key), type: mlStr(a.type), ad_id: mlStr(a.ad_id), budget_id: mlStr(a.budget_id), from: mlNum(a.from), to: mlNum(a.to), why: mlStr(a.why).slice(0, 500) };
+  var action = { key: mlStr(a.key), type: mlStr(a.type), ad_id: mlStr(a.ad_id), budget_id: mlStr(a.budget_id), from: mlNum(a.from), to: mlNum(a.to), why: mlStr(a.why).slice(0, 500),
+    auto: a.auto === true, proposal: a.proposal && typeof a.proposal === 'object' ? a.proposal : null };
   var target = action.type === 'pause_ad' ? action.ad_id : (action.type === 'set_daily_budget' ? action.budget_id : '');
   var settings = b.settings && typeof b.settings === 'object' ? b.settings : null;
   if (mode === 'action') {

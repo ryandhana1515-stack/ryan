@@ -49,3 +49,35 @@ Metricool covers reporting only, for what its current API and plan expose:
 - it syncs about once a day, so windows end yesterday.
 
 Metricool cannot pause or create campaigns unless the vendor confirms otherwise ([[01_Tool_Library]]).
+
+## v5 additions (2026-10-14)
+From Ryan's **Marketing OS v5** (2026-10-14). Only what was missing above.
+
+### Metrics added or clarified
+| Metric | Formula | Notes |
+|---|---|---|
+| CTR (all) | Σ all clicks ÷ Σ impressions | Includes likes, profile and "see more" clicks. **Link CTR** (above) is the one for judging ads. Always say which |
+| CPL | Σ spend ÷ Σ leads | Already above; v5 confirms |
+| Cost per qualified lead (CPQL) | Σ spend ÷ Σ qualified leads | Already above; qualified = CRM-CONFIRMED |
+| **CPA (named event)** | Σ spend ÷ Σ count of **one named event** | Always name the event: "CPA (booked appointment)", "CPA (purchase)". Never "CPA" alone |
+| ROAS | Σ revenue ÷ Σ spend | Already above. Platform-attributed ROAS and CRM-confirmed ROAS are shown **separately** |
+
+### Rules added
+- **Zero denominator → "unavailable".** Shown as "—" with the word "unavailable" in text. Never infinity, never a fake 0.
+- **A CTA is not a metric.** "Book now" is a button, not a number.
+- **A Pixel event is not proof of a sale.** A sale is CRM-CONFIRMED (or confirmed by the shop/payment system).
+- **Blended ratios** across ads, days or channels use **summed numerators ÷ summed denominators**. Never average ratios.
+- **Never add reach across channels** (or across days). The same person can be reached on Facebook and TikTok. Say
+  "reach per channel" instead.
+- **Never double-count Meta spend.** Facebook and Instagram placements share one Meta campaign; the platform split is a
+  breakdown of one total, not two spends.
+- **Platform-attributed vs CRM-confirmed** are always two separate columns.
+- **Refunds, cancellations, duplicates and late updates:** revenue is net of refunds and cancellations once known; duplicate
+  leads are removed (and the count of removed duplicates shown); late updates create a new **correction version** of the
+  report.
+- **Costs kept separate:** media spend (ad platforms) • software fees (subscriptions) • generation costs (credits for
+  video/image/voice). Never mixed into one "cost" without the breakdown. Third-party costs are separate from FusionTech fees.
+
+### Metadata on every metric
+`source` · `timezone` · `currency` · `period` · `retrieval time` · `attribution window` · `conversion event` ·
+`correction version`. A metric missing its metadata is not reported.

@@ -293,3 +293,77 @@ Research date: 2026-10-12. Sources were limited to official vendor pages (docs, 
 13. **Seedance via BytePlus blocks real human faces by default**, the ModelArk Playground terms are non-commercial, and BytePlus is not available in the US. (docs.byteplus.com ModelArk 2608626 · tos_modelark_playground · byteplus blog)
 14. **TikTok trending sounds are generally not cleared for business use.** Only the Commercial Music Library is. Logged-out Creative Center visitors see just 5 Top Ads. (ads.tiktok.com help: commercial-music-library, creative-center)
 15. **Midjourney still has no API and forbids automation**, so it cannot be wired into the agent stack. (docs.midjourney.com Community Guidelines)
+
+---
+
+## v5 additions (2026-10-14)
+
+Checked 2026-10-14 for the ad-execution question ("who can launch, pause and budget our ads?"). Direct page opening was
+blocked again (WebFetch had no DNS, curl denied, Firecrawl out of credits), so every fact comes from web-search results
+limited to the vendor's own domain; the pages were not opened by us. Action-by-action status: [[11_Capability_Register]].
+Comparison and recommendation: [[13_Provider_Evaluation]].
+
+### Omneky
+- Purpose: AI ad platform: generate image, video and avatar ads from a brand URL, score creative, then launch and manage campaigns on several ad networks.
+- Best for: Fast on-brand ad creative plus a simple launch for **Ryan's own brand**; trying many creative variants.
+- NOT good for: **Client work under the standard terms** (they forbid use "for the benefit of a third party"). Campaign control from n8n code (campaign actions are MCP-only; REST covers creative jobs only). Pinterest and X launches ("not available yet").
+- Inputs → outputs: Brand URL / brand kit / product images in → image, video and avatar ads, creative scores, launched campaigns, insights out.
+- Official API: **yes, two doors.** (1) **MCP** `https://mcp.omneky.com/mcp`, tools: `analyze_performance`, `generate_image_ad`, `generate_video_ad`, `generate_avatar_ad`, `score_creative`, `launch_campaign`, `get_brand_kit`, `list_creatives`, `get_campaign_insights`, `create_source_from_url`, `pause_or_scale`, `compare_channels`. Launch targets: Meta, Google, TikTok, LinkedIn, Reddit, OpenAI Ads. (2) **REST**: POST `/create_image_ad_async`, POST `/create_video_ad_async`, GET `/jobs/{job_id}` (or `callback_url`); 10 req/min; video 10–15 s. No campaign endpoints documented.
+- Auth: MCP: OAuth sign-in with the Omneky account ("no API keys to manage"); token lifetime/renewal not stated (UNVERIFIED). REST: `X-API-Key` header, key from the Omneky Admin Dashboard.
+- Pricing model: Subscription + credits. Lite US$29/mo (200 credits, 1 brand, 1 seat), Standard US$99 (1,000 credits, 3 brands, 3 seats; adds commercials, avatars, cloning), Pro US$249 (4,000 credits, 5 brands, 5 seats), Enterprise custom; yearly US$24/79/199. Top-ups 10 credits per US$1, never expire. **7-day trial on Lite/Standard/Pro that auto-converts to paid.** Analysis and launching "free" per the MCP page (a blog says insights cost 1–2 credits per ad: conflict). Generation costs credits by format and resolution (API docs: image 5 credits at 1K; other pages say 15: conflict). Launching on **Omneky's** ad account means paying ad budget + Omneky's fee up front. **Which plan includes MCP/API: not stated (UNVERIFIED).**
+- Limits: REST 10 req/min per endpoint; a job is visible only to the key that made it. Budget changes follow each channel's rules.
+- Commercial use / licensing: Terms: Customer will not "rent, sell, lease, transfer or otherwise make available the Services… or use it… for the benefit of a third party", nor use information from the Services "for the prospective economic advantage of any third party". White-label for agencies is marketed (omneky.com/agency) but not in the Terms → needs written permission/Enterprise. Omneky gets a sublicensable licence to Customer Materials to run the service, plus a promotional licence to work product. Omneky says it does not train on customer Input/Output (third-party AI providers may, under their terms). Privacy: synced campaign data kept 60 days after disconnect; logs 90 days.
+- AI disclosure / consent needs: Avatar and cloned ads are AI-made people/structures: disclose per Meta/TikTok rules; never present as a real customer. Cloning a competitor ad's structure: copy the idea, never the creative.
+- Sample workflow for an SME ad: (Ryan's own brand, after his yes) `create_source_from_url` on fusiontech site → `generate_image_ad` ×3 (cost card first) → `score_creative` → pick one → `launch_campaign` into Ryan's own Meta account, which waits for explicit confirmation.
+- Status for FusionTech: **Not connected.** DOCUMENTED-UNVERIFIED. Ryan's preferred pilot; trial only on his yes (calendar reminder for day 6). Not for clients until Omneky answers in writing ([[13_Provider_Evaluation]] §4).
+- Verified: 2026-10-14 (search results, vendor domain) — https://www.omneky.com/mcp · https://www.omneky.com/pricing-plans · https://www.omneky.com/api-docs · https://www.omneky.com/terms · https://www.omneky.com/privacy-policy · https://www.omneky.com/ad-launcher · https://www.omneky.com/agency · https://www.omneky.com/integrations/claude · https://www.omneky.com/newsroom/omneky-turns-ad-creative-into-open-ai-infrastructure · https://www.omneky.com/blog/how-to-use-omneky-to-2x-sales
+
+### Supermetrics (MCP "Supermetrics Marketing Analytics")
+- Purpose: Marketing data platform (174 sources) with an MCP server for AI chats; now also **campaign management** (create, edit, pause ads) from the chat.
+- Best for: Cross-platform reporting, and **paused campaign drafts** on Google, Meta, TikTok, LinkedIn, Microsoft, ChatGPT Ads and Snapchat with human approval.
+- NOT good for: Creative generation (only basic `asset_prompt`, cost unknown). Organic post scheduling. Giving clients their own login (not allowed under agency terms).
+- Inputs → outputs: Ad account + plain-language request in → data tables; or campaign/ad set/ad objects written to the ad platform (created PAUSED), with campaign history.
+- Official API: **yes**. MCP tools in Ryan's session (tool v1.18.3): `data_source_discovery`, `accounts_discovery`, `field_discovery`, `data_query`, `get_async_query_results`, `campaign_and_resource_get` (campaigns, health_check, forecast, reach_estimate, targeting_search, assets, audiences, history, approval_status…), `manage_campaign` (ds_id AW/FA/TIK/LIA/AC/CGPTA/SCM; "On create: always forced to PAUSED"; "Only set ENABLED on explicit user approval"), `creative_picker`, `marketing_utilities` (free UTM/link/page-speed/char-limit checks), `supermetrics_guide`. Separate Supermetrics Data API for code.
+- Auth: OAuth login to Supermetrics; each ad platform connected inside Supermetrics; **write access switched on per ad account** in the Hub ("Write settings").
+- Pricing model: Fixed-price subscription (no data-volume billing; only Studio AI credits are metered). Starter US$55/mo monthly or US$44/mo yearly; Growth US$222 or US$177 (search snippets of the pricing page; recheck). MCP "included in all Supermetrics plans that include Data API access". **Campaign management: early access, "free with an existing subscription"** (needs Claude or Gemini as an AI-chat destination). **14-day trial, no card** (mcp.supermetrics.com). Subscriptions **auto-renew**; fees may rise 8% a year on auto-renewal; no refund of remaining days.
+- Limits: MCP row limits by tier (blog: Starter 50k, Growth 250k, Pro 500k). Snapchat campaign budget minimum 20/day in account currency. Some platforms create new ads live unless PAUSED is set explicitly.
+- Commercial use / licensing: ToS 5.2.1: a "Marketing Agency Customer" may use the Service for its clients; reports may be shared with clients (5.2.2); **clients may not get direct access or login credentials** (5.2.5); pushing data into a client's warehouse needs a separate agreement (5.2.4).
+- AI disclosure / consent needs: Not applicable to the tool; ad content rules still apply. Approval modes in the Hub: none / before going live / budget changes + going live / any change to a live campaign → **always pick the last one.**
+- Sample workflow for an SME ad: Ryan links his Meta ad account → `manage_campaign` creates a PAUSED Leads campaign with one ad set and one ad → `campaign_and_resource_get` reads it back → Ryan approves → status ENABLED per level.
+- Status for FusionTech: **CONNECTED** in Ryan's Claude session. **No ad account authenticated yet** → no ad action can run. Trial or paid: check in the Hub. Best candidate for the Layer 1 execution pilot ([[13_Provider_Evaluation]] §3).
+- Verified: 2026-10-14 — https://supermetrics.com/pricing · https://supermetrics.com/products/supermetrics-mcp · https://supermetrics.com/terms-of-service · https://docs.supermetrics.com/docs/how-to-manage-ad-campaigns-with-ai-tools · https://docs.supermetrics.com/docs/how-to-manage-ad-campaigns-in-supermetrics-studio · https://docs.supermetrics.com/docs/about-subscription-renewal · https://supermetrics.com/blog/what-ai-agents-can-change-ad-accounts · https://supermetrics.com/blog/march-2026-product-updates · https://mcp.supermetrics.com/changelog · tool schemas + `supermetrics_guide` output in session
+
+### Madgicx
+- Purpose: "AI Ads Manager for Meta": daily account audits (AI Marketer), recommendations with one-click execution, AI ad generator, multi-channel reporting (Google, TikTok, GA4, Shopify, Klaviyo).
+- Best for: Meta-heavy e-commerce accounts that want a ready-made optimiser.
+- NOT good for: Non-Meta execution; evidence quality (almost all claims are Madgicx's own blog).
+- Inputs → outputs: Meta ad account in → audits, recommendations, executed changes, reports.
+- Official API: **MCP for Claude** (Academy: pull performance, pause ads, adjust budgets, run audits). Tool names not published. Public REST API: not found (UNVERIFIED). Access may be "early access via support" (pages disagree).
+- Auth: Madgicx account + Meta connection (vendor says official Meta API tokens: UNVERIFIED).
+- Pricing model: Subscription; own pages disagree: "from US$45/mo", "from US$99/mo", a "Pro Complete" entry plan at US$99 with a US$1,000/mo ad-spend limit, a time-limited US$29 offer. 7-day trial (vendor). MCP said to be included at no extra charge.
+- Limits: Ad-spend limits by plan (UNVERIFIED figures).
+- Commercial use / licensing: Says agencies can connect "as many ad accounts as you wish for the same price" (vendor); terms not reviewed: UNVERIFIED.
+- AI disclosure / consent needs: Platform rules for AI creative apply.
+- Sample workflow for an SME ad: AI Marketer flags a fatigued ad set → a person approves → Madgicx pauses it.
+- Status for FusionTech: Not connected. DOCUMENTED-UNVERIFIED. Backup option for Meta only; would be the single optimiser on that account if ever used.
+- Verified: 2026-10-14 — https://academy.madgicx.com/lessons/what-is-madgicx · https://madgicx.com/ai-marketer · https://madgicx.com/blog/ads-mcp · https://madgicx.com/blog/ai-tools-for-meta-ad-agencies
+
+### Smartly
+- Purpose: Enterprise creative + media automation across social and programmatic (Media Suite, Creative Suite, Predictive Budget Allocation, Brand Pulse, "Synapse" AI agents layer, June 2026).
+- Best for: Large brands and big agencies (800+ brands, US$7B+ ad spend managed, per Smartly press).
+- NOT good for: A small Singapore agency: spend-based fees with a monthly minimum, sales-led contracts.
+- Inputs → outputs: Catalogues, templates, ad accounts in → automated cross-channel campaigns and creative out.
+- Official API: Public API or MCP: **not found** (UNVERIFIED). Channels per docs: Google Ads, Meta, Pinterest, Snapchat, TikTok, YouTube, Reddit, X (beta), Amazon DSP (alpha), Spotify, plus DV360 / The Trade Desk / Yahoo DSP.
+- Auth: Enterprise account.
+- Pricing model: Order Form. Terms of Use 2026: spend-based subscriptions are invoiced monthly on the customer's **total advertising spend** on the ad account (whether or not it ran through Smartly), with a monthly minimum fee. No public prices.
+- Limits: Contract-based.
+- Commercial use / licensing: Enterprise contract (Terms of Use 2026).
+- AI disclosure / consent needs: Platform rules apply.
+- Sample workflow for an SME ad: Not applicable at our size.
+- Status for FusionTech: **UNAVAILABLE (not a fit).** Revisit only for a large client with its own Smartly contract.
+- Verified: 2026-10-14 — https://www.smartly.io/ · https://www.smartly.io/terms-of-use-2026 · https://docs.smartly.io/docs/introduction-to-smartly · https://www.smartly.io/press/smartly-synapse
+
+### Native ad APIs: what changed since 2026-10-03 / 10-12
+- **Meta:** no change found. Serving businesses we do not own needs **Full Access** (formerly Advanced) through App Review + Business Verification; at least one successful call per permission within 30 days before requesting. Our n8n Ad Actions works on Ryan's own account with a System User token. (developers.facebook.com/docs/permissions/, 2026-10-14)
+- **TikTok:** no change found. Agencies use the normal flow: developer app review (2–3 business days, max 5 apps, name the advertisers), then each advertiser authorises via the authorisation URL (emailed code) → long-term token. (business-api.tiktok.com/portal/docs/create-a-developer-app/v1.3, 2026-10-14)
+- **Google Ads:** confirms the 2026-10-12 note: access level sits on the Google Cloud project since 2026-09-09; Explorer 2,880 production ops/day and **no account creation, user management, planning or billing**; Basic/Standard need Cloud brand verification; Standard review "days or sometimes weeks"; known AUTHORIZATION_ERROR after some upgrades. (developers.google.com/google-ads/api/docs/api-policy/access-levels, 2026-10-14)
