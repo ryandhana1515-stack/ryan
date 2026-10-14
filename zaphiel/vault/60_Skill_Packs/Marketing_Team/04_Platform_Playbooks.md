@@ -52,3 +52,25 @@ For each brand:
 - organic ideas that test angles cheaply before ad spend.
 
 Branding Studio (content) and Ads Analytics (results) are separate pieces, and both report to the Marketing Director.
+
+## v5 additions (2026-10-14)
+From Ryan's **Marketing OS v5** (2026-10-14). Additions only.
+
+**Where things now live:**
+- Objectives, lead destinations and formats for Meta, TikTok and YouTube/Google: [[09_Ad_Formats]].
+- Total budget, small-budget structure, platform minimums, testing, scaling, naming, UTMs, timezone and currency:
+  [[10_Budget_Structure_Rules]].
+- What our tools can do by API on each platform: [[11_Capability_Register]].
+
+**Platform facts not already above** (seen in search 2026-10-14; recheck in the account):
+- **Meta:** the objective cannot be changed after the campaign is created (⚠️ third-party). Click-to-WhatsApp needs the
+  WhatsApp number linked to the Facebook Page (⚠️ third-party). Special ad categories: housing, employment and financial
+  products and services remove some targeting (✅ category names on developers.facebook.com).
+- **TikTok:** Website Conversions and Product Sales are being merged into one **Sales** objective in a phased rollout;
+  TikTok Shop ads run only as **GMV Max** since July 2025 (✅ ads.tiktok.com/help/article/sales-advertising-objective-tiktok).
+  **Minimum daily budget: campaign $50, ad group $20** (✅ ads.tiktok.com/help/article/budget; SGD equivalent: recheck). A
+  campaign budget lower than the ad group budget can cause delivery problems. Lead generation uses an Instant Form and
+  needs a privacy-policy URL (✅).
+- **YouTube:** non-skippable in-stream ads can now be up to 60 seconds; bumpers are 6 seconds; skippable ads can be
+  skipped after 5 seconds (✅/⚠️ support.google.com/google-ads/answer/2375464). Video Action campaigns have moved into
+  **Demand Gen** (⚠️ third-party).

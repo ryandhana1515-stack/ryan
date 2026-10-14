@@ -65,3 +65,23 @@ and a fact about how it works today (`atNeeded` rule). Sale = a signed engagemen
 None yet. No campaigns have run.
 
 Targets: [[Brands/FusionTech_AI/targets]]
+
+## v5 additions
+From Ryan's **Marketing OS v5** (2026-10-14). Additions only; no fact above is changed.
+
+**Fields Ryan wants tracked for this brand** (fill only with facts he approves; empty = ASK RYAN):
+legal / business name · websites · locations · industry · products · services · prices · margins (only if given) ·
+approved offers · approved claims · prohibited wording · proof (reviews, certificates, portfolio, with source) ·
+audiences · objections · tone · colours · logos · fonts · asset rights (who owns each photo, video, voice, music) ·
+owner preferences.
+
+**Three kinds of information, kept apart:**
+1. **Approved facts**: confirmed by Ryan (or the client owner), dated. Only these go into ads and posts.
+2. **AI suggestions**: angles, hooks, ideas. Labelled as suggestions.
+3. **Public research**: what we saw online, with source and date ([[05_Research_Playbook]]).
+
+**An AI guess never becomes brand truth.** It moves to "approved" only when the owner confirms it.
+
+### Learning memory
+| Date | Campaign / experiment | Outcome | Evidence | Sample size | Attribution caveat | Expires |
+|---|---|---|---|---|---|---|

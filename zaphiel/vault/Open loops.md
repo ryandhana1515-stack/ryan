@@ -347,3 +347,14 @@ tags: [zaphiel, open-loops]
   4. **Brow Revolution facts** confirmed → copied into its autopilot note (`approved`), then its posts can start.
   - Known limits: caps arrive from the routine (20% ceiling is hard-coded in the workflow); lifetime budgets ignored;
     first real Meta write is the true test (a rejection is logged as failed).
+- 2026-10-14 — **Marketing OS v5: what only Ryan can do** (replaces the 2026-10-13 autopilot list):
+  1. **Provider decision:** approve or decline Omneky (ask Omneky in writing first: which plan includes MCP/API,
+     agency/multi-client and white-label rights, token renewal: questions in [[60_Skill_Packs/Marketing_Team/13_Provider_Evaluation]]).
+     Check whether his Supermetrics account is a paid plan or a trial (campaign management is free with a subscription).
+  2. **Link Brow Revolution's Meta ad account** read-only (Supermetrics or Metricool) → first real report.
+  3. **Brand facts + targets:** confirm Brow Revolution's facts (price incl. GST, touch-up, reviews, website, artists),
+     daily cap, target CPL / cost per qualified lead, what counts as "qualified". Remove "Singapore's leading" from the
+     live ad unless there is proof.
+  4. **Pause policy (optional):** fill `auto_pause_policy` if he wants automatic spend-reducing pauses.
+  5. **Schedule "Marketing Daily"** (blocked for Zaphiel; Ryan's OK or set it up in claude.ai/code → Routines).
+  6. **ATLAS gap:** John's intake should store Meta's WhatsApp referral (ad id) for attribution (acceptance E).

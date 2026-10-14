@@ -16,6 +16,6 @@ Upgrades [[10_Agents/Marketing/Marketing_Brain]] (the earlier quick win). Report
 Specialists:
 - [[10_Agents/Marketing/Ads_Data_Diagnosis]] → `ads-intelligence`
 - [[10_Agents/Marketing/Market_Research]] → `market-research`
-- [[10_Agents/Marketing/Creative_Branding]] → `creative-producer` (head agent [[10_Agents/04_Creative_Studio]])
+- [[10_Agents/Marketing/Creative_Branding]] → `creative-brain` (head agent [[10_Agents/04_Creative_Studio]])
 
 Metric definitions: [[10_Agents/14_Data_BI_KPI]] + [[60_Skill_Packs/Marketing_Team/06_Metrics_Dictionary]].

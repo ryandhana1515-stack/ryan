@@ -36,10 +36,11 @@ Ryan's "FUSION AI COMPLETE AI MARKETING TEAM (v4)" replaces the earlier marketin
 | Marketing Director (entry point) | `marketing-director` | [[10_Agents/Marketing/Marketing_Director]] | Marketing Brain (quick win) |
 | Ads Intelligence & Diagnosis | `ads-intelligence` | [[10_Agents/Marketing/Ads_Data_Diagnosis]] | `marketing-brain` subagent (its Metricool rules moved here) |
 | Market Research & Competitor Intelligence | `market-research` | [[10_Agents/Marketing/Market_Research]] | new |
-| Creative Producer | `creative-producer` | [[10_Agents/Marketing/Creative_Branding]] | Creative & Branding Agent |
+| Creative Brain (was Creative Producer) | `creative-brain` | [[10_Agents/Marketing/Creative_Branding]] | Creative & Branding Agent |
 
 The Execution layer is code (Fusion EDG Core), never an AI agent. [[10_Agents/07_CRM_Architect|ATLAS]] stays the business
 operations manager, and [[10_Agents/02_Sales_CRM|John]] stays the customer-facing sales agent.
 
-Merge plan, waiting for Ryan's OK: retire `.claude/agents/marketing-brain.md`, because `marketing-director` and
-`ads-intelligence` now cover it. It is left in place until he says yes.
+Merge done (Ryan's Marketing OS v5 rule "one agent per role", 2026-10-14): `.claude/agents/marketing-brain.md` retired
+(its rules live in `ads-intelligence` and `marketing-director`); `creative-producer.md` renamed `creative-brain.md`.
+"Marketing Brain" = Marketing Director; "Creative Brain" = Creative Producer.

@@ -90,3 +90,59 @@ Always state which one was used.
 ## 6. "Where it went wrong" report
 Use the template in [[07_Report_Templates]] (section 3). Expected improvements are cautious ranges with their assumptions,
 never guarantees.
+
+## v5 additions (2026-10-14)
+From Ryan's **Marketing OS v5** (2026-10-14). Additions only; the sections above still apply.
+
+### v5 §8.1 Data validity comes first
+Before any verdict, check the data itself. If a check fails, say so and lower the confidence.
+
+| Check | What to look for |
+|---|---|
+| Freshness | When was the data last synced? Say "data as of …" |
+| Date range | Is it the range Ryan asked for? Complete days only, unless he asked for today |
+| Currency | One currency per number. No mixing without a stated conversion |
+| Timezone | The ad account's timezone (default Asia/Singapore). Say which one |
+| Conversion event | Which event is counted as a "lead" or "sale"? Is it the right one? |
+| Attribution window | Which window the platform used (for example 7-day click, 1-day view) |
+| Completeness | Are all campaigns, platforms and days present? |
+| Incomplete current day | Today is never compared with a full day |
+| Delayed conversions | Recent days may still gain conversions. Say so |
+| Sample size | Enough impressions, clicks, leads? (minimums in [[06_Metrics_Dictionary]]) |
+| Recent edits | Any change in the last few days? (change history) |
+| Learning status | Is the ad set still learning or "learning limited"? |
+
+**Broken tracking first.** If tracking looks broken (leads stopped but clicks didn't, Pixel or form events missing,
+WhatsApp link changed), the diagnosis is **TRACKING**. No creative is called a loser until tracking is fixed and checked.
+
+The funnel stage table (7 stages, metrics, question) is already in section 1 above. Not repeated.
+
+### Extra symptom rows (not already in section 2)
+| Symptom | Likely causes (hypotheses) | How to verify | Action |
+|---|---|---|---|
+| High CPM in a **special ad category** campaign (housing, employment, financial products) | The category removes some targeting (third-party summaries name age, gender, postcode and lookalikes; ⚠️ recheck on developers.facebook.com, 2026-10-14), so delivery is broader and can cost more | Check the campaign's special ad category setting and the targeting it allows | Judge CPM against other campaigns in the same category, not against normal campaigns. Improve the creative; do not try to work around the category |
+
+"Sudden change → change history" and "Platform vs CRM mismatch → reconcile" are already rows in section 2.
+
+### v5 §8.4 KILL / KEEP / SCALE defaults are PROPOSALS
+- The thresholds in section 3 are **proposals per brand**, not laws. The brand's `targets.md` can change them.
+- **Before pausing anything, check lead quality and sales** in the CRM.
+- A **higher CPL with better sales can be the winner.** Judge on cost per qualified lead and on confirmed sales when they exist.
+- If the CRM is not connected, say the verdict is based on platform leads only, and lower the confidence.
+
+### v5 §8.5 Diagnosis output fields (every diagnosis)
+1. **PROBLEM**: one line.
+2. **ACTUAL FIGURES**: the numbers, with labels (PLATFORM-REPORTED / CRM-CONFIRMED).
+3. **COMPARISON WINDOW**: which periods are compared, and the target.
+4. **EVIDENCE QUALITY**: results of the §8.1 checks.
+5. **PLAUSIBLE CAUSES**: hypotheses, each with how to check it.
+6. **PREFERRED ACTION**.
+7. **ALTERNATIVE** action.
+8. **EXPECTED BENEFIT**: a hypothesis, stated as a cautious range with its assumptions.
+9. **CONFIDENCE**: HIGH / MEDIUM / LOW.
+10. **MINIMUM DATA NEEDED** before the verdict is solid.
+11. **POLICY ELIGIBILITY**: is the action allowed by platform policy and the brand's rules?
+12. **APPROVAL REQUIREMENT**: who must approve, and the approval code if needed ([[08_Approval_Rules]]).
+13. **REVIEW DATE**: when we check again.
+
+Never write "guaranteed winner". Never show a **predicted** ROAS as **measured** revenue.

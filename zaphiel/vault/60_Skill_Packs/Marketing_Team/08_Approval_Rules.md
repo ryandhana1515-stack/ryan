@@ -9,21 +9,42 @@ version: v4 (2026-10-12)
 Research, analyse, diagnose, and write hooks, scripts, storyboards and briefs. It may also prepare drafts and
 recommendations, and read data (Metricool and other read-only tools).
 
-## Autopilot: limits set once (Ryan, 2026-10-13)
-Ryan: "I want our agents to be doing all these … the best marketing team of AI agents." He chose:
-- **Posts: fully automatic.** Only approved facts and prices from the brand's autopilot note; the engine blocks
-  superlatives, guarantees, before/after, comparisons, testimonials, unapproved numbers or prices, AI-made people;
-  media where the network needs it; a daily limit per network. AI media is declared as AI on Instagram/TikTok.
-- **Ad changes: automatic within caps.** Only HIGH-confidence verdicts: pause a losing campaign (never the last active
-  one unless it spends with zero leads), raise a winner by at most 20% a day with a 3-day cool-down, never past the
-  brand's `max_daily_spend`. Re-checked live inside n8n right before Meta is called; read back and logged.
-- **Generation: automatic within a monthly credit budget** per tool, with a price check before every job.
-- A **missing cap switches that part off** (never unlimited). Everything is logged in the n8n table
-  `mk_autopilot_ledger` and reported in one email every morning.
-Where: `Brands/<brand>/autopilot.md` (settings), `ceo-brain/agents/marketing/autopilot.js` (engine, tests §40),
-`ceo-brain/agents/marketing/ROUTINE.md` (daily routine). The list below applies outside the autopilot or beyond its
-limits. **Still never automatic:** new campaigns or audiences, sign-ups and subscriptions, deleting anything, budgets
-above the cap, and client brands until the client owner switches autopilot on in writing.
+## Permission levels (Marketing OS v5, Ryan 2026-10-14 — replaces the 2026-10-13 autopilot)
+Per brand, per account and per action category: **OFF • READ-ONLY • APPROVAL-REQUIRED (default) • LIMITED-AUTOMATION**
+(only if Ryan sets it). Categories: posts, ads_pause, ads_budget, launch, generation, audience_destination
+(`Brands/<brand>/autopilot.md`; engine `ceo-brain/agents/marketing/autopilot.js`, tests §40).
+- **Always approval-required:** new launches, resumes that spend, scale-ups, budget moves (they can raise a single
+  campaign's spend), audience/destination changes, paid creative generation, publishing anything public.
+- **Automation may only REDUCE spend.** An automatic pause runs only under an owner-approved policy with all of: minimum
+  age and minimum spend, validated and fresh tracking, a conversion-delay allowance, a qualified-lead/sales check, a
+  cool-down and a maximum number of campaigns affected per day. Missing any → it becomes a proposal.
+- **Caps:** total daily/monthly caps, per-account caps, generation-credit caps, maximum change per action (+20%). A pause
+  never guarantees an exact spend cap (reporting lags): watch projected spend with a buffer and verify the paused status.
+- **Broken or stale tracking** suspends every performance-driven change.
+
+## Proposals, approval codes and execution (v5)
+- **Approval card:** REQUESTED ACTION • CAMPAIGN • ACCOUNT • CURRENT vs PROPOSED BUDGET • REASON • EXPECTED BENEFIT •
+  RISKS • STATUS → APPROVE / REJECT / REQUEST CHANGES (also by voice: "APPROVE <code>").
+- **A proposal holds:** tenant, user, account, provider, target ids, action, expected current state, payload hash, cost
+  impact, evidence, expiry (48 h), rollback plan (`ceo-brain/agents/marketing/campaign-order.js`, tests §42).
+- **Approval binds to that exact proposal.** Any edit invalidates it. Just before executing, re-check permission, state,
+  expiry, budget, tracking, connection (an expired token stops writes and asks Ryan to reconnect) and scope.
+- **Job states:** DRAFT → AWAITING_APPROVAL → QUEUED → RUNNING → PROVIDER_PENDING → VERIFIED / FAILED / PARTIAL.
+  Submitted ≠ approved by the platform ≠ delivering ≠ converting.
+- **Retries:** idempotency key per proposal (no duplicate ads or charges); after a timeout look the object up before
+  retrying; bounded retries; partially created campaigns are handled, never left silently.
+- **Verify after every write:** requested vs actual state, ids, time, errors. Never show success for a mock, a missing
+  credential or a rejection.
+- **Provider confirmations are preserved:** if Omneky (or any provider) asks for its own spend confirmation, it is never
+  bypassed. ONE optimiser per ad account.
+- **Execution Engine = validated functions only** (listAccounts, fetchMetrics, fetchCampaigns, generateCreative,
+  getCreativeJob, prepareCampaign, executeApprovedAction, verifyAction, mapped to real provider tools in
+  `11_Capability_Register.md`). An AI model never sends arbitrary API requests.
+- **Safety words:** "STOP AUTOMATION" = AI automation off (ads keep running) · "PAUSE ALL MANAGED ADS" = request pauses
+  and verify. Always confirm which one.
+
+History: on 2026-10-13 Ryan chose posts/raises/generation fully automatic within caps; his 2026-10-14 master prompt
+(newest) replaced that with the levels above.
 
 ## Needs Ryan's YES (or the client owner's, for client brands)
 - **Any paid generation:** Higgsfield, Kling, ElevenLabs, HeyGen, Veo/Gemini, Seedance and similar tools use credits.
