@@ -209,3 +209,11 @@ Grey these out in any dashboard, and the agents must not offer them as working:
 8. **Competitor-ad "API" research** for Singapore brands: there is no official API for Singapore-only commercial ads. Show the Ad Library web link instead.
 9. **Any action on a client's ad account** until the client owner switches autopilot on in writing *and* the provider's terms allow agency use (Omneky: not yet, see [[13_Provider_Evaluation]]).
 10. **A second optimiser on the same ad account** (see the ONE-optimiser rule above).
+
+## Integration priority (APEX v7, Ryan 2026-10-15) — this wins over anything above
+**PRIMARY: Omneky** • **SUPPORTING: Metricool** • **NOT REQUIRED NOW: Supermetrics** (connector left in Claude, untouched,
+disabled as the default data or execution provider; no new features, no purchase/renewal without Ryan) • **OPTIONAL
+FUTURE RESEARCH: Grok** (only with a measurable advantage) • **FALLBACK FOR GAPS: native Meta / TikTok / Google Ads APIs**
+(our n8n "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` for Meta pause/budget).
+Write tools belong only to the **Campaign Operator** (`.claude/agents/campaign-operator.md`). Before production, verify
+which functions the Omneky MCP, its REST API and the SELECTED PLAN actually include (don't assume all are in US$99).

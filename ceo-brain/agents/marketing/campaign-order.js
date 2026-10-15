@@ -194,7 +194,39 @@ function coSafetyWord(text) {
   return null;
 }
 
-/** Unfilled facts ("[ASK RYAN …]", "[CLIENT TO PROVIDE]") anywhere in what would be launched. */
+/** "How much budget do I need to get N leads a month?" (v7 §A6). A range, never a promise; says which CPL it used. */
+function coBudgetForLeads(o) {
+  o = o || {};
+  var leads = coNum(o.leads_per_month), hist = coNum(o.cpl_history), target = coNum(o.cpl_target);
+  var cpl = hist || target;
+  if (!leads || !cpl) return { ok: false, reason: !leads ? 'how many leads a month?' : 'no cost per lead known yet (no history and no target)' };
+  var basis = hist ? 'your account\'s real cost per lead (S$' + hist + ')' : 'your target cost per lead (S$' + target + '), not yet proven by real data';
+  var low = coR2(leads * cpl), high = coR2(leads * cpl * (hist ? 1.25 : 1.5));
+  return { ok: true, monthly_low: low, monthly_high: high, daily_low: coR2(low / 30), daily_high: coR2(high / 30), basis: basis,
+    text: 'For about ' + leads + ' leads a month, plan S$' + low + '–S$' + high + ' a month (about S$' + coR2(low / 30) + '–S$' + coR2(high / 30) + ' a day), based on ' + basis + '. This is a range, not a promise: the first weeks usually cost more while the platform learns.' };
+}
+
+/** Test budget: variants × minimum spend per variant (default 2× target CPL) ÷ test days; checks it fits the owner's daily budget. */
+function coTestBudget(o) {
+  o = o || {};
+  var variants = coNum(o.variants), cpl = coNum(o.target_cpl), mult = coNum(o.multiple) || 2, days = coNum(o.days) || 5, daily = coNum(o.daily_budget);
+  if (!variants || !cpl) return { ok: false, reason: 'need the number of variants and a target cost per lead' };
+  mult = Math.max(2, Math.min(3, mult));
+  var minTotal = coR2(variants * mult * cpl), needDaily = coR2(minTotal / days);
+  var out = { ok: true, variants: variants, per_variant_min: coR2(mult * cpl), min_total: minTotal, days: days, needed_daily: needDaily,
+    structure: variants <= 5 ? '1 campaign, 1 ad set, ' + variants + ' ads' : 'too many variants for one test: split into rounds of 5' };
+  if (daily !== null) {
+    out.fits = daily >= needDaily;
+    if (!out.fits) {
+      var maxV = Math.floor((daily * days) / (mult * cpl)), longer = Math.ceil(minTotal / daily);
+      out.advice = 'S$' + daily + '/day cannot test ' + variants + ' variants properly in ' + days + ' days (needs about S$' + needDaily + '/day). Test ' + Math.max(1, maxV) + ' variants instead, or run ' + longer + ' days.';
+    } else out.advice = 'S$' + daily + '/day covers it: ' + out.structure + ' for about ' + days + ' days, then keep the 1–2 best.';
+  }
+  out.text = variants + ' variants × ' + mult + '× S$' + cpl + ' = S$' + minTotal + ' minimum over about ' + days + ' days ≈ S$' + needDaily + '/day.' + (out.advice ? ' ' + out.advice : '');
+  return out;
+}
+
+/** Unfilled facts ("[ASK RYAN …]\", "[CLIENT TO PROVIDE]") anywhere in what would be launched. */
 function coPlaceholders(v) {
   var found = [];
   (function walk(x) {
@@ -227,7 +259,7 @@ function coPreviewCard(order, plan, proposal, angles) {
 if (typeof module !== 'undefined') {
   module.exports = { CO_VERSION: CO_VERSION, CO_MIN_DAILY: CO_MIN_DAILY, CO_STATES: CO_STATES, coCanon: coCanon, coHash: coHash, coCode: coCode,
     coOrder: coOrder, coBudgetPlan: coBudgetPlan, coProposal: coProposal, coRehash: coRehash, coApprove: coApprove, coPreExecute: coPreExecute,
-    coTransition: coTransition, coSafetyWord: coSafetyWord, coPreviewCard: coPreviewCard, coPlaceholders: coPlaceholders };
+    coTransition: coTransition, coSafetyWord: coSafetyWord, coPreviewCard: coPreviewCard, coPlaceholders: coPlaceholders, coBudgetForLeads: coBudgetForLeads, coTestBudget: coTestBudget };
   if (require.main === module) {
     var file = process.argv[2];
     if (!file) { console.error('usage: node campaign-order.js <order.json>'); process.exit(2); }

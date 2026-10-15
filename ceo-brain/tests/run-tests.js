@@ -1929,7 +1929,7 @@ console.log('\n[40] Marketing permissions + guardrails (v5, Ryan 2026-10-14: app
   test('the settings block is read from the vault notes; both brands start approval-first', () => {
     assert.deepStrictEqual(ap.apParseNote('x\n```json\n{"brand":"B","mode":"live"}\n```\n'), { brand: 'B', mode: 'live' });
     const dir = path.join(ROOT, '../zaphiel/vault/60_Skill_Packs/Marketing_Team/Brands');
-    for (const b of ['BROWREVOLUTION', 'FusionTech_AI']) {
+    for (const b of ['brow-revolution', 'FusionTech_AI']) {
       const s = ap.apSettings(ap.apParseNote(fs.readFileSync(path.join(dir, b, 'autopilot.md'), 'utf8')));
       assert.ok(s.brand && s.metricool_brand_id, b + ' note parses');
       assert.strictEqual(s.auto.ads_pause, false, b + ': no automation until Ryan sets a pause policy');
@@ -2089,6 +2089,36 @@ console.log('\n[42] Marketing OS v5: campaign orders, honest budget maths, propo
     assert.strictEqual(co.coSafetyWord('Pause all managed ads').word, 'PAUSE_ALL_MANAGED_ADS');
     assert.ok(/Reply YES/.test(co.coSafetyWord('pause all managed ads').confirm));
     assert.strictEqual(co.coSafetyWord('how are my ads'), null);
+  });
+}
+console.log('\n[43] APEX v7: CEO money view, budget calculator, test budget (2026-10-15)');
+{
+  const mk43 = require('../agents/marketing/diagnose.js');
+  const co43 = require('../agents/marketing/campaign-order.js');
+  test('money view: spend → leads → qualified → sales → revenue → ROAS, profit only with a margin, honest when sales are not connected', () => {
+    const m = mk43.mkMoneyView({ spend: 120, leads: 9, qualified: 4, sales: 2, revenue: 596, crm_connected: true, targets: { cpl: 15 } });
+    assert.strictEqual(m.line, 'Today you spent S$120 on ads → you got 9 leads (4 qualified) → 2 sales → S$596 revenue. Return on ad spend 4.97x. (Profit needs your gross margin.)');
+    assert.deepStrictEqual([m.roas, m.roi, m.status], [4.9667, 3.9667, 'GREEN']);
+    const p = mk43.mkMoneyView({ spend: 120, leads: 9, qualified: 4, sales: 2, revenue: 596, crm_connected: true, gross_margin: 0.6 });
+    assert.ok(/Profit after ad spend S\$237\.6\./.test(p.line), p.line);
+    const n = mk43.mkMoneyView({ spend: 50, leads: 3, crm_connected: false, targets: { cpl: 10 } });
+    assert.ok(/Sales not connected yet/.test(n.line) && n.roas === null && n.status === 'RED', 'never invents revenue; CPL 16.67 vs 10 → RED');
+    assert.strictEqual(mk43.mkMoneyView({ spend: 0, leads: 0, crm_connected: false }).cpl, null, 'zero denominator → unavailable');
+  });
+  test('budget calculator: leads goal → monthly range, says which CPL it used', () => {
+    const t = co43.coBudgetForLeads({ leads_per_month: 60, cpl_target: 10 });
+    assert.deepStrictEqual([t.monthly_low, t.monthly_high], [600, 900]);
+    assert.ok(/target cost per lead/.test(t.text) && /not a promise/.test(t.text));
+    const h = co43.coBudgetForLeads({ leads_per_month: 60, cpl_target: 10, cpl_history: 12 });
+    assert.ok(h.monthly_low === 720 && h.monthly_high === 900 && /real cost per lead/.test(h.basis), 'real history wins over the target');
+    assert.strictEqual(co43.coBudgetForLeads({ leads_per_month: 60 }).ok, false);
+  });
+  test('test budget: 5 angles × 2× S$10 = S$100 over ~5 days ≈ S$20/day; fits S$30/day; too small a budget gets a smaller test', () => {
+    const t = co43.coTestBudget({ variants: 5, target_cpl: 10, days: 5, daily_budget: 30 });
+    assert.deepStrictEqual([t.min_total, t.needed_daily, t.fits, t.structure], [100, 20, true, '1 campaign, 1 ad set, 5 ads']);
+    const small = co43.coTestBudget({ variants: 5, target_cpl: 10, days: 4, daily_budget: 15 });
+    assert.ok(small.fits === false && /Test 3 variants instead, or run 7 days/.test(small.advice), small.advice);
+    assert.strictEqual(co43.coTestBudget({ variants: 5, target_cpl: 10, multiple: 9 }).per_variant_min, 30, 'multiple capped at 3×');
   });
 }
 console.log('\n' + passed + ' passed, ' + failed + ' failed');

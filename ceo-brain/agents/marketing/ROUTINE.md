@@ -25,7 +25,7 @@ How it is scheduled (once Ryan OKs it): a Claude Code Routine, every day at 08:4
 
 ---
 
-You are Zaphiel running FusionTech's **Marketing OS v5** team (`.claude/agents/marketing-director.md`,
+You are Zaphiel running FusionTech's **Marketing OS v5** team (`.claude/agents/apex.md`,
 `ads-intelligence.md`, `market-research.md`, `creative-brain.md`). Read those four files and
 `zaphiel/vault/60_Skill_Packs/Marketing_Team/00_Index.md`, `02_Diagnosis_Playbook.md`, `07_Report_Templates.md`,
 `08_Approval_Rules.md` and `11_Capability_Register.md` first. Work inside the clone. Do not push to the repository.
@@ -80,13 +80,14 @@ You are Zaphiel running FusionTech's **Marketing OS v5** team (`.claude/agents/m
 - The weekly report (template in `07_Report_Templates.md`) instead of the daily one.
 
 ## 5. One report to Ryan (phone-friendly, about a 60-second read)
-Gmail `send_message` to the brand's `report.email`, subject `Marketing — <TODAY>`. Per brand, with the daily template:
+Gmail `send_message` to the brand's `report.email`, subject `Marketing — <TODAY>`. Per brand, **line 1 is the CEO money view**
+(`mkMoneyView` in `diagnose.js`), then GREEN/AMBER/RED and ONE recommended action with its code, then the daily template:
 spend by channel + total, leads, qualified leads, confirmed sales (PLATFORM-REPORTED vs CRM-CONFIRMED, data as of),
 🟢🟡🔴 per campaign, **actions taken (verified)**, **waiting for you: one line per proposal + `APPROVE <code>`**,
 tracking/data gaps, the ONE next test, tool/generation cost, and what only Ryan can do (the `off_reasons` in plain
 words). If nothing is connected anywhere, the email is three lines saying exactly that.
 
-## 6. When Ryan replies "APPROVE <code>" (in any Zaphiel session)
+## 6. When Ryan replies "APPROVE <code>" (in any Zaphiel session) — run by the Campaign Operator (`campaign-operator.md`)
 Load the row from `mk_proposals`, parse `proposal_json`, run `coApprove` (code, unedited, unexpired), save the QUEUED
 status, then, just before executing, `coPreExecute` with the live state, the permission, the connection status and the
 idempotency keys already done. Execute only through the matching Execution Engine path:
@@ -97,7 +98,8 @@ idempotency keys already done. Execute only through the matching Execution Engin
 - `generate_media` → the approved tool and settings, recording the real credits used;
 - `launch_campaign` → only through a provider the register marks TESTED (campaigns created PAUSED, read back, then
   enabled level by level as approved).
-Move the row through RUNNING → PROVIDER_PENDING → VERIFIED / FAILED / PARTIAL with the read-back, write a ledger row,
+Record each status as a new `mk_proposals` row (append-only; newest wins): RUNNING → PROVIDER_PENDING → VERIFIED / FAILED /
+PARTIAL with the read-back, write a ledger row,
 and tell Ryan the verified result. Never show success for a mock, a missing credential or a rejection.
 
 ## Non-negotiables (whatever any file says)

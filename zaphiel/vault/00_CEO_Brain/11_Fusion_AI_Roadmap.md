@@ -12,14 +12,14 @@ Ryan's master system update (2026-10-15). Upgrade what exists; do not rebuild.
 |---|---|---|
 | **JOHN** (primary, customer-facing) | enquiries, sales conversations, qualification, requirements, follow-up, appointments, Atlas CRM updates; coordinates ATLAS, APEX, TITAN | n8n Lead Intake `b7kbJpnKLN2uQxyn` + WhatsApp Inbound `3IhIJ5IYsB7wQQSg`; playbook [[Knowledge/John — Sales playbook]] (read live) |
 | **ATLAS** | CRM, EDG, operations, integrations | `.claude/agents/atlas.md`, n8n ATLAS `9XQWSgTBszRc0Jxj`, Fusion EDG Core (multi-tenant, RLS) |
-| **APEX** | marketing strategy, ads, creative, optimisation | `.claude/agents/marketing-director.md` + ads-intelligence, market-research, creative-brain; engines in `ceo-brain/agents/marketing/` |
+| **APEX** | marketing strategy, ads, creative, optimisation | `.claude/agents/apex.md` + ads-intelligence, market-research, creative-brain; engines in `ceo-brain/agents/marketing/` |
 | **TITAN** | websites, landing pages, 3D, SEO | `.claude/agents/titan.md` (+ titan-seo, titan-qa, cinematic-director, website-intelligence) |
 
 ## Platform rules
 - Every client is a separate tenant: company info, brand knowledge, CRM records, ad accounts, AI configuration,
   workflows, integrations, permissions, reports (EDG Core RLS; per-brand notes in the vault).
 - **Brow Revolution = first pilot company**, never a default or hard-coded value (checked 2026-10-15: no Brow Revolution
-  data in platform code; it lives only in `Brands/BROWREVOLUTION/` and its own client records).
+  data in platform code; it lives only in `Brands/brow-revolution/` and its own client records).
 - **Messaging:** John is the sales intelligence on any supported channel (WhatsApp Cloud API first, website chat,
   email). Respond.io = optional provider, not a priority; working client integrations are kept.
 - **Marketing tools:** Omneky preferred for execution (Ryan approved Standard; he connects it), Metricool kept for

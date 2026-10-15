@@ -11,7 +11,7 @@ Answer to section 20 of Ryan's master prompt (2026-10-14). Status labels: PLANNE
 ## 1. Inventory (what already exists)
 | Piece | Status |
 |---|---|
-| **Marketing Director** ("Marketing Brain") `.claude/agents/marketing-director.md` | CODED; v5: voice commands, CAMPAIGN_ORDER, one approval code, safety words, delegation, permissions |
+| **Marketing Director** ("Marketing Brain") `.claude/agents/apex.md` | CODED; v5: voice commands, CAMPAIGN_ORDER, one approval code, safety words, delegation, permissions |
 | **Ads Intelligence** `ads-intelligence.md` | CODED; v5: workers Reporting + Tracking & CRM Attribution, §8.5 output fields |
 | **Market Research** `market-research.md` | CODED; v5: workers Competitor Research + Audience & Offer Planning, injection safety |
 | **Creative Brain** `creative-brain.md` (was `creative-producer.md`) | CODED; v5: workers Copy & Script, Image & Video Production, Campaign Preparation |
@@ -71,3 +71,14 @@ Answer to section 20 of Ryan's master prompt (2026-10-14). Status labels: PLANNE
    PAUSED → read back → enable at a tiny budget → pause/resume → reconcile with Ads Manager (acceptance M).
 3. **Run daily:** schedule "Marketing Daily" (report + proposals + approval codes by phone), then start Layer 2
    (dashboard) phases 1–2 in `fusion-edg-core`.
+
+## v7 update (2026-10-15, "APEX Marketing Workforce — ONE Master Prompt v7")
+- **Merged / renamed:** `marketing-director.md` → `.claude/agents/apex.md` (APEX); new `.claude/agents/campaign-operator.md`
+  (the only specialist with write tools). Team = APEX + Ads Intelligence + Market Research + Creative Brain + Campaign
+  Operator. Diff: [[80_Clients/_Test/marketing-team-v5/v7_DIFFS]].
+- **New:** CEO money view (`mkMoneyView`, [[60_Skill_Packs/Marketing_Team/15_CEO_Money_View]]), testing engine + budget
+  calculator (`coBudgetForLeads`, `coTestBudget`, [[60_Skill_Packs/Marketing_Team/14_Testing_Engine]]), tests §43.
+- **Provider priority** written into the capability register: Omneky PRIMARY • Metricool SUPPORTING • Supermetrics NOT
+  REQUIRED (disabled as default, kept) • Grok OPTIONAL FUTURE • native APIs FALLBACK.
+- **Brand folder** renamed `Brands/brow-revolution/` + [[60_Skill_Packs/Marketing_Team/Brands/brow-revolution/Pilot_Plan]].
+- **Omneky pre-purchase email:** the 8 questions are in Ryan's Gmail draft (not sent).

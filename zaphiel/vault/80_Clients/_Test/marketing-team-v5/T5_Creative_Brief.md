@@ -9,8 +9,8 @@ status: DRAFT (nothing generated, no credits spent, nothing published, not commi
 
 > **Test T5 of Marketing OS v5 (2026-10-14).** Brief from the Marketing Director: Brow Revolution (eyebrow embroidery,
 > Singapore), Meta lead ads that open a WhatsApp chat, women 25–45, **S$30/day in total**, target **CPL under S$10**.
-> **No brand fact is confirmed yet.** The [[60_Skill_Packs/Marketing_Team/Brands/BROWREVOLUTION/Brand_Brain]] is still
-> version 0, and its `approved` list in [[60_Skill_Packs/Marketing_Team/Brands/BROWREVOLUTION/autopilot]] is empty. So
+> **No brand fact is confirmed yet.** The [[60_Skill_Packs/Marketing_Team/Brands/brow-revolution/Brand_Brain]] is still
+> version 0, and its `approved` list in [[60_Skill_Packs/Marketing_Team/Brands/brow-revolution/autopilot]] is empty. So
 > every price, review count, artist tier, offer, process step and result claim below is an **[ASK RYAN]** placeholder.
 > The draft facts seen in the brand's own live ad (S$298 / S$398, "800 five-star reviews", "We Don't Upsell") are
 > **not used as facts** here.
@@ -33,7 +33,7 @@ status: DRAFT (nothing generated, no credits spent, nothing published, not commi
 | Placements | FB + IG Feed, Reels and Stories. One ad per angle with **placement asset customisation**: the 9:16 master goes to Reels/Stories and the 4:5 cut to Feed |
 | Structure | 1 campaign → 1 ad set → **5 ads (one per angle), each launched with Hook 1**. Hooks 2 and 3 are held back as replacements when an ad tires or loses (ads-intelligence decides) |
 | Budget | S$30/day total, set at ad-set level. Launching ads and spend need Ryan's yes ([[60_Skill_Packs/Marketing_Team/08_Approval_Rules]]) |
-| Verdicts | Kill / keep / scale comes from `ceo-brain/agents/marketing/diagnose.js`, never from a guess. **CPL < S$10 is the brief's figure**: `Brands/BROWREVOLUTION/targets.md` still says ASK RYAN, so Ryan must confirm it there before the engine uses it |
+| Verdicts | Kill / keep / scale comes from `ceo-brain/agents/marketing/diagnose.js`, never from a guess. **CPL < S$10 is the brief's figure**: `Brands/brow-revolution/targets.md` still says ASK RYAN, so Ryan must confirm it there before the engine uses it |
 | Language | Singaporean English: plain, warm, short sentences. No forced Singlish |
 
 **9:16 safe areas (Reels and Stories, master 1080×1920).** Meta's Reels guidance is to keep the top ~14%, bottom ~35%
@@ -301,7 +301,7 @@ the only per-ad link. Hand-off to the Marketing Director.
 ## 5. COST CARD
 
 **Recommended: the S$0 plan.** Real phone footage + real voice + ffmpeg/CapCut free + Canva (existing plan) + Meta
-Sound Collection. It is also the safer choice for a beauty treatment. Note: `Brands/BROWREVOLUTION/autopilot.md` has
+Sound Collection. It is also the safer choice for a beauty treatment. Note: `Brands/brow-revolution/autopilot.md` has
 `monthly.kling` and `monthly.higgsfield` = null, so nothing can be generated automatically anyway.
 
 | TOOL | WHY NOW | COST (credits or S$) | CARD REQUIRED | AUTO-RENEWS | WHAT IF WE SKIP IT |

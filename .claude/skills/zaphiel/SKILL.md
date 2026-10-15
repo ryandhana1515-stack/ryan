@@ -50,12 +50,12 @@ exists: `Knowledge/AI Workforce — roster`.
   (token in Supabase Vault; `scripts/supabase-timer.sql`). Function region hnd1 (next to the Tokyo database).
   Phase records: `docs/platform-v4/`.
 - **Main workforce (Ryan, 2026-10-15):** JOHN (sales, primary customer-facing; Lead Intake `b7kbJpnKLN2uQxyn`), ATLAS
-  (CRM/EDG/integrations), APEX (marketing = `marketing-director`), TITAN (web). One platform, many tenants; Brow
+  (CRM/EDG/integrations), APEX (marketing = `apex`), TITAN (web). One platform, many tenants; Brow
   Revolution = first pilot, never hard-coded; Respond.io = optional WhatsApp provider only. Roadmap:
   `zaphiel/vault/00_CEO_Brain/11_Fusion_AI_Roadmap.md`.
-- **Marketing team (Marketing OS v5, 2026-10-14)**: one agent per role: `marketing-director` ("Marketing Brain", entry
+- **Marketing team (Marketing OS v5, 2026-10-14)**: one agent per role: `apex` ("Marketing Brain", entry
   point, voice commands, approvals), `ads-intelligence`, `market-research`, `creative-brain` (was `creative-producer`).
-  `marketing-brain.md` was retired into `ads-intelligence` + `marketing-director` (Ryan's merge rule). Orders, budget maths
+  `marketing-brain.md` was retired into `ads-intelligence` + `apex` (Ryan's merge rule). Orders, budget maths
   and approval codes: `agents/marketing/campaign-order.js` (tests §42); permissions: `agents/marketing/autopilot.js`.
 - **Marketing Brain (retired 2026-10-14; history)**: was the Claude Code subagent `.claude/agents/marketing-brain.md`. It read Metricool
   through the MCP (`getBrandSettings`, `getAnalyticsAvailableMetrics`, `getAnalyticsDataByMetrics`). It does every number

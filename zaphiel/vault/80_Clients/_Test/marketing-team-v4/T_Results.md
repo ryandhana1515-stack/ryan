@@ -5,7 +5,7 @@ date: 2026-10-12
 # Marketing Team v4, Layer 1: test results (T1–T5)
 
 Ryan's master prompt **FUSION AI COMPLETE AI MARKETING TEAM (v4)**, Layer 1 Steps 2–3: the knowledge pack
-([[60_Skill_Packs/Marketing_Team/00_Index]]) plus 4 agents (`.claude/agents/marketing-director.md`, `ads-intelligence.md`,
+([[60_Skill_Packs/Marketing_Team/00_Index]]) plus 4 agents (`.claude/agents/apex.md`, `ads-intelligence.md`,
 `market-research.md`, `creative-producer.md`). Zero-cost rule respected: nothing paid, generated, published or signed up.
 
 | Test | What it checks | Result | Status | Where |
