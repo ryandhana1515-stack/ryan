@@ -39,7 +39,7 @@ returns. They never do arithmetic in their head.
 - [[08_Approval_Rules]]: what the AI may do alone and what needs Ryan's yes; Creative QA
 - [[09_Ad_Formats]]: every objective, destination and ad format on Meta, TikTok, YouTube/Google, and when to use what (v5)
 - [[10_Budget_Structure_Rules]]: the budget is the TOTAL, consolidate small budgets, testing order, naming, UTMs (v5)
-- [[11_Capability_Register]]: what each provider (Omneky, Supermetrics, Metricool, our Ad Actions, native APIs) can really do, with status (v5)
+- [[11_Capability_Register]]: what each provider (Omneky, Metricool, our Ad Actions, native APIs) can really do, with status (v5)
 - [[12_Voice_Commands]]: spoken commands → CAMPAIGN/REPORT/DIAGNOSIS/CREATIVE orders, preview card, APPROVE <code>, safety words (v5)
 - [[13_Provider_Evaluation]]: Omneky verification checklist, provider comparison, questions to send in writing (v5)
 - Brands: [[Brands/FusionTech_AI/Brand_Brain]] (+ targets, autopilot), [[Brands/BROWREVOLUTION/Brand_Brain]] (+ targets, autopilot)

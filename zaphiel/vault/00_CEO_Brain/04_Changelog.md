@@ -107,3 +107,4 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 - 2026-10-13 — **Marketing Autopilot** (engine, daily routine, per-brand limits, ledger, n8n Ad Actions) — see [[Change log]].
 - 2026-10-14 — **Marketing OS v5 Layer 1** (agents merged, orders/approvals engine, permission levels, knowledge pack
   09–13, T1–T6, acceptance A–M status) — see [[Change log]] and [[00_CEO_Brain/10_Marketing_OS_v5_Audit]].
+- 2026-10-15 — APEX named (Marketing Director); Supermetrics not adopted; Omneky preferred, Metricool kept (see [[Decisions]]).

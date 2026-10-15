@@ -598,3 +598,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   dashboard "turn off" button = the owner's approval for a pause. **Client use** waits for Omneky's written OK (their
   terms forbid use "for the benefit of a third party"); until then client accounts in the dashboard run through
   Supermetrics or Meta's API behind the same button. Questions drafted in Ryan's Gmail.
+- 2026-10-15 — **APEX** (Ryan: "ONE AI Marketing Director called APEX … My objective is NOT to subscribe to multiple
+  marketing reporting platforms"). The Marketing Director is named APEX (file `.claude/agents/marketing-director.md`).
+  Omneky = preferred execution provider to investigate; Metricool kept until we know whether Omneky replaces its useful
+  reporting; **no Supermetrics or other paid platform** unless it is proven essential and Ryan approves. Order of work:
+  read-only Brow Revolution Meta test → real-data diagnosis → five-angle creative → preview + approval → one controlled
+  launch → monitoring/optimisation → Respond.io + Atlas CRM attribution. Goal: one Fusion AI Marketing Dashboard where
+  clients ask APEX, with no Claude Code and no other dashboards.

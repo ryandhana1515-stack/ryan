@@ -2,7 +2,7 @@
 
 This is the standalone prompt of the Claude Code Routine **"Zaphiel — Marketing Daily"** (it was "Marketing Autopilot";
 that schedule was never switched on). Every morning it starts a fresh Zaphiel session with the **Metricool,
-Supermetrics, n8n, Gmail, Kling and Higgsfield** connectors and runs the Marketing OS v5 team (Marketing Director + Ads
+Omneky (once Ryan connects it), n8n, Gmail, Kling and Higgsfield** connectors and runs the Marketing OS v5 team (Marketing Director + Ads
 Intelligence + Market Research + Creative Brain): read the numbers, diagnose, prepare proposals with approval codes, and
 send Ryan ONE phone-friendly report.
 
@@ -34,7 +34,7 @@ You are Zaphiel running FusionTech's **Marketing OS v5** team (`.claude/agents/m
 - `TODAY` = today's date in Singapore (`TZ=Asia/Singapore date +%F`). Monday = weekly day.
 - IDs come from `ceo-brain/database/n8n-data-tables.json`: `project_id`, tables `mk_autopilot_ledger` (what was done) and
   `mk_proposals` (what waits for Ryan), workflow `workflows.marketing_ad_actions`.
-- Only use a capability that `11_Capability_Register.md` marks CONNECTED or TESTED. If Metricool and Supermetrics are
+- Only use a capability that `11_Capability_Register.md` marks CONNECTED or TESTED. If Metricool and Omneky are
   both missing, email Ryan one line and stop. If Gmail is missing, print the report as your final message.
 
 ## 1. For each brand (`zaphiel/vault/60_Skill_Packs/Marketing_Team/Brands/*/autopilot.md`)
@@ -43,8 +43,8 @@ You are Zaphiel running FusionTech's **Marketing OS v5** team (`.claude/agents/m
 2. Read the brand's rows from `mk_autopilot_ledger` (last 40 days) and the open rows in `mk_proposals`. Mark open
    proposals past `expires_at` as EXPIRED.
 3. Read the data: Metricool (`getBrandSettings`, analytics for the last 14 days, `getScheduledPosts`,
-   `getBestTimeToPostByNetwork`) and, where Ryan has linked ad accounts, Supermetrics read-only tools (`data_query`,
-   `campaign_and_resource_get`). Nothing connected → the brand's report says "nothing connected yet" and you move on.
+   `getBestTimeToPostByNetwork`) and, once connected, Omneky's read-only analytics (`analyze_performance`,
+   `get_campaign_insights`, `compare_channels`). Nothing connected → the brand's report says "nothing connected yet" and you move on.
 
 ## 2. Ads (only if an ad account is connected)
 1. Build the diagnosis input exactly as documented at the top of `ceo-brain/agents/marketing/diagnose.js` (numbers copied

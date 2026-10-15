@@ -884,3 +884,6 @@ tags: [zaphiel, changelog]
   - Routine renamed "Marketing Daily" (`ROUTINE.md`): report + proposals with codes; "APPROVE <code>" path; not scheduled.
   - Finding: Supermetrics (already connected) can manage Meta/TikTok/Google campaigns (created PAUSED); Omneky's standard
     terms forbid third-party benefit; which Omneky plan includes MCP is not published.
+- 2026-10-15 — **APEX named; Supermetrics dropped.** Marketing Director = APEX (agent title/description); Omneky preferred,
+  Metricool kept, Supermetrics removed from the agents, routine and index (Ryan: no extra reporting platforms). Decision
+  added to `13_Provider_Evaluation.md`.

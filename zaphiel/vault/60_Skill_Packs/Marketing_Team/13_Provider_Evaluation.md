@@ -127,3 +127,10 @@ what happens to it when early access ends (price).
 3. Is an AI-chat destination (Claude) included in Starter, or does it need Growth?
 4. May our automation (not a person in chat) call the MCP daily for reads and paused-draft creation?
 5. Confirm the auto-renewal date and notice period on our account.
+
+## Ryan's decision (2026-10-15)
+- **Omneky: yes** (Standard US$99/month, Ryan subscribes and connects it himself; client use waits for Omneky's written OK).
+- **Supermetrics: not adopted.** Ryan does not want more reporting platforms. It stays unused unless it is proven to give an
+  essential capability nothing else gives (today it doesn't: Meta's own API via our Ad Actions workflow covers the
+  dashboard button for client accounts at no extra cost, after Meta's app review).
+- **Metricool: kept** until a same-period comparison shows whether Omneky replaces its reporting.
