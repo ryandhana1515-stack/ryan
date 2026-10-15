@@ -887,3 +887,8 @@ tags: [zaphiel, changelog]
 - 2026-10-15 — **APEX named; Supermetrics dropped.** Marketing Director = APEX (agent title/description); Omneky preferred,
   Metricool kept, Supermetrics removed from the agents, routine and index (Ryan: no extra reporting platforms). Decision
   added to `13_Provider_Evaluation.md`.
+- 2026-10-15 — **Master system update applied** (no rebuild): CLAUDE.md (workforce + platform rules), Agents.md, AI
+  Workforce roster, John's live playbook (role, coordination, provider-neutral, per-company facts), APEX/ATLAS/TITAN agent
+  files (workforce, John primary, pilot not default, Respond.io optional), SKILL.md, Software Knowledge Base (Respond.io
+  optional), Brow Revolution notes marked as pilot, new [[00_CEO_Brain/11_Fusion_AI_Roadmap]]. Checked: no Brow
+  Revolution data hard-coded in platform code.

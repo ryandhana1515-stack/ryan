@@ -5,6 +5,13 @@ updated: 2026-09-25
 ---
 # Agents (FusionTech AI)
 
+**Main AI workforce (Ryan, 2026-10-15):** **JOHN** — sales and customer conversations (the primary customer-facing
+agent) · **ATLAS** — CRM, EDG, business operations and integrations · **APEX** — marketing strategy, advertising,
+creative production and optimisation · **TITAN** — websites, landing pages, 3D experiences and SEO. They coordinate
+through the Fusion AI platform; no new agents without Ryan.
+Brow Revolution is the first pilot company (not the default); every client is a separate tenant. Respond.io is an
+optional WhatsApp provider only. Roadmap: [[00_CEO_Brain/11_Fusion_AI_Roadmap]].
+
 Every agent below reads this vault. The company knowledge is [[FusionTech AI — Master Company Brain]];
 John also follows [[Knowledge/John — Sales playbook]]. All run on n8n at ryan1515.app.n8n.cloud
 (project uFcEmgtYEFyGauyy). Ids are the workflow ids.

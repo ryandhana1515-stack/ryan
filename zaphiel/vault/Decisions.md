@@ -605,3 +605,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   read-only Brow Revolution Meta test → real-data diagnosis → five-angle creative → preview + approval → one controlled
   launch → monitoring/optimisation → Respond.io + Atlas CRM attribution. Goal: one Fusion AI Marketing Dashboard where
   clients ask APEX, with no Claude Code and no other dashboards.
+- 2026-10-15 — **Master system update** (Ryan): **JOHN is the primary customer-facing AI sales agent** (enquiries, sales
+  conversations, qualification, requirements, follow-up, appointments, Atlas CRM updates; coordinates ATLAS, APEX,
+  TITAN). Main workforce = JOHN, ATLAS, APEX, TITAN. **Respond.io is only an optional WhatsApp provider**, not a
+  development priority; keep any working integration; John never depends on it. **Brow Revolution is the first pilot
+  company**, never the default or hard-coded. The platform serves any SME with fully separate data per client.
+  Priority: APEX end to end (RESEARCH → … → REPORT) on the pilot. No unnecessary subscriptions or extra agents.
+  Roadmap: [[00_CEO_Brain/11_Fusion_AI_Roadmap]].

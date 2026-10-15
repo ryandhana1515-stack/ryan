@@ -208,7 +208,7 @@ tags: [zaphiel, open-loops]
     - ~~rename the brand from `biogreenelixirs` to "FusionTech AI" in Metricool~~ done (it is "FusionTech.AI", checked 2026-10-09);
     - confirm that Facebook page `1237077816163178` is FusionTech's page;
     - connect FusionTech's Meta ad account when ads start.
-  - Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
+  - ~~Decide respond.io vs WhatsApp Cloud API~~ decided 2026-10-15: WhatsApp Cloud API with John; Respond.io optional only. (Was: Decide respond.io vs WhatsApp Cloud API for Click-to-WhatsApp attribution. respond.io's API needs Growth (about $159/mo); webhooks need Advanced (about $279/mo).
 - 2026-10-03 — **Ad platform APIs checked** ([[Knowledge/Ad platform APIs — what each can do (2026-10-03)]]).
   - Metricool's API can READ ad results only. It cannot create, upload creative, pause, change Meta/TikTok budgets or duplicate. Those need Meta's Marketing API and TikTok's API for Business.
   - ~~Step 1b's Metricool connector must be adjusted to the official response format before going live~~ done 2026-10-09 (Fusion EDG Core PR #35). One detail is checked at the first live test: which level of Metricool's numbers is the day. The reader handles every case and shows the metric names.

@@ -5,6 +5,10 @@ updated: 2026-09-25
 ---
 # AI Workforce — the twelve agents
 
+> **Update (Ryan, 2026-10-15):** the main workforce is four agents — **JOHN** (sales, primary customer-facing),
+> **ATLAS** (CRM/EDG/operations/integrations), **APEX** (marketing/ads/creative/optimisation) and **TITAN**
+> (web/landing pages/3D/SEO). The roster below is the original plan and history.
+
 The roster Ryan defined, with what exists today. Ids are n8n workflow ids; every live agent reads
 this vault and is trained from the Training Room ([[Agents]]).
 
