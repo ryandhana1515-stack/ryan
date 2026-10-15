@@ -10,6 +10,10 @@ This pack serves Ryan's **FUSION AI COMPLETE AI MARKETING TEAM (v4)** (2026-10-1
 The **Zero-Cost Rule** stays in force: no paid sign-ups, no trials that need a card, no paid generation and no ad spend
 without Ryan's yes ([[00_CEO_Brain/08_Atlas_Zero_Cost_Plan]]).
 
+**APEX Marketing Workforce v7 (2026-10-15):** APEX (`.claude/agents/apex.md`) + 4 specialists: Ads Intelligence,
+Market Research, Creative Brain, Campaign Operator (the only one with write tools). Omneky primary, Metricool supporting,
+Supermetrics not required, Grok optional, native APIs as fallback. Every answer starts with the CEO money view.
+
 **Marketing OS v5 (Ryan's master prompt, 2026-10-14):** one Marketing Director ("Marketing Brain") and three managers
 (Ads Intelligence, Market Research, Creative Brain); workers are task templates; the Execution Engine is code. Approval
 first: Ryan approves each launch, budget increase, post and paid generation with `APPROVE <code>`.
@@ -18,7 +22,7 @@ first: Ryan approves each launch, budget increase, post and paid generation with
 
 | Who | File | Reads first |
 |---|---|---|
-| Marketing Director (Marketing Ops Manager, the entry point) | `.claude/agents/marketing-director.md` | this index, [[01_Tool_Library]], [[08_Approval_Rules]], the brand's Brand Brain |
+| Marketing Director (Marketing Ops Manager, the entry point) | `.claude/agents/apex.md` | this index, [[01_Tool_Library]], [[08_Approval_Rules]], the brand's Brand Brain |
 | Ads Intelligence & Diagnosis | `.claude/agents/ads-intelligence.md` | [[02_Diagnosis_Playbook]], [[06_Metrics_Dictionary]], [[07_Report_Templates]] |
 | Market Research & Competitor Intelligence | `.claude/agents/market-research.md` | [[05_Research_Playbook]], [[03_Angle_Library]] |
 | Creative Brain (merged Creative Producer; brand, copy, production) | `.claude/agents/creative-brain.md` | [[01_Tool_Library]] (Tool Router), [[03_Angle_Library]], [[04_Platform_Playbooks]], [[08_Approval_Rules]] |
@@ -41,8 +45,10 @@ returns. They never do arithmetic in their head.
 - [[10_Budget_Structure_Rules]]: the budget is the TOTAL, consolidate small budgets, testing order, naming, UTMs (v5)
 - [[11_Capability_Register]]: what each provider (Omneky, Metricool, our Ad Actions, native APIs) can really do, with status (v5)
 - [[12_Voice_Commands]]: spoken commands → CAMPAIGN/REPORT/DIAGNOSIS/CREATIVE orders, preview card, APPROVE <code>, safety words (v5)
+- [[14_Testing_Engine]]: speed, angle, format, carousel, offer, destination and audience tests + the budget calculator (v7)
+- [[15_CEO_Money_View]]: the money line that starts every answer and report (v7)
 - [[13_Provider_Evaluation]]: Omneky verification checklist, provider comparison, questions to send in writing (v5)
-- Brands: [[Brands/FusionTech_AI/Brand_Brain]] (+ targets, autopilot), [[Brands/BROWREVOLUTION/Brand_Brain]] (+ targets, autopilot)
+- Brands: [[Brands/FusionTech_AI/Brand_Brain]] (+ targets, autopilot), [[Brands/brow-revolution/Brand_Brain]] (+ targets, autopilot)
 - Tests: [[80_Clients/_Test/marketing-team-v4/T_Results]] (v4) · [[80_Clients/_Test/marketing-team-v5/T_Results]] (v5)
 
 ## Status labels (used everywhere)

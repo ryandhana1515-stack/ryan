@@ -26,7 +26,7 @@ known. Every field is **ASK RYAN** until he confirms it. The team never invents 
 | Website, social accounts | ASK RYAN (connect them in Metricool to get data) |
 | Lead handling (who replies, how fast), what counts as qualified / appointment / sale | ASK RYAN |
 
-Targets: [[Brands/BROWREVOLUTION/targets]]
+Targets: [[Brands/brow-revolution/targets]]
 
 ## Update 2026-10-12: Ryan's own running business
 Ryan (2026-10-12): Brow Revolution is **his existing, running business**, and the marketing team starts here (data analysis

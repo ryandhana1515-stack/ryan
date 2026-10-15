@@ -1,6 +1,6 @@
 // Marketing Team v4 — the ads diagnosis engine (Ryan's "FUSION AI COMPLETE AI MARKETING TEAM (v4)", section 6 + 9).
 // Numbers come from code, words come from AI: this file computes every metric and every verdict. The agents
-// (.claude/agents/ads-intelligence.md, marketing-director.md) run it and only explain the result in plain English.
+// (.claude/agents/ads-intelligence.md, apex.md) run it and only explain the result in plain English.
 //
 //   node ceo-brain/agents/marketing/diagnose.js <input.json>        -> JSON report on stdout
 //
@@ -230,9 +230,40 @@ function mkDiagnose(input) {
   };
 }
 
+/** The CEO money view (v7 §A4): the first line of every answer and report. Numbers only from the inputs; nothing invented.
+ *  input: { period_label, currency, spend, leads, qualified, sales, revenue (CRM-confirmed), platform_leads_label,
+ *           crm_connected, gross_margin (0–1, owner-provided), targets: { cpl, roas } } */
+function mkMoneyView(input) {
+  input = input || {};
+  var cur = input.currency === 'SGD' || !input.currency ? 'S$' : input.currency + ' ';
+  var spend = mkNum(input.spend), leads = mkNum(input.leads), q = mkNum(input.qualified), sales = mkNum(input.sales), rev = mkNum(input.revenue);
+  var margin = mkNum(input.gross_margin);
+  var crm = input.crm_connected === true;
+  var money = function (v) { return v === null ? '—' : cur + (Math.round(v * 100) / 100).toLocaleString('en-SG', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); };
+  var n = function (v) { return v === null ? '—' : String(v); };
+  var period = input.period_label || 'Today';
+  var roas = crm ? mkDiv(rev, spend) : null;
+  var roi = crm && rev !== null && spend ? (rev - spend) / spend : null;
+  var profit = crm && rev !== null && spend !== null && margin !== null ? rev * margin - spend : null;
+  var cpl = mkDiv(spend, leads);
+  var line;
+  if (crm) {
+    line = period + ' you spent ' + money(spend) + ' on ads → you got ' + n(leads) + ' leads (' + n(q) + ' qualified) → ' + n(sales) + ' sales → ' + money(rev) + ' revenue. ' +
+      'Return on ad spend ' + (roas === null ? '—' : (Math.round(roas * 100) / 100) + 'x') + '.' +
+      (profit !== null ? ' Profit after ad spend ' + money(profit) + '.' : (margin === null ? ' (Profit needs your gross margin.)' : ''));
+  } else {
+    line = period + ' you spent ' + money(spend) + ' on ads → ' + n(leads) + ' leads (PLATFORM-REPORTED). Sales not connected yet, so revenue and return are not shown.';
+  }
+  var t = input.targets || {}, status = null, why = 'no target set';
+  if (mkNum(t.roas) !== null && roas !== null) { status = roas >= t.roas ? 'GREEN' : roas >= t.roas * 0.75 ? 'AMBER' : 'RED'; why = 'ROAS ' + mkRound(roas, 2) + ' vs target ' + t.roas; }
+  else if (mkNum(t.cpl) !== null && cpl !== null) { status = cpl <= t.cpl ? 'GREEN' : cpl <= t.cpl * 1.3 ? 'AMBER' : 'RED'; why = 'CPL ' + mkRound(cpl, 2) + ' vs target ' + t.cpl; }
+  else if (mkNum(t.cpl) !== null && spend > 0 && leads === 0) { status = 'RED'; why = 'spend with no leads'; }
+  return { line: line, status: status, status_why: why, roas: mkRound(roas, 4), roi: mkRound(roi, 4), profit: profit === null ? null : mkRound(profit, 2), cpl: mkRound(cpl, 4), crm_connected: crm };
+}
+
 // ---- Node module wrapper ----
 if (typeof module !== 'undefined') {
-  module.exports = { MK_VERSION: MK_VERSION, MK_DEFAULT_RULES: MK_DEFAULT_RULES, mkMetrics: mkMetrics, mkDiv: mkDiv, mkDiagnoseAd: mkDiagnoseAd, mkDiagnose: mkDiagnose };
+  module.exports = { MK_VERSION: MK_VERSION, MK_DEFAULT_RULES: MK_DEFAULT_RULES, mkMetrics: mkMetrics, mkDiv: mkDiv, mkDiagnoseAd: mkDiagnoseAd, mkDiagnose: mkDiagnose, mkMoneyView: mkMoneyView };
   if (require.main === module) {
     var file = process.argv[2];
     if (!file) { console.error('usage: node diagnose.js <input.json>'); process.exit(2); }

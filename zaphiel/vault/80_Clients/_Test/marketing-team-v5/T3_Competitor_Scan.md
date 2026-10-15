@@ -11,7 +11,7 @@ supersedes: "[[80_Clients/_Test/marketing-team-v4/T3_Research_Brief]] (2026-10-1
 
 > **RESEARCH. Every line here comes from public pages published by other businesses and people.** None of it is FusionTech, Ryan
 > or Brow Revolution performance data. None of it is an approved Brow Revolution fact. The brand facts in
-> [[60_Skill_Packs/Marketing_Team/Brands/BROWREVOLUTION/Brand_Brain]] are still mostly **unconfirmed (ASK RYAN)**.
+> [[60_Skill_Packs/Marketing_Team/Brands/brow-revolution/Brand_Brain]] are still mostly **unconfirmed (ASK RYAN)**.
 >
 > **Dates.** The refresh was done on **2026-10-14** (Singapore). The ad-level data (ad text, start dates, CTAs, landing links) comes
 > from the **2026-10-12 capture** in the v4 brief, because the ad libraries could not be reached today (see "What I could not

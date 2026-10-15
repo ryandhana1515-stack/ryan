@@ -1,7 +1,7 @@
 ---
 tags: [zaphiel, agent, marketing]
 status: CODED (Layer 1 subagent, 2026-10-12)
-file: .claude/agents/marketing-director.md
+file: .claude/agents/apex.md
 ---
 # Marketing Director (Marketing Ops Manager)
 

@@ -2,14 +2,14 @@
 type: agent
 agent_id: marketing-brain
 registry_key: marketing
-status: retired 2026-10-14 (merged into marketing-director + ads-intelligence)
+status: retired 2026-10-14 (merged into apex + ads-intelligence)
 owner: Ryan
 last_reviewed: 2026-10-03
 tags: [agent, marketing]
 ---
 # Marketing Brain
 
-> **Retired 2026-10-14.** "Marketing Brain" now means the Marketing Director (`.claude/agents/marketing-director.md`);
+> **Retired 2026-10-14.** "Marketing Brain" now means the Marketing Director (`.claude/agents/apex.md`);
 > the diagnosis rules below live in `ads-intelligence`. Kept as history.
 
 Part of [[10_Agents/03_Marketing_Growth]] · map: [[10_Agents/Marketing/_index]] · numbers per [[10_Agents/14_Data_BI_KPI]] · ATLAS boundary: [[10_Agents/07_CRM_Architect]]

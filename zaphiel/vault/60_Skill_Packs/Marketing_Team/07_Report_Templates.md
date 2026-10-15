@@ -100,3 +100,7 @@ STATUS: PENDING
 → APPROVE <code> · REJECT · REQUEST CHANGES
 ```
 Only the exact reply `APPROVE <code>` (or the dashboard button) approves. Each code works once, for this card only.
+
+## v7 addition (2026-10-15): every report starts with the money view
+Line 1 of every daily/weekly/monthly report and every APEX answer is the CEO money view ([[15_CEO_Money_View]],
+`mkMoneyView`), then one GREEN/AMBER/RED status line and one recommended action with its approval code.

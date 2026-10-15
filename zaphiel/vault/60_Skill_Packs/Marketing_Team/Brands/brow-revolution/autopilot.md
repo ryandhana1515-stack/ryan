@@ -13,7 +13,7 @@ Ryan (2026-10-13): posts **fully automatic**, ad changes **automatic within his 
 **automatic within a monthly credit budget**. Same rules as [[Brands/FusionTech_AI/autopilot]].
 
 **Waiting for Ryan (one time):**
-1. Confirm the facts in [[Brands/BROWREVOLUTION/Brand_Brain]] → they are copied into `approved` below. Until then
+1. Confirm the facts in [[Brands/brow-revolution/Brand_Brain]] → they are copied into `approved` below. Until then
    **nothing is posted** (the engine refuses posts with no approved facts).
 2. `max_daily_spend` (SGD) → until set, **no ad is changed**.
 3. `monthly.kling` / `monthly.higgsfield` credits → until set, **nothing is generated**.

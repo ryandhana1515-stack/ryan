@@ -805,7 +805,7 @@ tags: [zaphiel, changelog]
 - 2026-10-12 — **Marketing Team v4, Layer 1 built** (Ryan's master prompt "FUSION AI COMPLETE AI MARKETING TEAM (v4)").
   - **Knowledge pack:** `60_Skill_Packs/Marketing_Team/` (00 Index, 01 Tool Library + Tool Router, 02 Diagnosis, 03 Angles,
     04 Platforms, 05 Research, 06 Metrics, 07 Reports, 08 Approval Rules; brands FusionTech_AI and BROWREVOLUTION).
-  - **4 agents:** `.claude/agents/marketing-director.md` (entry point), `ads-intelligence.md`, `market-research.md`,
+  - **4 agents:** `.claude/agents/apex.md` (entry point), `ads-intelligence.md`, `market-research.md`,
     `creative-producer.md`. The older `marketing-brain.md` is untouched; retiring it waits for Ryan's OK.
   - **Diagnosis engine:** `ceo-brain/agents/marketing/diagnose.js` (numbers from code) + DEMO fixtures; tests §38, 146/146.
   - **Tests T1–T5:** [[80_Clients/_Test/marketing-team-v4/T_Results]].
@@ -823,7 +823,7 @@ tags: [zaphiel, changelog]
 - 2026-10-12 — **TITAN built (Tasks 2–3):** agents `titan.md`, `titan-seo.md`, `titan-qa.md`; pack `60_Skill_Packs/TITAN/` 00–11;
   vault note [[10_Agents/TITAN]]; template `80_Clients/_TEMPLATE_Client/web/` (4 JSON contracts, STATUS, ASSETS, SEO
   checklist, QA report). "Reports to TITAN" appended to website-intelligence, cinematic-director (= TITAN 3D Studio),
-  fusion-property-sg; routing lines added to atlas.md (§B2) and marketing-director.md. Medical films: full body tour
+  fusion-property-sg; routing lines added to atlas.md (§B2) and apex.md. Medical films: full body tour
   (arteries, heart, lungs, stomach, liver, kidneys) and the presenter video section added.
 - 2026-10-12 — **TITAN: Lovable-first medical + Singapore rules.** New `TITAN/13_Lovable_Medical_Prompt.md` (rules block, master
   prompt for the live 3D body journey, iteration prompts) and `TITAN/12_SG_Rules_Research.md` (clinics, supplements,
@@ -854,7 +854,7 @@ tags: [zaphiel, changelog]
     check first, monthly budget per tool), post guard (approved facts/prices only; blocks superlatives, guarantees,
     before/after, comparisons, testimonials, unapproved numbers, AI-made people; media where needed; limit per network).
   - Daily routine `ceo-brain/agents/marketing/ROUTINE.md`: Metricool → diagnose → engine → act → one email to Ryan.
-  - Settings notes `Marketing_Team/Brands/FusionTech_AI/autopilot.md` and `Brands/BROWREVOLUTION/autopilot.md`.
+  - Settings notes `Marketing_Team/Brands/FusionTech_AI/autopilot.md` and `Brands/brow-revolution/autopilot.md`.
   - n8n data table `mk_autopilot_ledger` `TTIYHbyVfOphSZ0X` (memory: nothing done twice, budgets hold).
   - n8n **Marketing — Ad Actions** `oMMIvt8PZOmUp24K` (16 nodes, unpublished on purpose, run via MCP): the only door to
     Meta. Read-only state mode (campaign budgets + daily total); action mode re-reads live, runs the guard, applies pause
@@ -862,11 +862,11 @@ tags: [zaphiel, changelog]
     1849 (state). Source `ceo-brain/workflows/marketing-ad-actions/build.js` + `agents/marketing/meta-live.js` (tests §41).
   - Dry run on FusionTech's real settings: a proper Facebook post passed; a post with "best", "guaranteed" and invented
     numbers was blocked; Instagram without media blocked; credits refused (no budget yet). Tests 163/163.
-  - Agent files (marketing-director, creative-producer, ads-intelligence) and `08_Approval_Rules` updated.
+  - Agent files (apex, creative-producer, ads-intelligence) and `08_Approval_Rules` updated.
 - 2026-10-14 — **Marketing OS v5, Layer 1 steps 2–3 + T1–T6** (Ryan's master prompt). Audit and answers:
   [[00_CEO_Brain/10_Marketing_OS_v5_Audit]]; tests: [[80_Clients/_Test/marketing-team-v5/T_Results]]; diffs:
   [[80_Clients/_Test/marketing-team-v5/v5_DIFFS]].
-  - Agents: `marketing-director` (voice command mode, CAMPAIGN_ORDER, one approval code, safety words, permissions,
+  - Agents: `apex` (voice command mode, CAMPAIGN_ORDER, one approval code, safety words, permissions,
     providers, task fields, cross-department hand-offs), `ads-intelligence` (Reporting + Tracking & CRM Attribution
     workers, §8.5 fields), `market-research` (Competitor Research + Audience & Offer Planning, injection safety),
     `creative-brain` (renamed from `creative-producer`; Copy & Script, Image & Video Production, Campaign Preparation;
@@ -892,3 +892,10 @@ tags: [zaphiel, changelog]
   files (workforce, John primary, pilot not default, Respond.io optional), SKILL.md, Software Knowledge Base (Respond.io
   optional), Brow Revolution notes marked as pilot, new [[00_CEO_Brain/11_Fusion_AI_Roadmap]]. Checked: no Brow
   Revolution data hard-coded in platform code.
+- 2026-10-15 — **APEX v7 implemented** (no rebuild): `marketing-director.md` → `apex.md`; new `campaign-operator.md`
+  (write tools only there: n8n Ad Actions + proposals table + Metricool scheduling; Omneky tools added when connected);
+  `mkMoneyView` (diagnose.js), `coBudgetForLeads` + `coTestBudget` (campaign-order.js), tests §43 → 172/172; notes
+  14_Testing_Engine, 15_CEO_Money_View, capability-register priority, 07 money-view rule, index; ROUTINE (money view first,
+  Campaign Operator runs approvals, append-only status rows); `Brands/BROWREVOLUTION` → `Brands/brow-revolution` +
+  Pilot_Plan; Omneky email draft updated to the 8 v7 questions; T1–T6 re-run note [[80_Clients/_Test/marketing-team-v5/T_v7_APEX]];
+  merge diff [[80_Clients/_Test/marketing-team-v5/v7_DIFFS]].

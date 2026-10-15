@@ -599,7 +599,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   terms forbid use "for the benefit of a third party"); until then client accounts in the dashboard run through
   Supermetrics or Meta's API behind the same button. Questions drafted in Ryan's Gmail.
 - 2026-10-15 — **APEX** (Ryan: "ONE AI Marketing Director called APEX … My objective is NOT to subscribe to multiple
-  marketing reporting platforms"). The Marketing Director is named APEX (file `.claude/agents/marketing-director.md`).
+  marketing reporting platforms"). The Marketing Director is named APEX (file `.claude/agents/apex.md`).
   Omneky = preferred execution provider to investigate; Metricool kept until we know whether Omneky replaces its useful
   reporting; **no Supermetrics or other paid platform** unless it is proven essential and Ryan approves. Order of work:
   read-only Brow Revolution Meta test → real-data diagnosis → five-angle creative → preview + approval → one controlled
@@ -612,3 +612,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   company**, never the default or hard-coded. The platform serves any SME with fully separate data per client.
   Priority: APEX end to end (RESEARCH → … → REPORT) on the pilot. No unnecessary subscriptions or extra agents.
   Roadmap: [[00_CEO_Brain/11_Fusion_AI_Roadmap]].
+- 2026-10-15 — **APEX Marketing Workforce v7 adopted** (Ryan's "ONE Master Prompt v7"; Part A wins over Part B). APEX =
+  `.claude/agents/apex.md` + 4 specialists (Ads Intelligence, Market Research, Creative Brain, **Campaign Operator** — the
+  only one with write/spend tools). Omneky PRIMARY • Metricool SUPPORTING • Supermetrics NOT REQUIRED (kept, disabled as
+  default) • Grok OPTIONAL FUTURE • native APIs FALLBACK. Every answer starts with the CEO money view. Brand folder
+  `Brands/brow-revolution/` (pilot, not default). Omneky pre-purchase email drafted with 8 questions; Ryan sends it.

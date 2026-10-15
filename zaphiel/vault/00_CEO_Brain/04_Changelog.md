@@ -90,7 +90,7 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 - 2026-10-12 — **Marketing Team v4, Layer 1 built** (Ryan's master prompt "FUSION AI COMPLETE AI MARKETING TEAM (v4)").
   - **Knowledge pack:** `60_Skill_Packs/Marketing_Team/` (00 Index, 01 Tool Library + Tool Router, 02 Diagnosis, 03 Angles,
     04 Platforms, 05 Research, 06 Metrics, 07 Reports, 08 Approval Rules; brands FusionTech_AI and BROWREVOLUTION).
-  - **4 agents:** `.claude/agents/marketing-director.md` (entry point), `ads-intelligence.md`, `market-research.md`,
+  - **4 agents:** `.claude/agents/apex.md` (entry point), `ads-intelligence.md`, `market-research.md`,
     `creative-producer.md`. The older `marketing-brain.md` is untouched; retiring it waits for Ryan's OK.
   - **Diagnosis engine:** `ceo-brain/agents/marketing/diagnose.js` (numbers from code) + DEMO fixtures; tests §38, 146/146.
   - **Tests T1–T5:** [[80_Clients/_Test/marketing-team-v4/T_Results]].
@@ -110,3 +110,5 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 - 2026-10-15 — APEX named (Marketing Director); Supermetrics not adopted; Omneky preferred, Metricool kept (see [[Decisions]]).
 - 2026-10-15 — Master system update: John primary, four-agent workforce, Brow Revolution = pilot, Respond.io optional,
   roadmap [[00_CEO_Brain/11_Fusion_AI_Roadmap]].
+- 2026-10-15 — APEX v7: apex.md + Campaign Operator, money view, budget calculator, provider priority, brow-revolution
+  pilot plan, Omneky 8-question draft (see [[Change log]]).
