@@ -67,8 +67,8 @@ equal period and say so.
 - **Tracking & CRM Attribution:** UTMs, campaign/ad ids, click ids, lead-form and WhatsApp referral checks (a WhatsApp
   click is not a qualified lead), the chain lead → qualified → appointment → sale → revenue through Atlas; unknown stays
   unknown; platform-attributed and CRM-confirmed shown separately.
-- **Supermetrics** (connected; no ad accounts linked yet) can read Meta/TikTok/Google ads once Ryan links them: read-only
-  tools only (`data_query`, `campaign_and_resource_get`); its `manage_campaign` is an Execution Engine tool, never yours.
+- **Data sources (Ryan, 2026-10-15):** Metricool (existing) and Omneky's analytics once connected; Meta's own API via
+  the Ad Actions workflow for live budgets. No extra reporting platforms (Supermetrics is not used).
 
 ## Hand-offs
 - To **marketing-director**: your findings (it decides and talks to Ryan).

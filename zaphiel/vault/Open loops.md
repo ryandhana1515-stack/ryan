@@ -365,3 +365,8 @@ tags: [zaphiel, open-loops]
   later; (4) Zaphiel then verifies the real tools, updates `11_Capability_Register`, maps the Execution Engine
   (`pause_or_scale` = the pause button) and runs read-only → one approved tiny pilot → pause/resume → reconcile.
   If on a trial: calendar reminder on day 6.
+- 2026-10-15 — **APEX next test (read-only, free):** connect Brow Revolution's Facebook Page, Instagram and **Facebook Ads**
+  account in Metricool (brand BROWREVOLUTION) → APEX reads real spend/leads/CPL per campaign and runs the diagnosis.
+  Ask Ryan: does Brow Revolution use **Respond.io**, and on which plan (its API needs Growth ≈ US$159/mo; webhooks need
+  Advanced ≈ US$279/mo, from the Software Knowledge Base; recheck)? If not, our WhatsApp Cloud API path captures
+  click-to-WhatsApp ad referrals at no extra cost.
