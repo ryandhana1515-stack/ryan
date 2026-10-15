@@ -591,3 +591,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   → ONE preview card + ONE approval code. Omneky is the preferred pilot but not bought; Metricool kept until a same-period
   comparison; ONE optimiser per ad account. Merges: Marketing Brain = Marketing Director; Creative Brain = Creative
   Producer (`creative-brain.md`); `marketing-brain.md` retired. Audit: [[00_CEO_Brain/10_Marketing_OS_v5_Audit]].
+- 2026-10-15 — **Omneky: YES** (Ryan: "Yes I need omneky to run ads … view analysis and automate the entire marketing, test
+  different angles, create videos for any business in the dashboard … see if any ad is bad, tell the customer why and a
+  button to instantly turn it off"). Plan to start: **Standard US$99/month** (video/avatar ads, 3 brands). Ryan signs up
+  himself (card) and adds the connector; Zaphiel never subscribes. Approval-first rules (2026-10-14) still apply; the
+  dashboard "turn off" button = the owner's approval for a pause. **Client use** waits for Omneky's written OK (their
+  terms forbid use "for the benefit of a third party"); until then client accounts in the dashboard run through
+  Supermetrics or Meta's API behind the same button. Questions drafted in Ryan's Gmail.

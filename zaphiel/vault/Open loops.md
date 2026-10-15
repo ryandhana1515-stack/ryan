@@ -358,3 +358,10 @@ tags: [zaphiel, open-loops]
   4. **Pause policy (optional):** fill `auto_pause_policy` if he wants automatic spend-reducing pauses.
   5. **Schedule "Marketing Daily"** (blocked for Zaphiel; Ryan's OK or set it up in claude.ai/code → Routines).
   6. **ATLAS gap:** John's intake should store Meta's WhatsApp referral (ad id) for attribution (acceptance E).
+- 2026-10-15 — **Omneky (Ryan said yes):** (1) Ryan sends the drafted question email to Omneky (find their sales/support
+  address on omneky.com) — plan with MCP, card/cancel, agency + dashboard rights, credits, sign-in renewal; (2) Ryan subscribes
+  (Standard US$99) and adds the connector in claude.ai → Settings → Connectors → Add custom connector →
+  `https://mcp.omneky.com/mcp` → sign in; (3) inside Omneky he links the Meta ad account (+ Page + Instagram), TikTok
+  later; (4) Zaphiel then verifies the real tools, updates `11_Capability_Register`, maps the Execution Engine
+  (`pause_or_scale` = the pause button) and runs read-only → one approved tiny pilot → pause/resume → reconcile.
+  If on a trial: calendar reminder on day 6.
