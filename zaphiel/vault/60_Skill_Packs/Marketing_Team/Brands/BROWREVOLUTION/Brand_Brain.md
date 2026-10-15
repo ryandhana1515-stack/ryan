@@ -6,6 +6,9 @@ metricool_brand_id: 7332947
 ---
 # Brand Brain: BROWREVOLUTION
 
+> **Pilot company (Ryan, 2026-10-15):** Brow Revolution is Fusion AI's first pilot for testing John, Atlas, APEX
+> and TITAN end to end. It is one tenant among many, never the platform default.
+
 Metricool shows a brand **BROWREVOLUTION** (created 2026-10-09, **no social or ad accounts connected yet**). Nothing else is
 known. Every field is **ASK RYAN** until he confirms it. The team never invents claims, prices, testimonials or results.
 

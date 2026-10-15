@@ -49,6 +49,10 @@ exists: `Knowledge/AI Workforce — roster`.
   per business, new-client wizard. Every-minute timer = Supabase pg_cron job `atlas-platform-timer` → `/cron/tick`
   (token in Supabase Vault; `scripts/supabase-timer.sql`). Function region hnd1 (next to the Tokyo database).
   Phase records: `docs/platform-v4/`.
+- **Main workforce (Ryan, 2026-10-15):** JOHN (sales, primary customer-facing; Lead Intake `b7kbJpnKLN2uQxyn`), ATLAS
+  (CRM/EDG/integrations), APEX (marketing = `marketing-director`), TITAN (web). One platform, many tenants; Brow
+  Revolution = first pilot, never hard-coded; Respond.io = optional WhatsApp provider only. Roadmap:
+  `zaphiel/vault/00_CEO_Brain/11_Fusion_AI_Roadmap.md`.
 - **Marketing team (Marketing OS v5, 2026-10-14)**: one agent per role: `marketing-director` ("Marketing Brain", entry
   point, voice commands, approvals), `ads-intelligence`, `market-research`, `creative-brain` (was `creative-producer`).
   `marketing-brain.md` was retired into `ads-intelligence` + `marketing-director` (Ryan's merge rule). Orders, budget maths

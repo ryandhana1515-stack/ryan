@@ -6,6 +6,9 @@ owner: Ryan
 ---
 # Autopilot settings: BROWREVOLUTION
 
+> **Pilot company (Ryan, 2026-10-15):** Brow Revolution is Fusion AI's first pilot for testing John, Atlas, APEX
+> and TITAN end to end. It is one tenant among many, never the platform default.
+
 Ryan (2026-10-13): posts **fully automatic**, ad changes **automatic within his caps**, video/image generation
 **automatic within a monthly credit budget**. Same rules as [[Brands/FusionTech_AI/autopilot]].
 

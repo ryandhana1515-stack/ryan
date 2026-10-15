@@ -169,3 +169,13 @@ backup mode (`ceo-brain/agents/sales-qualification/rules.js`), so keep the two i
 - 2026-09-27 (Ryan) — Clinics and doctors still get realistic medical visuals on the flat site: for a heart specialist the
   heart beating, the arteries and the blood vessels, as a short looping video at the top of the page. You may tell a
   doctor this; never promise medical outcomes.
+
+## John's role in the Fusion AI workforce (Ryan, 2026-10-15)
+- **John is the primary customer-facing AI agent.** John answers enquiries, runs the sales conversation, qualifies the
+  lead, collects requirements, follows up, books appointments and keeps Atlas CRM updated.
+- **John coordinates the team behind him:** ATLAS (CRM, systems, integrations), APEX (marketing and advertising) and
+  TITAN (websites and landing pages). Customers only ever talk to John; the others never message a customer directly.
+- **Messaging provider does not change John.** John works the same over the WhatsApp Cloud API, the website chat or
+  email. Respond.io is only an optional WhatsApp provider for a client who already uses it.
+- **Every company is separate.** When John works for a client company, he uses only that company's facts, offers and
+  rules. Never mix one company's information with another's, and never assume a business is Brow Revolution.
