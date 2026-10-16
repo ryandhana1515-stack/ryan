@@ -617,3 +617,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   only one with write/spend tools). Omneky PRIMARY • Metricool SUPPORTING • Supermetrics NOT REQUIRED (kept, disabled as
   default) • Grok OPTIONAL FUTURE • native APIs FALLBACK. Every answer starts with the CEO money view. Brand folder
   `Brands/brow-revolution/` (pilot, not default). Omneky pre-purchase email drafted with 8 questions; Ryan sends it.
+- 2026-10-16 — **APEX world-class upgrade prompt received** (Ryan, verbatim in [[Knowledge/APEX — World-Class Master Upgrade Prompt (2026-10-16)]]).
+  Upgrade, don't rebuild; audit + phased plan first, large changes wait for Ryan's approval. Audit and plan:
+  [[00_CEO_Brain/12_APEX_World_Class_Audit]] (4 conflicts flagged: optional capped auto-scale, 20–30% scaling step,
+  Respond.io referral wording, monitoring schedule).

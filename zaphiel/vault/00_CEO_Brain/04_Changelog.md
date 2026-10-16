@@ -112,3 +112,4 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
   roadmap [[00_CEO_Brain/11_Fusion_AI_Roadmap]].
 - 2026-10-15 — APEX v7: apex.md + Campaign Operator, money view, budget calculator, provider priority, brow-revolution
   pilot plan, Omneky 8-question draft (see [[Change log]]).
+- 2026-10-16 — APEX world-class upgrade: prompt saved verbatim, audit + 7-phase plan written (no system changes yet).
