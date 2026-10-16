@@ -370,3 +370,6 @@ tags: [zaphiel, open-loops]
   Ask Ryan: does Brow Revolution use **Respond.io**, and on which plan (its API needs Growth ≈ US$159/mo; webhooks need
   Advanced ≈ US$279/mo, from the Software Knowledge Base; recheck)? If not, our WhatsApp Cloud API path captures
   click-to-WhatsApp ad referrals at no extra cost.
+- 2026-10-16 — **APEX world-class upgrade: waiting for Ryan** to approve the 7 phases in [[00_CEO_Brain/12_APEX_World_Class_Audit]]
+  and decide the 4 flagged conflicts (capped auto-scale opt-in OFF by default; scaling default 20% up to 30%; Respond.io
+  only where a client uses it; OK to schedule monitoring every few hours).
