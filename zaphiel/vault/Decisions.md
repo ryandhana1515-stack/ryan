@@ -621,3 +621,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   Upgrade, don't rebuild; audit + phased plan first, large changes wait for Ryan's approval. Audit and plan:
   [[00_CEO_Brain/12_APEX_World_Class_Audit]] (4 conflicts flagged: optional capped auto-scale, 20–30% scaling step,
   Respond.io referral wording, monitoring schedule).
+- 2026-10-17 — **APEX + Omneky production integration directive** (Ryan; summary in [[Knowledge/APEX + Omneky Production Integration Directive (2026-10-17)]]).
+  Customers use APEX inside the Fusion dashboard (`fusion-edg-core`), never Claude Code; production APEX runs on our backend
+  with the server-side Claude API. Audit + Omneky verification first; report before major changes:
+  [[00_CEO_Brain/13_APEX_Omneky_Dashboard_Audit]].

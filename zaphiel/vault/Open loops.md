@@ -373,3 +373,7 @@ tags: [zaphiel, open-loops]
 - 2026-10-16 — **APEX world-class upgrade: waiting for Ryan** to approve the 7 phases in [[00_CEO_Brain/12_APEX_World_Class_Audit]]
   and decide the 4 flagged conflicts (capped auto-scale opt-in OFF by default; scaling default 20% up to 30%; Respond.io
   only where a client uses it; OK to schedule monitoring every few hours).
+- 2026-10-17 — **APEX in the dashboard: waiting for Ryan's go** on Phases 3–8 ([[00_CEO_Brain/13_APEX_Omneky_Dashboard_Audit]]).
+  Findings: the platform's Marketing page is read-only counts; marketing findings/attribution tables exist but are unused;
+  WhatsApp referral not parsed; no Omneky/Meta Marketing API yet. Omneky REST = creative only; campaign control only via MCP
+  (server use + agency licence unconfirmed) → dashboard launch/pause on our own Meta connector unless Omneky confirms.

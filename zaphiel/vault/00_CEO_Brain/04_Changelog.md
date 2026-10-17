@@ -113,3 +113,5 @@ The canonical changelog stays at the vault root: **[[Change log]]** (date, what 
 - 2026-10-15 — APEX v7: apex.md + Campaign Operator, money view, budget calculator, provider priority, brow-revolution
   pilot plan, Omneky 8-question draft (see [[Change log]]).
 - 2026-10-16 — APEX world-class upgrade: prompt saved verbatim, audit + 7-phase plan written (no system changes yet).
+- 2026-10-17 — APEX + Omneky + dashboard: platform audit (fusion-edg-core) and Omneky production verification
+  (note 16); report [[00_CEO_Brain/13_APEX_Omneky_Dashboard_Audit]]. No system changes.
