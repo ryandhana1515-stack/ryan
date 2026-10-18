@@ -899,3 +899,12 @@ tags: [zaphiel, changelog]
   Campaign Operator runs approvals, append-only status rows); `Brands/BROWREVOLUTION` → `Brands/brow-revolution` +
   Pilot_Plan; Omneky email draft updated to the 8 v7 questions; T1–T6 re-run note [[80_Clients/_Test/marketing-team-v5/T_v7_APEX]];
   merge diff [[80_Clients/_Test/marketing-team-v5/v7_DIFFS]].
+- 2026-10-18 — **Brow Revolution build file for its own Atlas dashboard** (Ryan: "One for Brow revolution").
+  - `80_Clients/brow-revolution/edg/16_edg_spec.json` (+ README).
+  - It contains only confirmed facts: the name, Singapore, SGD, eyebrow embroidery studio. There are no services,
+    prices or AI agent yet. Eight items are listed under `to_confirm`.
+  - It passed the platform's spec check and a test build on a local FAKE database.
+  - Ryan builds it on the test system with one tap: `/atlas/build?path=zaphiel%2Fvault%2F80_Clients%2Fbrow-revolution%2Fedg%2F16_edg_spec.json`.
+  - Also found: Ryan's 14-day dashboard sign-in from the 2 Oct email (Ah Kow Plumbing) expired on 16 Oct.
+    Master Control was never set up (invitation unused).
+    Making a sign-in link by hand from here is blocked by the safety rules; the platform's own build/review flow is used instead.
