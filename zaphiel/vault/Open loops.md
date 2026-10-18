@@ -377,3 +377,8 @@ tags: [zaphiel, open-loops]
   Findings: the platform's Marketing page is read-only counts; marketing findings/attribution tables exist but are unused;
   WhatsApp referral not parsed; no Omneky/Meta Marketing API yet. Omneky REST = creative only; campaign control only via MCP
   (server use + agency licence unconfirmed) → dashboard launch/pause on our own Meta connector unless Omneky confirms.
+- 2026-10-18 — **Ryan: tap "Approve & build" for Brow Revolution's Atlas dashboard** (test system):
+  https://fusion-edg-core-api.vercel.app/atlas/build?path=zaphiel%2Fvault%2F80_Clients%2Fbrow-revolution%2Fedg%2F16_edg_spec.json
+  - The build's status page then gives the review link into the dashboard.
+  - Numbers stay at zero until WhatsApp and Metricool are connected.
+  - Still to confirm: hours, services and durations, prices, artists, address/website.
