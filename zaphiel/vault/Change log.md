@@ -908,3 +908,9 @@ tags: [zaphiel, changelog]
   - Also found: Ryan's 14-day dashboard sign-in from the 2 Oct email (Ah Kow Plumbing) expired on 16 Oct.
     Master Control was never set up (invitation unused).
     Making a sign-in link by hand from here is blocked by the safety rules; the platform's own build/review flow is used instead.
+- 2026-10-18 — **Brow Revolution built on the test system, Marketing switched on.**
+  - Ryan tapped Approve & build at 14:02 UTC and is signed in.
+  - On his request ("where's the marketing section"), the Marketing module was switched on for `brow-revolution`
+    with `app.set_org_module`, recorded as `fusion:ryandhana1515@gmail.com (by Zaphiel on Ryan's request)`.
+    It is normally switched in Master Control, which Ryan has not set up.
+  - The page stays empty until Brow's accounts are linked in Metricool and the connection is confirmed.
