@@ -1,9 +1,9 @@
 ---
 tags: [zaphiel, ceo-brain, management-view, live]
 updated_by: CEO Orchestrator ceo-orchestrator-1.0.1
-updated: 2026-10-18T23:07:02.039Z
+updated: 2026-10-19T00:07:01.907Z
 ---
-# Management view — Mon, 19 Oct, 07:07 am SGT
+# Management view — Mon, 19 Oct, 08:07 am SGT
 
 > Written by the [[10_Agents/00_CEO_Orchestrator|CEO Orchestrator]] every hour and after every event. The inbox to act on it: https://ryan1515.app.n8n.cloud/webhook/ceo-brain/inbox
 
@@ -21,55 +21,55 @@ updated: 2026-10-18T23:07:02.039Z
 ## Unresolved (68, 20 high)
 
 ### Approvals waiting (19)
-- **APPROVAL: build MEDICAL business website for Dashboard tester** · 558 h · `task_web_lead_dash_v2medtest1`
-- **APPROVAL: Ryan — ask qualifying questions** · 512 h · `task_mujy2u7k7vj21`
-- **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 512 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
-- **REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n** · 512 h · `task_evt_3lrywe`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 509 h · `task_muk537y1951na`
-- **APPROVAL: Ryan @ Free & Easy Minimart — ask qualifying questions** · 495 h · `task_mukzgvq238yoy`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 495 h · `task_mukzhqlw45yfy`
-- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 495 h · `task_mukziu5g8qfxy`
-- **ATLAS checkpoint 1: confirm understanding of Smile Plus Dental Surgery** · 485 h · `task_edg_lead_wa6587587170_mukzk1yq`
-- **REVIEW: website info needed — Research brief ready for Smile Plus Dental Surgery (high identity) — questions for John: Which treatments should be feat** · 485 h · `task_evt_kgtsqk`
-- **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 470 h · `task_edg_lead_wa6587587170_mulklh7n`
-- **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 470 h · `task_evt_kpo8f5`
-- **ATLAS checkpoint 1: confirm understanding of OrangeTee** · 464 h · `task_edg_lead_wa6587587170_mumu7duk`
-- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 463 h · `task_evt_lb9wyi`
-- **ATLAS checkpoint 1: confirm understanding of Tan Aircon Services Pte Ltd** · 441 h · `task_edg_lead_wa6587587170_muo5thc0`
+- **APPROVAL: build MEDICAL business website for Dashboard tester** · 559 h · `task_web_lead_dash_v2medtest1`
+- **APPROVAL: Ryan — ask qualifying questions** · 513 h · `task_mujy2u7k7vj21`
+- **ATLAS checkpoint 1: confirm understanding of Free & Easy Minimart** · 513 h · `task_edg_lead_mujy2p8v3o4tx_1suvdli`
+- **REVIEW: website info needed — Research brief ready for Free & Easy Minimart (medium identity) — questions for John: Store address and opening hours (n** · 513 h · `task_evt_3lrywe`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 510 h · `task_muk537y1951na`
+- **APPROVAL: Ryan @ Free & Easy Minimart — ask qualifying questions** · 496 h · `task_mukzgvq238yoy`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 496 h · `task_mukzhqlw45yfy`
+- **APPROVAL: Ryan @ Free & Easy Minimart — human review** · 496 h · `task_mukziu5g8qfxy`
+- **ATLAS checkpoint 1: confirm understanding of Smile Plus Dental Surgery** · 486 h · `task_edg_lead_wa6587587170_mukzk1yq`
+- **REVIEW: website info needed — Research brief ready for Smile Plus Dental Surgery (high identity) — questions for John: Which treatments should be feat** · 486 h · `task_evt_kgtsqk`
+- **ATLAS checkpoint 1: confirm understanding of Edit Suits Co. Singapore** · 471 h · `task_edg_lead_wa6587587170_mulklh7n`
+- **REVIEW: website info needed — Research brief ready for Edit Suits Co. Singapore (low identity) — questions for John: Which website or social page is E** · 471 h · `task_evt_kpo8f5`
+- **ATLAS checkpoint 1: confirm understanding of OrangeTee** · 465 h · `task_edg_lead_wa6587587170_mumu7duk`
+- **REVIEW: website info needed — Research brief ready for OrangeTee (high identity) — questions for John: Which rooms and features should the walkthrough** · 464 h · `task_evt_lb9wyi`
+- **ATLAS checkpoint 1: confirm understanding of Tan Aircon Services Pte Ltd** · 442 h · `task_edg_lead_wa6587587170_muo5thc0`
 - … +4 more
 
 ### Website builds failed (1)
-- **Build business website for Ryan @ OrangeTee** · 462 h · `task_web_lead_wa6587587170_mumu7duk`
+- **Build business website for Ryan @ OrangeTee** · 463 h · `task_web_lead_wa6587587170_mumu7duk`
 
 ### Leads needing a human (1)
-- Ryan @ Free & Easy Minimart needs a human · 495 h · `lead_mujy2p8v3o4tx_1suvdli`
+- Ryan @ Free & Easy Minimart needs a human · 496 h · `lead_mujy2p8v3o4tx_1suvdli`
 
 ### Overdue follow-ups (37)
-- Follow up: Ryan @ Free & Easy Minimart — send reply · 511 h · `task_mujz6ojo5a82r`
-- Follow up: Ryan — send reply · 469 h · `task_mumgfey34s0or`
-- Follow up: Ryan @ Edit Suits Co. Singapore — send reply · 468 h · `task_mumhyd3n103qr`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujy8dd72eiep`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujy9wj66qkde`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyhlaf3isrc`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyjysj7jjer`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyq0h97jcd1`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyqx4a4h4vw`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyrw1q335vl`
-- Follow up: Ryan — ask qualifying questions · 464 h · `task_mujyuei44djvz`
-- Follow up: Ryan @ Free & Easy Minimart — ask qualifying questions · 464 h · `task_mujz16cvoj71`
-- Follow up: Ryan @ Free & Easy Minimart — send reply · 464 h · `task_mujz67pg9jwhy`
-- Follow up: Ryan @ OrangeTee — send reply · 462 h · `task_mumucjvo5z9vq`
-- Follow up: Ryan @ OrangeTee — send reply · 462 h · `task_mumvnxwjfzkm`
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 512 h · `task_mujz6ojo5a82r`
+- Follow up: Ryan — send reply · 470 h · `task_mumgfey34s0or`
+- Follow up: Ryan @ Edit Suits Co. Singapore — send reply · 469 h · `task_mumhyd3n103qr`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujy8dd72eiep`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujy9wj66qkde`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyhlaf3isrc`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyjysj7jjer`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyq0h97jcd1`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyqx4a4h4vw`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyrw1q335vl`
+- Follow up: Ryan — ask qualifying questions · 465 h · `task_mujyuei44djvz`
+- Follow up: Ryan @ Free & Easy Minimart — ask qualifying questions · 465 h · `task_mujz16cvoj71`
+- Follow up: Ryan @ Free & Easy Minimart — send reply · 465 h · `task_mujz67pg9jwhy`
+- Follow up: Ryan @ OrangeTee — send reply · 463 h · `task_mumucjvo5z9vq`
+- Follow up: Ryan @ OrangeTee — send reply · 463 h · `task_mumvnxwjfzkm`
 - … +22 more
 
 ### Stale leads (10)
-- Ryan @ Smile Plus Dental Surgery — no contact for 485 h · 485 h · `lead_wa6587587170_mukzk1yq`
-- Ryan — no contact for 485 h · 485 h · `lead_wa6587587170_mulk11b8`
-- Ryan @ Edit Suits Co. Singapore — no contact for 469 h · 469 h · `lead_wa6587587170_mulklh7n`
-- Ryan @ OrangeTee — no contact for 463 h · 463 h · `lead_wa6587587170_mumu7duk`
-- Ryan @ Tan Aircon Services Pte Ltd — no contact for 441 h · 441 h · `lead_wa6587587170_muo5thc0`
-- Ryan @ Ah Kow Plumbing — no contact for 437 h · 437 h · `lead_wa6587587170_muoefz7m`
-- Ryan @ Roen — no contact for 422 h · 422 h · `lead_wa6587587170_mupb9vri`
-- Ryan @ ROEN — no contact for 420 h · 420 h · `lead_wa6587587170_mupegy0q`
-- Ryan @ ROLEX — no contact for 420 h · 420 h · `lead_wa6587587170_mupethru`
-- Ryan — no contact for 125 h · 125 h · `lead_wa6587587170_mv6yxibx`
+- Ryan @ Smile Plus Dental Surgery — no contact for 486 h · 486 h · `lead_wa6587587170_mukzk1yq`
+- Ryan — no contact for 486 h · 486 h · `lead_wa6587587170_mulk11b8`
+- Ryan @ Edit Suits Co. Singapore — no contact for 470 h · 470 h · `lead_wa6587587170_mulklh7n`
+- Ryan @ OrangeTee — no contact for 464 h · 464 h · `lead_wa6587587170_mumu7duk`
+- Ryan @ Tan Aircon Services Pte Ltd — no contact for 442 h · 442 h · `lead_wa6587587170_muo5thc0`
+- Ryan @ Ah Kow Plumbing — no contact for 438 h · 438 h · `lead_wa6587587170_muoefz7m`
+- Ryan @ Roen — no contact for 423 h · 423 h · `lead_wa6587587170_mupb9vri`
+- Ryan @ ROEN — no contact for 421 h · 421 h · `lead_wa6587587170_mupegy0q`
+- Ryan @ ROLEX — no contact for 421 h · 421 h · `lead_wa6587587170_mupethru`
+- Ryan — no contact for 126 h · 126 h · `lead_wa6587587170_mv6yxibx`
