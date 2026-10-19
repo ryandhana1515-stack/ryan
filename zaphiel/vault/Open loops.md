@@ -382,3 +382,10 @@ tags: [zaphiel, open-loops]
   - The build's status page then gives the review link into the dashboard.
   - Numbers stay at zero until WhatsApp and Metricool are connected.
   - Still to confirm: hours, services and durations, prices, artists, address/website.
+- 2026-10-19 — **Omneky is live for Brow Revolution** (checked read-only through the Omneky connector in Claude Code).
+  - Company "Brow Revolution": plan `creative_generation_pro`, 954 credits (US$0.10 each), no card on file.
+  - One brand: Brow Revolution (id 42271).
+  - **Facebook connected.** Google, TikTok and the others are not connected. Shopify shows an error (not needed).
+  - Ryan (2026-10-19): Omneky is the main tool for everything and Metricool is only the backup (matches the 2026-10-15 decision).
+  - The dashboard's Marketing page still reads Metricool only. Connecting Omneky to the dashboard is Phases 5–6.
+    Server-side use waits for Omneky's written answer (the email draft is still unsent).
