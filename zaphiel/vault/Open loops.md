@@ -415,3 +415,13 @@ tags: [zaphiel, open-loops]
      lifetime, rate limits, partner programme. The email draft is still unsent.
   6. **Higgsfield and Kling** are used by Zaphiel through Ryan's connectors. Dashboard use needs their own server API
      keys (separately billed, approved first).
+- 2026-10-20 — **Ryan, to make APEX fully operational from the dashboard** (details: [[00_CEO_Brain/14_APEX_CEO_View_Audit_and_Test_Report]]):
+  1. **In Omneky:** Connections → Facebook → choose Brow's ad account and page. Omneky's live answer is "needs account
+     selection", and this blocks APPROVE AND LAUNCH.
+  2. Press **"APEX, manage my marketing"**, then approve or reject the replacement-ad briefs with their code. Approving
+     spends Omneky credits.
+  3. Set the **target cost per lead**.
+  4. Confirm the Meta ad account currency is SGD. The screen shows S$; Omneky does not state it.
+  5. **First live presses still to confirm:** Pause, Resume, Create new ads, Approve and launch. They are built and
+     tested against a fake Omneky, but never pressed on the real account because they change live ads or spend
+     credits.

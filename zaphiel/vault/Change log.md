@@ -970,3 +970,23 @@ tags: [zaphiel, changelog]
   - Tests: 376/376, including a fake Omneky end-to-end. Live check: the test system reports `credential_key:
     automatic` and `ai: anthropic`, and the Omneky return page answers.
   - Design reference copied to `docs/fusion-marketing-dashboard.html` (demo numbers only).
+- 2026-10-20 — **APEX CEO view: one simple screen, every button real** (Fusion EDG Core PRs #58, #59; migration 046 on staging).
+  - Ryan: "too complicated for an ordinary CEO … APEX, manage my marketing".
+  - **The main Marketing screen is now APEX's briefing:**
+    - ten things at a glance;
+    - a Marketing Director explanation written by code from the real numbers;
+    - ten action buttons wired to server workflows;
+    - a live "What APEX can do in your account" check.
+  - The 11 detailed pages are kept under "Advanced tools".
+  - **New workflows:**
+    - Readiness check (free, read-only, every 3 hours).
+    - ANALYZE MY ADS and "manage my marketing". These include Omneky's own AI recommendations and prepare free
+      briefs for replacement ads.
+    - CREATE NEW ADS: code → Omneky makes the images → the timer polls until they are ready.
+    - APPROVE AND LAUNCH: code → new ads go into an existing ad set.
+    - Pause/resume at ad level.
+    - Target cost per lead.
+  - **Audit fixes:** the misleading "queued for launch" text, the fake live-map buttons, the A/B placeholders, and the
+    Higgsfield/Kling "made with" wording.
+  - Tests 379/379. **Live-verified on Brow's real Omneky:** connect, read, readiness (5/5 Omneky checks OK) and the first
+    report. Full button-by-button report: [[00_CEO_Brain/14_APEX_CEO_View_Audit_and_Test_Report]].
