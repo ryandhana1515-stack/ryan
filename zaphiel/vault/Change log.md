@@ -934,3 +934,13 @@ tags: [zaphiel, changelog]
   - Their fixed test clock made sign-in sessions expire against the real date. The tests now extend their own
     sessions; this is a test-only change.
   - Full platform suite: **363/363 tests pass, 39 files.**
+- 2026-10-20 — **APEX Campaign Studio in the dashboard** (Ryan: "start doing A/B testing… run ads… APEX must do all that in the dashboard").
+  - Fusion EDG Core PR #56 (merged). Migration 044 `marketing_campaigns` was applied on staging.
+  - **New campaign:** Ryan describes it in words. APEX (AI) suggests angles, hooks and ad text, and a tool per ad
+    (Omneky, Higgsfield, Kling or own media). It never invents prices, offers or results.
+  - **The code does the rest:** budget maths (the daily budget is the TOTAL), structure, and the test design.
+    It uses a fair A/B test only when asked and the budget allows; otherwise several ads in one ad set, said plainly.
+  - **Approval:** one 4-letter code bound to the exact plan, valid 48 hours. Owners/admins approve by typing it.
+  - Approval never launches by itself: the status is "waiting for provider", and the screen says plainly that
+    nothing is live until Omneky confirms.
+  - Tests 368/368.

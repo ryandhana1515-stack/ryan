@@ -389,3 +389,12 @@ tags: [zaphiel, open-loops]
   - Ryan (2026-10-19): Omneky is the main tool for everything and Metricool is only the backup (matches the 2026-10-15 decision).
   - The dashboard's Marketing page still reads Metricool only. Connecting Omneky to the dashboard is Phases 5–6.
     Server-side use waits for Omneky's written answer (the email draft is still unsent).
+- 2026-10-20 — **APEX in the dashboard: what is still to build for "run ads from the dashboard"** (Campaign Studio is live; plans and approvals work).
+  1. **Launch through Omneky from the dashboard.** Needs Omneky's written OK for server use (Ryan sends the email
+     draft) and the Omneky key in the secure form.
+     Until then, approved plans are launched by Zaphiel through the Omneky connector in Claude, on Ryan's approval code.
+  2. **Make the ads (images/videos) from the dashboard.**
+     - Omneky REST is the first route (same key).
+     - Higgsfield and Kling need their own server API keys, separately billed; every job is costed and approved first.
+  3. **Test lab with per-ad results and winner calls.** Needs ad-level data from Omneky (or Meta's own API);
+     Metricool gives campaign level only.
