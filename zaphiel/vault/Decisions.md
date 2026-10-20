@@ -625,3 +625,14 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   Customers use APEX inside the Fusion dashboard (`fusion-edg-core`), never Claude Code; production APEX runs on our backend
   with the server-side Claude API. Audit + Omneky verification first; report before major changes:
   [[00_CEO_Brain/13_APEX_Omneky_Dashboard_Audit]].
+- 2026-10-20 — **How Fusion AI talks to Omneky** (Zaphiel, building Ryan's FINAL BUILD PROMPT).
+  - **Our backend is the Omneky client.** It speaks MCP over OAuth, with each client's own tokens. This was chosen
+    over "Route A", where Claude would call Omneky through Anthropic's MCP connector.
+    - Why: with Route A, the client's Omneky token goes to Anthropic and the model fetches and reports numbers itself.
+      Our route keeps tokens server-side, makes every number come from code, and costs no AI money for monitoring.
+    - Claude only writes words (answers, angles).
+    - The 3-hourly monitor uses no AI at all, which is cheaper than the Haiku the prompt suggested.
+  - **Every business brings its own Omneky account**, connected once by OAuth. Fusion AI never buys Omneky credits.
+    When credits are low, the Connections page says so and points to Omneky.
+  - **Live ad changes:** pausing is allowed straight away (it stops spend). Resuming and budget changes need an
+    approval code. Launching stays behind the plan's approval code.
