@@ -636,3 +636,10 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
     When credits are low, the Connections page says so and points to Omneky.
   - **Live ad changes:** pausing is allowed straight away (it stops spend). Resuming and budget changes need an
     approval code. Launching stays behind the plan's approval code.
+- 2026-10-20 — **CEO view rules** (Ryan: "every visible action button must be connected to a real workflow; if Omneky does not expose it, show the limitation").
+  - Each button's state comes from a LIVE read-only check of the client's own Omneky account: ready, needs code,
+    blocked with Omneky's reason, or not yet confirmed.
+  - There is no fallback to manual Claude Code execution.
+  - Launches go into EXISTING ad sets only, so no new budget is created. Brand-new campaigns with their own budget are
+    not wired yet.
+  - Omneky's launch tool has no "WhatsApp messages" goal.
