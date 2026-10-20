@@ -914,3 +914,19 @@ tags: [zaphiel, changelog]
     with `app.set_org_module`, recorded as `fusion:ryandhana1515@gmail.com (by Zaphiel on Ryan's request)`.
     It is normally switched in Master Control, which Ryan has not set up.
   - The page stays empty until Brow's accounts are linked in Metricool and the connection is confirmed.
+- 2026-10-20 — **Dashboard Marketing section** (Ryan: "add a section called marketing… all the marketing agents… linked to Omneky… don't change the design").
+  - Fusion EDG Core PR #54 (merged; the test system redeploys from main).
+  - The Marketing page now uses the Home design:
+    - six 30-day money cards: Money Spent, New Enquiries, Qualified Leads, Appointments, Confirmed Sales, Revenue;
+    - the "Hi, I'm APEX" card;
+    - the Marketing Team panel (APEX, Ads Intelligence, Market Research, Creative Brain, Campaign Operator), with
+      statuses computed from real connections;
+    - Connections: Omneky main, Metricool backup, Meta direct fallback;
+    - APEX Activity, from real sync runs;
+    - the old details kept under View details.
+  - Spend is counted once per ad account at the coarsest level, per currency. Unknown values show a dash, never 0.
+  - No database change. New tests `marketing-overview.test.ts` (5) pass; typecheck clean.
+  - Found: 8 older tests in `marketing.test.ts` / `marketing-sync.test.ts` fail on main because their fixed clock
+    (2026-10-03) lets sign-in sessions expire. Pre-existing and not from this change.
+  - Next: Omneky shown as connected in the dashboard. It needs a way to store the client's Omneky key plus Omneky's
+    written OK for server use (the email draft is still unsent).
