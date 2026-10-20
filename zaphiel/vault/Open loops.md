@@ -398,3 +398,20 @@ tags: [zaphiel, open-loops]
      - Higgsfield and Kling need their own server API keys, separately billed; every job is costed and approved first.
   3. **Test lab with per-ad results and winner calls.** Needs ad-level data from Omneky (or Meta's own API);
      Metricool gives campaign level only.
+- 2026-10-20 — **APEX × Omneky: what is left after PR #57.**
+  1. **Ryan: one click.** Open https://fusion-edg-core-api.vercel.app/app#marketing/connections (Brow Revolution),
+     press **Connect Omneky**, sign in to Omneky and allow access.
+     - Real Brow data then fills Overview, Campaigns and Ad Library at once.
+     - APEX's first analysis follows within minutes; the daily report comes at 8 AM.
+  2. **Ryan: in Omneky, choose the Facebook ad account and page for Brow Revolution.** Omneky shows it as "pending
+     account selection". Until it is chosen, pause/resume/budget and launch through Omneky may be refused.
+  3. **Launch from the dashboard is NOT wired yet** (`launch_meta_ad`). It needs:
+     - an approved plan;
+     - finished creatives, which cost Omneky credits and need Ryan's OK;
+     - item 2 done.
+     No ad money is spent until then.
+  4. **Reports** go out as a Command Center notification plus an owner email DRAFT. WhatsApp delivery is not built.
+  5. **Omneky's written answers are still needed**: third-party/agency use of OAuth for our clients, refresh-token
+     lifetime, rate limits, partner programme. The email draft is still unsent.
+  6. **Higgsfield and Kling** are used by Zaphiel through Ryan's connectors. Dashboard use needs their own server API
+     keys (separately billed, approved first).

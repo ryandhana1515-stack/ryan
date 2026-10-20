@@ -944,3 +944,29 @@ tags: [zaphiel, changelog]
   - Approval never launches by itself: the status is "waiting for provider", and the screen says plainly that
     nothing is live until Omneky confirms.
   - Tests 368/368.
+- 2026-10-20 — **APEX × Omneky inside Fusion AI** (Ryan's FINAL BUILD PROMPT). Fusion EDG Core PR #57, merged and
+  deployed. Migration 045 applied on staging.
+  - **Omneky sign-in for each business:** every business connects its OWN Omneky account once, from Marketing →
+    Connections.
+    - Method: OAuth 2.1 with dynamic client registration, PKCE and refresh tokens.
+    - Tokens are encrypted with the automatic credential key and bound to that business. Nobody can read them.
+  - **Real results:** the server reads Omneky for free (no credits): 60 days of daily totals, plus 30 days by campaign
+    and by ad (each ad matched to its campaign), live status, credits and channels. All of it is stored as snapshots.
+  - **Numbers are calculated by code:** CTR, CPC, CPM, CPL, the best-5 ads rule and the diagnosis rules.
+  - **Ask APEX** answers only from those stored facts. Claude phrases the answer and never calculates. The facts table
+    is shown next to every answer.
+  - **11 Marketing pages** in the existing design: Overview (date ranges and comparison), Campaigns, Ad Library
+    (compare 2–3 ads), A/B Testing (20 test types), Campaign Creator, AI Workforce (live feed from `apex_events`),
+    Approvals, Diagnosis, Daily Reports, Revenue funnel, Connections.
+    - Before Omneky is connected, every page shows a "Connect Omneky" empty state. No sample numbers.
+    - Home → Today's Priorities shows "Review marketing campaign" when a plan or change waits for a code.
+  - **Live ad changes:** pause works at once (owner/admin). Resume and budget changes need ONE approval code tied to
+    the exact change, with a 1,000/day cap. Omneky's answer is what the page shows.
+  - **Timer:**
+    - Re-reads Omneky every 3 hours and runs the monitor checks.
+    - Writes APEX's first analysis once.
+    - Daily report at 8 AM SG; weekly report on Sunday. Each one is a notification plus an email draft to the owner.
+    - No auto-pause rules have been approved, so nothing pauses by itself.
+  - Tests: 376/376, including a fake Omneky end-to-end. Live check: the test system reports `credential_key:
+    automatic` and `ai: anthropic`, and the Omneky return page answers.
+  - Design reference copied to `docs/fusion-marketing-dashboard.html` (demo numbers only).
