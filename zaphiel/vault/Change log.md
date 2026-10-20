@@ -930,3 +930,7 @@ tags: [zaphiel, changelog]
     (2026-10-03) lets sign-in sessions expire. Pre-existing and not from this change.
   - Next: Omneky shown as connected in the dashboard. It needs a way to store the client's Omneky key plus Omneky's
     written OK for server use (the email draft is still unsent).
+- 2026-10-20 — **Old marketing tests fixed** (Fusion EDG Core PR #55, merged).
+  - Their fixed test clock made sign-in sessions expire against the real date. The tests now extend their own
+    sessions; this is a test-only change.
+  - Full platform suite: **363/363 tests pass, 39 files.**
