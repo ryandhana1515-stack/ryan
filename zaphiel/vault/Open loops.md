@@ -425,3 +425,8 @@ tags: [zaphiel, open-loops]
   5. **First live presses still to confirm:** Pause, Resume, Create new ads, Approve and launch. They are built and
      tested against a fake Omneky, but never pressed on the real account because they change live ads or spend
      credits.
+- 2026-10-22 — **Ryan: press Reconnect Omneky** (Marketing → Connections, or the red card on the APEX briefing).
+  - Ryan says Facebook is now connected in Omneky. The dashboard cannot confirm it until its Omneky sign-in is renewed.
+  - After the reconnect, the readiness check shows whether "APPROVE AND LAUNCH" is unblocked.
+  - Open question for Omneky: why was the refresh token rejected? Is there a set token lifetime, or did reconnecting
+    Facebook inside Omneky reset it? Added to the Omneky email questions.

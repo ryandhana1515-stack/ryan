@@ -990,3 +990,17 @@ tags: [zaphiel, changelog]
     Higgsfield/Kling "made with" wording.
   - Tests 379/379. **Live-verified on Brow's real Omneky:** connect, read, readiness (5/5 Omneky checks OK) and the first
     report. Full button-by-button report: [[00_CEO_Brain/14_APEX_CEO_View_Audit_and_Test_Report]].
+- 2026-10-22 — **Omneky sign-in fix** (Fusion EDG Core PR #60, merged and deployed).
+  - What happened: Brow's Omneky link read fine for 22 hours. From 2026-10-21 17:02 UTC, Omneky refused the stored
+    sign-in ("Nexus refresh token rejected").
+  - The platform then had three problems:
+    - it still showed "Connected";
+    - it retried every minute (about 1,000 failure events);
+    - its readiness check called the failure "Facebook not connected".
+  - Fixed:
+    - one token refresh at a time, re-reading the stored tokens first;
+    - a refused sign-in now marks the link "Reconnect needed", sends one alert and stops the timer;
+    - other failed reads wait an hour before the next try;
+    - the CEO screen shows a red Reconnect card.
+  - Brow's link was marked "Reconnect needed" at 09:28 UTC; the 09:29 timer run confirmed the retries stopped.
+    Tests 381/381.
