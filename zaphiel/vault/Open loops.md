@@ -430,3 +430,14 @@ tags: [zaphiel, open-loops]
   - After the reconnect, the readiness check shows whether "APPROVE AND LAUNCH" is unblocked.
   - Open question for Omneky: why was the refresh token rejected? Is there a set token lifetime, or did reconnecting
     Facebook inside Omneky reset it? Added to the Omneky email questions.
+- 2026-10-24 — **Ryan: fix Facebook inside Omneky** at https://cgp.omneky.com/brands/42271/settings?tab=connections
+  (the dashboard shows the same link as "Fix Facebook in Omneky").
+  1. Reconnect **Meta (Facebook / Instagram)** and allow everything Facebook asks. Facebook currently says Omneky's app
+     is not authorised.
+  2. Choose **Brow's ad account and Facebook page**. Omneky still shows "selection pending".
+  3. In the dashboard press **Check again** (bottom of the APEX briefing).
+  - Until then APEX cannot read new results or launch, pause or resume ads.
+  - Also waiting on Ryan:
+    - The plan "Consultation A/B Creative Test" needs the total daily budget and the target cost per enquiry.
+    - The 2 replacement-ad briefs from 2026-10-23 expired unapproved. Press "APEX, manage my marketing" again after
+      Facebook is fixed.
