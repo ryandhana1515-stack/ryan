@@ -1004,3 +1004,20 @@ tags: [zaphiel, changelog]
     - the CEO screen shows a red Reconnect card.
   - Brow's link was marked "Reconnect needed" at 09:28 UTC; the 09:29 timer run confirmed the retries stopped.
     Tests 381/381.
+- 2026-10-24 — **Omneky's Facebook link is broken; the dashboard now says so instead of crashing**
+  (Fusion EDG Core PR #61, merged and deployed).
+  - Ryan reconnected Omneky in the dashboard on 2026-10-23 15:27 UTC; that sign-in works.
+  - But Omneky itself can no longer reach Brow's Meta account:
+    - Omneky's message: "Your Meta account connection expired. Reconnect Meta and try again."
+    - Facebook's error: OAuthException 190/458, "The user has not authorized application 309367356458843".
+    - The Facebook ad account still shows "selection pending".
+    - Omneky has no Brow data after 2026-10-20.
+  - My bug: every refresh since the reconnect crashed on that error ("object is not iterable").
+  - Fixed:
+    - the error is shown in plain words;
+    - missing days are left out instead of being counted as zero;
+    - launch, pause, resume and budget are blocked, each with Omneky's reason;
+    - a "Fix Facebook in Omneky" button opens Omneky's own Connections page (from `get_connect_link`);
+    - the Connections page shows a status per channel with Fix / Choose / Link buttons.
+  - Tests 382/382. A container reset lost the first attempt before it was committed; it was re-applied and committed
+    first, before testing.
