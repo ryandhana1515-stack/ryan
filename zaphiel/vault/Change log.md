@@ -1021,3 +1021,16 @@ tags: [zaphiel, changelog]
     - the Connections page shows a status per channel with Fix / Choose / Link buttons.
   - Tests 382/382. A container reset lost the first attempt before it was committed; it was re-applied and committed
     first, before testing.
+- 2026-10-25 — **Facebook link in Omneky fixed (Ryan pressed Update on Meta in Omneky)** + Fusion EDG Core PR #62.
+  - Verified live through Omneky:
+    - `list_live_ads` reads all 9 Brow campaigns again.
+    - The ad account currency is **SGD** (from Omneky itself).
+    - The active campaign "BR - Master Selina Fem - WhatsApp - 2" has a S$30/day budget, set at ad-set level.
+    - A new paused campaign "Chiến dịch Lượt tương tác mới" exists; it was created in Meta, not by APEX.
+  - Still pending on Omneky's side:
+    - Omneky has not yet re-imported results for 2026-10-21 to 2026-10-24; they will appear when its import runs.
+    - `list_ad_accounts` still says `needs_account_selection: true`.
+  - PR #62:
+    - The currency now comes from Omneky.
+    - A stale selection flag no longer blocks launch, pause or resume when Omneky reads the account. These are
+      "not yet confirmed" until the first live action, which still needs Ryan's approval code.

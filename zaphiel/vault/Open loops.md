@@ -441,3 +441,8 @@ tags: [zaphiel, open-loops]
     - The plan "Consultation A/B Creative Test" needs the total daily budget and the target cost per enquiry.
     - The 2 replacement-ad briefs from 2026-10-23 expired unapproved. Press "APEX, manage my marketing" again after
       Facebook is fixed.
+- 2026-10-25 — **Facebook ↔ Omneky fixed.** Remaining:
+  - Omneky has to re-import Oct 21–24 results. The dashboard picks them up automatically every 3 hours.
+  - Ask Omneky why `needs_account_selection` stays true after the account and page were chosen.
+  - The first live pause, resume or launch, each with Ryan's code, will confirm that changes work through Omneky.
+  - The plan "Consultation A/B Creative Test" still needs the daily budget and the target cost per enquiry.
