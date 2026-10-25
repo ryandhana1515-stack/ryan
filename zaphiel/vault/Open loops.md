@@ -3,6 +3,14 @@ tags: [zaphiel, open-loops]
 ---
 # Open loops
 
+- **Home dashboard (2026-10-25), still to connect:**
+  - Brow Revolution's WhatsApp (John) is not connected to the staff app, so its CRM shows 0 leads, chats and
+    customers. FusionTech connects the number once (Settings → connections).
+  - TITAN's website projects and previews are not linked to the app (Website AI shows "—").
+  - "Staff online" needs attendance (clock-in) switched on.
+  - The picture's microphone on the ask box is decorative; voice questions are not wired.
+  - No paid ad is launched until Ryan reconnects Meta, picks the ad account and Page in Omneky, and approves a budget.
+
 - **Ryan:** top up n8n AI credits (John and the Website Builder are on rule fallbacks).
 - **WhatsApp is live for testing (2026-09-27).** Meta app "AI AGENTS" (1415986013818104) on Ryan's Meta business
   portfolio; free Meta test number (phone number ID `1321607761025022`, WhatsApp account `1034122678981935`); n8n

@@ -1034,3 +1034,22 @@ tags: [zaphiel, changelog]
     - The currency now comes from Omneky.
     - A stale selection flag no longer blocks launch, pause or resume when Omneky reads the account. These are
       "not yet confirmed" until the first live action, which still needs Ryan's approval code.
+- 2026-10-25 — **Staff app home rebuilt to Ryan's FusionTech AI picture** (fusion-edg-core PRs #63, #64, #65, live on staging).
+  - Ryan approved the redesign, then asked for "exactly the same as the picture". On a computer the home now uses the
+    picture's own 1536 × 1024 layout, scaled to the window. Its artwork comes from the picture: the header with the logo
+    and DNA, the four department illustrations, the CEO Brain portrait and the icons. On a phone the same blocks stack.
+  - Every number and button is real: the five KPIs with previous-period values; the four departments (Website AI,
+    Sales AI John, Marketing APEX, CRM + EDG Atlas), each opening a workspace; Ask CEO Brain with five working quick
+    actions; the Live Activity Feed (CRM events plus APEX's own log, with a department filter); Revenue Overview (this
+    month's running total or the last 7 days); Top Leads; the bell for approvals and notifications; and all 15 menu
+    items.
+  - "Build a website for a client" creates a real task. Website builds and previews show "—" because TITAN's projects
+    are not linked to the app.
+  - The earlier home panels (approvals, priorities, AI workforce, lead sources, quick access) are kept under "More for
+    today".
+  - The build's self-test customer is no longer counted as a chat, a customer or a pending task.
+  - Brow Revolution's real home today:
+    - 0 CRM leads, customers and revenue; WhatsApp is not connected to this app.
+    - APEX: 1 of 5 campaigns active, about S$101/day average spend over the last 7 days of data (to 20 Oct), and
+      S$981 per Omneky-counted lead. Omneky counts only 2 leads; WhatsApp chats are not counted.
+    - 5 team members.
