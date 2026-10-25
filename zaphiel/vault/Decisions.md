@@ -643,3 +643,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Launches go into EXISTING ad sets only, so no new budget is created. Brand-new campaigns with their own budget are
     not wired yet.
   - Omneky's launch tool has no "WhatsApp messages" goal.
+- 2026-10-25 — **Home dashboard = Ryan's FusionTech AI picture** (Ryan: "I want exactly the same as the picture").
+  - The picture's layout, artwork and wording are the design.
+  - Real data only. Missing or unlinked data shows "—" with the reason, never a sample number.
+  - The previous home panels stay, folded under "More for today".
+  - The user avatar and the Top Leads avatars show initials, not the picture's stock faces, because real people have
+    no photo in the CRM.
