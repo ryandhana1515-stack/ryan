@@ -5,7 +5,7 @@ tags: [zaphiel, open-loops]
 
 - **Home dashboard (2026-10-25), still to connect:**
   - Brow Revolution's WhatsApp (John) is not connected to the staff app, so its CRM shows 0 leads, chats and
-    customers. FusionTech connects the number once (Settings → connections).
+    customers. FusionTech connects the number to the app once.
   - TITAN's website projects and previews are not linked to the app (Website AI shows "—").
   - "Staff online" needs attendance (clock-in) switched on.
   - The picture's microphone on the ask box is decorative; voice questions are not wired.
