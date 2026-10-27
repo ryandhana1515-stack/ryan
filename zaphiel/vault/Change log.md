@@ -1053,3 +1053,10 @@ tags: [zaphiel, changelog]
     - APEX: 1 of 5 campaigns active, about S$101/day average spend over the last 7 days of data (to 20 Oct), and
       S$981 per Omneky-counted lead. Omneky counts only 2 leads; WhatsApp chats are not counted.
     - 5 team members.
+- 2026-10-27 — **Home on phones redone** (fusion-edg-core PR #66). Ryan said the phone version was "too blurry… cropped… not nice".
+  The cause was artwork stretched to 1.5× its real size. Phones now get an app layout:
+  - swipeable KPI and department cards at their true size;
+  - a greeting card with the DNA art;
+  - a compact Ask CEO Brain card with a round portrait;
+  - no box inside a box.
+  Artwork is re-cut at 2× with sharpening. The computer layout is unchanged, and now sharper on high-density screens.
