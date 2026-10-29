@@ -3,6 +3,13 @@ tags: [zaphiel, open-loops]
 ---
 # Open loops
 
+- **Business OS build, waiting on Ryan before Gate C (2026-10-29; see `00_CEO_Brain/15_Gate_A_Audit.md`):**
+  - Decide whether John's leads go into the platform CRM.
+  - Choose a real WhatsApp business number; the test number reaches 5 phones.
+  - Unsubscribe the BioGreen app from the WhatsApp number.
+  - Authorise the n8n connector.
+  - Upload `docs/fusiontech-os.html`.
+
 - **Home dashboard (2026-10-25), still to connect:**
   - Brow Revolution's WhatsApp (John) is not connected to the staff app, so its CRM shows 0 leads, chats and
     customers. FusionTech connects the number to the app once.

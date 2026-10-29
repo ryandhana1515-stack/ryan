@@ -1060,3 +1060,8 @@ tags: [zaphiel, changelog]
   - a compact Ask CEO Brain card with a round portrait;
   - no box inside a box.
   Artwork is re-cut at 2× with sharpening. The computer layout is unchanged, and now sharper on high-density screens.
+- 2026-10-29 — **Gate A audit** of the FusionTech AI Business OS prompt (`00_CEO_Brain/15_Gate_A_Audit.md`, plus 15a and 15b for detail).
+  - 283 screens, buttons and actions classified; every connection tested with real calls; the agent team mapped
+    onto NOVA, JOHN, APEX, TITAN, ATLAS and SAGE.
+  - Fixed the same day (fusion-edg-core #67): wrong action labels on Marketing → Approvals, and pilot (Brow) examples
+    shown to every business.
