@@ -649,3 +649,8 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - The previous home panels stay, folded under "More for today".
   - The user avatar and the Top Leads avatars show initials, not the picture's stock faces, because real people have
     no photo in the CRM.
+- 2026-10-30 — **One Action Engine for every button and chat command** (Ryan: "Gate B — build it once").
+  - A job is COMPLETED only when the provider confirmed it, never because an AI wrote a reply.
+  - Paid actions, and actions that contact customers, wait for an owner or admin approval tied to the exact input.
+  - Connection status comes only from the last real test call ("a logo is not a connection").
+  - SAGE is built as the Admin (finance/HR) department of the platform first, not as a separate agent.

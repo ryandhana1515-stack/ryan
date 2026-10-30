@@ -9,6 +9,13 @@ tags: [zaphiel, open-loops]
   - Unsubscribe the BioGreen app from the WhatsApp number.
   - Authorise the n8n connector.
   - Upload `docs/fusiontech-os.html`.
+- **Gate B tests still blocked (2026-10-30). The staff app's Setup Center shows them in order:**
+  - **Test A** (WhatsApp → John → CRM): the WhatsApp Cloud API settings are not in the staff app's Vercel environment,
+    and n8n is not authorised. Nothing has been changed on the live or BioGreen WhatsApp connection. Auditing the
+    BioGreen link stays read-only until Ryan approves a rollback plan.
+  - **Test B** (website preview): no GitHub or Vercel token for client sites; `website.build` shows "needs setup".
+  - Not built yet: Unified Inbox, broadcasts, follow-up sequences, website publish, CEO delegation, expenses, social
+    posting, Atlas projects/sales orders/tags. Each shows "not built" with the reason.
 
 - **Home dashboard (2026-10-25), still to connect:**
   - Brow Revolution's WhatsApp (John) is not connected to the staff app, so its CRM shows 0 leads, chats and
