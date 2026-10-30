@@ -1065,3 +1065,23 @@ tags: [zaphiel, changelog]
     onto NOVA, JOHN, APEX, TITAN, ATLAS and SAGE.
   - Fixed the same day (fusion-edg-core #67): wrong action labels on Marketing → Approvals, and pilot (Brow) examples
     shown to every business.
+- 2026-10-30 — **Gate B: the shared Action Engine is live on staging** (fusion-edg-core PR #68, migration 047).
+  - Every button and every director chat now goes through one engine with these steps: request → check → cost →
+    approval → queue → run → provider confirms → completed. A job can also end failed, blocked or cancelled.
+  - The database refuses "completed" without a real result from the provider.
+  - Duplicate presses are ignored (idempotency key). Failures retry after 1, 5, 15 and 60 minutes, then go to the
+    dead-letter list with an alert and a Retry button. Every request and decision is written to the audit log.
+  - New screens in the staff app:
+    - **Department workspaces** for CEO/NOVA, Sales/JOHN, Marketing/APEX, Website/TITAN, CRM/ATLAS and Admin/SAGE, each
+      with Director chat, Tools, Work, Team, Connections, Reports and History.
+    - **Agent Ops**: status, live log, job flow graph, daily log, schedules, errors with Retry, and costs.
+    - **Approvals**: Approve, or Reject with a reason. Owners and admins only.
+    - **Connections & Credits**: Test buttons make real calls.
+    - **Setup Center**: 20 apps, each with 10 setup points, ordered by what each one unblocks.
+  - The 9 dead buttons are wired. Features not built yet say "not built yet" or "needs setup" with the reason; none
+    pretends.
+  - SAGE (finance/HR) starts as a department inside the platform: Atlas's admin module. Payment links and payroll
+    show "needs setup".
+  - Tests: Test F (a paid action is blocked until approved), Test G (a simulated failure is retried, dead-lettered and
+    shown) and Test H (two test companies isolated) all pass. Full suite 390/390.
+  - Ryan's brief is saved verbatim as `docs/FUSIONTECH_MASTER_SPEC.md` in fusion-edg-core.

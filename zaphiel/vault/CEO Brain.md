@@ -58,3 +58,8 @@ workflow "CEO Brain — Trainer API". See [[Knowledge/_How to train the agents]]
 ## Test John yourself
 https://ryan1515.app.n8n.cloud/webhook/4bc5f31c-c270-4d21-8895-59cf46ea70fb/chat (test mode:
 nothing reaches a real customer; the conversation lands in `Leads/Test/`).
+
+## Action Engine (staff app, 2026-10-30)
+Every button and director chat in the staff app runs as a job through one engine (`packages/crm/src/engine.ts` in
+fusion-edg-core; registry in `actions.ts`). Agent Ops, Approvals, Connections & Credits and the Setup Center read from
+it. See Change log 2026-10-30.
