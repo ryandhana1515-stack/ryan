@@ -1085,3 +1085,17 @@ tags: [zaphiel, changelog]
   - Tests: Test F (a paid action is blocked until approved), Test G (a simulated failure is retried, dead-lettered and
     shown) and Test H (two test companies isolated) all pass. Full suite 390/390.
   - Ryan's brief is saved verbatim as `docs/FUSIONTECH_MASTER_SPEC.md` in fusion-edg-core.
+- 2026-11-03 — **CEO Brain · NOVA build, steps 1–2 live on staging** (fusion-edg-core PRs #69 and #70; Ryan's 8 pictures are
+  in `docs/reference/ceo-brain/`).
+  - **One roster as data** (`app.agents`): NOVA → JOHN, APEX, TITAN, ATLAS, SAGE → specialists. Older names (Website
+    Master, Marketing Brain, ORION, FINN, HRM) map onto it. People come only from the staff list.
+  - **Click-anything Detail Panel:** every agent, app, job, number and history event opens a side panel built from
+    real records. Numbers show their formula, source and the records behind them, and can be exported. NOVA writes
+    "What this means" in plain words, cached until the data changes.
+  - **Director Chat rebuilt to match Ryan's picture:**
+    - NOVA portrait and icons cut from his own picture.
+    - Chat with CEO / Analyst / Planner modes, five answer languages and voice input.
+    - Quick Actions, the directors strip, Business Health (a published formula, shown only with enough data),
+      NOVA Insights (each with its source) and My Priorities.
+  - Still to build, in Ryan's order: the orchestration graph, then the Work, Team, Tools, Reports and History
+    tabs to match his pictures, then delegation (NOVA → TITAN as a tracked job) and file upload.
