@@ -1099,3 +1099,11 @@ tags: [zaphiel, changelog]
       NOVA Insights (each with its source) and My Priorities.
   - Still to build, in Ryan's order: the orchestration graph, then the Work, Team, Tools, Reports and History
     tabs to match his pictures, then delegation (NOVA → TITAN as a tracked job) and file upload.
+- 2026-11-04 — **CEO Brain → Tools rebuilt to match Ryan's picture 2** (fusion-edg-core PR #71).
+  - The 10 Executive Tools use his own icons, and every Launch runs a real action that is saved as a job:
+    - NOVA answers: Strategy, Analysis, Decision Support, Performance Insights, Issue Diagnosis, Report Generator,
+      Idea & Growth Lab.
+    - Daily briefing (saved as an email draft).
+    - Task Delegation creates a team task for now.
+    - AI Agent Manager opens the AI team settings.
+  - My Saved Tools & Shortcuts are kept per person (Add Shortcut, Manage Tools).
