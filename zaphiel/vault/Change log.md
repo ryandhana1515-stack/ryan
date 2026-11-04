@@ -1107,3 +1107,14 @@ tags: [zaphiel, changelog]
     - Task Delegation creates a team task for now.
     - AI Agent Manager opens the AI team settings.
   - My Saved Tools & Shortcuts are kept per person (Add Shortcut, Manage Tools).
+- 2026-11-04 — **CEO Brain: Launch works in place, and the Work tab matches Ryan's picture 3** (fusion-edg-core PRs #72 and #73).
+  - Ryan said Launch "just opens a sidebar". Two fixes:
+    - Tools now open full-page and start working straight away.
+    - The look-only support view (View as client) can ask NOVA. Anything that creates or changes data is still
+      refused there.
+  - **Work:** counters (today, in progress, completed, overdue, AI running), each filtering one list of tasks and
+    AI jobs.
+    - Add Task works inline, a tick finishes a task, and ⋯ acts under the row: move, priority, waiting, cancel, or
+      approve / retry an AI job.
+    - Work Summary donut, AI Work Assistant ("Clear my overdue" moves tasks on one press) and Work by Category.
+  - No side panels in the CEO Brain tabs any more.
