@@ -1126,3 +1126,15 @@ tags: [zaphiel, changelog]
     show only while a real job runs. There is search, an Agents / Systems view and Plain English labels.
   - Agent / App details open on the same page.
   - Integration Library, Add Connection (Setup Center) and Manage API Keys (names only) open on the page too.
+- 2026-11-05 — **Marketing & Branding (APEX), stage 1** (fusion-edg-core PR #76; Ryan's 7 pictures are in
+  `docs/reference/marketing/`).
+  - One straight path: Create Content → Launch Campaign → Track → Leads → Optimise.
+  - "Tell APEX" works by voice or typing.
+  - Launch Campaign: choose platforms, goal, daily budget, audience and headline. APEX turns it into a plan with an
+    approval code; nothing spends before approval.
+  - **Add app:**
+    - Content tools: Omneky, HeyGen, Clinch, Hugging Face, Higgsfield, Kling, ElevenLabs.
+    - Platforms: Facebook, Instagram, TikTok, YouTube, 小红书, 抖音, WeChat, Weibo.
+    - Leads: Respond.io, WhatsApp, Messenger.
+    - Each app has Sign up, Connect (secure form) and Test (a real call).
+  - Next: Brand Kit, then each tab rebuilt to its picture, then the WhatsApp / Respond.io inbox.

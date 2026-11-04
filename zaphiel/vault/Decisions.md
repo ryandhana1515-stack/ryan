@@ -654,3 +654,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Paid actions, and actions that contact customers, wait for an owner or admin approval tied to the exact input.
   - Connection status comes only from the last real test call ("a logo is not a connection").
   - SAGE is built as the Admin (finance/HR) department of the platform first, not as a separate agent.
+- 2026-11-05 — **Marketing first, then WhatsApp, then the full EDG CRM** (Ryan). The platform is sold as a
+  one-stop marketing system to SMEs in Singapore, Malaysia and Chinese-speaking markets, so Xiaohongshu, Douyin,
+  WeChat and Weibo must be supported. Use Omneky for now; build our own equivalent later. Respond.io stays the
+  inbox for now, with our own inbox later. Every action works by voice too.
