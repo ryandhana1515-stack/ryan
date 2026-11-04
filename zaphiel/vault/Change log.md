@@ -1118,3 +1118,11 @@ tags: [zaphiel, changelog]
       approve / retry an AI job.
     - Work Summary donut, AI Work Assistant ("Clear my overdue" moves tasks on one press) and Work by Category.
   - No side panels in the CEO Brain tabs any more.
+- 2026-11-05 — **Connections & Orchestration matches Ryan's picture 5** (fusion-edg-core PR #74). It opens from the
+  sidebar's Connections & Credits and from CEO Brain → Connections.
+  - Counters: AI Agents, Connected Apps (last real test), Data Sources (where records really came from in 30 days),
+    Automations, System Health.
+  - The NOVA graph puts each director beside the app it relies on, with status from tests and jobs. Moving dashes
+    show only while a real job runs. There is search, an Agents / Systems view and Plain English labels.
+  - Agent / App details open on the same page.
+  - Integration Library, Add Connection (Setup Center) and Manage API Keys (names only) open on the page too.
