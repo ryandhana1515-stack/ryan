@@ -1138,3 +1138,6 @@ tags: [zaphiel, changelog]
     - Leads: Respond.io, WhatsApp, Messenger.
     - Each app has Sign up, Connect (secure form) and Test (a real call).
   - Next: Brand Kit, then each tab rebuilt to its picture, then the WhatsApp / Respond.io inbox.
+- 2026-11-05 — **Master Control → "Sign in as me"** (fusion-edg-core PRs #77 and #78). The read-only "View as client"
+  window cannot connect apps. The new button opens Ryan's own admin login in a business: one use, 30 minutes,
+  recorded in the business's history. In the read-only view, Add app now explains why Connect is off.

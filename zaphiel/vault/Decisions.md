@@ -658,3 +658,7 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   one-stop marketing system to SMEs in Singapore, Malaysia and Chinese-speaking markets, so Xiaohongshu, Douyin,
   WeChat and Weibo must be supported. Use Omneky for now; build our own equivalent later. Respond.io stays the
   inbox for now, with our own inbox later. Every action works by voice too.
+- 2026-11-05 — **Standing permission: "from now on just do it, no need to ask unless it is important"** (Ryan).
+  Zaphiel builds, tests, deploys to staging and merges without asking. It still asks first for: spending money or paid
+  credits, live ads or budgets, messages to real customers, production changes to live behaviour, WhatsApp number
+  moves, payments/payroll, deleting data, and new access to sensitive systems.
