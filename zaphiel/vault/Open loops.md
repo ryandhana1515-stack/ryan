@@ -468,3 +468,7 @@ tags: [zaphiel, open-loops]
   - Ask Omneky why `needs_account_selection` stays true after the account and page were chosen.
   - The first live pause, resume or launch, each with Ryan's code, will confirm that changes work through Omneky.
   - The plan "Consultation A/B Creative Test" still needs the daily budget and the target cost per enquiry.
+- 2026-11-05 — **Create Content: next steps** (after PR #80).
+  - Ryan: press Generate once on staging for Brow, using a short video and your approval code. That is the first real Omneky video, and it uses Omneky credits.
+  - Build the edit tools (Omneky resize/edit first), UGC/Avatar video (Omneky avatars or HeyGen sign-in), and video launch in Campaigns.
+  - Then the Brand Kit, per the master prompt.
