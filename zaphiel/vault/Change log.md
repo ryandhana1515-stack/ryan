@@ -1145,3 +1145,9 @@ tags: [zaphiel, changelog]
   ElevenLabs show "Sign in with …". The owner signs in or creates an account on the app's own page (Google works if
   the app offers it) and comes back connected. The connection is stored encrypted, and "connected" is only shown
   after the app's server answers a real check. Clinch, Hugging Face and Respond.io still use the secure key form.
+- 2026-11-05 — **Create Content rebuilt to Ryan's picture** (fusion-edg-core PR #80, staging). The flow is Create → Edit → Approve → Publish.
+  - The owner picks Video, Image, Design or Copy, writes the idea (with AI Improve), picks a style and video settings, and presses Generate.
+  - APEX writes the brief and the voiceover script for free. Omneky makes the video or images only after the 4-letter code, and the credits are shown first.
+  - Copy (headline, caption, hashtags) is free and needs no code.
+  - The AI Tools list shows each app's real status. The Content Library holds real creations.
+  - Still to come, shown disabled with the reason: the edit tools (trim, music, logo, resize…), UGC/Avatar video (needs a presenter: Omneky avatar or HeyGen), and launching a video ad.
