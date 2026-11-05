@@ -1141,3 +1141,7 @@ tags: [zaphiel, changelog]
 - 2026-11-05 — **Master Control → "Sign in as me"** (fusion-edg-core PRs #77 and #78). The read-only "View as client"
   window cannot connect apps. The new button opens Ryan's own admin login in a business: one use, 30 minutes,
   recorded in the business's history. In the read-only view, Add app now explains why Connect is off.
+- 2026-11-05 — **Apps connect by signing in, no API keys** (fusion-edg-core PR #79). HeyGen, Higgsfield, Kling and
+  ElevenLabs show "Sign in with …". The owner signs in or creates an account on the app's own page (Google works if
+  the app offers it) and comes back connected. The connection is stored encrypted, and "connected" is only shown
+  after the app's server answers a real check. Clinch, Hugging Face and Respond.io still use the secure key form.
