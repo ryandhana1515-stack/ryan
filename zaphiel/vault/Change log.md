@@ -1151,3 +1151,10 @@ tags: [zaphiel, changelog]
   - Copy (headline, caption, hashtags) is free and needs no code.
   - The AI Tools list shows each app's real status. The Content Library holds real creations.
   - Still to come, shown disabled with the reason: the edit tools (trim, music, logo, resize…), UGC/Avatar video (needs a presenter: Omneky avatar or HeyGen), and launching a video ad.
+- 2026-11-06 — **Campaigns rebuilt to Ryan's picture** (fusion-edg-core PR #81, staging).
+  - My Campaigns shows Brow's real Omneky campaigns (spend, leads plus WhatsApp chats, cost per lead). ROAS shows only when Omneky reports sales.
+  - Pause, Resume and Budget work through Omneky. Resume and Budget need a code.
+  - Funnel (30 days): views, clicks, leads, and qualified leads from the CRM. Performance: last 7 days compared with the 7 before.
+  - APEX recommendations come with an Apply button.
+  - Create & Launch makes an APEX plan with an approval code; nothing goes live before approval.
+  - Duplicate and Delete are shown disabled with the reason.
