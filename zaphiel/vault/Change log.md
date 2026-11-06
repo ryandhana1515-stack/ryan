@@ -1167,3 +1167,9 @@ tags: [zaphiel, changelog]
   - Brow's staging CRM has only the self-test lead and no payments, so Analytics, Campaigns and Overview now say "not linked yet" for qualified leads, sales, revenue and leads by platform.
   - The leads tile is now Omneky's leads plus WhatsApp chats.
   - Brow's real 30 days (Omneky, to 5 Nov): S$1,946.72 spent, 82,930 views, 2,539 clicks (3.06%), 1 lead. Omneky counts 0 WhatsApp chats.
+- 2026-11-06 — **Leads & Inbox rebuilt to Ryan's picture** (fusion-edg-core PR #84, staging). It runs on the real CRM only.
+  - Tiles and lead sources (with the change vs the period before), plus a lead status donut.
+  - Inbox tabs, the conversation, lead profile, next action, Reply / Appointment / Assign, the per-customer AI switch, activity history, Import and Export.
+  - Simulator leads (9000 numbers) are listed as TEST and never counted.
+  - "Send" opens the owner's own WhatsApp until WhatsApp is linked to the platform; nothing is sent from the platform behind anyone's back.
+  - For Brow it shows "not linked yet": Brow's real enquiries live in WhatsApp / Respond.io (see Open loops).
