@@ -1158,3 +1158,8 @@ tags: [zaphiel, changelog]
   - APEX recommendations come with an Apply button.
   - Create & Launch makes an APEX plan with an approval code; nothing goes live before approval.
   - Duplicate and Delete are shown disabled with the reason.
+- 2026-11-06 — **Analytics rebuilt to Ryan's picture** (fusion-edg-core PR #82, staging).
+  - Filters: period (7, 14 or 30 days), platform and campaign. Export to CSV.
+  - Seven tiles, each with the change vs the same number of days before: spend (Omneky); leads, qualified and sales (CRM); revenue (payments, money roles only); ROAS (only when Omneky reports sales); cost per lead.
+  - Also shown: the daily trend chart, leads by platform from the CRM, platform and top-campaign tables, APEX analysis, and next actions with buttons.
+  - Audience insights (age and gender) are marked "not connected yet" because they need Omneky's age & gender breakdown.
