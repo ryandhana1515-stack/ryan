@@ -1173,3 +1173,7 @@ tags: [zaphiel, changelog]
   - Simulator leads (9000 numbers) are listed as TEST and never counted.
   - "Send" opens the owner's own WhatsApp until WhatsApp is linked to the platform; nothing is sent from the platform behind anyone's back.
   - For Brow it shows "not linked yet": Brow's real enquiries live in WhatsApp / Respond.io (see Open loops).
+- 2026-11-06 — **AI Diagnose rebuilt to Ryan's picture** (fusion-edg-core PR #85, staging).
+  - **Health:** five areas, scored by a published formula. No overall score until 3 of 5 areas have real data; Brow has 2 today.
+  - **On the screen:** alerts with real actions, a diagnosis per campaign, the top 3 APEX recommendations, best ads, 30-day trends, and an action center.
+  - **Diagnosis rule fix:** it now flags a campaign that takes a big share of spend for at most 1 counted lead. Before, Brow's Master Selina WhatsApp 2 (S$1,587.50, 82% of spend, 1 lead) was missed.
