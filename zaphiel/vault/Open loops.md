@@ -472,3 +472,4 @@ tags: [zaphiel, open-loops]
   - Ryan: press Generate once on staging for Brow, using a short video and your approval code. That is the first real Omneky video, and it uses Omneky credits.
   - Build the edit tools (Omneky resize/edit first), UGC/Avatar video (Omneky avatars or HeyGen sign-in), and video launch in Campaigns.
   - Then the Brand Kit, per the master prompt.
+- 2026-11-06 — **Analytics: audience by age and gender** is not connected. To do: read Omneky's age & gender breakdown into the snapshot, then fill Audience Insights.
