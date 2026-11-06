@@ -1163,3 +1163,7 @@ tags: [zaphiel, changelog]
   - Seven tiles, each with the change vs the same number of days before: spend (Omneky); leads, qualified and sales (CRM); revenue (payments, money roles only); ROAS (only when Omneky reports sales); cost per lead.
   - Also shown: the daily trend chart, leads by platform from the CRM, platform and top-campaign tables, APEX analysis, and next actions with buttons.
   - Audience insights (age and gender) are marked "not connected yet" because they need Omneky's age & gender breakdown.
+- 2026-11-06 — **No fake zeros** (fusion-edg-core PR #83).
+  - Brow's staging CRM has only the self-test lead and no payments, so Analytics, Campaigns and Overview now say "not linked yet" for qualified leads, sales, revenue and leads by platform.
+  - The leads tile is now Omneky's leads plus WhatsApp chats.
+  - Brow's real 30 days (Omneky, to 5 Nov): S$1,946.72 spent, 82,930 views, 2,539 clicks (3.06%), 1 lead. Omneky counts 0 WhatsApp chats.
