@@ -1177,3 +1177,9 @@ tags: [zaphiel, changelog]
   - **Health:** five areas, scored by a published formula. No overall score until 3 of 5 areas have real data; Brow has 2 today.
   - **On the screen:** alerts with real actions, a diagnosis per campaign, the top 3 APEX recommendations, best ads, 30-day trends, and an action center.
   - **Diagnosis rule fix:** it now flags a campaign that takes a big share of spend for at most 1 counted lead. Before, Brow's Master Selina WhatsApp 2 (S$1,587.50, 82% of spend, 1 lead) was missed.
+- 2026-11-06 — **Brand Kit built to Ryan's picture** (fusion-edg-core PR #86, staging; migration 052 applied).
+  - Only the owner's approved kit counts. Import from URL (the business's website) and AI Generate each make a suggestion that waits for Approve.
+  - Logos are the business's own uploads (PNG, JPEG or WebP).
+  - The consistency check shows x of 6 real checks passing.
+  - Create Content now writes with the approved kit.
+  - Every Marketing & Branding tab now matches Ryan's pictures.

@@ -476,3 +476,7 @@ tags: [zaphiel, open-loops]
 - 2026-11-06 — **Brow's real enquiries are not in the CRM.** They are in WhatsApp / Respond.io, and neither is linked to the platform. Until they are, the screens cannot show Brow's real lead count, qualified leads, sales or a true cost per enquiry: Omneky counts only 1 lead in 30 days and 0 WhatsApp chats.
   - Next: link Respond.io (needs a key through the secure form) or move WhatsApp to the platform. A WhatsApp move needs Ryan's approval and a rollback plan.
   - Ryan: set a target cost per lead, so APEX can judge whether the results are healthy.
+- 2026-11-06 — **Brow Revolution Brand Kit is empty (0 of 6 checks).** Omneky's brand kit for Brow is empty too.
+  - Ryan to do: confirm the website (browrevolution.sg?), then press Import from URL and approve the parts that are right.
+  - Ryan to do: upload the real logo files.
+  - Ryan to do: write the tone and the don't list (e.g. no "guaranteed results", no "Singapore's leading" without proof).
