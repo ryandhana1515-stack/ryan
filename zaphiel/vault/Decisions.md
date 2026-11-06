@@ -662,3 +662,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   Zaphiel builds, tests, deploys to staging and merges without asking. It still asks first for: spending money or paid
   credits, live ads or budgets, messages to real customers, production changes to live behaviour, WhatsApp number
   moves, payments/payroll, deleting data, and new access to sensitive systems.
+- 2026-11-06 — **Ryan: "Don't fake data. I want according to Omneky and all my Brow Revolution data, everything real."**
+  - Screens show only real numbers.
+  - Where a source is not linked, the screen says "not linked yet" and gives the reason. It never shows 0 instead.
+  - Self-test leads never count.
+  - "Healthy" appears only when a target cost per lead is set and the real cost per lead meets it.
+  - Screenshots for Ryan use Brow's real data, not demo data.

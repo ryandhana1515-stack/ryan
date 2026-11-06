@@ -473,3 +473,6 @@ tags: [zaphiel, open-loops]
   - Build the edit tools (Omneky resize/edit first), UGC/Avatar video (Omneky avatars or HeyGen sign-in), and video launch in Campaigns.
   - Then the Brand Kit, per the master prompt.
 - 2026-11-06 — **Analytics: audience by age and gender** is not connected. To do: read Omneky's age & gender breakdown into the snapshot, then fill Audience Insights.
+- 2026-11-06 — **Brow's real enquiries are not in the CRM.** They are in WhatsApp / Respond.io, and neither is linked to the platform. Until they are, the screens cannot show Brow's real lead count, qualified leads, sales or a true cost per enquiry: Omneky counts only 1 lead in 30 days and 0 WhatsApp chats.
+  - Next: link Respond.io (needs a key through the secure form) or move WhatsApp to the platform. A WhatsApp move needs Ryan's approval and a rollback plan.
+  - Ryan: set a target cost per lead, so APEX can judge whether the results are healthy.
