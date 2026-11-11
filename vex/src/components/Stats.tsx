@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import Reveal from './Reveal'
+import Parallax from './Parallax'
 
 interface Stat {
   value: number
@@ -63,21 +64,23 @@ function CountUp({ value, prefix = '', suffix = '' }: Omit<Stat, 'label'>) {
 export default function Stats() {
   return (
     <section className="px-6 md:px-12 lg:px-16 py-24 md:py-32 border-t border-white/10">
-      <div className="max-w-7xl mx-auto grid gap-y-12 gap-x-6 grid-cols-2 lg:grid-cols-4">
-        {STATS.map((s, i) => (
-          <Reveal key={s.label} delay={i * 90}>
-            <div>
-              <div
-                className="text-5xl md:text-6xl lg:text-7xl font-normal"
-                style={{ letterSpacing: '-0.04em' }}
-              >
-                <CountUp value={s.value} prefix={s.prefix} suffix={s.suffix} />
+      <Parallax speed={0.16} className="max-w-7xl mx-auto">
+        <div className="grid gap-y-12 gap-x-6 grid-cols-2 lg:grid-cols-4">
+          {STATS.map((s, i) => (
+            <Reveal key={s.label} delay={i * 90}>
+              <div>
+                <div
+                  className="text-5xl md:text-6xl lg:text-7xl font-normal"
+                  style={{ letterSpacing: '-0.04em' }}
+                >
+                  <CountUp value={s.value} prefix={s.prefix} suffix={s.suffix} />
+                </div>
+                <div className="mt-4 text-sm text-gray-400">{s.label}</div>
               </div>
-              <div className="mt-4 text-sm text-gray-400">{s.label}</div>
-            </div>
-          </Reveal>
-        ))}
-      </div>
+            </Reveal>
+          ))}
+        </div>
+      </Parallax>
     </section>
   )
 }

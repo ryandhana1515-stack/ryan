@@ -9,12 +9,12 @@ export default function CTA() {
     >
       {/* Oversized wordmark drifting behind the content for depth */}
       <Parallax
-        speed={-0.22}
+        speed={-0.4}
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
         <span
-          className="select-none font-semibold text-white/[0.04] leading-none whitespace-nowrap"
-          style={{ fontSize: 'clamp(9rem, 32vw, 26rem)', letterSpacing: '-0.05em' }}
+          className="select-none font-semibold text-white/[0.07] leading-none whitespace-nowrap"
+          style={{ fontSize: 'clamp(11rem, 40vw, 32rem)', letterSpacing: '-0.05em' }}
         >
           VEX
         </span>
