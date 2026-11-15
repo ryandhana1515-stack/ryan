@@ -487,3 +487,7 @@ tags: [zaphiel, open-loops]
   - Ryan to confirm the ad account and page inside Omneky (Connections → Facebook).
   - Ryan to decide on the "Chiến dịch Lượt tương tác mới" engagement campaign, which spends S$30/day without leads.
   - Ryan to link Respond.io or WhatsApp so enquiries from ads can be counted.
+- 2026-11-15 — **First real ad scan done** (see `00_CEO_Brain/17_Brow_First_Real_Ad_Scan_2026-11-15.md`). Waiting on Ryan:
+  - Pause or keep "Video 11 Isabella" (S$719, 0 counted leads) and the engagement campaign (S$362, 1 lead).
+  - Approve one paid test creative (Kling or Higgsfield; cost shown before it runs).
+  - Re-enable the platform on Vercel (usage limit) so APEX can read and act again.

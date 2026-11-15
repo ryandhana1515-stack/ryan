@@ -1187,3 +1187,5 @@ tags: [zaphiel, changelog]
   - Fixed the readiness bug (launch was wrongly shown as blocked).
   - Readiness now stores Omneky's real minimum budgets and preflight.
   - Diagnosis gives the evidence and cost or risk for each finding, with new checks for tracking, rising costs and saturation.
+
+- 2026-11-15 — Zaphiel: first real Omneky ad scan for Brow Revolution (read-only, nothing changed). Note: `00_CEO_Brain/17_Brow_First_Real_Ad_Scan_2026-11-15.md`.
