@@ -1183,3 +1183,7 @@ tags: [zaphiel, changelog]
   - The consistency check shows x of 6 real checks passing.
   - Create Content now writes with the approved kit.
   - Every Marketing & Branding tab now matches Ryan's pictures.
+- 2026-11-15 — **APEX activation audit and fixes** (fusion-edg-core PR #87). Full audit: [[00_CEO_Brain/16_APEX_Activation_Audit_2026-11-15]].
+  - Fixed the readiness bug (launch was wrongly shown as blocked).
+  - Readiness now stores Omneky's real minimum budgets and preflight.
+  - Diagnosis gives the evidence and cost or risk for each finding, with new checks for tracking, rising costs and saturation.

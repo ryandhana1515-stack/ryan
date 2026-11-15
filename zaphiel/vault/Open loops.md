@@ -480,3 +480,10 @@ tags: [zaphiel, open-loops]
   - Ryan to do: confirm the website (browrevolution.sg?), then press Import from URL and approve the parts that are right.
   - Ryan to do: upload the real logo files.
   - Ryan to do: write the tone and the don't list (e.g. no "guaranteed results", no "Singapore's leading" without proof).
+- 2026-11-15 — **CRITICAL: the platform is offline** (Vercel 402 DEPLOYMENT_DISABLED, Hobby plan). No APEX monitoring since 6 Nov.
+  - Ryan to do: check Vercel → Usage, then choose: upgrade to Pro (paid; needs Ryan's yes) or wait for the limit to reset.
+  - Proposed: slow the database timer from every minute to every 5 minutes. Needs Ryan's OK.
+- 2026-11-15 — **Before any launch:**
+  - Ryan to confirm the ad account and page inside Omneky (Connections → Facebook).
+  - Ryan to decide on the "Chiến dịch Lượt tương tác mới" engagement campaign, which spends S$30/day without leads.
+  - Ryan to link Respond.io or WhatsApp so enquiries from ads can be counted.
