@@ -45,3 +45,9 @@ WhatsApp conversations counted by Omneky: 0 in every window. No revenue data →
 - Omneky: 1,952 credits; image ads, product video, avatar video.
 - HeyGen: not connected to anything here.
 - The platform's own Kling and Higgsfield sign-ins for Brow are unfinished (expired 5 Nov) → platform cannot generate with them yet.
+
+## Update 2026-11-15 — HeyGen connected (verified by a real call)
+- Ryan connected HeyGen to Claude. Live read: plan **Pro**, **3,000 premium credits**, reset 16 Nov 2026 17:32 UTC.
+- His own avatars there include **"Master Selena"** (5 looks), "Ryan Dhana" (6), "Customer" (3), "ma ma customer" (1), "LouisPrince82", "louis".
+- HeyGen brand kit: only HeyGen's demo kit (no Brow kit yet).
+- Not yet signed in *inside the APEX platform* for Brow (platform offline; Brow's platform links are only Kling/Higgsfield, both unfinished).
