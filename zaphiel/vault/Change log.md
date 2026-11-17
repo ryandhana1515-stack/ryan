@@ -1193,3 +1193,5 @@ tags: [zaphiel, changelog]
 - 2026-11-17 — Zaphiel: APEX activation (marketing only). PR fusion-edg-core#88 merged and live: diagnosis five steps + action buttons, analytics Today→30 days, content via Kling/Higgsfield/HeyGen with price-first approval. Status: `00_CEO_Brain/18_APEX_Activation_Status_2026-11-17.md`.
 
 - 2026-11-17 14:45 — Zaphiel: live check after #88 passed (ad names, five-step findings, launch no longer wrongly "blocked"); found Omneky minimum budget/preflight empty (flat answer shape) → fixed in fusion-edg-core#89, verifying at the 17:15 UTC sync.
+
+- 2026-11-17 16:50 UTC — Zaphiel: HeyGen sign-in refused by HeyGen ("Invalid redirect URI"; HeyGen only allows its MCP sign-in for AI chat apps). HeyGen now links to APEX by API key through the secure form, videos via HeyGen REST API v3 (fusion-edg-core#90, live). Ryan password reset for Master Control done (he must sign in at /control, not the Team app page).
