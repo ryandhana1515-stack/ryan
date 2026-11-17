@@ -668,3 +668,5 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Self-test leads never count.
   - "Healthy" appears only when a target cost per lead is set and the real cost per lead meets it.
   - Screenshots for Ryan use Brow's real data, not demo data.
+
+- 2026-11-17 — HeyGen connects to APEX with an API key (HeyGen's own rule for apps), not the sign-in. Kling and Higgsfield keep the sign-in.
