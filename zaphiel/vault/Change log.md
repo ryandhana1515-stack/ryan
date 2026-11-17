@@ -1195,3 +1195,5 @@ tags: [zaphiel, changelog]
 - 2026-11-17 14:45 — Zaphiel: live check after #88 passed (ad names, five-step findings, launch no longer wrongly "blocked"); found Omneky minimum budget/preflight empty (flat answer shape) → fixed in fusion-edg-core#89, verifying at the 17:15 UTC sync.
 
 - 2026-11-17 16:50 UTC — Zaphiel: HeyGen sign-in refused by HeyGen ("Invalid redirect URI"; HeyGen only allows its MCP sign-in for AI chat apps). HeyGen now links to APEX by API key through the secure form, videos via HeyGen REST API v3 (fusion-edg-core#90, live). Ryan password reset for Master Control done (he must sign in at /control, not the Team app page).
+
+- 2026-11-18 — Zaphiel: verified Kling (18 tools) and Higgsfield (211 tools) signed in to APEX for Brow (15:00 UTC 17 Nov). Omneky Meta: ad account 1354647102791631, page 1917780655119449, launch preflight 4/4 pass. Campaigns now shows a "Your Ads" gallery with each ad's own picture/video (fusion-edg-core#91). HeyGen key: secure form sent, not yet tested.
