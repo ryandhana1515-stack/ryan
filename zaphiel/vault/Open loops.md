@@ -491,3 +491,8 @@ tags: [zaphiel, open-loops]
   - Pause or keep "Video 11 Isabella" (S$719, 0 counted leads) and the engagement campaign (S$362, 1 lead).
   - Approve one paid test creative (Kling or Higgsfield; cost shown before it runs).
   - Re-enable the platform on Vercel (usage limit) so APEX can read and act again.
+- 2026-11-17 — **APEX, waiting on Ryan (marketing only):**
+  - Sign in once inside APEX: Marketing → Add app → Kling AI / Higgsfield / HeyGen → Sign in (own accounts).
+  - Approve one paid test creative (Higgsfield 10 s video = 70 credits, its own price) when ready.
+  - Before the first launch only: choose the Facebook ad account + page in Omneky (Settings → Connections → Facebook).
+  - Decide on the engagement campaign (S$30/day, engagement goal).
