@@ -1191,3 +1191,5 @@ tags: [zaphiel, changelog]
 - 2026-11-15 — Zaphiel: first real Omneky ad scan for Brow Revolution (read-only, nothing changed). Note: `00_CEO_Brain/17_Brow_First_Real_Ad_Scan_2026-11-15.md`.
 
 - 2026-11-17 — Zaphiel: APEX activation (marketing only). PR fusion-edg-core#88 merged and live: diagnosis five steps + action buttons, analytics Today→30 days, content via Kling/Higgsfield/HeyGen with price-first approval. Status: `00_CEO_Brain/18_APEX_Activation_Status_2026-11-17.md`.
+
+- 2026-11-17 14:45 — Zaphiel: live check after #88 passed (ad names, five-step findings, launch no longer wrongly "blocked"); found Omneky minimum budget/preflight empty (flat answer shape) → fixed in fusion-edg-core#89, verifying at the 17:15 UTC sync.
