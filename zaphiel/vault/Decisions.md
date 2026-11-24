@@ -670,3 +670,5 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Screenshots for Ryan use Brow's real data, not demo data.
 
 - 2026-11-17 — HeyGen connects to APEX with an API key (HeyGen's own rule for apps), not the sign-in. Kling and Higgsfield keep the sign-in.
+
+- 2026-11-24 — **APEX works in Assisted Mode only** until a live launch has been verified on the real account. APEX reads, diagnoses and prepares by itself. Anything that spends or changes a live ad needs Ryan's button or code. Controlled Autopilot (pre-approved actions with limits and an emergency stop) comes after that verification.
