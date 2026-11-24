@@ -496,3 +496,6 @@ tags: [zaphiel, open-loops]
   - Approve one paid test creative (Higgsfield 10 s video = 70 credits, its own price) when ready.
   - Before the first launch only: choose the Facebook ad account + page in Omneky (Settings → Connections → Facebook).
   - Decide on the engagement campaign (S$30/day, engagement goal).
+
+- 2026-11-24 — **Ryan's request (24 Nov), not built yet:** a separate login and agent for Ryan's dad (his own email and WhatsApp; needs his name, email, number), both usable at once on iPads; dashboard languages (English, 中文, Bahasa Melayu and Tiếng Việt first, then Thai, Japanese, European); Shopee, Lazada and TikTok connections; a recruiting agent for 20–30 AI-workflow candidates (Fiverr has no messaging API, so it works from a job post, screening questions and a paid test task); checking that ERP, HR and the website agent work.
+- 2026-11-24 — **First real paused campaign:** waiting for Ryan to pick the budget (at least S$51.73/day for leads; traffic minimum from Omneky), the destination (WhatsApp wa.me link or a page) and a ready creative. He presses the button himself, then checks Ads Manager before turning it on.
