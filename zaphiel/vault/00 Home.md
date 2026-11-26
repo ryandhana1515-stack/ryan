@@ -50,3 +50,5 @@ started: 2026-09-25
 - [[50_Client_Onboarding/_index|50_Client_Onboarding]] — discovery → connect / import / index / leave → provisioning
 - [[60_Skill_Packs/_index|60_Skill_Packs]] · [[70_Industry_Packs/_index|70_Industry_Packs]] · [[80_Clients/_index|80_Clients]] (one folder per client) · [[90_Templates/_index|90_Templates]]
 - Sources: [[FusionTech AI — Build Prompt v3]] (verbatim) · `_sources/` (the two PDFs, when Ryan adds them) · `_backups/2026-09-25/` (copy of the vault before this build)
+
+- **Implementation tracker** (what really works, what is untested or blocked, and what comes next): [[00_CEO_Brain/19_Implementation_Tracker]]. Update it after every change. (2026-11-26)
