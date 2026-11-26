@@ -4,6 +4,25 @@
 
 Priorities (Ryan, 2026-11-26): 1 APEX + Omneky + Facebook → 2 diagnosis, A/B, creatives, campaigns → 3 authorised execution + Controlled Autopilot → 4 Instagram/TikTok → 5 Website AI → 6 Atlas CRM/EDG/ERP → 7 John + client delivery → 8 HR/finance → 9 CEO Brain orchestration. One milestone at a time.
 
+## APEX status — 2026-11-26 evening (Ryan: "APEX only until it is fully operational")
+
+| # | Capability | Status | Evidence / what it needs |
+|---|---|---|---|
+| 1 | Internet research (competitors, hooks, trends) | YELLOW | Web search is in APEX chat (#99) and the daily Market watch (#104). First production proof: the 27 Nov briefing after 9 AM SGT |
+| 2 | Real Facebook data through Omneky | GREEN | Synced every 3 h; 24 and 26 Nov live audits used it |
+| 3 | AI diagnosis and analytics | GREEN for reading (live runs 24 and 26 Nov); the button froze on 26 Nov, fixed in #101 | — |
+| 4 | Winning and weak ads | GREEN | In the live audits and briefing |
+| 5 | Analyse uploads | Pictures YELLOW (APEX sees them); videos ORANGE: upload needs the storage key (#102), and APEX cannot watch video | Ryan: storage key |
+| 6 | Creatives, hooks, headlines, copy | Copy and briefs YELLOW (free). Generated images and videos ORANGE: credits need Ryan's code | — |
+| 7 | A/B tests | Prepare YELLOW; launch ORANGE (Ryan's code); a strict 50/50 split is RED (Omneky has no Meta experiment) | — |
+| 8 | Create, launch, pause, resume, replace ads | YELLOW in code and tests; marketing_actions has 0 live rows; ORANGE on Ryan's first code | — |
+| 9 | S$10 target monitoring | GREEN: target saved live 26 Nov and used by the briefing, the rules and plans | — |
+| 10 | Automatic optimisation | Dry run only (ORANGE): live after the first verified launch and Ryan's yes | — |
+| 11 | Continuous monitoring | GREEN: every 3 h plus the daily briefing | — |
+| 12 | Daily reports | GREEN: first live briefing 26 Nov 13:54 UTC | — |
+| 13 | Facebook and Instagram | GREEN for reading. TikTok ORANGE: connect TikTok inside Omneky, then launching on TikTok has to be built | — |
+| — | Meta reporting (WhatsApp conversations, reach, frequency, objectives) | Built and tested against a fake Meta (#104); ORANGE: needs Ryan's read-only Meta token | — |
+
 ## Repair log — 2026-11-26 (newest first)
 
 Colours (Ryan, 26 Nov): GREEN = works and verified end to end · YELLOW = built, not yet live-tested · ORANGE = blocked on an authorisation, key or decision · RED = broken or not built · GREY = planned.
