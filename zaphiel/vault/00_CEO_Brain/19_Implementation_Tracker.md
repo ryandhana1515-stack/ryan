@@ -4,6 +4,36 @@
 
 Priorities (Ryan, 2026-11-26): 1 APEX + Omneky + Facebook → 2 diagnosis, A/B, creatives, campaigns → 3 authorised execution + Controlled Autopilot → 4 Instagram/TikTok → 5 Website AI → 6 Atlas CRM/EDG/ERP → 7 John + client delivery → 8 HR/finance → 9 CEO Brain orchestration. One milestone at a time.
 
+## Repair log — 2026-11-26 (newest first)
+
+Colours (Ryan, 26 Nov): GREEN = works and verified end to end · YELLOW = built, not yet live-tested · ORANGE = blocked on an authorisation, key or decision · RED = broken or not built · GREY = planned.
+
+**How it was checked:**
+- Vercel production error logs (7 days).
+- Production database rows.
+- A Playwright crawler that clicked **529 buttons on 23 pages** (a fresh load for each click) against a local copy with the practice Omneky.
+- 418 automated tests.
+
+| Area | Function | Was | Root cause | Repair (PR) | Test evidence | Now |
+|---|---|---|---|---|---|---|
+| Platform | Every page (me, dashboard, marketing, APEX, Analyze, timer) | Froze for 5 min on 26 Nov at 22:44 SGT; Ryan's "Run AI Diagnosis" never answered | Production pool of 2 connections, no wait limit, and 15 code paths that nest a second transaction: requests deadlocked each other | Nested transactions use a sibling pool; 15 s wait limit; pool 6 (#101) | Regression test deadlocks without the fix and passes with it; no production errors since the deploy | GREEN (fix verified in a test; production being watched) |
+| Platform | Omneky refresh clicked twice | Two full reads at once | No lock | One read per business at a time (#101) | Unit-level | YELLOW |
+| All departments | Agent tool "Launch" forms, Meeting Brief, Delegate Task, connection Test buttons | Crashed or did nothing | Two dashboard functions both named `runAction`; the later replaced the engine's | Renamed APEX's to `apexRunAction` (#103) | Re-crawl: Meeting Brief runs; no duplicate function names remain | GREEN (local copy); YELLOW in production until clicked |
+| Home | Lead sources chart | Drawn wrong | Two `donut` functions | Renamed (#103) | Script check | YELLOW |
+| Home | Revenue tile with Finance off | Script error "not found" | Opened Finance unconditionally | Says Finance is off (#103) | Crawl | GREEN |
+| APEX | 9 "Ask APEX" buttons (Overview, AI Assist, AI Suggest, Apply Recommendation, Diagnosis and Analytics asks) | Old advice-only answer, no tools | Still called the old `marketing/ask` | All run the APEX agent with steps and cards (#103) | Script check; same agent as the Assistant | YELLOW |
+| CEO Brain | "Analyse my Facebook ads" in CEO Brain or the Marketing chat | Generic answer, never reached APEX | ceo.ask and marketing.ask ignored APEX | Marketing questions are handed to APEX, with its steps shown (#103) | Test: routes to APEX; other questions stay with the director | YELLOW |
+| APEX | Target S$10 saved from chat | Worked | — | — | Production: policy target 10.00 (26 Nov 14:37 UTC) | GREEN |
+| APEX | Campaign plans use the saved target | Plans kept asking for it | Policy not read | Uses the target; a budget over the limit becomes a question (#101) | Test | YELLOW |
+| APEX | Daily CEO briefing | — | — | #99 and #100 (now reads yesterday and the last 7 days) | First live briefing 26 Nov 13:54 UTC | GREEN |
+| APEX | Large picture and video uploads (up to 200 MB) | 900 kB limit | No file storage | Direct upload to the existing Supabase Storage (#102) | Refusal and safety tests | ORANGE (needs the storage key) |
+| APEX | WhatsApp enquiries per ad | Shows 0 | Omneky has no WhatsApp conversation metric; the "WhatsApp" campaign's live ad set is "New Engagement Ad Set" | — | Omneky read on 26 Nov: message_conversations 0 | ORANGE (needs Meta ads_read access) |
+| APEX | First real paused campaign; pause, resume and budget; A/B plan launch | Never run live (marketing_actions has 0 rows) | Waiting on Ryan | — | Tests only | ORANGE (Ryan's code) |
+| APEX | Paid creatives (Omneky, Kling, Higgsfield) | 2 requests from Oct/Nov with expired codes | Waiting on Ryan | — | — | ORANGE (ask again, then approve credits) |
+| Chats | Empty Send (APEX, NOVA, directors, inbox) | Did nothing | No message | Says what is missing (#103) | Crawl | GREEN |
+| Team | Father's login | — | No "add member" yet; the unused owner seat works | — | — | ORANGE (Ryan: name and email on the owner seat, then a sign-in link) |
+| Website AI, Atlas, John, HR, Accounting | See the table below | — | — | Not changed today (Ryan's order: APEX first) | — | See below |
+
 
 **Date:** 2026-11-26
 **Method:** read-only. Sources were the code in `fusion-edg-core` (branch `feature/ceo-brain-nova`), the vault, `ceo-brain/` and read-only SELECT counts on Supabase `umuzxrxredctpbveqxlt`. Counts are row totals, with the latest date in brackets. Nothing was written, sent or called on any provider.
