@@ -682,3 +682,9 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
   - Meta is used to read back and confirm every change.
 - Meta Marketing API pinned to v26.0. v27 (4 Nov 2026) adds new ad defaults: catalog products in ads, wider device delivery.
 - The Meta token lives in the app's encrypted credential store, entered by Ryan through the one-time secure form, scoped to the one ad account he names.
+
+## 2026-11-28 — One APEX brain, Meta primary (Ryan's "APEX full marketing system completion")
+- Every marketing screen, n8n and the reports use ONE audit (`marketingAudit`) and ONE agent (APEX).
+- Meta is the primary source for Facebook and Instagram numbers. Omneky supplements analytics and runs creatives and operations. The same spend is never added twice.
+- Names are shown in English; Meta IDs and original names are kept.
+- Unmeasured metrics say "unavailable" with the reason.

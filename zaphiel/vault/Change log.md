@@ -1245,3 +1245,9 @@ tags: [zaphiel, changelog]
 - 2026-11-27 (night): all four n8n APEX workflows tested on production and **published**: `wzHChw7JrQy9Lrcw`, `NhthDWWJUfrv80UV`, `r6QQng5iDbDC1qjT`, `vdCBhDOgA31LOuG7`. Executions 3692–3696 succeeded.
   - The first weekly competitor research ran with real sources.
   - The practice optimiser executed nothing.
+- 2026-11-28: fusion-edg-core #110, **one APEX brain**.
+  - `marketingAudit` is the single audit, Meta-primary: account totals for today, yesterday, 3, 7, 14 and 30 days; every campaign and ad against S$10; trends; an executive summary. Qualified leads, bookings, sales, revenue, CPA and ROAS show as "unavailable" with the reason, never 0.
+  - It feeds APEX `full_audit`, Run AI Diagnosis (sections A/B/C), the n8n diagnosis job, the daily briefing and the old Analyze button.
+  - Meta spend, impressions and clicks replace Omneky's copy, so nothing is counted twice.
+  - English display names are cached in migration 058.
+  - `marketing/ask` now runs the APEX agent.
