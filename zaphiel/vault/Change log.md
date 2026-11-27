@@ -1231,3 +1231,10 @@ tags: [zaphiel, changelog]
 - 2026-11-27 (later): #106 fixed the token store key after #105's card rename, so Ryan's token from 16:01 UTC is read again.
   - Live proof: the 16:05 UTC read merged Meta's numbers, 185 WhatsApp conversations started in 30 days.
   - Active engagement campaign: S$6.27 per conversation. Paused "WhatsApp - 2": S$8.70.
+- 2026-11-27 (evening): fusion-edg-core #107 deployed.
+  - Direct Meta creation: campaign paused, ad set, picture/video upload, creative, ads, read back.
+  - Duplicate a campaign (paused copy, migration 057). Replacement ads through Meta.
+  - Validate-only creation check in the Meta Test.
+  - Diagnosis verdicts keep conversations and leads apart.
+  - New "Pause all running ads" button.
+  - Live Meta Test at 18:10 UTC: all three permissions granted, but no Facebook Page assigned to the system user.
