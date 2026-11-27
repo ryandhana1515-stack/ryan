@@ -10,12 +10,27 @@ Priorities (Ryan, 2026-11-26): 1 APEX + Omneky + Facebook → 2 diagnosis, A/B, 
 (fusion-edg-core, Vercel + Supabase). Its timer runs every minute whether or not the dashboard is open. All approvals,
 safety checks, ad changes and audits go through that one place.
 
-**n8n:**
-- The n8n connector refused its saved sign-in on 27 Nov, twice, so no n8n workflow was created or changed.
-- A key request for `ryan1515.app.n8n.cloud` could not open in that session.
-- Ryan's action: either re-authorize the n8n connector in claude.ai connector settings, or add an n8n API key as a network secret (header `X-N8N-API-KEY`, host `ryan1515.app.n8n.cloud`) in the cloud environment's settings. Then start a fresh session.
-- No n8n workflow is needed for these 15: a second scheduler or a second Meta write path would risk changing an ad twice.
-- The old n8n "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` must stay **unpublished**: it is superseded by the backend's Meta path.
+**n8n (27 Nov, evening): access verified.** n8n lists 51 workflows. Four APEX workflows were created in folder "APEX Marketing" (`WpEbsIAKt4FbM40w`).
+- **How they work:** n8n orchestrates. Each step calls the APEX backend's own job: `POST /api/o/brow-revolution/jobs/apex-*` (fusion-edg-core #108) with a business key limited to marketing.
+- **Safe to repeat:** every job can be triggered twice without doing the work twice. No job changes an ad or spends money.
+- **Backend timer:** it stays on as a safety net.
+- **Old workflow:** "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` stays unpublished (superseded by the backend's Meta path).
+
+| n8n workflow | ID | Covers | Trigger | Status |
+|---|---|---|---|---|
+| APEX — Data Sync → AI Diagnosis → Optimiser | `wzHChw7JrQy9Lrcw` | WF-02, 03, 05, 13 (practice) | every 3 h + manual | created, not published |
+| APEX — Daily CEO Report | `NhthDWWJUfrv80UV` | WF-14 (+04 market watch) | daily 09:10 SGT + manual | created, not published |
+| APEX — Weekly Competitor Research | `r6QQng5iDbDC1qjT` | WF-04 | Mon 09:40 SGT + manual | created, not published |
+| APEX — Safety Watchdog | `vdCBhDOgA31LOuG7` | WF-15 | every 30 min + manual | created; test execution 3689 stopped with **"Credentials not found"** (expected: the key credential does not exist yet) |
+
+**Ryan's action:**
+1. In FusionTech Master Control, create a Brow Revolution key limited to Marketing.
+2. In n8n, create the credential "FusionTech APEX key (X-EDG-Key)" with header `X-EDG-Key`.
+3. Select that credential on the four HTTP steps.
+
+Then Zaphiel runs each workflow and publishes them.
+
+**Kept outside n8n on purpose:** WF-01, 07, 08, 09, 10, 11 and 12 are dashboard actions behind the CEO's approval code (people only), so n8n is never given ad-changing power.
 
 **Status words** (as Ryan asked):
 - Fully verified = proven in production.
