@@ -1238,3 +1238,7 @@ tags: [zaphiel, changelog]
   - Diagnosis verdicts keep conversations and leads apart.
   - New "Pause all running ads" button.
   - Live Meta Test at 18:10 UTC: all three permissions granted, but no Facebook Page assigned to the system user.
+- 2026-11-27 (late): n8n access verified (the connector works again).
+  - fusion-edg-core #108 adds the APEX job routes for n8n.
+  - Four n8n workflows created in "APEX Marketing": `wzHChw7JrQy9Lrcw`, `NhthDWWJUfrv80UV`, `r6QQng5iDbDC1qjT`, `vdCBhDOgA31LOuG7`.
+  - Test execution 3689 stopped with "Credentials not found": the key credential has not been created yet.
