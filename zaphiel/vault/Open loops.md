@@ -503,3 +503,10 @@ tags: [zaphiel, open-loops]
 - 2026-11-24 — **APEX, still to build:** Controlled Autopilot (limits, allowed actions, emergency stop); uploading videos over 900 kB from the chat (videos go through Create Content or a direct link for now); instant-form (lead form) campaigns; a true randomized A/B split (Meta experiments; today APEX labels several ads in one ad set as a creative comparison); Instagram-only, TikTok and Google (not connected in Omneky).
 
 - 2026-11-25 — **Waiting on Ryan:** (1) Big video uploads need a file store. Proposal: Vercel Blob on the Pro plan (usage-priced, small); needs Ryan's yes. (2) A true 50/50 split test needs Meta's own Marketing API, beyond Omneky (a Meta app with ads_management access). (3) The first real paused campaign, from APEX Assistant or Launch Campaign. **Not built yet:** Controlled Autopilot; platform-specific forms for TikTok, Google, LinkedIn, X, XHS, Douyin, WeChat and Weibo (none connected); a unified inbox for Messenger, IG, TikTok, WeChat, Telegram and LINE.
+
+## 2026-11-27 — APEX (open)
+- Ryan: assign the Brow Revolution Facebook Page to the FusionTech system user. Without it, direct Meta creation falls back to Omneky.
+- Ryan: give n8n access, either by re-authorizing the connector or with an n8n API key as an environment network secret. Then build the n8n side.
+- Ryan: add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel. Large uploads need them, and video analysis is built on top.
+- Not built yet: video analysis (frames + transcript); formal Meta A/B split test (ad studies); live Controlled Autopilot executor (stays off until Ryan authorizes).
+- First real paused campaign: Ryan asks APEX in the Assistant, approves the plan code, then the create code.
