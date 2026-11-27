@@ -672,3 +672,13 @@ Newest first. Agents and Claude sessions obey these; contradict one only after f
 - 2026-11-17 — HeyGen connects to APEX with an API key (HeyGen's own rule for apps), not the sign-in. Kling and Higgsfield keep the sign-in.
 
 - 2026-11-24 — **APEX works in Assisted Mode only** until a live launch has been verified on the real account. APEX reads, diagnoses and prepares by itself. Anything that spends or changes a live ad needs Ryan's button or code. Controlled Autopilot (pre-approved actions with limits and an emergency stop) comes after that verification.
+
+## 2026-11-27 — One marketing engine (Zaphiel, on Ryan's "APEX + n8n" command)
+- The APEX backend is the single scheduler and the single place that changes ads. It runs on its own timer, without the dashboard open.
+- n8n is not used for these marketing workflows; a second scheduler or write path could double an ad change.
+- n8n "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` stays unpublished (superseded).
+- Each change has exactly one provider:
+  - Omneky when connected; Meta's own API only when Omneky is off.
+  - Meta is used to read back and confirm every change.
+- Meta Marketing API pinned to v26.0. v27 (4 Nov 2026) adds new ad defaults: catalog products in ads, wider device delivery.
+- The Meta token lives in the app's encrypted credential store, entered by Ryan through the one-time secure form, scoped to the one ad account he names.
