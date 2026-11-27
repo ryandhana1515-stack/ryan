@@ -1228,3 +1228,6 @@ tags: [zaphiel, changelog]
   - It goes through Meta itself only when Omneky is off.
   - A double-tapped pause runs once.
 - Tests: 47 files, 420 tests pass. Tracker: workflow register WF-01…WF-15 in [[19_Implementation_Tracker]].
+- 2026-11-27 (later): #106 fixed the token store key after #105's card rename, so Ryan's token from 16:01 UTC is read again.
+  - Live proof: the 16:05 UTC read merged Meta's numbers, 185 WhatsApp conversations started in 30 days.
+  - Active engagement campaign: S$6.27 per conversation. Paused "WhatsApp - 2": S$8.70.
