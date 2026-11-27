@@ -1242,3 +1242,6 @@ tags: [zaphiel, changelog]
   - fusion-edg-core #108 adds the APEX job routes for n8n.
   - Four n8n workflows created in "APEX Marketing": `wzHChw7JrQy9Lrcw`, `NhthDWWJUfrv80UV`, `r6QQng5iDbDC1qjT`, `vdCBhDOgA31LOuG7`.
   - Test execution 3689 stopped with "Credentials not found": the key credential has not been created yet.
+- 2026-11-27 (night): all four n8n APEX workflows tested on production and **published**: `wzHChw7JrQy9Lrcw`, `NhthDWWJUfrv80UV`, `r6QQng5iDbDC1qjT`, `vdCBhDOgA31LOuG7`. Executions 3692–3696 succeeded.
+  - The first weekly competitor research ran with real sources.
+  - The practice optimiser executed nothing.
