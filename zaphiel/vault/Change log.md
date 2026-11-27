@@ -1213,3 +1213,18 @@ tags: [zaphiel, changelog]
   - APEX can **search the internet** (competitors, hooks, trends, Meta docs) and **writes a daily CEO briefing** by itself after 9 AM, shared in APEX Assistant.
   - Evidence: Ryan's 24 Nov audit ran in the live app with real tools (fresh Omneky read, 4 periods, diagnosis, account check; nothing changed).
   - Omneky checked 26 Nov: frequency and reach are not offered even with all metrics on; the WhatsApp campaign shows 0 message conversations (tracking gap confirmed).
+
+## 2026-11-27 — APEX: Meta Marketing API connection + safety gate (fusion-edg-core #105, deployed)
+- Connections card "Meta Marketing API" (was Meta Ads Reporting):
+  - The secure form takes the token and the ad account ID.
+  - Test checks: validity, expiry, permissions, the account's status, currency and time zone, Pages, Instagram, rate limit.
+- Meta reports for any period (today, yesterday, 3, 7, 14, 30 days, custom):
+  - levels: campaign, ad set and ad;
+  - stored as snapshots with source `meta` (migration 056, applied);
+  - available to APEX as the tool `get_meta_insights` and to the daily briefing.
+- Every pause, resume or budget change:
+  - Safety gate runs on request and again just before execution: emergency stop, per-campaign and total limits, refusal of other ad accounts.
+  - The Meta "before" state is kept and the result is read back from Meta.
+  - It goes through Meta itself only when Omneky is off.
+  - A double-tapped pause runs once.
+- Tests: 47 files, 420 tests pass. Tracker: workflow register WF-01…WF-15 in [[19_Implementation_Tracker]].

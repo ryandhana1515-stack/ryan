@@ -4,6 +4,59 @@
 
 Priorities (Ryan, 2026-11-26): 1 APEX + Omneky + Facebook → 2 diagnosis, A/B, creatives, campaigns → 3 authorised execution + Controlled Autopilot → 4 Instagram/TikTok → 5 Website AI → 6 Atlas CRM/EDG/ERP → 7 John + client delivery → 8 HR/finance → 9 CEO Brain orchestration. One milestone at a time.
 
+## APEX automation engine — workflow register (2026-11-27, Ryan's "APEX + n8n full marketing automation engine")
+
+**One engine, one scheduler, one execution path.** Everything below runs in the existing APEX backend
+(fusion-edg-core, Vercel + Supabase). Its timer runs every minute whether or not the dashboard is open. All approvals,
+safety checks, ad changes and audits go through that one place.
+
+**n8n:**
+- The n8n connector refused its saved sign-in on 27 Nov, so no n8n workflow was created or changed.
+- No n8n workflow is needed for these 15: a second scheduler or a second Meta write path would risk changing an ad twice.
+- The old n8n "Marketing — Ad Actions" `oMMIvt8PZOmUp24K` must stay **unpublished**: it is superseded by the backend's Meta path.
+
+**Status words** (as Ryan asked):
+- Fully verified = proven in production.
+- Implemented = built and tested with fakes, not yet run live.
+- Missing connection / Missing permission = waiting on a key or an access grant.
+- Unsupported = the provider can't do it.
+- Not implemented = not built.
+
+| WF | Workflow | Implementation (no n8n id: backend) | Trigger | Tools | Status | Remaining blocker → Ryan's action |
+|---|---|---|---|---|---|---|
+| 01 | APEX master controller | `apex-agent.ts` `apexChat`/`runApex`; CEO Brain hands marketing questions to APEX (#103) | APEX Assistant, every Ask APEX button, CEO Brain chat | 13 typed tools (no free API calls), web search | **Fully verified** (live chats 24 + 26 Nov, target saved live) | — |
+| 02 | Meta data sync | `meta-reporting.ts` `readMetaInsights` / `GET marketing/meta/insights` / tool `get_meta_insights`; stored as snapshots source `meta` (#105, migration 056 applied) | APEX, briefing, Omneky sync (fills WhatsApp conversations, reach, frequency, objective) | Meta Marketing API v26.0 | **Implemented**, Missing connection | Paste the new token + ad account ID in the secure form (below), press Test |
+| 03 | Omneky data + creative sync | `omneky.ts` `syncOmneky` (every 3 h, one read at a time) | Timer, Refresh, APEX | Omneky | **Fully verified** (190 reads, latest 26 Nov) | — |
+| 04 | Internet + competitor research | Claude web search in APEX chat (5/turn) and daily Market watch (2) | Any research question; daily | web_search, labelled RESEARCH with source + date | **Implemented**; 27 Nov briefing not yet checked (my database read was denied) | Ryan: open APEX Assistant, check today's briefing shows "Market research" |
+| 05 | AI diagnosis | Run AI Diagnosis → APEX agent: results + rules (`diagnose`) + policy verdicts | Button, chat, briefing | Omneky data; Meta data once connected | **Fully verified** on Omneky data (24 + 26 Nov); Meta part waits for WF-02 | WF-02 token |
+| 06 | Image + video analysis | Pictures: APEX sees uploads in chat. Large files: Supabase Storage direct upload (#102) | Upload in APEX Assistant | Claude vision | Pictures **Implemented**; large uploads Missing connection; watching a video **Not implemented** (needs frame extraction) | Add the storage key in Vercel (steps below) |
+| 07 | AI copywriting | `prepare_new_ads` / Create Content (copy is free) | Chat, Create Content | Brand Kit, results | **Implemented** | — |
+| 08 | AI creative production | Omneky image/video ads behind an approval code; Kling/Higgsfield/HeyGen when signed in | Create Content, chat | Omneky (1,952 credits) | **Implemented**; never run live (2 old requests' codes expired) | Approve credits on one new request |
+| 09 | A/B testing | Plans carry an A/B design; side-by-side ads in one ad set = "creative comparison" | Plans, A/B Studio | Omneky launch | Comparison **Implemented**; formal Meta split test (ad studies API) **Not implemented** | — (next build) |
+| 10 | Campaign creator | `prepareCampaignLaunch` → Omneky `launch_meta_ad` PAUSED, read back, safety-pause if live | Launch Campaign | Omneky | **Implemented**, never run live | Your code on the first paused campaign |
+| 11 | Ad management | `requestAdAction`/`decideAdAction` → Omneky; **Meta read-back of every change, "before" kept; Meta itself when Omneky is off** (#105) | Manage Ads, cards in chat | Omneky, Meta | **Implemented** (420 tests), 0 live rows | First pause/resume on a test campaign |
+| 12 | Creative replacement | New ads into the existing ad set (`launch_ads`); old ad keeps its history | Diagnosis card, chat | Omneky | **Implemented**, not live | After WF-10 |
+| 13 | Optimiser (Assisted / Controlled Autopilot) | `marketing-policy.ts` verdicts; Autopilot = what it WOULD do (`AUTOPILOT_LIVE=false`) | Timer, briefing | Policy, results | Practice mode **Implemented**; live **off by design** | One verified live launch, then your written yes |
+| 14 | Daily CEO report | `runDailyBriefing` after 9 AM SGT (+ 8 AM rules report) | Timer | All read tools + Meta yesterday (#105) | **Fully verified** 26 Nov | — |
+| 15 | Safety, approvals, recovery | Codes bound to the exact change (hash), expiry, single use (row lock), audit, tenant isolation, **emergency stop + limits re-checked right before execution, other ad accounts refused, double-tap = one pause** (#105); Meta expired-token/rate-limit messages | Every change | — | **Implemented**, tested; not yet exercised live | — |
+
+**Emergency stop vs pausing:**
+- The emergency stop stops APEX acting by itself, and blocks every switch-on, budget change and launch.
+- It does **not** switch off ads that are already running. To stop spend, press Pause on the campaign; pausing always works, even during an emergency stop.
+
+**Meta token: where to enter it (never in chat):**
+1. In the dashboard, go to Marketing → AI Tools & Connections.
+2. On the card **Meta Marketing API**, press Connect.
+3. The secure form asks for the system-user token and for the ad account ID (`1354647102791631` for Brow Revolution).
+4. Send the form, then press **Test**.
+
+The Test shows:
+- whether the token is valid, and when it expires;
+- the permissions Meta granted;
+- the ad account's status, currency and time zone;
+- the Pages and Instagram accounts that can run its ads;
+- how much of Meta's rate limit is used.
+
 ## APEX status — 2026-11-26 evening (Ryan: "APEX only until it is fully operational")
 
 | # | Capability | Status | Evidence / what it needs |
