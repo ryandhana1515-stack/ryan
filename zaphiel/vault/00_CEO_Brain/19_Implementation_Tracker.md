@@ -18,17 +18,12 @@ safety checks, ad changes and audits go through that one place.
 
 | n8n workflow | ID | Covers | Trigger | Status |
 |---|---|---|---|---|
-| APEX — Data Sync → AI Diagnosis → Optimiser | `wzHChw7JrQy9Lrcw` | WF-02, 03, 05, 13 (practice) | every 3 h + manual | created, not published |
-| APEX — Daily CEO Report | `NhthDWWJUfrv80UV` | WF-14 (+04 market watch) | daily 09:10 SGT + manual | created, not published |
-| APEX — Weekly Competitor Research | `r6QQng5iDbDC1qjT` | WF-04 | Mon 09:40 SGT + manual | created, not published |
-| APEX — Safety Watchdog | `vdCBhDOgA31LOuG7` | WF-15 | every 30 min + manual | created; test execution 3689 stopped with **"Credentials not found"** (expected: the key credential does not exist yet) |
+| APEX — Data Sync → AI Diagnosis → Optimiser | `wzHChw7JrQy9Lrcw` | WF-02, 03, 05, 13 (practice) | every 3 h + manual | **PUBLISHED**. Execution 3693 (27 Nov 19:15 UTC): Meta day stored (S$25.72, 4 conversations); 5 verdicts against S$10, judged on conversations; 3 practice 'would do' items, 0 executed |
+| APEX — Daily CEO Report | `NhthDWWJUfrv80UV` | WF-14 (+04 market watch) | daily 09:10 SGT + manual | **PUBLISHED**. Execution 3694: 200 OK; correctly refused before 9 AM SGT (once per day) |
+| APEX — Weekly Competitor Research | `r6QQng5iDbDC1qjT` | WF-04 | Mon 09:40 SGT + manual | **PUBLISHED**. Execution 3695: 3 web searches + own results + diagnosis; 7 Singapore competitors with sources and dates, labelled RESEARCH |
+| APEX — Safety Watchdog | `vdCBhDOgA31LOuG7` | WF-15 | every 30 min + manual | **PUBLISHED**. Executions 3692/3696: 200 ok, no problems (Omneky + Meta connected, data 0.1 h old, autopilot_live false) |
 
-**Ryan's action:**
-1. In FusionTech Master Control, create a Brow Revolution key limited to Marketing.
-2. In n8n, create the credential "FusionTech APEX key (X-EDG-Key)" with header `X-EDG-Key`.
-3. Select that credential on the four HTTP steps.
-
-Then Zaphiel runs each workflow and publishes them.
+**Done 27 Nov:** Ryan created the key credential (`bL0uLJ1aUdVqYgu3`). Zaphiel assigned it to every APEX step, ran all four workflows and published them. Sources: fusion-edg-core `workflows/sdk/apex-*.sdk.js`.
 
 **Kept outside n8n on purpose:** WF-01, 07, 08, 09, 10, 11 and 12 are dashboard actions behind the CEO's approval code (people only), so n8n is never given ad-changing power.
 
